@@ -1,0 +1,28 @@
+{
+  "name": "slava-basko/functional-php",
+  "description": "Collection of php functions that allows you to write code in a declarative way.",
+  "require": {
+    "php": "^5|^7|^8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4|^5|^7|^8|^9"
+  },
+  "autoload": {
+    "psr-4": { "Functional\\": "src" },
+    "files": [
+      "src/core.php",
+      "src/curry.php",
+      "src/list.php",
+      "src/math.php",
+      "src/partial.php",
+      "src/functor.php",
+      "src/lens.php",
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  }
+}
