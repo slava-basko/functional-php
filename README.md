@@ -92,28 +92,11 @@ https://github.com/ace411/bingo-functional
 https://https@github.com/ircmaxell/monad-php
 https://github.com/yuhanz/ramda-php
 
-
-
-
-
-
-
-
-
-
-
-
-docker run --rm -v $(pwd):/var/www/html -it xmlshopslav/php-5538-apache-custom:1.1 php bin/index.php
-docker run --rm -v $(pwd):/var/www/html -it xmlshopslav/php-5538-apache-custom:1.1 composer install
-docker run --rm -v $(pwd):/var/www/html -it xmlshopslav/php-5538-apache-custom:1.1 php -dxdebug.remote_host=docker.for.mac.localhost vendor/bin/phpunit -c /var/www/html/phpunit.xml.dist
-docker run --rm -v $(pwd):/var/www/html -it xmlshopslav/php-5538-apache-custom:1.1 composer install
-
 ## How to run tests
 PHP 5
 ```shell
 docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer composer install
 docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer vendor/bin/phpunit
-
 ```
 
 PHP 8
