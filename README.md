@@ -90,7 +90,7 @@ https://ramdajs.com
 https://github.com/lstrojny/functional-php \
 https://github.com/ace411/bingo-functional \
 https://github.com/ircmaxell/monad-php \
-https://github.com/yuhanz/ramda-php \
+https://github.com/yuhanz/ramda-php
 
 ## How to run tests
 PHP 5
