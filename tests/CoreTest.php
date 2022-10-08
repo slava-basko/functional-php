@@ -228,21 +228,6 @@ class CoreTest extends TestCase
             'CD Player, Abba Volume 1, Kim Wild',
             trim(substr(implode(', ', array_filter(array_map('trim', $descriptions), 'strlen')), 0, 34), ', ')
         );
-
-        $descriptions = array_map('trim', $descriptions);
-        $descriptions = array_filter($descriptions, 'strlen');
-        $description = implode(', ', $descriptions);
-        $description = substr($description, 0, 34);
-        $description = trim($description, ', ');
-
-        $pipe = f\pipe(
-            f\pluck('description'),
-            f\partial('array_map', 'trim'),
-            f\partial_r('array_filter', 'strlen'),
-            f\partial('implode', ', '),
-            f\partial_r('substr', 0, 34),
-            f\partial_r('trim', ', ')
-        )($products);
     }
 
     public function test_converge()
