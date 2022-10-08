@@ -74,6 +74,7 @@ class CoreTest extends TestCase
             if ($n == 0) {
                 return $acc;
             }
+
             return $fact($n - 1, $acc * $n);
         });
         $this->assertEquals(3628800, $fact(10));
@@ -82,6 +83,7 @@ class CoreTest extends TestCase
             if ($from > $to) {
                 return $acc;
             }
+
             return $sum_of_range($from + 1, $to, $acc + $from);
         });
         $this->assertEquals(50005000, $sum_of_range(1, 10000));
@@ -182,6 +184,7 @@ class CoreTest extends TestCase
             foreach ($arr as $item) {
                 $res[] = $item + 1;
             }
+
             return $res;
         };
         $powerEach = function ($arr) {
@@ -189,6 +192,7 @@ class CoreTest extends TestCase
             foreach ($arr as $item) {
                 $res[] = $item * $item;
             }
+
             return $res;
         };
         $composed = f\compose($plusEach, $powerEach);
@@ -211,11 +215,34 @@ class CoreTest extends TestCase
             f\partial('array_map', 'trim'),
             f\partial_r('array_filter', 'strlen'),
             f\partial('implode', ', '),
-            //f\partial_p('substr', [2 => 0, 3 => 34]),
             f\partial_r('substr', 0, 34),
             f\partial_r('trim', ', ')
         );
         $this->assertEquals('CD Player, Abba Volume 1, Kim Wild', $pipe($products));
+
+        $descriptions = [];
+        foreach ($products as $product) {
+            $descriptions[] = $product['description'];
+        }
+        $this->assertEquals(
+            'CD Player, Abba Volume 1, Kim Wild',
+            trim(substr(implode(', ', array_filter(array_map('trim', $descriptions), 'strlen')), 0, 34), ', ')
+        );
+
+        $descriptions = array_map('trim', $descriptions);
+        $descriptions = array_filter($descriptions, 'strlen');
+        $description = implode(', ', $descriptions);
+        $description = substr($description, 0, 34);
+        $description = trim($description, ', ');
+
+        $pipe = f\pipe(
+            f\pluck('description'),
+            f\partial('array_map', 'trim'),
+            f\partial_r('array_filter', 'strlen'),
+            f\partial('implode', ', '),
+            f\partial_r('substr', 0, 34),
+            f\partial_r('trim', ', ')
+        )($products);
     }
 
     public function test_converge()
@@ -230,7 +257,7 @@ class CoreTest extends TestCase
         $scoreboardInfo = f\compose(f\join('-'), $listConverge(
             [
                 f\compose('count', $getTeam1GoalsTimes),
-                f\compose('count', $getTeam2GoalsTimes)
+                f\compose('count', $getTeam2GoalsTimes),
             ]
         ));
         $this->assertEquals('2-1', $scoreboardInfo());
@@ -251,10 +278,18 @@ class CoreTest extends TestCase
 
     public function test_cond()
     {
-        $unborn = function($age) {return "At $age you unborn";};
-        $preschool = function($age) {return "At $age you go to preschool";};
-        $primary = function($age) {return "At $age you go to primary school";};
-        $secondary = function($age) {return "At $age you go to secondary school";};
+        $unborn = function ($age) {
+            return "At $age you unborn";
+        };
+        $preschool = function ($age) {
+            return "At $age you go to preschool";
+        };
+        $primary = function ($age) {
+            return "At $age you go to primary school";
+        };
+        $secondary = function ($age) {
+            return "At $age you go to secondary school";
+        };
 
         $stage = f\cond([
             [f\eq(0), $unborn],
@@ -271,7 +306,9 @@ class CoreTest extends TestCase
         $cond = f\cond([
             [f\eq(0), f\always('water freezes')],
             [f\gte(100), f\always('water boils')],
-            [f\T, function($t) {return "nothing special happens at $t °C";}],
+            [f\T, function ($t) {
+                return "nothing special happens at $t °C";
+            }],
         ]);
 
         $this->assertEquals('water freezes', $cond(0));
@@ -284,7 +321,7 @@ class CoreTest extends TestCase
 
     public function test_flipped()
     {
-        $mergeStrings = function($head, $tail) {
+        $mergeStrings = function ($head, $tail) {
             return $head . $tail;
         };
 
