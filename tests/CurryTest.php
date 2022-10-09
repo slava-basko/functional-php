@@ -84,8 +84,8 @@ class CurryTest extends TestCase
         };
 
         $this->assertSame(5, $f(5));
-        $this->assertSame(5, call_user_func_array(f\ary($f, 1), [5]));
-        $this->assertSame(6, call_user_func_array(f\ary($f, -1), [6]));
+        $this->assertSame(5, call_user_func_array(f\ary($f, 1), [5, 5]));
+        $this->assertSame(6, call_user_func_array(f\ary($f, -1), [5, 6]));
         $this->assertSame(7, call_user_func_array(f\ary($f, 2), [5, 2]));
 
         $this->setExpectedException(InvalidArgumentException::class);

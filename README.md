@@ -150,6 +150,282 @@ $commonDescription = pipe(
 ```
 This is precisely what we need. It's in a natural order. No intermediate states.
 
+## Documentation
+Examples is cool, but now it's time for "boring" part.
+
+### identity
+Does nothing, return the parameter supplied to it.
+```php
+identity(1); // 1
+
+$obj = new \stdClass;
+identity($obj) === $obj; // true
+```
+
+### T
+Always return `true`.
+```php
+T(); // true
+```
+
+### F
+Always return `false`.
+```php
+F(); // false
+```
+
+### NULL
+Always return `null`.
+```php
+NULL(); // null
+```
+
+### eq
+Run PHP comparison operator `==`
+```php
+eq(1, 1); // true
+eq(1, '1'); // true
+eq(1, 2); // false
+```
+
+### eq
+Run PHP comparison operator `===`
+```php
+eq(1, 1); // true
+eq(1, '1'); // false
+```
+
+### lt
+Returns true if the first argument is less than the second; false otherwise.
+```php
+lt(2, 1); // false
+lt(2, 2); // false
+lt(2, 3); // true
+lt('a', 'z'); // true
+lt('z', 'a'); // false
+```
+
+### lte
+Returns true if the first argument is less than or equal to the second; false otherwise.
+```php
+lte(2, 1); // false
+lte(2, 2); // true
+lte(2, 3); // true
+lte('a', 'z'); // true
+lte('z', 'a'); // false
+```
+
+### gt
+Returns true if the first argument is greater than the second; false otherwise.
+```php
+gt(2, 1); // true
+gt(2, 2); // false
+gt(2, 3); // false
+gt('a', 'z'); // false
+gt('z', 'a'); // true
+```
+
+### gte
+Returns true if the first argument is greater than or equal to the second; false otherwise.
+```php
+gte(2, 1); // true
+gte(2, 2); // true
+gte(2, 3); // false
+gte('a', 'z'); // false
+gte('z', 'a'); // true
+```
+
+### tail_recursion
+Decorates given function with tail recursion optimization using trampoline.
+```php
+$fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
+    if ($n == 0) {
+        return $acc;
+    }
+
+    return $fact($n - 1, $acc * $n);
+});
+$fact(10); // 3628800
+```
+
+### map
+Produces a new list of elements by mapping each element in list through a transformation function.
+```php
+map(plus(1), [1, 2, 3]); // [2, 3, 4]
+```
+
+### not
+Logical negation of the given function.
+```php
+$notString = not('is_string');
+$notString(1); // true
+```
+
+
+### tap
+Call the given function with the given value, then return the value.
+```php
+$input = new \stdClass();
+$input->property = 'foo';
+tap(function ($o) {
+    $o->property = 'bar';
+}, $input);
+$input->property; // 'foo'
+```
+
+### fold
+Applies a function to each element in the list and reduces it to a single value. Accumulator on the left.
+```php
+fold(concat, '4', [5, 1]); // 451
+```
+
+### fold_r
+The same as `fold` but accumulator on the right.
+```php
+fold_r(concat, '4', [5, 1]); // 514
+```
+
+### always
+Wrap value within a function, which will return it, without any modifications. Kinda constant function.
+```php
+$constA = always('a');
+$constA(); // 'a'
+$constA(); // 'a'
+```
+
+### compose
+Returns new function which applies each given function to the result of another from right to left. 
+`compose(f, g, h)` is the same as `f(g(h(x)))`
+```php
+$powerPlus1 = compose(plus(1), power);
+$powerPlus1(3); // 10
+```
+
+### pipe
+Performs left to right function composition. `pipe(f, g, h)` is the same as `h(g(f(x)))`.
+```php
+$plus1AndPower = pipe(plus(1), power);
+$plus1AndPower(3); // 16
+```
+
+### converge
+Accepts a converging function and a list of branching functions and returns a new function.
+The results of each branching function are passed as arguments to the converging function to produce the return value.
+```php
+function div($dividend, $divisor) {
+    return $dividend / $divisor;
+}
+
+$average = converge('div', ['array_sum', 'count']);
+$average([1, 2, 3, 4]); // 2.5
+```
+
+### apply_to
+Create a function that will pass arguments to a given function.
+```php
+$fiveAndThree = apply_to([5, 3]);
+$fiveAndThree(sum); // 8
+```
+
+### cond
+Returns a new function that behaves like a match operator. Encapsulates `if/elseif,elseif, ...` logic.
+```php
+$cond = cond([
+    [eq(0), always('water freezes')],
+    [gte(100), always('water boils')],
+    [T, function ($t) {
+        return "nothing special happens at $t °C";
+    }],
+]);
+
+$cond(0); // 'water freezes'
+$cond(100); // 'water boils'
+$cond(50) // 'nothing special happens at 50 °C'
+```
+
+### flipped
+Returns function which accepts arguments in the reversed order.
+```php
+$mergeStrings = function ($head, $tail) {
+    return $head . $tail;
+};
+$flippedMergeStrings = flipped($mergeStrings);
+$flippedMergeStrings('two', 'one'); // 'onetwo'
+```
+
+### on
+Takes a binary function f, and unary function g, and two values. 
+Applies g to each value, then applies the result of each to f.
+```php
+$containsInsensitive = on(contains, 'strtolower');
+$containsInsensitive('o', 'FOO'); // true
+```
+
+### both
+Acts as the boolean `and` statement.
+```php
+both(T(), T()); // true
+both(F(), T()); // false
+$between6And9 = both(gt(6), lt(9));
+$between6And9(7); // true
+$between6And9(10); // false
+```
+
+### curry
+Return a curried version of the given function.
+```php
+$add = function($a, $b, $c) {
+    return $a + $b + $c;
+};
+$curryiedAdd = curry($add);
+$addTen = $curryiedAdd(10);
+$addEleven = $addTen(1);
+$addEleven(4); // 15
+```
+
+### thunkify
+Creates a thunk out of a function. A thunk delays a calculation until its result is needed, 
+providing lazy evaluation of arguments.
+```php
+$add = function($a, $b) {
+    return $a + $b;
+};
+$curryiedAdd = f\thunkify($add);
+$addTen = $curryiedAdd(10);
+$eleven = $addTen(1);
+$eleven(); // 11
+```
+
+### ary
+Return function that will be called only with `abs($count)` arguments, 
+taken either from the left or right depending on the sign.
+```php
+$f = static function ($a = 0, $b = 0, $c = 0) {
+    return $a + $b + $c;
+};
+ary($f, 2)([5, 5]); // 10
+ary($f, 1)([5, 5]); // 5
+ary($f, -1)([5, 6]); // 6
+```
+
+### unary
+Wraps a function of any arity (including nullary) in a function that accepts exactly 1 parameter.
+```php
+$f = static function ($a = '', $b = '', $c = '') {
+    return $a . $b . $c;
+};
+unary($f)(['one', 'two', 'three]); // one
+```
+
+### binary
+Same as `unary` but function will accept exactly 2 parameter.
+```php
+$f = static function ($a = '', $b = '', $c = '') {
+    return $a . $b . $c;
+};
+binary($f)(['one', 'two', 'three]); // onetwo
+```
+
 ## Influenced by
 https://ramdajs.com \
 https://github.com/lstrojny/functional-php \

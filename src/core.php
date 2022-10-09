@@ -246,7 +246,7 @@ function tap(callable $f, $value = null)
 define('Functional\tap', __NAMESPACE__ . '\\tap');
 
 /**
- * Applies a function to each element in the list and reduces it to a single scalar value.
+ * Applies a function to each element in the list and reduces it to a single value.
  *
  * @param callable $f
  * @param $accumulator

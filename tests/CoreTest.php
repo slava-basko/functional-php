@@ -36,6 +36,7 @@ class CoreTest extends TestCase
         $this->assertTrue(f\identical(1, 1));
         $identicalToTwo = f\identical(2);
         $this->assertTrue($identicalToTwo(2));
+        $this->assertFalse(f\identical(1, '1'));
     }
 
     public function test_lt()
@@ -43,6 +44,11 @@ class CoreTest extends TestCase
         $this->assertTrue(f\lt(1, 2));
         $less_than_10 = f\lt(10);
         $this->assertTrue($less_than_10(9));
+        $this->assertFalse(f\lt(2, 1));
+        $this->assertFalse(f\lt(2, 2));
+        $this->assertTrue(f\lt(2, 3));
+        $this->assertTrue(f\lt('a', 'z'));
+        $this->assertFalse(f\lt('z', 'a'));
     }
 
     public function test_lte()
@@ -135,7 +141,7 @@ class CoreTest extends TestCase
         $this->assertEquals(6, $foldPlus0([2, 2, 2]));
 
         $this->assertEquals(5, f\fold(f\div, 100, [4, 5, 1]));
-        $this->assertEquals(451, f\fold(f\concat, '', [4, 5, 1]));
+        $this->assertEquals(451, f\fold(f\concat, '4', [5, 1]));
 
         $sc = function ($a, $b) {
             return "($a+$b)";
@@ -149,7 +155,7 @@ class CoreTest extends TestCase
     public function test_ford_r()
     {
         $this->assertEquals(2, f\fold_r(f\minus, 0, [1, 4, 5]));
-        $this->assertEquals(451, f\fold_r(f\concat, '', [4, 5, 1]));
+        $this->assertEquals(514, f\fold_r(f\concat, '4', [5, 1]));
 
         $sc = function ($a, $b) {
             return "($a+$b)";

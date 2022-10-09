@@ -111,8 +111,8 @@ function _thunkify_n(callable $f, $count)
 }
 
 /**
- * Call $func with only abs($count) arguments, taken either from the
- * left or right depending on the sign
+ * Return function $f that will be called only with `abs($count)` arguments,
+ * taken either from the left or right depending on the sign.
  *
  * @no-named-arguments
  */
