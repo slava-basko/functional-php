@@ -451,6 +451,172 @@ $f = static function ($a = '', $b = '', $c = '') {
 binary($f)(['one', 'two', 'three]); // onetwo
 ```
 
+### memoize
+Memoizes functions and returns their value instead of calling them.
+```php
+$rand = function ($salt) {
+    return rand(1, 100) . $salt;
+};
+memoize($rand, ['x']); // 42x
+memoize($rand, ['x']); // 42x
+```
+
+### to_list
+Returns arguments as a list.
+```php
+to_list(1, 2, 3); // [1, 2, 3]
+```
+
+### concat
+Concatenates given arguments.
+```php
+concat('foo', 'bar'); // 'foobar'
+```
+
+### join
+The same as native `implode` function.
+```php
+join('|', [1, 2, 3]); // '1|2|3'
+```
+
+### when
+Performs an IF condition over a value using functions as statements.
+```php
+$f = when(is_even, always('even'));
+$f(2); // 'even'
+$f(3); // NULL
+```
+
+### if_else
+Performs an if/else condition over a value using functions as statements.
+```php
+$ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
+$ifFoo('foo'); // 'bar'
+$ifFoo('qux'); // 'baz'
+```
+
+### repeat
+Creates a function that can be used to repeat the execution of function.
+```php
+repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
+```
+
+### try_catch
+Takes two functions, a tryer and a catcher. The returned function evaluates the tryer. If it does not throw, 
+it simply returns the result. If the tryer does throw, the returned function evaluates the catcher function 
+and returns its result.
+```php
+try_catch(function () {
+    throw new \Exception();
+}, always('val'))(); // 'val'
+```
+
+### invoker
+Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
+```php
+array_filter([$user1, $user2], invoker('isActive'));
+```
+
+### len
+Count length of string or number of elements in the array.
+```php
+len('foo'); // 3
+len(['a', 'b']); // 2
+```
+
+### prop
+Returns a function that when supplied an object returns the indicated property of that object, if it exists.
+```php
+prop(0, [99]); // 99
+prop('x', ['x' => 100]); // 100
+$object = new \stdClass();
+$object->x = 101;
+prop('x', $object); // 101
+```
+
+### prop_thunk
+Thunkified version of `prop` function, for more easily composition with `either` for example.
+```php
+prop(0, [99])(); // 99
+```
+
+### prop_path
+Nested version of `prop` function.
+```php
+prop_path(['b', 'c'], [
+    'a' => 1,
+    'b' => [
+        'c' => 2
+    ],
+]); // 2
+```
+
+### props
+Acts as multiple prop: array of keys in, array of values out. Preserves order.
+```php
+props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
+```
+
+### assoc
+Creates a shallow clone of a list with an overwritten value at a specified index.
+```php
+assoc('bar', 42, ['foo' => 'foo', 'bar' => 'bar']); // ['foo' => 'foo', 'bar' => 42]
+```
+
+### assoc_path
+Nested version of `assoc` function.
+```php
+assoc_path(['bar', 'baz'], 42, ['foo' => 'foo', 'bar' => ['baz' => 41]]); // ['foo' => 'foo', 'bar' => ['baz' => 42]]
+```
+
+### to_fn
+Returns a function that invokes `$method` with arguments `$arguments` on the $object.
+```php
+to_fn($obj, 'someMethod', ['arg'])(); // Equal to $obj->someMethod('arg');
+```
+
+### pair
+Takes two arguments, $fst and $snd, and returns [$fst, $snd].
+```php
+pair('foo', 'bar'); // ['foo', 'bar']
+```
+
+### either
+A function wrapping calls to the functions in an || operation, returning the result of the first 
+function if it is truth-y and the result of the next function otherwise.
+```php
+either(gt(10), is_even, 101); // true
+$value = either(prop('prop1'), prop('prop2'), prop('prop3'));
+$value([
+    'prop2' => 'some value'
+]); // 'some value'
+```
+
+### quote
+Quote given string.
+```php
+quote('foo'); // "foo"
+map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
+```
+
+### select_keys
+Select the specified keys from the array.
+```php
+select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
+```
+
+### omit_keys
+Returns an array with the specified keys omitted from the array.
+```php
+omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
+```
+
+### map_keys
+Applies provided function to specified keys.
+```php
+map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
+```
+
 ## Influenced by
 
 ---

@@ -1,6 +1,12 @@
 {
   "name": "slava-basko/functional-php",
   "description": "Collection of php functions that allows you to write code in a declarative way.",
+  "authors": [
+    {
+      "name": "Slava Basko",
+      "email": "basko.slava@gmail.com"
+    }
+  ],
   "require": {
     "php": "^5|^7|^8"
   },

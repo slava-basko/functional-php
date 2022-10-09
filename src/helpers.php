@@ -161,7 +161,7 @@ function join($separator, $list = null)
 define('Functional\join', __NAMESPACE__ . '\\join');
 
 /**
- * Performs an IF condition over a value using functions as statements
+ * Performs an IF condition over a value using functions as statements.
  *
  * @param callable $if the condition function
  * @param callable $then function to call if condition is true
@@ -185,7 +185,7 @@ function when($if, $then = null)
 define('Functional\when', __NAMESPACE__ . '\\when');
 
 /**
- * Performs an if/else condition over a value using functions as statements
+ * Performs an if/else condition over a value using functions as statements.
  *
  * @param callable $if the condition function
  * @param callable $then function to call if condition is true
@@ -211,7 +211,7 @@ function if_else($if, $then = null, $else = null)
 define('Functional\if_else', __NAMESPACE__ . '\\if_else');
 
 /**
- * Creates a function that can be used to repeat the execution of $fn.
+ * Creates a function that can be used to repeat the execution of $f.
  *
  * @param callable $f
  * @return callable
@@ -260,7 +260,7 @@ function try_catch($tryer, $catcher = null)
 define('Functional\try_catch', __NAMESPACE__ . '\\try_catch');
 
 /**
- * Returns a function that invokes method `$method` with arguments `$methodArguments` on the object
+ * Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
  *
  * @param string $methodName
  * @param array $arguments
@@ -343,6 +343,8 @@ function prop_thunk($property, $object = null)
 define('Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
 
 /**
+ * Nested version of `prop` function.
+ *
  * @param $path
  * @param $object
  * @return mixed
@@ -386,7 +388,7 @@ function props($properties, $object = null)
 define('Functional\props', __NAMESPACE__ . '\\props');
 
 /**
- * Creates a shallow clone of a list with an overwritten value at a specified index
+ * Creates a shallow clone of a list with an overwritten value at a specified index.
  *
  * @param $key
  * @param $val
@@ -424,6 +426,8 @@ function assoc($key, $val = null, $list = null)
 define('Functional\assoc', __NAMESPACE__ . '\\assoc');
 
 /**
+ * Nested version of `assoc` function.
+ *
  * @param array $path
  * @param $val
  * @param $list
@@ -459,7 +463,7 @@ function assoc_path($path, $val = null, $list = null)
 define('Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
 
 /**
- * Returns a function that invokes `$method` with arguments `$arguments` on the $object
+ * Returns a function that invokes `$method` with arguments `$arguments` on the $object.
  *
  * @param object $object
  * @param string $methodName
@@ -503,6 +507,9 @@ function pair($fst, $snd = null)
 define('Functional\pair', __NAMESPACE__ . '\\pair');
 
 /**
+ * A function wrapping calls to the functions in an || operation, returning the result of the first function
+ * if it is truth-y and the result of the next function otherwise.
+ *
  * @return callable|mixed
  * @no-named-arguments
  */
@@ -546,7 +553,7 @@ function quote($value)
 define('Functional\quote', __NAMESPACE__ . '\\quote');
 
 /**
- * Select the specified keys from the array
+ * Select the specified keys from the array.
  *
  * @param array $keys
  * @param \Traversable|array $array
@@ -570,7 +577,7 @@ function select_keys(array $keys, $array = null)
 define('Functional\select_keys', __NAMESPACE__ . '\\select_keys');
 
 /**
- * Returns an array with the specified keys omitted from the array
+ * Returns an array with the specified keys omitted from the array.
  *
  * @param array $keys
  * @param \Traversable|array $array
@@ -594,6 +601,8 @@ function omit_keys(array $keys, $array = null)
 define('Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
 
 /**
+ * Applies provided function to specified keys.
+ *
  * @param callable $f
  * @param $keys
  * @param $object
