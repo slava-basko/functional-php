@@ -5,6 +5,8 @@ The purpose of this library is not to replace imperative and OOP. They can be co
 they should be combined because any of these approaches is not a silver bullet.
 
 ## Examples
+
+---
 I will omit the theory about functional programming because you can find a lot of information about it yourself.
 But I want to show you examples.
 
@@ -150,7 +152,30 @@ $commonDescription = pipe(
 ```
 This is precisely what we need. It's in a natural order. No intermediate states.
 
+## General
+
+---
+### Import functions
+Add `use Functional as f;` on top of your PHP file or use `use function Functional\function_name`.
+The last option is used in the docs, and it's the preferred way starting with PHP 5.6.
+
+### Name convention
+The `snake_case` is used to be closer to a PHP native functions.
+
+### 'Data last' principe
+The data to be operated on is generally supplied last (last functions argument).
+Functions is more convenient for currying in this way.
+
+### Functions are curried by default
+This allows us to be more efficient in building new functions from old ones simply by not supplying the final parameters.
+
+---
+The last two points together make it easy to build functions as sequences of simpler functions, 
+each of which transforms the data and passes it along to the next.
+
 ## Documentation
+
+---
 Examples is cool, but now it's time for "boring" part.
 
 ### identity
@@ -427,6 +452,8 @@ binary($f)(['one', 'two', 'three]); // onetwo
 ```
 
 ## Influenced by
+
+---
 https://ramdajs.com \
 https://github.com/lstrojny/functional-php \
 https://github.com/ace411/bingo-functional \
@@ -436,6 +463,8 @@ https://github.com/yuhanz/ramda-php
 And many other libs/articles/etc.
 
 ## How to run tests
+
+---
 PHP 5
 ```shell
 docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer composer install
