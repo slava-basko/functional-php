@@ -3,6 +3,9 @@
 namespace Functional;
 
 /**
+ * Returns a lens for the given getter and setter functions.
+ * The getter "gets" the value of the focus; the setter "sets" the value of the focus.
+ *
  * @param callable $getter
  * @param callable $setter
  * @return callable
@@ -28,6 +31,8 @@ function lens(callable $getter, callable $setter)
 define('Functional\lens', __NAMESPACE__ . '\\lens');
 
 /**
+ * Returns a "view" of the given data structure, determined by the given lens.
+ *
  * @param callable $lens
  * @param $store
  * @return mixed
@@ -44,6 +49,9 @@ function view(callable $lens, $store)
 define('Functional\view', __NAMESPACE__ . '\\view');
 
 /**
+ * Returns the result of "setting" the portion of the given data structure
+ * focused by the given lens to the result of applying the given function to the focused value.
+ *
  * @param callable $lens
  * @param callable $operation
  * @param $store
@@ -64,6 +72,8 @@ function over(callable $lens, callable $operation, $store)
 define('Functional\over', __NAMESPACE__ . '\\over');
 
 /**
+ * Returns the result of "setting" the portion of the given data structure focused by the given lens to the given value.
+ *
  * @param callable $lens
  * @param $value
  * @param $store
@@ -78,6 +88,8 @@ function set(callable $lens, $value, $store)
 define('Functional\set', __NAMESPACE__ . '\\set');
 
 /**
+ * Returns a lens whose focus is the specified property.
+ *
  * @param $property
  * @return callable
  * @no-named-arguments
@@ -90,6 +102,8 @@ function lens_prop($property)
 define('Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
 
 /**
+ * Returns a lens whose focus is the specified path.
+ *
  * @param $path
  * @return callable
  * @no-named-arguments

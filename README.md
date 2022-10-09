@@ -617,6 +617,64 @@ Applies provided function to specified keys.
 map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
 ```
 
+### lens
+Returns a lens for the given getter and setter functions. 
+The getter "gets" the value of the focus; the setter "sets" the value of the focus.
+```php
+$xLens = lens(prop('x'), assoc('x'));
+view($xLens, ['x' => 1, 'y' => 2]); // 1
+set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
+over($xLens, dec, ['x' => 1, 'y' => 2]); // ['x' => 0, 'y' => 2]
+```
+
+### view
+Returns a "view" of the given data structure, determined by the given lens.
+```php
+$xLens = lens_prop('x');
+view($xLens, ['x' => 1, 'y' => 2]); // 1
+view($xLens, ['x' => 4, 'y' => 2]); // 4
+```
+
+### set
+Returns the result of "setting" the portion of the given data structure focused by the given lens to the given value.
+```php
+$xLens = lens_prop('x');
+set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
+set($xLens, 8, ['x' => 1, 'y' => 2]); // ['x' => 8, 'y' => 2]
+```
+
+### over
+Returns the result of "setting" the portion of the given data structure 
+focused by the given lens to the result of applying the given function to the focused value.
+```php
+$xLens = lens_prop('x');
+over($xLens, plus(100), ['x' => 1, 'y' => 2]); // ['x' => 101, 'y' => 2]
+```
+
+### lens_prop
+Returns a lens whose focus is the specified property.
+```php
+$xLens = lens_prop('x');
+view($xLens, ['x' => 1, 'y' => 2]); // 1
+set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
+over($xLens, dec, ['x' => 1, 'y' => 2]); // ['x' => 0, 'y' => 2]
+```
+
+### lens_path
+Returns a lens whose focus is the specified path.
+```php
+$data = [
+    'a' => 1,
+    'b' => [
+        'c' => 2
+    ],
+];
+$lens = lens_path(['b', 'c']);
+view($lens, $data); // 2
+view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
+view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
+```
+
 ## Influenced by
 
 ---
