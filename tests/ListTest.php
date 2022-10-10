@@ -42,8 +42,8 @@ class ListTest extends TestCase
     public function test_head_and_tail()
     {
         $this->assertNull(f\head([]));
-        $this->assertNull(f\first_by(function () {}, []));
-        $nullFirst = f\first_by(function () {});
+        $this->assertNull(f\head_by(function () {}, []));
+        $nullFirst = f\head_by(function () {});
         $this->assertNull($nullFirst([]));
 
         $this->assertEquals([], f\tail([]));
@@ -57,7 +57,7 @@ class ListTest extends TestCase
             ['name' => 'john', 'score' => 1],
         ];
         $this->assertEquals(['name' => 'jack', 'score' => 1], f\head($students));
-        $this->assertEquals(['name' => 'mark', 'score' => 9], f\first_by(function ($student) {
+        $this->assertEquals(['name' => 'mark', 'score' => 9], f\head_by(function ($student) {
             return $student['score'] >= 9;
         }, $students));
 
@@ -74,8 +74,6 @@ class ListTest extends TestCase
 
     public function test_select()
     {
-        $this->assertEquals(static::getUsersData(), f\select(static::getUsersData()));
-
         $user1 = new \User([
             'id' => 1,
             'active' => true,
@@ -89,14 +87,12 @@ class ListTest extends TestCase
             return $user->isActive();
         };
 
-        $activeUsersSelector = f\select_by($fnFilter);
+        $activeUsersSelector = f\select($fnFilter);
         $this->assertSame([$user1], $activeUsersSelector([$user1, $user2]));
     }
 
     public function test_reject()
     {
-        $this->assertEquals([], f\reject(static::getUsersData()));
-
         $user1 = new \User([
             'id' => 1,
             'active' => true,
@@ -110,10 +106,10 @@ class ListTest extends TestCase
             return $user->isActive();
         };
 
-        $inactiveUsers = f\reject_by($fnFilter, [$user1, $user2]);
+        $inactiveUsers = f\reject($fnFilter, [$user1, $user2]);
         $this->assertSame([1=>$user2], $inactiveUsers);
 
-        $inactiveUsersSelector = f\reject_by($fnFilter);
+        $inactiveUsersSelector = f\reject($fnFilter);
         $this->assertSame([1=>$user2], $inactiveUsersSelector([$user1, $user2]));
     }
 
@@ -281,9 +277,10 @@ class ListTest extends TestCase
             return strcmp($left, $right);
         };
 
-        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], F\sort($sort_callback, $list));
-        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], F\sort($sort_callback, $list_iterator));
-        $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], F\sort($sort_callback, $hash));
-        $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], F\sort($sort_callback, $hash_iterator));
+        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort($sort_callback, $list));
+        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort(f\binary('strcmp'), $list));
+        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort($sort_callback, $list_iterator));
+        $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash));
+        $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash_iterator));
     }
 }

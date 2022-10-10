@@ -89,7 +89,7 @@ class HelpersTest extends TestCase
             'active' => false,
         ]);
 
-        $activeUsers = f\select_by(f\invoker('isActive'), [$user1, $user2]);
+        $activeUsers = f\select(f\invoker('isActive'), [$user1, $user2]);
         $this->assertSame([$user1], $activeUsers);
 
         $activeUsers = array_filter([$user1, $user2], f\invoker('isActive'));

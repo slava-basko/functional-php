@@ -675,6 +675,117 @@ view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
 view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 ```
 
+### pluck
+Extract a property from a list of objects.
+```php
+pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
+```
+
+### head
+Returning the first element in the list.
+```php
+head([
+    ['name' => 'jack', 'score' => 1],
+    ['name' => 'mark', 'score' => 9],
+    ['name' => 'john', 'score' => 1],
+]); // ['name' => 'jack', 'score' => 1]
+```
+
+### tail
+Returns all items from $list except first element (head). Preserves $list keys.
+```php
+tail([
+    ['name' => 'jack', 'score' => 1],
+    ['name' => 'mark', 'score' => 9],
+    ['name' => 'john', 'score' => 1],
+]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
+```
+
+### select
+Looks through each element in the list, returning an array of all the elements that pass a test (function).
+```php
+$activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
+```
+
+### reject
+Returns the elements in list without the elements that the test (function) passes.
+```php
+$inactiveUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
+```
+
+### contains
+Returns true if the list contains the given value.
+```php
+contains('foo', ['foo', 'bar']); // true
+contains('foo', 'foo and bar'); // true
+```
+
+### take
+Creates a slice of list with N elements taken from the beginning.
+```php
+take(2, [1, 2, 3]); // [0 => 1, 1 => 2]
+```
+
+### take_r
+Creates a slice of list with N elements taken from the end.
+```php
+take_r(2, [1, 2, 3]); // [1 => 2, 2 => 3]
+```
+
+### group
+Groups a list by function.
+```php
+group(prop('type'), [
+    [
+        'name' => 'john',
+        'type' => 'admin'
+    ],
+    [
+        'name' => 'mark',
+        'type' => 'user'
+    ],
+    [
+        'name' => 'bill',
+        'type' => 'user'
+    ],
+    [
+        'name' => 'jack',
+        'type' => 'anonymous'
+    ],
+]); // ['admin' => [...], 'user' => [...], 'anonymous' => [...]]
+```
+
+### partition
+Partitions a list by function predicate results.
+```php
+list($best, $good_students, $others) = f\partition(
+    [
+        compose(gte(9), prop('score')),
+        compose(both(gt(6), lt(9)), prop('score'))
+    ],
+    $students
+);
+```
+
+### flatten
+Takes a nested combination of list and returns their contents as a single, flat list.
+```php
+flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
+```
+
+### intersperse
+Insert a given value between each element of a collection.
+```php
+intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
+```
+
+### sort
+Sorts a list with a user-defined function.
+```php
+sort(f\binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+```
+
 ## Influenced by
 
 ---

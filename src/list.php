@@ -52,10 +52,10 @@ define('Functional\first', __NAMESPACE__ . '\\first');
  * @return callable|mixed
  * @no-named-arguments
  */
-function first_by($f, $list = null)
+function head_by($f, $list = null)
 {
     if (is_null($list)) {
-        return partial(first_by, $f);
+        return partial(head_by, $f);
     }
     InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -70,7 +70,7 @@ function first_by($f, $list = null)
     return null;
 }
 
-define('Functional\first_by', __NAMESPACE__ . '\\first_by');
+define('Functional\head_by', __NAMESPACE__ . '\\head_by');
 
 /**
  * Returns all items from $list except first element (head). Preserves $list keys.
@@ -99,9 +99,6 @@ function tail($list)
 define('Functional\tail', __NAMESPACE__ . '\\tail');
 
 /**
- * Returns all items from $list except first element (head). Preserves $list keys.
- * Takes an optional function for filtering the list.
- *
  * @param callable $f
  * @param \Traversable|array $list
  * @return callable|array
@@ -135,35 +132,18 @@ function tail_by($f, $list = null)
 define('Functional\tail_by', __NAMESPACE__ . '\\tail_by');
 
 /**
- * Looks through each element in the list, returning an array of all the elements that pass a truthy test (function).
- * Opposite is Functional\reject()
- *
- * @param \Traversable|array $list
- * @return array
- * @no-named-arguments
- */
-function select($list)
-{
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
-
-    return select_by(identity, $list);
-}
-
-define('Functional\select', __NAMESPACE__ . '\\select');
-
-/**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
- * Opposite is Functional\reject_by(). Function arguments will be element, index, list
+ * Opposite is Functional\reject(). Function arguments will be element, index, list
  *
  * @param callable|null $f
  * @param \Traversable|array $list
  * @return callable|array
  * @no-named-arguments
  */
-function select_by($f, $list = null)
+function select($f, $list = null)
 {
     if (is_null($list)) {
-        return partial(select_by, $f);
+        return partial(select, $f);
     }
     InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -179,38 +159,21 @@ function select_by($f, $list = null)
     return $aggregation;
 }
 
-define('Functional\select_by', __NAMESPACE__ . '\\select_by');
+define('Functional\select', __NAMESPACE__ . '\\select');
 
 /**
- * Returns the elements in list without the elements that the truthy test (function) passes. The opposite of
- * Functional\select().
- *
- * @param \Traversable|array $list
- * @return array
- * @no-named-arguments
- */
-function reject($list)
-{
-    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
-
-    return reject_by(identity, $list);
-}
-
-define('Functional\reject', __NAMESPACE__ . '\\reject');
-
-/**
- * Returns the elements in list without the elements that the test (function) passes. The opposite of
- * Functional\select_by(). Function arguments will be element, index, list
+ * Returns the elements in list without the elements that the test (function) passes.
+ * The opposite of Functional\select(). Function arguments will be element, index, list
  *
  * @param callable|null $f
  * @param \Traversable|array $list
  * @return callable|array
  * @no-named-arguments
  */
-function reject_by($f, $list = null)
+function reject($f, $list = null)
 {
     if (is_null($list)) {
-        return partial(reject_by, $f);
+        return partial(reject, $f);
     }
     InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -226,7 +189,7 @@ function reject_by($f, $list = null)
     return $aggregation;
 }
 
-define('Functional\reject_by', __NAMESPACE__ . '\\reject_by');
+define('Functional\reject', __NAMESPACE__ . '\\reject');
 
 /**
  * Returns true if the list contains the given value. If the third parameter is
@@ -386,6 +349,8 @@ function partition($functions, $list = null)
 define('Functional\partition', __NAMESPACE__ . '\\partition');
 
 /**
+ * Takes a nested combination of list and returns their contents as a single, flat list.
+ *
  * @param \Traversable|array $list
  * @return array|mixed
  * @no-named-arguments
@@ -410,7 +375,7 @@ define('Functional\flatten', __NAMESPACE__ . '\\flatten');
 
 /**
  * Insert a given value between each element of a collection.
- * Indices are not preserved.
+ * Indexes are not preserved.
  *
  * @param mixed $separator
  * @param \Traversable|array $list
@@ -439,7 +404,7 @@ function intersperse($separator, $list = null)
 define('Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 
 /**
- * Sorts a collection with a user-defined function, optionally preserving array keys
+ * Sorts a list with a user-defined function.
  *
  * @param \Traversable|array $collection
  * @param callable $f
