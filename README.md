@@ -162,7 +162,7 @@ The last option is used in the docs, and it's the preferred way starting with PH
 ### Name convention
 The `snake_case` is used to be closer to a PHP native functions.
 
-### 'Data last' principe
+### "Data last" principe
 The data to be operated on is generally supplied last (last functions argument).
 Functions is more convenient for currying in this way.
 
@@ -396,6 +396,30 @@ $between6And9(7); // true
 $between6And9(10); // false
 ```
 
+### partial
+Returns new function which will behave like given but with predefined left arguments.
+```php
+$implode_coma = partial('implode', ',');
+$implode_coma([1, 2]); // 1,2
+```
+
+### partial_r
+The same as `partial` but with predefined right arguments.
+```php
+$implode12 = partial_r('implode', [1, 2]);
+$implode12(','); // 1,2
+```
+
+### partial_p
+The same as `partial` but with predefined positional arguments.
+```php
+$sub_abcdef_from = partial_p('substr', [
+    1 => 'abcdef',
+    3 => 2
+]);
+$sub_abcdef_from(0); // 'ab'
+```
+
 ### curry
 Return a curried version of the given function.
 ```php
@@ -415,7 +439,7 @@ providing lazy evaluation of arguments.
 $add = function($a, $b) {
     return $a + $b;
 };
-$curryiedAdd = f\thunkify($add);
+$curryiedAdd = thunkify($add);
 $addTen = $curryiedAdd(10);
 $eleven = $addTen(1);
 $eleven(); // 11
@@ -758,7 +782,7 @@ group(prop('type'), [
 ### partition
 Partitions a list by function predicate results.
 ```php
-list($best, $good_students, $others) = f\partition(
+list($best, $good_students, $others) = partition(
     [
         compose(gte(9), prop('score')),
         compose(both(gt(6), lt(9)), prop('score'))
@@ -783,7 +807,100 @@ intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
 ### sort
 Sorts a list with a user-defined function.
 ```php
-sort(f\binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+```
+
+### is_even
+Check if number is even.
+```php
+is_even(4); // true
+is_even(3); // false
+```
+
+### is_odd
+Check if number is odd.
+```php
+is_odd(5); // true
+is_odd(2); // false
+```
+
+### plus
+Perform $a + $b.
+```php
+plus(4, 2); // 6
+```
+
+### minus
+Perform $a - $b.
+```php
+minus(4, 2); // 2
+```
+
+### div
+Perform $a / $b.
+```php
+div(4, 2); // 2
+```
+
+### multiply
+Perform $a * $b.
+```php
+multiply(4, 2); // 8
+```
+
+### sum
+Fold list with `plus`.
+```php
+sum([3, 2, 1]); // 6
+```
+
+### diff
+Fold list with `minus`.
+```php
+diff([10, 2, 1]); // 7
+```
+
+### divide
+Fold list with `div`.
+```php
+divide([20, 2, 2]); // 5
+```
+
+### product
+Fold list with `multiply`.
+```php
+product([4, 2, 2]); // 16
+```
+
+### average
+Calculate average value.
+```php
+average([1, 2, 3, 4, 5, 6, 7]); // 4
+```
+
+### inc
+Increment value.
+```php
+inc(41); // 42
+```
+
+### dec
+Decrement value.
+```php
+dec(43); // 42
+```
+
+### power
+Power value.
+```php
+power(4); // 16
+```
+
+### median
+Calculate median.
+```php
+median([2, 9, 7]); // 7
+median([7, 2, 10, 9]); // 8
 ```
 
 ## Influenced by

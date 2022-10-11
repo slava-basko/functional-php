@@ -63,7 +63,7 @@ class MathTest extends TestCase
 
     public function test_product()
     {
-        $this->assertEquals(8, f\product([4, 2]));
+        $this->assertEquals(16, f\product([4, 2, 2]));
     }
 
     public function test_inc_dec()
