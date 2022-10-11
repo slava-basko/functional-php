@@ -6,7 +6,6 @@ they should be combined because any of these approaches is not a silver bullet.
 
 ## Examples
 
----
 I will omit the theory about functional programming because you can find a lot of information about it yourself.
 But I want to show you examples.
 
@@ -154,7 +153,6 @@ This is precisely what we need. It's in a natural order. No intermediate states.
 
 ## General
 
----
 ### Import functions
 Add `use Functional as f;` on top of your PHP file or use `use function Functional\function_name`.
 The last option is used in the docs, and it's the preferred way starting with PHP 5.6.
@@ -175,7 +173,6 @@ each of which transforms the data and passes it along to the next.
 
 ## Documentation
 
----
 Examples is cool, but now it's time for "boring" part.
 
 ### identity
@@ -905,7 +902,6 @@ median([7, 2, 10, 9]); // 8
 
 ## Influenced by
 
----
 https://ramdajs.com \
 https://github.com/lstrojny/functional-php \
 https://github.com/ace411/bingo-functional \
@@ -916,7 +912,6 @@ And many other libs/articles/etc.
 
 ## How to run tests
 
----
 PHP 5
 ```shell
 docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer composer install
