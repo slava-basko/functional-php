@@ -210,11 +210,11 @@ eq(1, '1'); // true
 eq(1, 2); // false
 ```
 
-### eq
+### identical
 Run PHP comparison operator `===`
 ```php
-eq(1, 1); // true
-eq(1, '1'); // false
+identical(1, 1); // true
+identical(1, '1'); // false
 ```
 
 ### lt
