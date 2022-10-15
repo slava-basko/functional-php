@@ -74,11 +74,11 @@ class Repeated
 class ClassWithMonadValue
 {
     /**
-     * @var \SwissKnife\Monad\Monad
+     * @var \Functional\Monad
      */
     private $name;
 
-    public function __construct(\SwissKnife\Monad\Monad $name)
+    public function __construct(\Functional\Monad $name)
     {
         $this->name = $name;
     }
