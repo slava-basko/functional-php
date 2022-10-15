@@ -14,6 +14,11 @@ class FunctorTest extends TestCase
         $this->assertEquals(f\Identity::of(6), f\Identity::of(3)->map(f\multiply(2)));
     }
 
+    public function test_constant()
+    {
+        $this->assertEquals(f\Constant::of(3), f\Constant::of(3)->map(f\multiply(2)));
+    }
+
     public function test_maybe()
     {
         $this->assertEquals(Maybe::of('1'), Maybe::of(1)->map('strval'));
