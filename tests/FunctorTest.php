@@ -34,4 +34,31 @@ class FunctorTest extends TestCase
             Maybe::of(null)->map($getParent)->map($getParent)->map($getName)->extract()
         );
     }
+
+    public function test_maybe_match()
+    {
+        $justHandlerCallFlag = false;
+        $nothingHandlerCallFlag = false;
+
+        $justHandler = function($a) use (&$justHandlerCallFlag) {
+            $justHandlerCallFlag = true;
+        };
+        $nothingHandler = function() use (&$nothingHandlerCallFlag) {
+            $nothingHandlerCallFlag = true;
+        };
+
+        // Test with value
+        Maybe::of(10)->match($justHandler, $nothingHandler);
+        $this->assertTrue($justHandlerCallFlag);
+        $this->assertFalse($nothingHandlerCallFlag);
+
+        // Reset flags
+        $justHandlerCallFlag = false;
+        $nothingHandlerCallFlag = false;
+
+        // Test without value
+        Maybe::of(null)->match($justHandler, $nothingHandler);
+        $this->assertFalse($justHandlerCallFlag);
+        $this->assertTrue($nothingHandlerCallFlag);
+    }
 }

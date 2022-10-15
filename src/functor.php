@@ -62,4 +62,9 @@ class Maybe extends Monad
 
         return $this::of(null);
     }
+
+    public function match(callable $just, callable $nothing)
+    {
+        return !is_null($this->value) ? $just($this->value) : $nothing();
+    }
 }
