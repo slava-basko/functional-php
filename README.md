@@ -472,14 +472,15 @@ $f = static function ($a = '', $b = '', $c = '') {
 binary($f)(['one', 'two', 'three]); // onetwo
 ```
 
-### memoize
-Memoizes functions and returns their value instead of calling them.
+### memoized
+Create memoized versions of  function.
 ```php
-$rand = function ($salt) {
+$randAndSalt = function ($salt) {
     return rand(1, 100) . $salt;
 };
-memoize($rand, ['x']); // 42x
-memoize($rand, ['x']); // 42x
+$memoizedRandAndSalt = f\memoized($randAndSalt);
+$memoizedRandAndSalt('x'); // 42x
+$memoizedRandAndSalt('x'); // 42x
 ```
 
 ### to_list

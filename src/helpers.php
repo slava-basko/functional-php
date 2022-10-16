@@ -75,7 +75,7 @@ function value_to_key()
 }
 
 /**
- * Create memoized versions od $f function.
+ * Create memoized versions of $f function.
  *
  * @param callable $f
  * @return callable
