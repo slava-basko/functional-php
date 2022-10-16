@@ -731,7 +731,7 @@ $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
 ### reject
 Returns the elements in list without the elements that the test (function) passes.
 ```php
-$inactiveUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
+$inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
 ```
 
 ### contains
