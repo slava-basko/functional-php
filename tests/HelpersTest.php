@@ -173,20 +173,19 @@ class HelpersTest extends TestCase
         $this->assertEquals('value1',  $inv());
     }
 
-    public function test_memoize()
+    public function test_memoized()
     {
-        $this->assertNull(f\memoize());
-
-        $func = function ($salt) {
+        $randAndSalt = function ($salt) {
             return rand(1, 100) . $salt;
         };
-        $initialResult = f\memoize($func, ['x']);
-        $this->assertEquals($initialResult, f\memoize($func, ['x']));
-        $this->assertEquals($initialResult, f\memoize($func, ['x']));
-
+        $memoizedRandAndSalt = f\memoized($randAndSalt);
+        $initial = $memoizedRandAndSalt('x');
+        $this->assertEquals($initial, $memoizedRandAndSalt('x'));
+        $this->assertEquals($initial, $memoizedRandAndSalt('x'));
 
         $user = new \User([]);
-        self::assertFalse(f\memoize([$user, 'isActive']));
+        $memoizedIsActive = f\memoized([$user, 'isActive']);
+        self::assertFalse($memoizedIsActive());
     }
 
     public function test_assoc()

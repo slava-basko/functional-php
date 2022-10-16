@@ -75,36 +75,26 @@ function value_to_key()
 }
 
 /**
- * Memoizes functions and returns their value instead of calling them
+ * Create memoized versions od $f function.
  *
- * @param callable|null $f Function. Pass null to reset memory
- * @param array $arguments Arguments
- * @param array|string $key Optional memoize key to override the auto calculated hash
- * @return mixed
+ * @param callable $f
+ * @return callable
  * @no-named-arguments
  */
-function memoize(callable $f = null, $arguments = [], $key = null)
+function memoized(callable $f)
 {
-    //todo: curry?
+    return function () use ($f) {
+        static $cache = [];
 
-    static $storage = [];
-    if ($f === null) {
-        $storage = [];
+        $args = func_get_args();
+        $key = value_to_key(array_merge([$f], $args));
 
-        return null;
-    }
+        if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
+            $cache[$key] = call_user_func_array($f, $args);
+        }
 
-    if ($key === null) {
-        $key = value_to_key(array_merge([$f], $arguments));
-    } else {
-        $key = value_to_key($key);
-    }
-
-    if (!isset($storage[$key]) && !array_key_exists($key, $storage)) {
-        $storage[$key] = call_user_func_array($f, $arguments);
-    }
-
-    return $storage[$key];
+        return $cache[$key];
+    };
 }
 
 define('Functional\memoize', __NAMESPACE__ . '\\memoize');
