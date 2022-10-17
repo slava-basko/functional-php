@@ -18,7 +18,8 @@ $collection->map(function ($value) {
     return strtoupper($value);
 });
 ```
-You can get an error like ```ArgumentCountError : strtoupper() expects exactly 1 argument, X given```.
+Because you can get an error like `ArgumentCountError : strtoupper() expects exactly 1 argument, X given` 
+when you will write `$collection->map('strtoupper');`.
 Only user defined functions does not throw an exception when called with more arguments. But you can do this:
 ```php
 $collection = collect(['one']);
