@@ -7,7 +7,7 @@ use RuntimeException;
 
 abstract class BaseTest extends TestCase
 {
-    public function setExpectedException(string $exceptionClass): void
+    public function setExpectedException(string $exceptionClass)
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException($exceptionClass);
