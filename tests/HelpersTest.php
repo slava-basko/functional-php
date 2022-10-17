@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class HelpersTest extends TestCase
+class HelpersTest extends BaseTest
 {
     public function test_to_list()
     {

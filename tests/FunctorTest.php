@@ -3,10 +3,9 @@
 namespace Tests\Functional;
 
 use Functional\Maybe;
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class FunctorTest extends TestCase
+class FunctorTest extends BaseTest
 {
     public function test_identity()
     {

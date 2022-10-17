@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class ExampleTest extends TestCase
+class ExampleTest extends BaseTest
 {
     public static function products()
     {
