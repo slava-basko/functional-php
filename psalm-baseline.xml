@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.29.0@7ec5ffbd5f68ae03782d7fd33fff0c45a69f95b3">
+  <file src="src/Exception/InvalidArgumentException.php">
+    <DocblockTypeContradiction occurrences="3">
+      <code>!is_int($value)</code>
+      <code>!is_int($value)</code>
+      <code>is_bool($value)</code>
+    </DocblockTypeContradiction>
+    <MissingParamType occurrences="22">
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$collection</code>
+      <code>$collection</code>
+      <code>$key</code>
+      <code>$list</code>
+      <code>$methodName</code>
+      <code>$pair</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$position</code>
+      <code>$position</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+    </MissingParamType>
+    <MissingReturnType occurrences="17">
+      <code>assertArrayAccess</code>
+      <code>assertArrayKeyExists</code>
+      <code>assertBoolean</code>
+      <code>assertCallback</code>
+      <code>assertInteger</code>
+      <code>assertIntegerGreaterThanOrEqual</code>
+      <code>assertIntegerLessThanOrEqual</code>
+      <code>assertList</code>
+      <code>assertListAlike</code>
+      <code>assertMethodName</code>
+      <code>assertNonZeroInteger</code>
+      <code>assertPair</code>
+      <code>assertPositiveInteger</code>
+      <code>assertPropertyName</code>
+      <code>assertResolvablePlaceholder</code>
+      <code>assertValidArrayKey</code>
+      <code>getType</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="21">
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$callee</code>
+      <code>$key</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$parameterPosition</code>
+      <code>$position</code>
+      <code>$position</code>
+      <code>$type</code>
+      <code>$value</code>
+      <code>self::getType($list)</code>
+      <code>self::getType($methodName)</code>
+      <code>self::getType($propertyName)</code>
+      <code>self::getType($value)</code>
+      <code>self::getType($value)</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>$callback</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayOffset occurrences="1">
+      <code>$collection[$key]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="2">
+      <code>$type</code>
+      <code>$type</code>
+    </MixedAssignment>
+    <UnsafeInstantiation occurrences="15">
+      <code>new static(\sprintf('%s() expects parameter %d to be a pair (array with two elements)', $callee, $position))</code>
+      <code>new static(sprintf('%s expected parameter %d to be non-zero', $callee, $value))</code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/core.php">
+    <LessSpecificReturnType occurrences="1">
+      <code>callable|null</code>
+    </LessSpecificReturnType>
+    <MissingClosureParamType occurrences="5">
+      <code>$a</code>
+      <code>$b</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="6">
+      <code>function ($a, $b) use ($f, $g) {</code>
+      <code>function () use ($convergingFunction, $branchingFunctions) {</code>
+      <code>function () use ($f) {</code>
+      <code>function () use ($f) {</code>
+      <code>function () use ($value) {</code>
+      <code>function (callable $fn) use ($args) {</code>
+    </MissingClosureReturnType>
+    <MissingParamType occurrences="20">
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$accumulator</code>
+      <code>$accumulator</code>
+      <code>$args</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$value</code>
+    </MissingParamType>
+    <MixedArgument occurrences="3">
+      <code>$if</code>
+      <code>$queue</code>
+      <code>$then</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="2">
+      <code>$if</code>
+      <code>$then</code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment occurrences="1">
+      <code>$queue[]</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="19">
+      <code>$accumulator</code>
+      <code>$accumulator</code>
+      <code>$aggregation[$index]</code>
+      <code>$cond</code>
+      <code>$element</code>
+      <code>$f</code>
+      <code>$function</code>
+      <code>$head</code>
+      <code>$index</code>
+      <code>$index</code>
+      <code>$index</code>
+      <code>$res</code>
+      <code>$result</code>
+      <code>$result[]</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value_for_caller</code>
+      <code>list($if, $then)</code>
+    </MixedAssignment>
+    <MixedFunctionCall occurrences="4">
+      <code>$cond($value)</code>
+      <code>call_user_func_array($f, $args)</code>
+      <code>call_user_func_array($f, $head)</code>
+      <code>call_user_func_array($function, $args)</code>
+    </MixedFunctionCall>
+    <MixedInferredReturnType occurrences="2">
+      <code>callable|scalar</code>
+      <code>callable|scalar</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="2">
+      <code>$accumulator</code>
+      <code>$accumulator</code>
+    </MixedReturnStatement>
+    <PossiblyNullFunctionCall occurrences="1">
+      <code>$cb($value)</code>
+    </PossiblyNullFunctionCall>
+    <RedundantCondition occurrences="1">
+      <code>assertCallback</code>
+    </RedundantCondition>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>assertCallback</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/curry.php">
+    <InvalidArgument occurrences="1">
+      <code>$f</code>
+    </InvalidArgument>
+    <MissingClosureParamType occurrences="1">
+      <code>$arguments</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="2">
+      <code>function ($arguments) use ($count, $f, &amp;$accumulator) {</code>
+      <code>function () use ($count, $f, $arguments, $accumulator) {</code>
+    </MissingClosureReturnType>
+    <MissingParamType occurrences="4">
+      <code>$count</code>
+      <code>$count</code>
+      <code>$only_required</code>
+      <code>$required</code>
+    </MissingParamType>
+    <MissingReturnType occurrences="1">
+      <code>ary</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="4">
+      <code>$arguments</code>
+      <code>$count</code>
+      <code>$count + 1</code>
+      <code>-$count</code>
+    </MixedArgument>
+    <MixedFunctionCall occurrences="1">
+      <code>$accumulator($arguments)</code>
+    </MixedFunctionCall>
+    <MixedInferredReturnType occurrences="2">
+      <code>callable</code>
+      <code>callable</code>
+    </MixedInferredReturnType>
+    <MixedOperand occurrences="1">
+      <code>$count</code>
+    </MixedOperand>
+    <MixedReturnStatement occurrences="2">
+      <code>ary($f, 1)</code>
+      <code>ary($f, 2)</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/functor.php">
+    <MissingParamType occurrences="2">
+      <code>$value</code>
+      <code>$value</code>
+    </MissingParamType>
+    <MissingPropertyType occurrences="1">
+      <code>$value</code>
+    </MissingPropertyType>
+    <MissingReturnType occurrences="6">
+      <code>extract</code>
+      <code>map</code>
+      <code>map</code>
+      <code>map</code>
+      <code>match</code>
+      <code>of</code>
+    </MissingReturnType>
+    <UnsafeInstantiation occurrences="1">
+      <code>new static($value)</code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/helpers.php">
+    <InvalidDocblock occurrences="1">
+      <code>function to_fn($object, $methodName = null, $arguments = null)</code>
+    </InvalidDocblock>
+    <InvalidReturnStatement occurrences="2">
+      <code>implode($separator, $list)</code>
+      <code>partial(concat, $a)</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="2">
+      <code>callable</code>
+      <code>string</code>
+    </InvalidReturnType>
+    <MissingClosureParamType occurrences="11">
+      <code>$accumulator</code>
+      <code>$entry</code>
+      <code>$index</code>
+      <code>$key</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$property</code>
+      <code>$times</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="7">
+      <code>function ($value) use ($if, $then, $else) {</code>
+      <code>function () use ($f) {</code>
+      <code>function () use ($object, $invoker) {</code>
+      <code>function () use ($tryer, $catcher) {</code>
+      <code>static function ($object) use ($methodName, $arguments) {</code>
+      <code>static function ($value) use (&amp;$objectReferences) {</code>
+      <code>static function ($value, $key = null) use (&amp;$valueToRef, $objectToRef) {</code>
+    </MissingClosureReturnType>
+    <MissingParamType occurrences="24">
+      <code>$a</code>
+      <code>$a</code>
+      <code>$arguments</code>
+      <code>$b</code>
+      <code>$fst</code>
+      <code>$key</code>
+      <code>$keys</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$path</code>
+      <code>$properties</code>
+      <code>$property</code>
+      <code>$property</code>
+      <code>$separator</code>
+      <code>$snd</code>
+      <code>$val</code>
+      <code>$val</code>
+      <code>$value</code>
+    </MissingParamType>
+    <MissingReturnType occurrences="2">
+      <code>value_to_key</code>
+      <code>when</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="18">
+      <code>$a</code>
+      <code>$arguments</code>
+      <code>$cache</code>
+      <code>$key</code>
+      <code>$keys</code>
+      <code>$list</code>
+      <code>$object</code>
+      <code>$object</code>
+      <code>$property</code>
+      <code>$separator</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$value</code>
+      <code>$valueToRef</code>
+      <code>$valueToRef</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="2">
+      <code>map($valueToRef, $value)</code>
+      <code>map($valueToRef, $value)</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess occurrences="3">
+      <code>$cache[$key]</code>
+      <code>$objectReferences[$hash]</code>
+      <code>$object[$property]</code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment occurrences="4">
+      <code>$cache[$key]</code>
+      <code>$objectReferences[$hash]</code>
+      <code>$objectReferences[$hash]</code>
+      <code>$objectReferences[$hash]</code>
+    </MixedArrayAssignment>
+    <MixedArrayOffset occurrences="7">
+      <code>$accumulator[$index]</code>
+      <code>$accumulator[$key]</code>
+      <code>$cache[$key]</code>
+      <code>$cache[$key]</code>
+      <code>$cache[$key]</code>
+      <code>$object[$property]</code>
+      <code>$object[$property]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="16">
+      <code>$accumulator[$index]</code>
+      <code>$accumulator[$key]</code>
+      <code>$arg</code>
+      <code>$arguments</code>
+      <code>$cache[$key]</code>
+      <code>$function</code>
+      <code>$function</code>
+      <code>$key</code>
+      <code>$next</code>
+      <code>$objectReferences[$hash]</code>
+      <code>$property</code>
+      <code>$property</code>
+      <code>$res</code>
+      <code>$res</code>
+      <code>$result[]</code>
+      <code>$val</code>
+    </MixedAssignment>
+    <MixedFunctionCall occurrences="7">
+      <code>$function($arg)</code>
+      <code>$objectToRef($value)</code>
+      <code>$objectToRef($value)</code>
+      <code>$valueToRef($key)</code>
+      <code>$valueToRef(func_get_args())</code>
+      <code>call_user_func(when($if, $then), $value)</code>
+      <code>call_user_func_array($function, $args)</code>
+    </MixedFunctionCall>
+    <MixedInferredReturnType occurrences="1">
+      <code>callable</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="1">
+      <code>get</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="3">
+      <code>$a</code>
+      <code>$value</code>
+      <code>$valueToRef($key)</code>
+    </MixedOperand>
+    <MixedReturnStatement occurrences="1">
+      <code>$prop_thunk($property, $object)</code>
+    </MixedReturnStatement>
+    <PossiblyInvalidArgument occurrences="2">
+      <code>map(unary($f), select_keys($keys, $object))</code>
+      <code>select_keys($keys, $object)</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullArgument occurrences="1">
+      <code>$methodName</code>
+    </PossiblyNullArgument>
+    <RedundantConditionGivenDocblockType occurrences="5">
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/lens.php">
+    <MissingClosureParamType occurrences="4">
+      <code>$func</code>
+      <code>$list</code>
+      <code>$replacement</code>
+      <code>$res</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="3">
+      <code>function ($list) use ($getter, $setter, $func) {</code>
+      <code>function ($replacement) use ($setter, $list) {</code>
+      <code>function ($res) use ($operation) {</code>
+    </MissingClosureReturnType>
+    <MissingParamType occurrences="6">
+      <code>$path</code>
+      <code>$property</code>
+      <code>$store</code>
+      <code>$store</code>
+      <code>$store</code>
+      <code>$value</code>
+    </MissingParamType>
+    <MixedArgument occurrences="5">
+      <code>$path</code>
+      <code>assoc($property)</code>
+      <code>assoc_path($path)</code>
+      <code>prop($property)</code>
+      <code>prop_path($path)</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="4">
+      <code>$fn</code>
+      <code>$fn</code>
+      <code>$obj</code>
+      <code>$obj</code>
+    </MixedAssignment>
+    <MixedFunctionCall occurrences="3">
+      <code>$fn($store)</code>
+      <code>$fn($store)</code>
+      <code>call_user_func($func, $getter($list))</code>
+    </MixedFunctionCall>
+    <MixedMethodCall occurrences="3">
+      <code>extract</code>
+      <code>extract</code>
+      <code>map</code>
+    </MixedMethodCall>
+    <PossiblyNullArgument occurrences="1">
+      <code>prop($property)</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="src/list.php">
+    <MissingClosureReturnType occurrences="1">
+      <code>function ($left, $right) use ($f, $collection) {</code>
+    </MissingClosureReturnType>
+    <MixedArgument occurrences="2">
+      <code>flatten($value)</code>
+      <code>prop($propertyName)</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1"/>
+    <MixedArrayOffset occurrences="4">
+      <code>$groups[$groupKey]</code>
+      <code>$groups[$groupKey]</code>
+      <code>$groups[$groupKey]</code>
+      <code>$partitions[$partition]</code>
+    </MixedArrayOffset>
+    <MixedAssignment occurrences="22">
+      <code>$aggregation[$index]</code>
+      <code>$aggregation[$index]</code>
+      <code>$aggregation[]</code>
+      <code>$aggregation[]</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$element</code>
+      <code>$groupKey</code>
+      <code>$groups[$groupKey][$index]</code>
+      <code>$partitions[$partition][$index]</code>
+      <code>$partitions[$partition][$index]</code>
+      <code>$result[]</code>
+      <code>$tail[$index]</code>
+      <code>$tail[$index]</code>
+      <code>$value</code>
+    </MixedAssignment>
+    <MixedOperand occurrences="1">
+      <code>$partition</code>
+    </MixedOperand>
+    <PossiblyNullArgument occurrences="1">
+      <code>prop($propertyName)</code>
+    </PossiblyNullArgument>
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+      <code>assertCallback</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/math.php">
+    <InvalidArrayOffset occurrences="3">
+      <code>$list[$middle_value + 1]</code>
+      <code>$list[$middle_value]</code>
+      <code>$list[$middle_value]</code>
+    </InvalidArrayOffset>
+    <MissingParamType occurrences="19">
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$b</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$n</code>
+      <code>$n</code>
+      <code>$n</code>
+      <code>$n</code>
+      <code>$n</code>
+    </MissingParamType>
+    <MixedArgument occurrences="5">
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+      <code>$list</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$median</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="3">
+      <code>float|int</code>
+      <code>float|int</code>
+      <code>float|int</code>
+    </MixedInferredReturnType>
+    <MixedOperand occurrences="8">
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$a</code>
+      <code>$low</code>
+      <code>$n</code>
+      <code>$n</code>
+      <code>sum($list)</code>
+    </MixedOperand>
+    <MixedReturnStatement occurrences="3">
+      <code>$n * $n</code>
+      <code>minus($n, 1)</code>
+      <code>plus($n, 1)</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/partial.php">
+    <MissingClosureReturnType occurrences="3">
+      <code>function() use ($f, $args) {</code>
+      <code>function() use ($f, $args) {</code>
+      <code>function() use ($f, $args) {</code>
+    </MissingClosureReturnType>
+    <MixedAssignment occurrences="1">
+      <code>$args[$position]</code>
+    </MixedAssignment>
+  </file>
+</files>
