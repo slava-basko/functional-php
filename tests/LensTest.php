@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class LensTest extends TestCase
+class LensTest extends BaseTest
 {
     public function test_lens_view()
     {

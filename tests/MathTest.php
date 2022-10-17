@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class MathTest extends TestCase
+class MathTest extends BaseTest
 {
     public function test_is_even()
     {

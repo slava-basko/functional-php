@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class PartialTest extends TestCase
+class PartialTest extends BaseTest
 {
     public function test_partial()
     {

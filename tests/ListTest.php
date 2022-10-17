@@ -3,10 +3,9 @@
 namespace Tests\Functional;
 
 use Functional\Exception\InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class ListTest extends TestCase
+class ListTest extends BaseTest
 {
     private function getUsersData()
     {

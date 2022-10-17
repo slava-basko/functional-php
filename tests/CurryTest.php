@@ -3,10 +3,9 @@
 namespace Tests\Functional;
 
 use Functional\Exception\InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class CurryTest extends TestCase
+class CurryTest extends BaseTest
 {
     public function test_count_args()
     {
