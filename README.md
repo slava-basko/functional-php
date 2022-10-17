@@ -104,7 +104,7 @@ But the second version is point free. We tell "what we want", without details.
 ### Pipe and partial application
 We have a $product[] and we need to create a common description from the 'description' property of each one.
 So, here are the basic steps:
-1. Get fetch property 'description' from products.
+1. Fetch property 'description' from products.
 2. Strip whitespace from the beginning and end of each value.
 3. Remove empty elements.
 4. Join elements with commas.
