@@ -2,10 +2,9 @@
 
 namespace Tests\Functional;
 
-use PHPUnit\Framework\TestCase;
 use Functional as f;
 
-class CoreTest extends TestCase
+class CoreTest extends BaseTest
 {
     public function test_identity()
     {
