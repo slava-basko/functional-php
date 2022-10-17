@@ -21,3 +21,5 @@ jobs:
         run: composer install
       - name: Run tests
         run: vendor/bin/phpunit
+      - name: Run static analysis
+        run: vendor/bin/psalm --output-format=github
