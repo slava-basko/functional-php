@@ -22,4 +22,4 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit
       - name: Run static analysis
-        run: vendor/bin/psalm --output-format=github
+        run: psalm --output-format=github
