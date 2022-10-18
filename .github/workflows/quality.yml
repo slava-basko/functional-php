@@ -40,4 +40,4 @@ jobs:
       - name: Install dependencies
         run: composer install
       - name: Check code style
-        run: phpcs --report=checkstyle | cs2pr
+        run: phpcs --report=checkstyle src | cs2pr
