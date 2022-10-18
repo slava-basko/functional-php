@@ -165,7 +165,7 @@ function tail_recursion(callable $f)
         if (!$underCall) {
             $underCall = true;
             while ($head = array_shift($queue)) {
-                $result = call_user_func_array($f, $head);;
+                $result = call_user_func_array($f, $head);
             }
             $underCall = false;
         }
@@ -371,7 +371,8 @@ define('Functional\pipe', __NAMESPACE__ . '\\pipe');
  * The results of each branching function are passed as arguments
  * to the converging function to produce the return value.
  *
- * @param callable $convergingFunction Will be invoked with the return values of all branching functions as its arguments
+ * @param callable $convergingFunction Will be invoked with the return values of all branching functions
+ *                                     as its arguments
  * @param callable[] $branchingFunctions A list of functions
  * @return callable A flipped version of the given function
  * @no-named-arguments
