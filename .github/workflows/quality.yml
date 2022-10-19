@@ -4,24 +4,17 @@ on:
   pull_request:
 
 jobs:
-  legacy-tests:
-    runs-on: ubuntu-latest
-    container:
-      image: feitosa/php55-with-composer
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: composer install
-      - name: Run tests
-        run: vendor/bin/phpunit
+  tests:
+    strategy:
+      matrix:
+        php-version: ['5.5', '8.1']
 
-  modern-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: none
       - name: Install dependencies
