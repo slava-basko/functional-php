@@ -908,7 +908,7 @@ https://ramdajs.com \
 https://github.com/lstrojny/functional-php \
 https://github.com/ace411/bingo-functional \
 https://github.com/ircmaxell/monad-php \
-https://github.com/yuhanz/ramda-php
+https://github.com/yuhanz/ramda-php \
 And many other libs/articles/etc.
 
 Why just not use one from the list? 
