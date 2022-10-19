@@ -1,6 +1,6 @@
 <?php
 
-namespace Functional\Functor;
+namespace Basko\Functional\Functor;
 
 abstract class Monad
 {

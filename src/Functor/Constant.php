@@ -1,10 +1,10 @@
 <?php
 
-namespace Functional\Functor;
+namespace Basko\Functional\Functor;
 
 class Constant extends Monad
 {
-    const of = "Functional\Functor\Constant::of";
+    const of = "Basko\Functional\Functor\Constant::of";
 
     public function map(callable $f)
     {

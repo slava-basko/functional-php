@@ -1,8 +1,8 @@
 <?php
 
-namespace Functional;
+namespace Basko\Functional;
 
-use Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 /**
  * Extract a property from a list of objects.
@@ -22,7 +22,7 @@ function pluck($propertyName, $list = null)
     return map(prop($propertyName), $list);
 }
 
-define('Functional\pluck', __NAMESPACE__ . '\\pluck');
+define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
 
 /**
  * Looks through each element in the list, returning the first one.
@@ -40,7 +40,7 @@ function head($list)
     return null;
 }
 
-define('Functional\first', __NAMESPACE__ . '\\first');
+define('Basko\Functional\first', __NAMESPACE__ . '\\first');
 
 /**
  * Looks through each element in the list, returning the first one that passes a truthy test (function). The
@@ -70,7 +70,7 @@ function head_by($f, $list = null)
     return null;
 }
 
-define('Functional\head_by', __NAMESPACE__ . '\\head_by');
+define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
 
 /**
  * Returns all items from $list except first element (head). Preserves $list keys.
@@ -96,7 +96,7 @@ function tail($list)
     return $tail;
 }
 
-define('Functional\tail', __NAMESPACE__ . '\\tail');
+define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
 
 /**
  * @param callable $f
@@ -129,7 +129,7 @@ function tail_by($f, $list = null)
     return $tail;
 }
 
-define('Functional\tail_by', __NAMESPACE__ . '\\tail_by');
+define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
 
 /**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
@@ -159,7 +159,7 @@ function select($f, $list = null)
     return $aggregation;
 }
 
-define('Functional\select', __NAMESPACE__ . '\\select');
+define('Basko\Functional\select', __NAMESPACE__ . '\\select');
 
 /**
  * Returns the elements in list without the elements that the test (function) passes.
@@ -189,7 +189,7 @@ function reject($f, $list = null)
     return $aggregation;
 }
 
-define('Functional\reject', __NAMESPACE__ . '\\reject');
+define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
 
 /**
  * Returns true if the list contains the given value. If the third parameter is
@@ -219,7 +219,7 @@ function contains($needle, $haystack = null)
     return false;
 }
 
-define('Functional\contains', __NAMESPACE__ . '\\contains');
+define('Basko\Functional\contains', __NAMESPACE__ . '\\contains');
 
 /**
  * Creates a slice of $list with $count elements taken from the beginning. If the list has less than $count,
@@ -246,7 +246,7 @@ function take($count, $list = null)
     );
 }
 
-define('Functional\take', __NAMESPACE__ . '\\take');
+define('Basko\Functional\take', __NAMESPACE__ . '\\take');
 
 /**
  * Creates a slice of $list with $count elements taken from the end. If the list has less than $count,
@@ -273,7 +273,7 @@ function take_r($count, $list = null)
     );
 }
 
-define('Functional\take_r', __NAMESPACE__ . '\\take_r');
+define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
 
 /**
  * Groups a list by index returned by function.
@@ -306,7 +306,7 @@ function group($f, $list = null)
     return $groups;
 }
 
-define('Functional\group', __NAMESPACE__ . '\\group');
+define('Basko\Functional\group', __NAMESPACE__ . '\\group');
 
 /**
  * Partitions a list by function predicate results. Returns an
@@ -346,7 +346,7 @@ function partition($functions, $list = null)
     return $partitions;
 }
 
-define('Functional\partition', __NAMESPACE__ . '\\partition');
+define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
 
 /**
  * Takes a nested combination of list and returns their contents as a single, flat list.
@@ -371,7 +371,7 @@ function flatten($list)
     return $result;
 }
 
-define('Functional\flatten', __NAMESPACE__ . '\\flatten');
+define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten');
 
 /**
  * Insert a given value between each element of a collection.
@@ -401,7 +401,7 @@ function intersperse($separator, $list = null)
     return $aggregation;
 }
 
-define('Functional\intersperse', __NAMESPACE__ . '\\intersperse');
+define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 
 /**
  * Sorts a list with a user-defined function.

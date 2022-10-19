@@ -40,7 +40,7 @@ class User {
 
     public function isActive()
     {
-        return \Functional\prop('active', $this->data) ?: false;
+        return \Basko\Functional\prop('active', $this->data) ?: false;
     }
 }
 
@@ -74,11 +74,11 @@ class Repeated
 class ClassWithMonadValue
 {
     /**
-     * @var \Functional\Monad
+     * @var \Basko\Functional\Functor\Monad
      */
     private $name;
 
-    public function __construct(\Functional\Monad $name)
+    public function __construct(\Basko\Functional\Functor\Monad $name)
     {
         $this->name = $name;
     }

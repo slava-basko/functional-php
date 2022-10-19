@@ -1,10 +1,10 @@
 <?php
 
-namespace Functional\Functor;
+namespace Basko\Functional\Functor;
 
 class Maybe extends Monad
 {
-    const of = "Functional\Functor\Maybe::of";
+    const of = "Basko\Functional\Functor\Maybe::of";
 
     public function map(callable $f)
     {

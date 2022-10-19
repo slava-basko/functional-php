@@ -2,7 +2,7 @@
 
 namespace Tests\Functional;
 
-use Functional as f;
+use Basko\Functional as f;
 
 class PartialTest extends BaseTest
 {

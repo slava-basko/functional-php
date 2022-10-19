@@ -1,6 +1,6 @@
 <?php
 
-namespace Functional\Exception;
+namespace Basko\Functional\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {

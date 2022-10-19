@@ -1,6 +1,6 @@
 <?php
 
-namespace Functional;
+namespace Basko\Functional;
 
 /**
  * Returns new function which will behave like $f with
@@ -20,7 +20,7 @@ function partial(callable $f, $arg1)
         return call_user_func_array($f, array_merge($args, func_get_args()));
     };
 }
-define('Functional\partial', __NAMESPACE__ . '\\partial');
+define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
 
 /**
  * Returns new partial function which will behave like $f with
@@ -40,7 +40,7 @@ function partial_r(callable $f, $arg1)
         return call_user_func_array($f, array_merge(func_get_args(), $args));
     };
 }
-define('Functional\partial_r', __NAMESPACE__ . '\\partial_r');
+define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r');
 
 /**
  * Returns new partial function which will behave like $f with
@@ -66,4 +66,4 @@ function partial_p(callable $f, array $args)
         return call_user_func_array($f, $args);
     };
 }
-define('Functional\partial_p', __NAMESPACE__ . '\\partial_p');
+define('Basko\Functional\partial_p', __NAMESPACE__ . '\\partial_p');

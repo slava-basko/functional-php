@@ -1,8 +1,8 @@
 <?php
 
-namespace Functional\Functor;
+namespace Basko\Functional\Functor;
 
 class Identity extends Monad
 {
-    const of = "Functional\Functor\Identity::of";
+    const of = "Basko\Functional\Functor\Identity::of";
 }
