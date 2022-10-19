@@ -909,8 +909,17 @@ https://github.com/lstrojny/functional-php \
 https://github.com/ace411/bingo-functional \
 https://github.com/ircmaxell/monad-php \
 https://github.com/yuhanz/ramda-php
-
 And many other libs/articles/etc.
+
+Why just not use one from the list? 
+
+
+Well, RamdaJS obviously not our choice because it is great JS lib but we are using PHP. 
+lstrojny/functional-php good choice but functions are not curried by default and there is no "data last principle". 
+ircmaxell/monad-php wonderful monad implementation in my opinion, but it's only monad with no additional functions. 
+yuhanz/ramda-php abandoned RamdaJS port plus I don't like all these public static properties.
+
+
 
 ## How to run tests
 
