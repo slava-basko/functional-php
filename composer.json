@@ -21,7 +21,6 @@
       "src/list.php",
       "src/math.php",
       "src/partial.php",
-      "src/functor.php",
       "src/lens.php",
       "src/helpers.php"
     ]

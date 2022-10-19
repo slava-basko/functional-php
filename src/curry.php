@@ -124,7 +124,7 @@ function ary(callable $f, $count)
         $args = func_get_args();
         if ($count > 0) {
             return call_user_func_array($f, take($count, $args));
-        } else if ($count < 0) {
+        } elseif ($count < 0) {
             return call_user_func_array($f, take_r(-$count, $args));
         }
     };
