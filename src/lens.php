@@ -1,6 +1,9 @@
 <?php
 
-namespace Functional;
+namespace Basko\Functional;
+
+use Basko\Functional\Functor\Constant;
+use Basko\Functional\Functor\Identity;
 
 /**
  * Returns a lens for the given getter and setter functions.
@@ -28,7 +31,7 @@ function lens(callable $getter, callable $setter)
     };
 }
 
-define('Functional\lens', __NAMESPACE__ . '\\lens');
+define('Basko\Functional\lens', __NAMESPACE__ . '\\lens');
 
 /**
  * Returns a "view" of the given data structure, determined by the given lens.
@@ -46,7 +49,7 @@ function view(callable $lens, $store)
     return $obj->extract();
 }
 
-define('Functional\view', __NAMESPACE__ . '\\view');
+define('Basko\Functional\view', __NAMESPACE__ . '\\view');
 
 /**
  * Returns the result of "setting" the portion of the given data structure
@@ -69,7 +72,7 @@ function over(callable $lens, callable $operation, $store)
     return $obj->extract();
 }
 
-define('Functional\over', __NAMESPACE__ . '\\over');
+define('Basko\Functional\over', __NAMESPACE__ . '\\over');
 
 /**
  * Returns the result of "setting" the portion of the given data structure focused by the given lens to the given value.
@@ -85,7 +88,7 @@ function set(callable $lens, $value, $store)
     return over($lens, always($value), $store);
 }
 
-define('Functional\set', __NAMESPACE__ . '\\set');
+define('Basko\Functional\set', __NAMESPACE__ . '\\set');
 
 /**
  * Returns a lens whose focus is the specified property.
@@ -99,7 +102,7 @@ function lens_prop($property)
     return lens(prop($property), assoc($property));
 }
 
-define('Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
+define('Basko\Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
 
 /**
  * Returns a lens whose focus is the specified path.
@@ -113,4 +116,4 @@ function lens_path($path)
     return lens(prop_path($path), assoc_path($path));
 }
 
-define('Functional\lens_path', __NAMESPACE__ . '\\lens_path');
+define('Basko\Functional\lens_path', __NAMESPACE__ . '\\lens_path');

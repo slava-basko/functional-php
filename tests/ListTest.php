@@ -2,8 +2,8 @@
 
 namespace Tests\Functional;
 
-use Functional\Exception\InvalidArgumentException;
-use Functional as f;
+use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional as f;
 
 class ListTest extends BaseTest
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Functional;
+namespace Basko\Functional;
 
-use Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 /**
  * Return number of function arguments.
@@ -28,7 +28,7 @@ function count_args(callable $f, $only_required = false)
     return $only_required ? $reflection->getNumberOfRequiredParameters() : $reflection->getNumberOfParameters();
 }
 
-define('Functional\count_args', __NAMESPACE__ . '\\count_args');
+define('Basko\Functional\count_args', __NAMESPACE__ . '\\count_args');
 
 /**
  * Return a version of the given function where the $count first arguments are curryied.
@@ -63,7 +63,7 @@ function curry_n($count, callable $f)
     return $accumulator([]);
 }
 
-define('Functional\curry_n', __NAMESPACE__ . '\\curry_n');
+define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n');
 
 /**
  * Return a curried version of the given function. You can decide if you also
@@ -81,7 +81,7 @@ function curry(callable $f, $required = false)
     return curry_n(count_args($f, $required), $f);
 }
 
-define('Functional\curry', __NAMESPACE__ . '\\curry');
+define('Basko\Functional\curry', __NAMESPACE__ . '\\curry');
 
 /**
  * Creates a thunk out of a function. A thunk delays a calculation until its result is needed,
@@ -98,7 +98,7 @@ function thunkify(callable $f, $required = false)
     return curry_n(count_args($f, $required) + 1, $f);
 }
 
-define('Functional\thunkify', __NAMESPACE__ . '\\thunkify');
+define('Basko\Functional\thunkify', __NAMESPACE__ . '\\thunkify');
 
 /**
  * @param callable $f
@@ -124,13 +124,13 @@ function ary(callable $f, $count)
         $args = func_get_args();
         if ($count > 0) {
             return call_user_func_array($f, take($count, $args));
-        } else if ($count < 0) {
+        } elseif ($count < 0) {
             return call_user_func_array($f, take_r(-$count, $args));
         }
     };
 }
 
-define('Functional\ary', __NAMESPACE__ . '\\ary');
+define('Basko\Functional\ary', __NAMESPACE__ . '\\ary');
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 1 parameter.
@@ -144,7 +144,7 @@ function unary(callable $f)
     return ary($f, 1);
 }
 
-define('Functional\unary', __NAMESPACE__ . '\\unary');
+define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 2 parameters.
@@ -158,4 +158,4 @@ function binary(callable $f)
     return ary($f, 2);
 }
 
-define('Functional\binary', __NAMESPACE__ . '\\binary');
+define('Basko\Functional\binary', __NAMESPACE__ . '\\binary');
