@@ -8,6 +8,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param mixed $callback
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws InvalidArgumentException
      */
     public static function assertCallback($callback, $callee, $parameterPosition)
@@ -84,6 +85,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param mixed $propertyName
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     public static function assertPropertyName($propertyName, $callee, $parameterPosition)
@@ -125,6 +127,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     /**
      * @param mixed $key
      * @param string $callee
+     * @return void
      * @throws static
      */
     public static function assertValidArrayKey($key, $callee)
@@ -163,6 +166,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param mixed $value
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     public static function assertBoolean($value, $callee, $parameterPosition)
@@ -183,6 +187,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param mixed $value
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     public static function assertInteger($value, $callee, $parameterPosition)
@@ -204,6 +209,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param int $limit
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     public static function assertIntegerGreaterThanOrEqual($value, $limit, $callee, $parameterPosition)
@@ -225,6 +231,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param int $limit
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     public static function assertIntegerLessThanOrEqual($value, $limit, $callee, $parameterPosition)
@@ -255,6 +262,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @param string $className
      * @param string $callee
      * @param int $parameterPosition
+     * @return void
      * @throws static
      */
     private static function assertListAlike($list, $className, $callee, $parameterPosition)
