@@ -57,16 +57,37 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $list
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
     public static function assertList($list, $callee, $parameterPosition)
     {
         self::assertListAlike($list, 'Traversable', $callee, $parameterPosition);
     }
 
+    /**
+     * @param mixed $collection
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
     public static function assertArrayAccess($collection, $callee, $parameterPosition)
     {
         self::assertListAlike($collection, 'ArrayAccess', $callee, $parameterPosition);
     }
 
+    /**
+     * @param mixed $methodName
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
     public static function assertMethodName($methodName, $callee, $parameterPosition)
     {
         if (!is_string($methodName)) {
@@ -107,6 +128,13 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
     public static function assertPositiveInteger($value, $callee, $parameterPosition)
     {
         if ((string)(int)$value !== (string)$value || $value < 0) {
@@ -149,6 +177,13 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $collection
+     * @param mixed $key
+     * @param string $callee
+     * @return void
+     * @throws static
+     */
     public static function assertArrayKeyExists($collection, $key, $callee)
     {
         if (!isset($collection[$key])) {
@@ -248,6 +283,12 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param array<array-key, mixed> $args
+     * @param int $position
+     * @return void
+     * @throws static
+     */
     public static function assertResolvablePlaceholder(array $args, $position)
     {
         if (count($args) === 0) {
@@ -280,6 +321,12 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $value
+     * @param string $callee
+     * @return void
+     * @throws static
+     */
     public static function assertNonZeroInteger($value, $callee)
     {
         if (!is_int($value) || $value == 0) {
@@ -287,6 +334,13 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $pair
+     * @param string $callee
+     * @param int $position
+     * @return void
+     * @throws static
+     */
     public static function assertPair($pair, $callee, $position)
     {
         if (!(is_array($pair) || $pair instanceof \ArrayAccess) || !isset($pair[0], $pair[1])) {
@@ -298,6 +352,10 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param mixed $value
+     * @return string
+     */
     private static function getType($value)
     {
         return is_object($value) ? get_class($value) : gettype($value);
