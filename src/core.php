@@ -182,7 +182,7 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion');
  * Function arguments will be element, index, list
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param \Traversable|array|null $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -251,7 +251,7 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
  *
  * @param callable $f
  * @param mixed $accumulator
- * @param iterable $list
+ * @param iterable|null $list
  * @return callable|scalar
  * @no-named-arguments
  */
@@ -276,7 +276,7 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
 /**
  * @param callable $f
  * @param mixed $accumulator
- * @param iterable $list
+ * @param iterable|null $list
  * @return callable|scalar
  * @no-named-arguments
  */
