@@ -2,6 +2,9 @@
 
 namespace Functional;
 
+use Functional\Functor\Constant;
+use Functional\Functor\Identity;
+
 /**
  * Returns a lens for the given getter and setter functions.
  * The getter "gets" the value of the focus; the setter "sets" the value of the focus.

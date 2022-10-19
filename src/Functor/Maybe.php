@@ -1,10 +1,10 @@
 <?php
 
-namespace Functional;
+namespace Functional\Functor;
 
 class Maybe extends Monad
 {
-    const of = "Functional\Maybe::of";
+    const of = "Functional\Functor\Maybe::of";
 
     public function map(callable $f)
     {

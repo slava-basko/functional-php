@@ -2,31 +2,30 @@
 
 namespace Tests\Functional;
 
-use Functional\Maybe;
 use Functional as f;
 
 class FunctorTest extends BaseTest
 {
     public function test_identity()
     {
-        $this->assertEquals(f\Identity::of('FOO'), f\Identity::of('foo')->map('strtoupper'));
-        $this->assertEquals(f\Identity::of(6), f\Identity::of(3)->map(f\multiply(2)));
+        $this->assertEquals(f\Functor\Identity::of('FOO'), f\Functor\Identity::of('foo')->map('strtoupper'));
+        $this->assertEquals(f\Functor\Identity::of(6), f\Functor\Identity::of(3)->map(f\multiply(2)));
     }
 
     public function test_constant()
     {
-        $this->assertEquals(f\Constant::of(3), f\Constant::of(3)->map(f\multiply(2)));
+        $this->assertEquals(f\Functor\Constant::of(3), f\Functor\Constant::of(3)->map(f\multiply(2)));
     }
 
     public function test_maybe()
     {
-        $this->assertEquals(Maybe::of('1'), Maybe::of(1)->map('strval'));
+        $this->assertEquals(f\Functor\Maybe::of('1'), f\Functor\Maybe::of(1)->map('strval'));
 
         $called = false;
         $func = function($a) use (&$called) {
             $called = true;
         };
-        $this->assertEquals(Maybe::of(null), Maybe::of(null)->map($func));
+        $this->assertEquals(f\Functor\Maybe::of(null), f\Functor\Maybe::of(null)->map($func));
         $this->assertFalse($called);
     }
 
@@ -35,7 +34,7 @@ class FunctorTest extends BaseTest
         $getParent = f\invoker('getParent');
         $getName = f\invoker('getName');
         $this->assertNull(
-            Maybe::of(null)->map($getParent)->map($getParent)->map($getName)->extract()
+            f\Functor\Maybe::of(null)->map($getParent)->map($getParent)->map($getName)->extract()
         );
     }
 
@@ -52,7 +51,7 @@ class FunctorTest extends BaseTest
         };
 
         // Test with value
-        Maybe::of(10)->match($justHandler, $nothingHandler);
+        f\Functor\Maybe::of(10)->match($justHandler, $nothingHandler);
         $this->assertTrue($justHandlerCallFlag);
         $this->assertFalse($nothingHandlerCallFlag);
 
@@ -61,7 +60,7 @@ class FunctorTest extends BaseTest
         $nothingHandlerCallFlag = false;
 
         // Test without value
-        Maybe::of(null)->match($justHandler, $nothingHandler);
+        f\Functor\Maybe::of(null)->match($justHandler, $nothingHandler);
         $this->assertFalse($justHandlerCallFlag);
         $this->assertTrue($nothingHandlerCallFlag);
     }
