@@ -8,7 +8,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * Return number of function arguments.
  *
  * @param callable $f
- * @param $only_required
+ * @param bool $only_required
  * @return int
  * @throws \ReflectionException
  * @no-named-arguments
@@ -88,8 +88,8 @@ define('Basko\Functional\curry', __NAMESPACE__ . '\\curry');
  * providing lazy evaluation of arguments.
  *
  * @param callable $f
- * @param $required
- * @return callable|\Closure
+ * @param bool $required
+ * @return callable
  * @throws \ReflectionException
  * @no-named-arguments
  */
@@ -102,8 +102,8 @@ define('Basko\Functional\thunkify', __NAMESPACE__ . '\\thunkify');
 
 /**
  * @param callable $f
- * @param $count number of arguments you want to curry
- * @return callable|\Closure
+ * @param int $count number of arguments you want to curry
+ * @return callable
  */
 function _thunkify_n(callable $f, $count)
 {
@@ -114,6 +114,9 @@ function _thunkify_n(callable $f, $count)
  * Return function $f that will be called only with `abs($count)` arguments,
  * taken either from the left or right depending on the sign.
  *
+ * @param callable $f
+ * @param int $count a non-zero count (could be negative)
+ * @return callable
  * @no-named-arguments
  */
 function ary(callable $f, $count)
