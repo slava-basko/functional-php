@@ -4,74 +4,89 @@ namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 
-function value_to_key()
+/**
+ * @internal
+ * @param object $value
+ * @return string
+ */
+function _object_to_ref($value)
 {
     /** @var object[]|\WeakReference[] $objectReferences */
     static $objectReferences = [];
 
-    static $objectToRef = null;
-    if (!$objectToRef) {
-        $objectToRef = static function ($value) use (&$objectReferences) {
-            $hash = spl_object_hash($value);
-            /**
-             * spl_object_hash() will return the same hash twice in a single request if an object goes out of scope
-             * and is destructed.
-             */
-            if (PHP_VERSION_ID >= 70400) {
-                /**
-                 * For PHP >=7.4, we keep a weak reference to the relevant object that we use for hashing. Once the
-                 * object gets out of scope, the weak ref will no longer return the object, that’s how we know we
-                 * have a collision and increment a version in the collisions array.
-                 */
-                /** @var int[] $collisions */
-                static $collisions = [];
+    $hash = spl_object_hash($value);
+    /**
+     * spl_object_hash() will return the same hash twice in a single request if an object goes out of scope
+     * and is destructed.
+     */
+    if (PHP_VERSION_ID >= 70400) {
+        /**
+         * For PHP >=7.4, we keep a weak reference to the relevant object that we use for hashing. Once the
+         * object gets out of scope, the weak ref will no longer return the object, that’s how we know we
+         * have a collision and increment a version in the collisions array.
+         */
+        /** @var int[] $collisions */
+        static $collisions = [];
 
-                if (isset($objectReferences[$hash])) {
-                    if ($objectReferences[$hash]->get() === null) {
-                        $collisions[$hash] = ($collisions[$hash] ?: 0) + 1;
-                        $objectReferences[$hash] = \WeakReference::create($value);
-                    }
-                } else {
-                    $objectReferences[$hash] = \WeakReference::create($value);
-                }
-
-                $key = get_class($value) . ':' . $hash . ':' . (isset($collisions[$hash]) ? $collisions[$hash] : 0);
-            } else {
-                /**
-                 * For PHP < 7.4 we keep a static reference to the object so that cannot accidentally go out of
-                 * scope and mess with the object hashes
-                 */
-                $objectReferences[$hash] = $value;
-                $key = get_class($value) . ':' . $hash;
+        if (isset($objectReferences[$hash])) {
+            if ($objectReferences[$hash]->get() === null) {
+                $collisions[$hash] = ($collisions[$hash] ?: 0) + 1;
+                $objectReferences[$hash] = \WeakReference::create($value);
             }
+        } else {
+            $objectReferences[$hash] = \WeakReference::create($value);
+        }
 
-            return $key;
-        };
+        $key = get_class($value) . ':' . $hash . ':' . (isset($collisions[$hash]) ? $collisions[$hash] : 0);
+    } else {
+        /**
+         * For PHP < 7.4 we keep a static reference to the object so that cannot accidentally go out of
+         * scope and mess with the object hashes
+         */
+        $objectReferences[$hash] = $value;
+        $key = get_class($value) . ':' . $hash;
     }
 
-    static $valueToRef = null;
-    if (!$valueToRef) {
-        $valueToRef = static function ($value, $key = null) use (&$valueToRef, $objectToRef) {
-            $type = \gettype($value);
-            if ($type === 'array') {
-                $ref = '[' . implode(':', map($valueToRef, $value)) . ']';
-            } elseif ($value instanceof \Traversable) {
-                $ref = $objectToRef($value) . '[' . implode(':', map($valueToRef, $value)) . ']';
-            } elseif ($type === 'object') {
-                $ref = $objectToRef($value);
-            } elseif ($type === 'resource') {
-                throw new \InvalidArgumentException(
-                    'Resource type cannot be used as part of a memoization key. Please pass a custom key instead'
-                );
-            } else {
-                $ref = \serialize($value);
-            }
+    return $key;
+}
 
-            return ($key !== null ? ($valueToRef($key) . '~') : '') . $ref;
-        };
+/**
+ * @internal
+ * @param mixed $value
+ * @return string
+ */
+function _value_to_ref($value, $key = null)
+{
+    $type = \gettype($value);
+    if ($type === 'array') {
+        $ref = '[' . implode(':', map(_value_to_ref, $value)) . ']';
+    } elseif ($value instanceof \Traversable) {
+        $ref = _object_to_ref($value) . '[' . implode(':', map(_value_to_ref, $value)) . ']';
+    } elseif ($type === 'object') {
+        $ref = _object_to_ref($value);
+    } elseif ($type === 'resource') {
+        throw new \InvalidArgumentException(
+            'Resource type cannot be used as part of a memoization key. Please pass a custom key instead'
+        );
+    } else {
+        $ref = \serialize($value);
     }
 
-    return $valueToRef(func_get_args());
+    return ($key !== null ? (_value_to_ref($key) . '~') : '') . $ref;
+}
+
+/**
+ * @internal
+ */
+define('Basko\Functional\_value_to_ref', __NAMESPACE__ . '\\_value_to_ref');
+
+/**
+ * @param mixed $value
+ * @return string
+ */
+function value_to_key($value)
+{
+    return _value_to_ref($value);
 }
 
 /**
