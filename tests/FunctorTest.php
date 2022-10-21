@@ -33,8 +33,9 @@ class FunctorTest extends BaseTest
     {
         $getParent = f\invoker('getParent');
         $getName = f\invoker('getName');
-        $this->assertNull(
-            f\Functor\Maybe::nothing()->map($getParent)->map($getParent)->map($getName)->extract()
+        $this->assertEquals(
+            f\Functor\Maybe::nothing(),
+            f\Functor\Maybe::nothing()->map($getParent)->map($getParent)->map($getName)
         );
     }
 

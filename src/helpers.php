@@ -367,12 +367,10 @@ function props($properties, $object = null)
         return partial(props, $properties);
     }
 
-    $result = [];
-    foreach ($properties as $property) {
-        $result[] = prop($property, $object);
-    }
-
-    return $result;
+    return fold(function ($accumulator, $property) use ($object) {
+        $accumulator[] = prop($property, $object);
+        return $accumulator;
+    }, [], $properties);
 }
 
 define('Basko\Functional\props', __NAMESPACE__ . '\\props');
