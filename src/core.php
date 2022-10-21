@@ -3,6 +3,7 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Functor\Monad;
 
 /**
  * @param $value
@@ -512,3 +513,31 @@ function both($a, $b = null)
 }
 
 define('Basko\Functional\both', __NAMESPACE__ . '\\both');
+
+/**
+ * @param callable[] $flist
+ * @param $list
+ * @return array|callable
+ */
+function ap($flist, $list = null)
+{
+    foreach ($flist as $f) {
+        InvalidArgumentException::assertCallback($f, __FUNCTION__, 1); // TODO: move?
+    }
+
+    if (is_null($list)) {
+        return partial(ap, $list);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $aggregation = [];
+
+    foreach ($flist as $f) {
+        $aggregation = array_merge($aggregation, map($f, $list));
+    }
+
+    return $aggregation;
+}
+
+define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');

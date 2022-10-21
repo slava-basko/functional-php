@@ -246,8 +246,8 @@ class CoreTest extends BaseTest
         $listConverge = f\converge(f\to_list);
         $scoreboardInfo = f\compose(f\join('-'), $listConverge(
             [
-                f\compose('count', $getTeam1GoalsTimes),
-                f\compose('count', $getTeam2GoalsTimes),
+                f\compose(f\len, $getTeam1GoalsTimes),
+                f\compose(f\len, $getTeam2GoalsTimes),
             ]
         ));
         $this->assertEquals('2-1', $scoreboardInfo());
@@ -346,5 +346,17 @@ class CoreTest extends BaseTest
     public function test_null()
     {
         $this->assertNull(f\NULL());
+    }
+
+    public function test_ap()
+    {
+        $this->assertEquals(
+            [2, 4, 6, 4, 5, 6],
+            f\ap([f\multiply(2), f\plus(3)], [1,2,3])
+        );
+        $this->assertEquals(
+            ['tasty pizza', 'tasty salad', 'PIZZA', 'SALAD'],
+            f\ap([f\concat('tasty '), f\unary('strtoupper')], ['pizza', 'salad'])
+        );
     }
 }
