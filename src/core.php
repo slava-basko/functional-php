@@ -5,8 +5,9 @@ namespace Basko\Functional;
 use Basko\Functional\Exception\InvalidArgumentException;
 
 /**
- * @param $value
+ * @param mixed $value
  * @return mixed
+ * @no-named-arguments
  */
 function identity($value)
 {
@@ -46,8 +47,8 @@ function NULL()
 define('Basko\Functional\NULL', __NAMESPACE__ . '\\NULL');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -63,8 +64,8 @@ function eq($a, $b = null)
 define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -80,8 +81,8 @@ function identical($a, $b = null)
 define('Basko\Functional\identical', __NAMESPACE__ . '\\identical');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -97,8 +98,8 @@ function lt($a, $b = null)
 define('Basko\Functional\lt', __NAMESPACE__ . '\\lt');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -114,8 +115,8 @@ function lte($a, $b = null)
 define('Basko\Functional\lte', __NAMESPACE__ . '\\lte');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -131,8 +132,8 @@ function gt($a, $b = null)
 define('Basko\Functional\gt', __NAMESPACE__ . '\\gt');
 
 /**
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return bool|callable
  * @no-named-arguments
  */
@@ -181,7 +182,7 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion');
  * Function arguments will be element, index, list
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param \Traversable|array|null $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -249,8 +250,8 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
  * Applies a function to each element in the list and reduces it to a single value.
  *
  * @param callable $f
- * @param $accumulator
- * @param $list
+ * @param mixed $accumulator
+ * @param iterable|null $list
  * @return callable|scalar
  * @no-named-arguments
  */
@@ -274,8 +275,8 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
 
 /**
  * @param callable $f
- * @param $accumulator
- * @param $list
+ * @param mixed $accumulator
+ * @param iterable|null $list
  * @return callable|scalar
  * @no-named-arguments
  */
@@ -348,7 +349,7 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
  * pipe(f, g, h) is the same as h(g(f(x)))
  *
  * @param callable $f
- * @param callable $fg
+ * @param callable $g
  * @param callable ...
  * @return mixed
  * @no-named-arguments
@@ -400,12 +401,12 @@ function converge($convergingFunction, $branchingFunctions = null)
 define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
 
 /**
- * @param $args
+ * @param mixed $arg
  * @param mixed ...
  * @return callable
  * @no-named-arguments
  */
-function apply_to($args)
+function apply_to($arg)
 {
     $args = func_get_args();
 
@@ -419,7 +420,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
 /**
  * Performs an operation checking for the given conditions
  *
- * @param array $conditions the conditions to check against
+ * @param callable[][] $conditions the conditions to check against
  *
  * @return callable|null the function that calls the callable of the first truthy condition
  * @no-named-arguments
@@ -491,8 +492,8 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on');
 /**
  * Acts as the boolean and statement.
  *
- * @param $a
- * @param $b
+ * @param mixed $a
+ * @param mixed $b
  * @return callable|bool
  * @no-named-arguments
  */
