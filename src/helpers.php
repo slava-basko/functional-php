@@ -92,6 +92,16 @@ function value_to_key($value)
 /**
  * Create memoized versions of $f function.
  *
+ * Note that memoization is safe for pure functions only. For a function to be
+ * pure it should:
+ *   1. Have no side effects
+ *   2. Given the same arguments it should always return the same result
+ *
+ * Memoizing an impure function will lead to all kinds of hard to debug issues.
+ *
+ * In particular, the function to be memoized should never rely on a state of a
+ * mutable object. Only immutable objects are safe.
+ *
  * @param callable $f
  * @return callable
  * @no-named-arguments
