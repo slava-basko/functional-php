@@ -6,13 +6,23 @@ class Maybe extends Monad
 {
     const of = "Basko\Functional\Functor\Maybe::of";
 
+    static public function just($value)
+    {
+        return parent::of($value);
+    }
+
+    static public function nothing()
+    {
+        return parent::of(null);
+    }
+
     public function map(callable $f)
     {
         if (!is_null($this->value)) {
             return parent::map($f);
         }
 
-        return $this::of(null);
+        return $this::nothing();
     }
 
     public function match(callable $just, callable $nothing)

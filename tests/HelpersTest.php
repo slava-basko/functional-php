@@ -285,6 +285,8 @@ class HelpersTest extends BaseTest
     public function test_quote()
     {
         $this->assertEquals('"foo"', f\quote('foo'));
+        $this->assertEquals('"foo \"bar\""', call_user_func_array(f\compose(f\quote, 'addslashes'), ['foo "bar"']));
+        $this->assertEquals('"foo \"bar\""', f\safe_quote('foo "bar"'));
         $this->assertEquals(['"foo"', '"bar"'], f\map(f\quote, ['foo', 'bar']));
     }
 

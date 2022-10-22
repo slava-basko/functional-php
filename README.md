@@ -277,6 +277,12 @@ Produces a new list of elements by mapping each element in list through a transf
 map(plus(1), [1, 2, 3]); // [2, 3, 4]
 ```
 
+### ap
+Applies a list of functions to a list of values.
+```php
+ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
+```
+
 ### not
 Logical negation of the given function.
 ```php

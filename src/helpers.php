@@ -392,12 +392,10 @@ function props($properties, $object = null)
         return partial(props, $properties);
     }
 
-    $result = [];
-    foreach ($properties as $property) {
-        $result[] = prop($property, $object);
-    }
-
-    return $result;
+    return fold(function ($accumulator, $property) use ($object) {
+        $accumulator[] = prop($property, $object);
+        return $accumulator;
+    }, [], $properties);
 }
 
 define('Basko\Functional\props', __NAMESPACE__ . '\\props');
@@ -566,6 +564,17 @@ function quote($value)
 }
 
 define('Basko\Functional\quote', __NAMESPACE__ . '\\quote');
+
+/**
+ * @param $value
+ * @return string
+ */
+function safe_quote($value)
+{
+    return quote(addslashes($value));
+}
+
+define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
 
 /**
  * Select the specified keys from the array.

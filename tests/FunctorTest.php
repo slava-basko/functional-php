@@ -19,13 +19,13 @@ class FunctorTest extends BaseTest
 
     public function test_maybe()
     {
-        $this->assertEquals(f\Functor\Maybe::of('1'), f\Functor\Maybe::of(1)->map('strval'));
+        $this->assertEquals(f\Functor\Maybe::just('1'), f\Functor\Maybe::just(1)->map('strval'));
 
         $called = false;
         $func = function($a) use (&$called) {
             $called = true;
         };
-        $this->assertEquals(f\Functor\Maybe::of(null), f\Functor\Maybe::of(null)->map($func));
+        $this->assertEquals(f\Functor\Maybe::nothing(), f\Functor\Maybe::nothing()->map($func));
         $this->assertFalse($called);
     }
 
@@ -33,8 +33,9 @@ class FunctorTest extends BaseTest
     {
         $getParent = f\invoker('getParent');
         $getName = f\invoker('getName');
-        $this->assertNull(
-            f\Functor\Maybe::of(null)->map($getParent)->map($getParent)->map($getName)->extract()
+        $this->assertEquals(
+            f\Functor\Maybe::nothing(),
+            f\Functor\Maybe::nothing()->map($getParent)->map($getParent)->map($getName)
         );
     }
 
@@ -51,7 +52,7 @@ class FunctorTest extends BaseTest
         };
 
         // Test with value
-        f\Functor\Maybe::of(10)->match($justHandler, $nothingHandler);
+        f\Functor\Maybe::just(10)->match($justHandler, $nothingHandler);
         $this->assertTrue($justHandlerCallFlag);
         $this->assertFalse($nothingHandlerCallFlag);
 
@@ -60,8 +61,56 @@ class FunctorTest extends BaseTest
         $nothingHandlerCallFlag = false;
 
         // Test without value
-        f\Functor\Maybe::of(null)->match($justHandler, $nothingHandler);
+        f\Functor\Maybe::nothing()->match($justHandler, $nothingHandler);
         $this->assertFalse($justHandlerCallFlag);
         $this->assertTrue($nothingHandlerCallFlag);
+    }
+
+    public function test_half()
+    {
+        $half = function ($x) {
+            f\Exception\InvalidArgumentException::assertInteger($x, __FUNCTION__, 1);
+            if (f\is_even($x)) {
+                return f\Functor\Maybe::just($x)->map(function ($n) {
+                    return $n / 2;
+                });
+            } else {
+                return f\Functor\Maybe::nothing();
+            }
+        };
+
+        $this->assertEquals(
+            f\Functor\Maybe::just(2),
+            f\Functor\Maybe::just(8)->map($half)->map($half)
+        );
+
+        $this->assertEquals(
+            f\Functor\Maybe::nothing(),
+            f\Functor\Maybe::just(3)->map($half)
+        );
+    }
+
+    public function test_div_zero()
+    {
+        $safe_div = function ($a, $b) {
+            f\Exception\InvalidArgumentException::assertInteger($a, __FUNCTION__, 1);
+            f\Exception\InvalidArgumentException::assertInteger($b, __FUNCTION__, 2);
+
+            if ($b == 0) {
+                return f\Functor\Maybe::nothing();
+            }
+
+            return f\Functor\Maybe::just($a / $b);
+        };
+
+        $this->assertEquals(
+            f\Functor\Maybe::just(4),
+            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 2))
+        );
+
+        $this->assertEquals(
+            f\Functor\Maybe::nothing(),
+            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 0))
+        );
     }
 }
