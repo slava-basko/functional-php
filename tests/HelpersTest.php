@@ -305,4 +305,22 @@ class HelpersTest extends BaseTest
             f\omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3])
         );
     }
+
+    public function test_find_missing_keys()
+    {
+        $this->assertEquals(
+            ['b'],
+            f\find_missing_keys(['a', 'b'], ['a' => 123])
+        );
+
+        $findUserMissingFields = f\find_missing_keys(['login', 'email']);
+        $this->assertEquals(
+            [],
+            $findUserMissingFields(['login' => 'admin', 'email' => 'admin@example.com'])
+        );
+        $this->assertEquals(
+            ['email'],
+            $findUserMissingFields(['login' => 'admin'])
+        );
+    }
 }

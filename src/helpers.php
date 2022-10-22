@@ -394,6 +394,7 @@ function props($properties, $object = null)
 
     return fold(function ($accumulator, $property) use ($object) {
         $accumulator[] = prop($property, $object);
+
         return $accumulator;
     }, [], $properties);
 }
@@ -648,3 +649,25 @@ function map_keys(callable $f, $keys = null, $object = null)
 }
 
 define('Basko\Functional\map_for', __NAMESPACE__ . '\\map_for');
+
+/**
+ * Finds if a given array has all of the required keys set.
+ *
+ * @param $keys
+ * @param $array
+ * @return callable|int[]|string[]
+ */
+function find_missing_keys($keys, $array = null)
+{
+    InvalidArgumentException::assertList($keys, __FUNCTION__, 1);
+
+    if (is_null($array)) {
+        return partial(find_missing_keys, $keys);
+    }
+
+    InvalidArgumentException::assertList($array, __FUNCTION__, 2);
+
+    return array_keys(array_diff_key(array_flip($keys), $array));
+}
+
+define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
