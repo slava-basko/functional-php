@@ -176,30 +176,6 @@ function join($separator, $list = null)
 define('Basko\Functional\join', __NAMESPACE__ . '\\join');
 
 /**
- * Performs an IF condition over a value using functions as statements.
- *
- * @param callable $if the condition function
- * @param callable $then function to call if condition is true
- * @no-named-arguments
- */
-function when($if, $then = null)
-{
-    if (is_null($then)) {
-        return partial(when, $if);
-    }
-    InvalidArgumentException::assertCallback($if, __FUNCTION__, 1);
-    InvalidArgumentException::assertCallback($then, __FUNCTION__, 2);
-
-    return function () use ($if, $then) {
-        $args = func_get_args();
-
-        return call_user_func_array($if, $args) ? call_user_func_array($then, $args) : null;
-    };
-}
-
-define('Basko\Functional\when', __NAMESPACE__ . '\\when');
-
-/**
  * Performs an if/else condition over a value using functions as statements.
  *
  * @param callable $if the condition function
@@ -218,8 +194,9 @@ function if_else($if, $then = null, $else = null)
     }
     InvalidArgumentException::assertCallback($else, __FUNCTION__, 3);
 
-    return function ($value) use ($if, $then, $else) {
-        return call_user_func(when($if, $then), $value) ?: $else($value);
+    return function () use ($if, $then, $else) {
+        $args = func_get_args();
+        return call_user_func_array($if, $args) ? call_user_func_array($then, $args) : call_user_func_array($else, $args);
     };
 }
 
@@ -418,6 +395,8 @@ function assoc($key, $val = null, $list = null)
         return partial(assoc, $key, $val);
     }
 
+    $possibleCopy = if_else(unary('is_object'), copy, identity);
+
     return fold(function ($accumulator, $entry, $index) use ($key, $val) {
         if (\is_object($accumulator)) {
             if ($key == $index) {
@@ -434,7 +413,7 @@ function assoc($key, $val = null, $list = null)
         }
 
         return $accumulator;
-    }, $list, $list);
+    }, $possibleCopy($list), $list);
 }
 
 define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
@@ -671,3 +650,34 @@ function find_missing_keys($keys, $array = null)
 }
 
 define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
+
+/**
+ * @param $instanceof
+ * @param $object
+ * @return bool|callable
+ */
+function instance_of($instanceof, $object = null)
+{
+    if (is_null($object)) {
+        return partial(instance_of, $instanceof);
+    }
+    return $object instanceof $instanceof;
+}
+
+define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
+
+/**
+ * @param $object
+ * @return mixed
+ */
+function copy($object)
+{
+    $cond = cond([
+        ['is_object', function($obj) {return clone $obj;}], // TODO: what todo with Traversable?
+        ['is_array', identity],
+        [T, identity],
+    ]);
+    return $cond($object);
+}
+
+define('Basko\Functional\copy', __NAMESPACE__ . '\\copy');

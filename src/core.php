@@ -319,6 +319,8 @@ function always($value)
     };
 }
 
+define('Basko\Functional\always', __NAMESPACE__ . '\\always');
+
 /**
  * Returns new function which applies each given function to the result of another from right to left.
  * compose(f, g, h) is the same as f(g(h(x)))
@@ -435,13 +437,8 @@ function cond(array $conditions)
 
         list($if, $then) = head($conditions);
 
-        $cond = when($if, $then);
-        if ($res = $cond($value)) {
-            return $res;
-        } else {
-            $cb = cond(tail($conditions));
-            return $cb($value);
-        }
+        $cond = if_else($if, $then, cond(tail($conditions)));
+        return $cond($value);
     };
 }
 

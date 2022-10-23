@@ -20,16 +20,6 @@ class HelpersTest extends BaseTest
         $this->assertEquals('1|2|3', f\join('|', [1, 2, 3]));
     }
 
-    function test_when()
-    {
-        $eventStrIfEven = f\when(f\is_even, f\always('even'));
-        $this->assertEquals('even', $eventStrIfEven(2));
-
-        $ifEven = f\when(f\is_even);
-        $eventStrIfEven = $ifEven(f\always('even'));
-        $this->assertEquals('even', $eventStrIfEven(2));
-    }
-
     public function test_if_else()
     {
         $if_foo = f\if_else(f\eq('foo'), f\always('bar'), f\always('baz'));
@@ -198,6 +188,10 @@ class HelpersTest extends BaseTest
         $foo = f\assoc('foo');
         $foo42 = $foo(42);
         $this->assertEquals(['foo' => 42], $foo42(['foo' => 22]));
+
+        $data2 = (object)['foo' => 'foo', 'bar' => 'bar'];
+        $this->assertEquals((object)['foo' => 'foo', 'bar' => 'bar', 'baz' => 42], f\assoc('baz', 42, $data2));
+        $this->assertEquals((object)['foo' => 'foo', 'bar' => 'bar'], $data2);
     }
 
     public function test_assoc_path()
@@ -322,5 +316,22 @@ class HelpersTest extends BaseTest
             ['email'],
             $findUserMissingFields(['login' => 'admin'])
         );
+    }
+
+    public function test_instance_of()
+    {
+        $this->assertTrue(f\instance_of(\User::class, new \User([])));
+        $this->assertFalse(f\instance_of(\User::class, new \stdClass()));
+
+        $instanceOfUser = f\instance_of(\User::class);
+        $this->assertTrue($instanceOfUser(new \User([])));
+    }
+
+    public function test_copy()
+    {
+        $dataObj = new \stdClass();
+        $dataObj->a = 1;
+
+        $this->assertNotSame($dataObj, f\copy($dataObj));
     }
 }
