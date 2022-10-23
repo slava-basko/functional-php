@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use Basko\Functional as f;
+use Traversable;
 
 class HelpersTest extends BaseTest
 {
@@ -18,6 +19,21 @@ class HelpersTest extends BaseTest
         $this->assertEquals('ab', $concatWithA('b'));
 
         $this->assertEquals('1|2|3', f\join('|', [1, 2, 3]));
+    }
+
+    public function test_with_iterable()
+    {
+        $f = function() {
+            yield 1;
+            yield 2;
+            yield 3;
+        };
+
+        $iter = $f();
+
+        $this->assertTrue($iter instanceof Traversable);
+
+        $this->assertEquals('1 2 3', f\join(' ', $iter));
     }
 
     function test_when()
