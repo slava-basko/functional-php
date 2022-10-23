@@ -3,6 +3,7 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Functor\Maybe;
 use Basko\Functional\Functor\Monad;
 
 /**
@@ -516,6 +517,7 @@ define('Basko\Functional\both', __NAMESPACE__ . '\\both');
  * @param callable[] $flist
  * @param $list
  * @return array|callable
+ * @no-named-arguments
  */
 function ap($flist, $list = null)
 {
@@ -539,3 +541,26 @@ function ap($flist, $list = null)
 }
 
 define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
+
+/**
+ * Lift a function so that it accepts Monad as parameters. Lifted function returns Monad.
+ *
+ * Note, that you cannot use curry on a lifted function.
+ *
+ * @param callable $f
+ * @return callable
+ * @no-named-arguments
+ */
+function liftm(callable $f)
+{
+    return function () use ($f) {
+        return Maybe::of(call_user_func_array($f, map(function ($m) {
+            if (instance_of(Monad::class, $m)) {
+                return $m->extract();
+            }
+            return $m;
+        }, func_get_args())));
+    };
+}
+
+define('Basko\Functional\liftm', __NAMESPACE__ . '\\liftm');

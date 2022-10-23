@@ -908,6 +908,23 @@ median([2, 9, 7]); // 7
 median([7, 2, 10, 9]); // 8
 ```
 
+### liftm
+Lift a function so that it accepts Monad as parameters. Lifted function returns Monad.
+
+_Note, that you cannot use curry on a lifted function._
+```php
+$plus = function ($a, $b) {
+    if (!is_int($a) || !is_int($b)) {
+        throw new \InvalidArgumentException('Params should INT');
+    }
+    return $a + $b;
+};
+$plus(3, Maybe::just(2)); // InvalidArgumentException: Params should INT
+
+$plusm = liftm($plus);
+$plusm(3, Maybe::just(2)); // Maybe::just(5)
+```
+
 ## Influenced by
 
 https://ramdajs.com \

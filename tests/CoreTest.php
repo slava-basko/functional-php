@@ -359,4 +359,20 @@ class CoreTest extends BaseTest
             f\ap([f\concat('tasty '), f\unary('strtoupper')], ['pizza', 'salad'])
         );
     }
+
+    public function test_liftm()
+    {
+        $plusm = f\liftm(f\plus);
+        $this->assertEquals(f\Functor\Maybe::just(5), $plusm(3, f\Functor\Maybe::just(2)));
+        $this->assertEquals(
+            f\Functor\Maybe::just(5),
+            $plusm(f\Functor\Maybe::just(3), f\Functor\Maybe::just(2))
+        );
+
+        $containsm = f\liftm(f\contains);
+        $this->assertEquals(
+            f\Functor\Maybe::just(true),
+            $containsm('foo', f\Functor\Maybe::just('foobar'))
+        );
+    }
 }
