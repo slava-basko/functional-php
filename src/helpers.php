@@ -679,7 +679,7 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
 function copy($object)
 {
     $cond = cond([
-        ['is_object', function($obj) {
+        ['is_object', function ($obj) {
             return clone $obj;
         }], // TODO: what todo with Traversable?
         ['is_array', identity],
