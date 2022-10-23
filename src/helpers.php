@@ -3,6 +3,7 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Traversable;
 
 /**
  * @internal
@@ -60,7 +61,7 @@ function _value_to_ref($value, $key = null)
     $type = \gettype($value);
     if ($type === 'array') {
         $ref = '[' . implode(':', map(_value_to_ref, $value)) . ']';
-    } elseif ($value instanceof \Traversable) {
+    } elseif ($value instanceof Traversable) {
         $ref = _object_to_ref($value) . '[' . implode(':', map(_value_to_ref, $value)) . ']';
     } elseif ($type === 'object') {
         $ref = _object_to_ref($value);
@@ -169,6 +170,9 @@ function join($separator, $list = null)
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
+    if ($list instanceof Traversable) {
+        $list = iterator_to_array($list);
+    }
 
     return implode($separator, $list);
 }
@@ -282,7 +286,7 @@ function len($a)
         return strlen($a);
     }
 
-    if ($a instanceof \Traversable) {
+    if ($a instanceof Traversable) {
         $a = iterator_to_array($a);
     }
 
@@ -560,7 +564,7 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
  * Select the specified keys from the array.
  *
  * @param array $keys
- * @param \Traversable|array $array
+ * @param Traversable|array $array
  * @return callable|array
  * @no-named-arguments
  */
@@ -571,7 +575,7 @@ function select_keys(array $keys, $array = null)
     }
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
 
-    if ($array instanceof \Traversable) {
+    if ($array instanceof Traversable) {
         $array = iterator_to_array($array);
     }
 
@@ -584,7 +588,7 @@ define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys');
  * Returns an array with the specified keys omitted from the array.
  *
  * @param array $keys
- * @param \Traversable|array $array
+ * @param Traversable|array $array
  * @return callable|array
  * @no-named-arguments
  */
@@ -595,7 +599,7 @@ function omit_keys(array $keys, $array = null)
     }
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
 
-    if ($array instanceof \Traversable) {
+    if ($array instanceof Traversable) {
         $array = iterator_to_array($array);
     }
 
