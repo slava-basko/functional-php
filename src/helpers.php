@@ -200,7 +200,9 @@ function if_else($if, $then = null, $else = null)
 
     return function () use ($if, $then, $else) {
         $args = func_get_args();
-        return call_user_func_array($if, $args) ? call_user_func_array($then, $args) : call_user_func_array($else, $args);
+        return call_user_func_array($if, $args)
+            ? call_user_func_array($then, $args)
+            : call_user_func_array($else, $args);
     };
 }
 
@@ -677,7 +679,9 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
 function copy($object)
 {
     $cond = cond([
-        ['is_object', function($obj) {return clone $obj;}], // TODO: what todo with Traversable?
+        ['is_object', function($obj) {
+            return clone $obj;
+        }], // TODO: what todo with Traversable?
         ['is_array', identity],
         [T, identity],
     ]);
