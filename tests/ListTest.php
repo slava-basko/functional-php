@@ -271,7 +271,7 @@ class ListTest extends BaseTest
         $list_iterator = new \ArrayIterator($list);
         $hash = ['c' => 'cat', 'b' => 'bear', 'a' => 'aardvark'];
         $hash_iterator = new \ArrayIterator($hash);
-        $sort_callback = static function ($left, $right, $collection) {
+        $sort_callback = function ($left, $right, $collection) {
             InvalidArgumentException::assertList($collection, __FUNCTION__, 3);
             return strcmp($left, $right);
         };
@@ -281,5 +281,77 @@ class ListTest extends BaseTest
         $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort($sort_callback, $list_iterator));
         $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash));
         $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash_iterator));
+    }
+
+    public function test_append()
+    {
+        $arr = ['one', 'two'];
+
+        $arr2 = f\append('three', $arr);
+        $this->assertNotEquals($arr, $arr2);
+        $this->assertEquals(['one', 'two', 'three'], $arr2);
+
+        $arr3 = f\append('three', new \ArrayIterator($arr));
+        $this->assertEquals(['one', 'two', 'three'], $arr3);
+    }
+
+    public function test_prepend()
+    {
+        $arr = ['one', 'two'];
+
+        $arr2 = f\prepend('three', $arr);
+        $this->assertNotEquals($arr, $arr2);
+        $this->assertEquals(['three', 'one', 'two'], $arr2);
+
+        $arr3 = f\prepend('three', new \ArrayIterator($arr));
+        $this->assertEquals(['three', 'one', 'two'], $arr3);
+    }
+
+    public function test_ascend()
+    {
+        $byAge = f\ascend(f\prop('age'));
+        $people = [
+            ['name' => 'Emma', 'age' => 70],
+            ['name' => 'Peter', 'age' => 78],
+            ['name' => 'Mikhail', 'age' => 62],
+        ];
+        $peopleByYoungestFirst = f\sort($byAge, $people);
+        $this->assertEquals(
+            [
+                2 => ['name' => 'Mikhail', 'age' => 62],
+                0 => ['name' => 'Emma', 'age' => 70],
+                1 => ['name' => 'Peter', 'age' => 78],
+            ],
+            $peopleByYoungestFirst
+        );
+
+        $sortAscByAge = f\sort(f\ascend(f\prop('age')));
+        $this->assertEquals(
+            [
+                2 => ['name' => 'Mikhail', 'age' => 62],
+                0 => ['name' => 'Emma', 'age' => 70],
+                1 => ['name' => 'Peter', 'age' => 78],
+            ],
+            $sortAscByAge($people)
+        );
+    }
+
+    public function test_descend()
+    {
+        $byAge = f\descend(f\prop('age'));
+        $people = [
+            ['name' => 'Emma', 'age' => 70],
+            ['name' => 'Peter', 'age' => 78],
+            ['name' => 'Mikhail', 'age' => 62],
+        ];
+        $peopleByOldestFirst = f\sort($byAge, $people);
+        $this->assertEquals(
+            [
+                1 => ['name' => 'Peter', 'age' => 78],
+                0 => ['name' => 'Emma', 'age' => 70],
+                2 => ['name' => 'Mikhail', 'age' => 62],
+            ],
+            $peopleByOldestFirst
+        );
     }
 }

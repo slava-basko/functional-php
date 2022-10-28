@@ -5,6 +5,61 @@ namespace Basko\Functional;
 use Basko\Functional\Exception\InvalidArgumentException;
 
 /**
+ * Returns a new list containing the contents of the given list, followed by the given element.
+ *
+ * @param $element
+ * @param $list
+ * @return array|callable
+ * @no-named-arguments
+ */
+function append($element, $list = null)
+{
+    if (is_null($list)) {
+        return partial(append, $element);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $aggregation = [];
+
+    foreach ($list as $listElement) {
+        $aggregation[] = $listElement;
+    }
+    $aggregation[] = $element;
+
+    return $aggregation;
+}
+
+define('Basko\Functional\append', __NAMESPACE__ . '\\append');
+
+/**
+ * Returns a new list with the given element at the front, followed by the contents of the list.
+ *
+ * @param $element
+ * @param $list
+ * @return array|callable
+ * @no-named-arguments
+ */
+function prepend($element, $list = null)
+{
+    if (is_null($list)) {
+        return partial(prepend, $element);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $aggregation = [$element];
+
+    foreach ($list as $listElement) {
+        $aggregation[] = $listElement;
+    }
+
+    return $aggregation;
+}
+
+define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
+
+/**
  * Extract a property from a list of objects.
  *
  * @param string $propertyName
@@ -406,24 +461,78 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 /**
  * Sorts a list with a user-defined function.
  *
- * @param \Traversable|array $collection
  * @param callable $f
- * @return array
+ * @param \Traversable|array $list
+ * @return array|callable
  * @no-named-arguments
  */
-function sort(callable $f, $collection)
+function sort(callable $f, $list = null)
 {
-    InvalidArgumentException::assertList($collection, __FUNCTION__, 2);
-
-    if ($collection instanceof \Traversable) {
-        $array = iterator_to_array($collection);
-    } else {
-        $array = $collection;
+    if (is_null($list)) {
+        return partial(sort, $f);
     }
 
-    uasort($array, function ($left, $right) use ($f, $collection) {
-        return $f($left, $right, $collection);
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    if ($list instanceof \Traversable) {
+        $array = iterator_to_array($list);
+    } else {
+        $array = $list;
+    }
+
+    uasort($array, function ($left, $right) use ($f, $list) {
+        return $f($left, $right, $list);
     });
 
     return $array;
 }
+
+define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
+
+/**
+ * Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+ *
+ * @param callable $f
+ * @param $a
+ * @param $b
+ * @return int|callable
+ */
+function ascend(callable $f, $a = null, $b = null)
+{
+    if (is_null($a) && is_null($b)) {
+        return partial(ascend, $f);
+    } elseif (is_null($b)) {
+        return partial(ascend, $f, $a);
+    }
+
+    $aa = $f($a);
+    $bb = $f($b);
+
+    return $aa < $bb ? -1 : $aa > $bb ? 1 : 0;
+}
+
+define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
+
+/**
+ * Makes a descending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+ *
+ * @param callable $f
+ * @param $a
+ * @param $b
+ * @return int|callable
+ */
+function descend(callable $f, $a = null, $b = null)
+{
+    if (is_null($a) && is_null($b)) {
+        return partial(descend, $f);
+    } elseif (is_null($b)) {
+        return partial(descend, $f, $a);
+    }
+
+    $aa = $f($a);
+    $bb = $f($b);
+
+    return $aa > $bb ? -1 : $aa < $bb ? 1 : 0;
+}
+
+define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');

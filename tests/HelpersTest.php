@@ -350,4 +350,20 @@ class HelpersTest extends BaseTest
 
         $this->assertNotSame($dataObj, f\copy($dataObj));
     }
+
+    public function test_pick_random_value()
+    {
+        $treasure = [
+            'sword',
+            'gold',
+            'ring',
+            'jewel'
+        ];
+
+        $getTreasureItem = f\pick_random_value($treasure);
+        $this->assertTrue(in_array($getTreasureItem(), $treasure));
+
+        $getTreasureItem = f\pick_random_value(new \ArrayIterator($treasure));
+        $this->assertTrue(in_array($getTreasureItem(), $treasure));
+    }
 }

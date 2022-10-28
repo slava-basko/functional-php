@@ -925,6 +925,44 @@ $plusm = liftm($plus);
 $plusm(3, Maybe::just(2)); // Maybe::just(5)
 ```
 
+### pick_random_value
+Return random value from list.
+```php
+pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
+```
+
+### append
+Returns a new list containing the contents of the given list, followed by the given element.
+```php
+append('three', ['one', 'two']); // ['one', 'two', 'three']
+```
+
+### prepend
+Returns a new list with the given element at the front, followed by the contents of the list.
+```php
+prepend('three', ['one', 'two']); // ['three', 'one', 'two']
+```
+
+### ascend
+Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+```php
+sort(ascend(prop('age')), [
+    ['name' => 'Emma', 'age' => 70],
+    ['name' => 'Peter', 'age' => 78],
+    ['name' => 'Mikhail', 'age' => 62],
+]); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
+```
+
+### descend
+Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+```php
+sort(descend(prop('age')), [
+    ['name' => 'Emma', 'age' => 70],
+    ['name' => 'Peter', 'age' => 78],
+    ['name' => 'Mikhail', 'age' => 62],
+]); // [['name' => 'Peter', 'age' => 78], ['name' => 'Emma', 'age' => 70], ['name' => 'Mikhail', 'age' => 62]]
+```
+
 ## Influenced by
 
 https://ramdajs.com \
