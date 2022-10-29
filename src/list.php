@@ -508,7 +508,7 @@ function ascend(callable $f, $a = null, $b = null)
     $aa = $f($a);
     $bb = $f($b);
 
-    return $aa < $bb ? -1 : $aa > $bb ? 1 : 0;
+    return ($aa < $bb ? -1 : $aa > $bb) ? 1 : 0;
 }
 
 define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
@@ -532,7 +532,7 @@ function descend(callable $f, $a = null, $b = null)
     $aa = $f($a);
     $bb = $f($b);
 
-    return $aa > $bb ? -1 : $aa < $bb ? 1 : 0;
+    return ($aa > $bb ? -1 : $aa < $bb) ? 1 : 0;
 }
 
 define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
