@@ -536,3 +536,53 @@ function descend(callable $f, $a = null, $b = null)
 }
 
 define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
+
+/**
+ * Returns a new list containing only one copy of each element in the original list,
+ * based upon the value returned by applying the supplied function to each list element.
+ * Prefers the first item if the supplied function produces the same value on two items.
+ *
+ * @param callable $f
+ * @param \Traversable|array $list
+ * @return array|callable
+ * @no-named-arguments
+ */
+function uniq_by(callable $f, $list)
+{
+    if (is_null($list)) {
+        return partial(uniq_by, $f);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $_aggregation = [];
+    $aggregation = [];
+
+    foreach ($list as $element) {
+        $appliedItem = $f($element);
+        if (!in_array($appliedItem, $_aggregation, true)) {
+            $_aggregation[] = $appliedItem;
+            $aggregation[] = $element;
+        }
+    }
+
+    return $aggregation;
+}
+
+define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by');
+
+/**
+ * Returns a new list containing only one copy of each element in the original list.
+ *
+ * @param \Traversable|array $list
+ * @return array|callable
+ * @no-named-arguments
+ */
+function uniq($list)
+{
+    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    return uniq_by(identity, $list);
+}
+
+define('Basko\Functional\uniq', __NAMESPACE__ . '\\uniq');

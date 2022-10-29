@@ -955,6 +955,21 @@ sort(descend(prop('age')), [
 ]); // [['name' => 'Peter', 'age' => 78], ['name' => 'Emma', 'age' => 70], ['name' => 'Mikhail', 'age' => 62]]
 ```
 
+### uniq_by
+Returns a new list containing only one copy of each element in the original list, based upon the value 
+returned by applying the supplied function to each list element. Prefers the first item if the supplied function 
+produces the same value on two items.
+```php
+uniq_by('abs', [-1, -5, 2, 10, 1, 2]); // [-1, -5, 2, 10]
+```
+
+### uniq
+Returns a new list containing only one copy of each element in the original list.
+```php
+uniq([1, 1, 2, 1]); // [1, 2]
+uniq([1, '1']); // [1, '1']
+```
+
 ## Influenced by
 
 https://ramdajs.com \

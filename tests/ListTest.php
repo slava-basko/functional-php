@@ -354,4 +354,28 @@ class ListTest extends BaseTest
             $peopleByOldestFirst
         );
     }
+
+    public function test_uniq_by()
+    {
+        $this->assertEquals(
+            [-1, -5, 2, 10],
+            f\uniq_by('abs', [-1, -5, 2, 10, 1, 2])
+        );
+    }
+
+    public function test_uniq()
+    {
+        $this->assertEquals(
+            [1, 2],
+            f\uniq([1, 1, 2, 1])
+        );
+        $this->assertEquals(
+            [1, '1'],
+            f\uniq([1, '1'])
+        );
+        $this->assertEquals(
+            [[42]],
+            f\uniq([[42], [42]])
+        );
+    }
 }
