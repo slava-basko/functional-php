@@ -508,14 +508,6 @@ The same as native `implode` function.
 join('|', [1, 2, 3]); // '1|2|3'
 ```
 
-### when
-Performs an IF condition over a value using functions as statements.
-```php
-$f = when(is_even, always('even'));
-$f(2); // 'even'
-$f(3); // NULL
-```
-
 ### if_else
 Performs an if/else condition over a value using functions as statements.
 ```php
