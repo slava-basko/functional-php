@@ -41,12 +41,12 @@ define('Basko\Functional\F', __NAMESPACE__ . '\\F');
 /**
  * @return null
  */
-function NULL()
+function N()
 {
     return null;
 }
 
-define('Basko\Functional\NULL', __NAMESPACE__ . '\\NULL');
+define('Basko\Functional\N', __NAMESPACE__ . '\\N');
 
 /**
  * @param mixed $a

@@ -148,7 +148,7 @@ class FunctorTest extends BaseTest
             $called = true;
         };
 
-        $optionalNoKey->map($func);
+        $optionalNoKey->match($func, f\N);
 
         $this->assertFalse($called);
     }

@@ -345,7 +345,7 @@ class CoreTest extends BaseTest
 
     public function test_null()
     {
-        $this->assertNull(f\NULL());
+        $this->assertNull(f\N());
     }
 
     public function test_ap()

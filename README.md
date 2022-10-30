@@ -1073,8 +1073,8 @@ class HandleEditArticle
         $article = $this->articles->get($command->id);
         
         // Only called if a fields has a provided value.
-        $command->title->map([$article, 'setTitle']);
-        $command->description->map([$article, 'setDescription']);
+        $command->title->match([$article, 'setTitle'], N);
+        $command->description->match([$article, 'setDescription'], N);
         
         $this->articles->save($article);
     }
