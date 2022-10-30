@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use Basko\Functional as f;
+use Basko\Functional\Functor\Optional;
 
 class FunctorTest extends BaseTest
 {
@@ -112,5 +113,43 @@ class FunctorTest extends BaseTest
             f\Functor\Maybe::nothing(),
             f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 0))
         );
+    }
+
+    public function test_optional()
+    {
+        $_POST = [
+            'title' => 'Some title',
+            'description' => null
+        ];
+
+        $optionalDescription = Optional::fromArrayKey('description', $_POST);
+
+        $called = false;
+        $func = function($a) use (&$called) {
+            $called = true;
+        };
+
+        $optionalDescription->map($func);
+
+        $this->assertTrue($called);
+    }
+
+    public function test_optional2()
+    {
+        $_POST = [
+            'title' => 'Some title',
+            'description' => null
+        ];
+
+        $optionalNoKey = Optional::fromArrayKey('no_key', $_POST);
+
+        $called = false;
+        $func = function($a) use (&$called) {
+            $called = true;
+        };
+
+        $optionalNoKey->map($func);
+
+        $this->assertFalse($called);
     }
 }

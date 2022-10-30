@@ -2,24 +2,28 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Functor\Traits\OfTrait;
+
 class Maybe extends Monad
 {
+    use OfTrait;
+
     const of = "Basko\Functional\Functor\Maybe::of";
 
     public static function just($value)
     {
-        return parent::of($value);
+        return static::of($value);
     }
 
     public static function nothing()
     {
-        return parent::of(null);
+        return static::of(null);
     }
 
     public function map(callable $f)
     {
         if (!is_null($this->value)) {
-            return parent::map($f);
+            return static::just($f($this->value));
         }
 
         return $this::nothing();

@@ -11,19 +11,7 @@ abstract class Monad
         $this->value = $value;
     }
 
-    public static function of($value)
-    {
-        if ($value instanceof static) {
-            return $value;
-        }
-
-        return new static($value);
-    }
-
-    public function map(callable $f)
-    {
-        return $this::of($f($this->value));
-    }
+    abstract public function map(callable $f);
 
     public function extract()
     {
