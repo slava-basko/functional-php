@@ -307,6 +307,35 @@ class ListTest extends BaseTest
         $this->assertEquals(['three', 'one', 'two'], $arr3);
     }
 
+    public function test_comparator()
+    {
+        $this->assertEquals(
+            [1, 1, 2, 3, 5, 8],
+            array_values(f\sort(f\comparator(function ($a, $b) {
+                return $a < $b;
+            }), [3, 1, 8, 1, 2, 5]))
+        );
+
+        $byAge = f\comparator(function ($a, $b) {
+            return f\prop('age', $a) < f\prop('age', $b);
+        });
+        $people = [
+            ['name' => 'Emma', 'age' => 70],
+            ['name' => 'Peter', 'age' => 78],
+            ['name' => 'Mikhail', 'age' => 62],
+        ];
+
+        $peopleByYoungestFirst = f\sort($byAge, $people);
+        $this->assertEquals(
+            [
+                2 => ['name' => 'Mikhail', 'age' => 62],
+                0 => ['name' => 'Emma', 'age' => 70],
+                1 => ['name' => 'Peter', 'age' => 78],
+            ],
+            $peopleByYoungestFirst
+        );
+    }
+
     public function test_ascend()
     {
         $byAge = f\ascend(f\prop('age'));
@@ -314,10 +343,12 @@ class ListTest extends BaseTest
             ['name' => 'Emma', 'age' => 70],
             ['name' => 'Peter', 'age' => 78],
             ['name' => 'Mikhail', 'age' => 62],
+            ['name' => 'Slava', 'age' => 33],
         ];
         $peopleByYoungestFirst = f\sort($byAge, $people);
         $this->assertEquals(
             [
+                3 => ['name' => 'Slava', 'age' => 33],
                 2 => ['name' => 'Mikhail', 'age' => 62],
                 0 => ['name' => 'Emma', 'age' => 70],
                 1 => ['name' => 'Peter', 'age' => 78],
@@ -331,6 +362,7 @@ class ListTest extends BaseTest
                 2 => ['name' => 'Mikhail', 'age' => 62],
                 0 => ['name' => 'Emma', 'age' => 70],
                 1 => ['name' => 'Peter', 'age' => 78],
+                3 => ['name' => 'Slava', 'age' => 33],
             ],
             $sortAscByAge($people)
         );

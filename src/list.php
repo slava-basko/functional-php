@@ -490,6 +490,22 @@ function sort(callable $f, $list = null)
 define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
 
 /**
+ * Makes a comparator function out of a function that reports whether the first
+ * element is less than the second.
+ *
+ * @param callable $f
+ * @return callable
+ */
+function comparator(callable $f)
+{
+    return function ($a, $b) use ($f) {
+        return $f($a, $b) ? -1 : ($f($b, $a) ? 1 : 0);
+    };
+}
+
+define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
+
+/**
  * Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
  *
  * @param callable $f
@@ -508,7 +524,7 @@ function ascend(callable $f, $a = null, $b = null)
     $aa = $f($a);
     $bb = $f($b);
 
-    return ($aa < $bb ? -1 : $aa > $bb) ? 1 : 0;
+    return $aa < $bb ? -1 : ($aa > $bb ? 1 : 0);
 }
 
 define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
@@ -532,7 +548,7 @@ function descend(callable $f, $a = null, $b = null)
     $aa = $f($a);
     $bb = $f($b);
 
-    return ($aa > $bb ? -1 : $aa < $bb) ? 1 : 0;
+    return $aa > $bb ? -1 : ($aa < $bb ? 1 : 0);
 }
 
 define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');

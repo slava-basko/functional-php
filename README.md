@@ -955,6 +955,26 @@ sort(descend(prop('age')), [
 ]); // [['name' => 'Peter', 'age' => 78], ['name' => 'Emma', 'age' => 70], ['name' => 'Mikhail', 'age' => 62]]
 ```
 
+### comparator
+Makes a comparator function out of a function that reports whether the first element is less than the second.
+```php
+$ar = [1, 1, 2, 3, 5, 8];
+usort($ar, comparator(function ($a, $b) {
+    return $a < $b;
+})); // $ar = [1, 1, 2, 3, 5, 8]
+
+sort(
+    comparator(function ($a, $b) {
+        return prop('age', $a) < prop('age', $b);
+    }), 
+    [
+        ['name' => 'Emma', 'age' => 70],
+        ['name' => 'Peter', 'age' => 78],
+        ['name' => 'Mikhail', 'age' => 62],
+    ]
+); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
+```
+
 ### uniq_by
 Returns a new list containing only one copy of each element in the original list, based upon the value 
 returned by applying the supplied function to each list element. Prefers the first item if the supplied function 
