@@ -22,7 +22,8 @@
       "src/math.php",
       "src/partial.php",
       "src/lens.php",
-      "src/helpers.php"
+      "src/helpers.php",
+      "src/string.php"
     ]
   },
   "autoload-dev": {
