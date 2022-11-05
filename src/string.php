@@ -21,7 +21,7 @@ function str_split($separator, $string = null)
 define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
 
 /**
- * Alias of native `str_replace`
+ * Alias of native `str_replace`.
  *
  * Use `partial_p` if you need $count argument:
  * $f = partial_p('str_replace', [

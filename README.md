@@ -996,6 +996,50 @@ uniq([1, 1, 2, 1]); // [1, 2]
 uniq([1, '1']); // [1, '1']
 ```
 
+### str_split
+Alias of `explode`.
+```php
+str_split(' ', 'Hello World'); // ['Hello', 'World']
+```
+
+### str_replace
+Alias of native `str_replace`.
+```php
+str_replace(' ', '', 'a b c d e f'); // abcdef
+```
+
+### str_starts_with
+Checks if `$string` starts with `$token`.
+```php
+str_starts_with('http://', 'http://gitbub.com'); // true
+```
+
+### str_ends_with
+Checks if `$string` ends with `$token`.
+```php
+str_ends_with('.com', 'http://gitbub.com'); // true
+```
+
+### str_test
+Checks if a string matches a regular expression.
+```php
+$is_numeric = str_test('/^[0-9.]+$/');
+$is_numeric('123.43'); // true
+$is_numeric('12a3.43'); // false
+```
+
+### str_pad_left
+Alias of `str_pad`.
+```php
+str_pad_left('6', '0', '481'); // 000481
+```
+
+### str_pad_right
+Alias of `str_pad`.
+```php
+str_pad_right('6', '0', '481'); // 481000
+```
+
 ## Optional
 Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
 Let's take CRUD operation as an example. Does a `null` `$description` mean "remove the description", 
