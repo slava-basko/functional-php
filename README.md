@@ -277,6 +277,12 @@ Produces a new list of elements by mapping each element in list through a transf
 map(plus(1), [1, 2, 3]); // [2, 3, 4]
 ```
 
+### flat_map
+Applies a function to each element in the list and collects the return values flattening one level of nested arrays.
+```php
+
+```
+
 ### each
 Calls function on each element in list. Returns origin list.
 ```php

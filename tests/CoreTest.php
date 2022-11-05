@@ -106,6 +106,36 @@ class CoreTest extends BaseTest
         $this->assertEquals([10, 20, 30], f\map(f\multiply(10), [1, 2, 3]));
     }
 
+    public function test_flat_map()
+    {
+        $numArray5 = [1, 2, 3, 4, 5];
+        $numArray5Nested = [[1, 2], [3, 4], [5]];
+
+        $flatten = f\flat_map(function($n) {
+            return $n;
+        }, $numArray5Nested);
+        $this->assertEquals($numArray5, $flatten);
+
+        $curriedDoubles = f\flat_map(function($n) {
+            return [$n, $n];
+        });
+        $doubles = $curriedDoubles($numArray5);
+
+        $this->assertEquals([1, 1, 2, 2, 3, 3, 4, 4, 5, 5], $doubles);
+
+        $nothing = f\flat_map(function ($x) {
+            return $x;
+        }, []);
+
+        $this->assertEquals([], $nothing);
+
+        $flatEmpty = f\flat_map(function ($_x) {
+            return [];
+        }, $numArray5);
+
+        $this->assertEquals([], $flatEmpty);
+    }
+
     public function test_each()
     {
         $calls = 0;
@@ -118,8 +148,6 @@ class CoreTest extends BaseTest
 
         $this->assertEquals([1, 2, 3], $each([1, 2, 3]));
         $this->assertEquals(3, $calls);
-
-        f\each(f\unary('print_r'), [1, 2, 3]);
     }
 
     function test_not()

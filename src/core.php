@@ -207,6 +207,43 @@ function map(callable $f, $list = null)
 define('Basko\Functional\map', __NAMESPACE__ . '\\map');
 
 /**
+ * `flat_map` works applying `$f` that returns a sequence for each element in a list,
+ * and flattening the results into the resulting array.
+ *
+ * flat_map(...) differs from flatten(map(...)) because it only flattens one level of nesting,
+ * whereas flatten will recursively flatten nested collections.
+ *
+ * @param callable $f
+ * @param $list
+ * @return array|callable
+ */
+function flat_map(callable $f, $list = null)
+{
+    if (is_null($list)) {
+        return partial(flat_map, $f);
+    }
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $flattened = [];
+
+    foreach ($list as $index => $element) {
+        $result = $f($element, $index, $list);
+
+        if (\is_array($result) || $result instanceof \Traversable) {
+            foreach ($result as $item) {
+                $flattened[] = $item;
+            }
+        } elseif ($result !== null) {
+            $flattened[] = $result;
+        }
+    }
+
+    return $flattened;
+}
+
+define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
+
+/**
  * Calls `$f` on each element in list. Returns origin `$list`.
  * Function arguments will be element, index, list
  *

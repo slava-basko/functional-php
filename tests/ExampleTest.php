@@ -12,17 +12,17 @@ class ExampleTest extends BaseTest
             [
                 'description' => 't-shirt',
                 'qty' => 2,
-                'value' => 20
+                'value' => 20,
             ],
             [
                 'description' => 'jeans',
                 'qty' => 1,
-                'value' => 30
+                'value' => 30,
             ],
             [
                 'description' => 'boots',
                 'qty' => 1,
-                'value' => 40
+                'value' => 40,
             ],
         ];
     }
@@ -58,8 +58,8 @@ class ExampleTest extends BaseTest
             2 => [
                 'description' => 'boots',
                 'qty' => 1,
-                'value' => 40
-            ]
+                'value' => 40,
+            ],
         ], array_filter(static::products(), $valueGreaterThen35));
     }
 
@@ -70,10 +70,10 @@ class ExampleTest extends BaseTest
             'params' => [
                 'a' => 1,
                 'b' => 2,
-            ]
+            ],
         ])));
         $this->assertEquals('a=1&b=2', $getParams(f\prop('params', [
-            'params' => 'a=1&b=2'
+            'params' => 'a=1&b=2',
         ])));
     }
 
@@ -82,13 +82,13 @@ class ExampleTest extends BaseTest
         // $response = !is_string($data['response']) ? json_encode($data['response']) : $data['response'];
         $prepareResponseToSave = f\if_else(f\not('is_string'), 'json_encode', f\identity);
         $this->assertEquals('OK', $prepareResponseToSave(f\prop('response', [
-            'response' => 'OK'
+            'response' => 'OK',
         ])));
         $this->assertEquals('{"a":1,"b":2}', $prepareResponseToSave(f\prop('response', [
             'response' => [
                 'a' => 1,
                 'b' => 2,
-            ]
+            ],
         ])));
     }
 
@@ -130,7 +130,7 @@ class ExampleTest extends BaseTest
             'array_merge',
             [
                 f\always($obj),
-                f\pipe(f\select_keys(['shipper_country', 'consignee_country']), f\map(f\ary('strtoupper', 1)))
+                f\pipe(f\select_keys(['shipper_country', 'consignee_country']), f\map(f\ary('strtoupper', 1))),
             ]
         );
         $m2_obj = $toUpperSomeFields($obj);
@@ -142,5 +142,55 @@ class ExampleTest extends BaseTest
         $this->assertEquals('NL', f\prop('shipper_country', $m3_obj));
         $this->assertEquals('CA', f\prop('consignee_country', $m3_obj));
         $this->assertEquals('John', f\prop('name', $m3_obj));
+    }
+
+    public function test_fetch_uniq_names()
+    {
+        $response = [
+            'items' => [
+                [
+                    'id' => 1,
+                    'type' => 'train',
+                    'users' => [
+                        ['id' => 1, 'name' => 'Jimmy Page'],
+                        ['id' => 5, 'name' => 'Roy Harper'],
+                    ],
+                ],
+                [
+                    'id' => 421,
+                    'type' => 'hotel',
+                    'users' => [
+                        ['id' => 1, 'name' => 'Jimmy Page'],
+                        ['id' => 2, 'name' => 'Robert Plant'],
+                    ],
+                ],
+                [
+                    'id' => 876,
+                    'type' => 'flight',
+                    'users' => [
+                        ['id' => 3, 'name' => 'John Paul Jones'],
+                        ['id' => 4, 'name' => 'John Bonham'],
+                    ],
+                ],
+            ],
+        ];
+
+        $getAllUsersNames = f\pipe(
+            f\prop('items'),
+            f\flat_map(f\prop('users')),
+            f\map(f\prop('name')),
+            f\uniq
+        );
+
+        $this->assertEquals(
+            [
+                'Jimmy Page',
+                'Roy Harper',
+                'Robert Plant',
+                'John Paul Jones',
+                'John Bonham',
+            ],
+            $getAllUsersNames($response)
+        );
     }
 }
