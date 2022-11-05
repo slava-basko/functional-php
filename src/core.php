@@ -207,6 +207,31 @@ function map(callable $f, $list = null)
 define('Basko\Functional\map', __NAMESPACE__ . '\\map');
 
 /**
+ * Calls `$f` on each element in list. Returns origin `$list`.
+ * Function arguments will be element, index, list
+ *
+ * @param callable $f
+ * @param \Traversable|array|null $list
+ * @return callable|array
+ * @no-named-arguments
+ */
+function each(callable $f, $list = null)
+{
+    if (is_null($list)) {
+        return partial(each, $f);
+    }
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    foreach ($list as $index => $element) {
+        $f($element, $index, $list);
+    }
+
+    return $list;
+}
+
+define('Basko\Functional\each', __NAMESPACE__ . '\\each');
+
+/**
  * Logical negation of the given $function
  *
  * @param callable $f The function to run value against
@@ -364,6 +389,7 @@ function pipe(callable $f, callable $g)
 
     return function () use ($f) {
         $args = func_get_args();
+
         return call_user_func_array($f, $args);
     };
 }
@@ -439,6 +465,7 @@ function cond(array $conditions)
         list($if, $then) = head($conditions);
 
         $cond = if_else($if, $then, cond(tail($conditions)));
+
         return $cond($value);
     };
 }
@@ -558,6 +585,7 @@ function liftm(callable $f)
             if (instance_of(Monad::class, $m)) {
                 return $m->extract();
             }
+
             return $m;
         }, func_get_args())));
     };

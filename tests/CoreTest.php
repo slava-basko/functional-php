@@ -106,6 +106,22 @@ class CoreTest extends BaseTest
         $this->assertEquals([10, 20, 30], f\map(f\multiply(10), [1, 2, 3]));
     }
 
+    public function test_each()
+    {
+        $calls = 0;
+        $func = function ($v) use (&$calls) {
+            $calls++;
+            return $v . '-other-value';
+        };
+
+        $each = f\each($func);
+
+        $this->assertEquals([1, 2, 3], $each([1, 2, 3]));
+        $this->assertEquals(3, $calls);
+
+        f\each(f\unary('print_r'), [1, 2, 3]);
+    }
+
     function test_not()
     {
         $notString = f\not('is_string');

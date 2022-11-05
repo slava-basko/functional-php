@@ -277,6 +277,12 @@ Produces a new list of elements by mapping each element in list through a transf
 map(plus(1), [1, 2, 3]); // [2, 3, 4]
 ```
 
+### each
+Calls function on each element in list. Returns origin list.
+```php
+each(unary('print_r'), [1, 2, 3]); // Print: 123
+```
+
 ### ap
 Applies a list of functions to a list of values.
 ```php
