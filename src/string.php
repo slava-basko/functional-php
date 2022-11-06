@@ -8,6 +8,7 @@ namespace Basko\Functional;
  * @param string $separator
  * @param string $string
  * @return callable|false|string[]
+ * @no-named-arguments
  */
 function str_split($separator, $string = null)
 {
@@ -34,6 +35,7 @@ define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
  * @param array|string $replace
  * @param array|string $subject
  * @return array|string|string[]|callable
+ * @no-named-arguments
  */
 function str_replace($search, $replace = null, $subject = null)
 {
@@ -54,6 +56,7 @@ define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
  * @param $token
  * @param $string
  * @return bool|callable
+ * @no-named-arguments
  */
 function str_starts_with($token, $string = null)
 {
@@ -72,6 +75,7 @@ define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
  * @param $token
  * @param $string
  * @return bool|callable
+ * @no-named-arguments
  */
 function str_ends_with($token, $string = null)
 {
@@ -90,6 +94,7 @@ define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
  * @param $pattern
  * @param $string
  * @return bool|callable
+ * @no-named-arguments
  */
 function str_test($pattern, $string = null)
 {
@@ -109,6 +114,7 @@ define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
  * @param $pad_string
  * @param $string
  * @return callable|string
+ * @no-named-arguments
  */
 function str_pad_left($length, $pad_string = null, $string = null)
 {
@@ -130,6 +136,7 @@ define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
  * @param $pad_string
  * @param $string
  * @return callable|string
+ * @no-named-arguments
  */
 function str_pad_right($length, $pad_string = null, $string = null)
 {
