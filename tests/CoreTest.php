@@ -134,6 +134,8 @@ class CoreTest extends BaseTest
         }, $numArray5);
 
         $this->assertEquals([], $flatEmpty);
+
+        $this->assertEquals([2, 3, 4], f\flat_map(f\plus(1), [1, 2, 3]));
     }
 
     public function test_each()
@@ -394,9 +396,10 @@ class CoreTest extends BaseTest
 
     public function test_ap()
     {
+        $f = f\ap([f\multiply(2), f\plus(3)]);
         $this->assertEquals(
             [2, 4, 6, 4, 5, 6],
-            f\ap([f\multiply(2), f\plus(3)], [1,2,3])
+            $f([1,2,3])
         );
         $this->assertEquals(
             ['tasty pizza', 'tasty salad', 'PIZZA', 'SALAD'],

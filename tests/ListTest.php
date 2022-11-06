@@ -208,13 +208,11 @@ class ListTest extends BaseTest
             ],
         ];
 
-        list($best, $good_students, $losers) = f\partition(
-            [
-                f\compose(f\gte(9), f\prop('score')),
-                f\compose(f\both(f\gt(6), f\lt(9)), f\prop('score'))
-            ],
-            $students
-        );
+        $f = f\partition([
+            f\compose(f\gte(9), f\prop('score')),
+            f\compose(f\both(f\gt(6), f\lt(9)), f\prop('score'))
+        ]);
+        list($best, $good_students, $losers) = $f($students);
 
         $this->assertEquals([
             3 => [
@@ -287,7 +285,8 @@ class ListTest extends BaseTest
     {
         $arr = ['one', 'two'];
 
-        $arr2 = f\append('three', $arr);
+        $appendThree = f\append('three');
+        $arr2 = $appendThree($arr);
         $this->assertNotEquals($arr, $arr2);
         $this->assertEquals(['one', 'two', 'three'], $arr2);
 
@@ -299,7 +298,8 @@ class ListTest extends BaseTest
     {
         $arr = ['one', 'two'];
 
-        $arr2 = f\prepend('three', $arr);
+        $prependThree = f\prepend('three');
+        $arr2 = $prependThree($arr);
         $this->assertNotEquals($arr, $arr2);
         $this->assertEquals(['three', 'one', 'two'], $arr2);
 
@@ -389,9 +389,10 @@ class ListTest extends BaseTest
 
     public function test_uniq_by()
     {
+        $uniq_by_abs = f\uniq_by('abs');
         $this->assertEquals(
             [-1, -5, 2, 10],
-            f\uniq_by('abs', [-1, -5, 2, 10, 1, 2])
+            $uniq_by_abs([-1, -5, 2, 10, 1, 2])
         );
     }
 

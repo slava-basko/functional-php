@@ -563,7 +563,7 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
  * @return array|callable
  * @no-named-arguments
  */
-function uniq_by(callable $f, $list)
+function uniq_by(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(uniq_by, $f);

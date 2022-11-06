@@ -105,6 +105,7 @@ class HelpersTest extends BaseTest
     {
         $this->assertEquals(3, f\len('foo'));
         $this->assertEquals(2, f\len(['a', 'b']));
+        $this->assertEquals(2, f\len(new \ArrayIterator(['a', 'b'])));
     }
 
     public function test_prop()
@@ -290,6 +291,8 @@ class HelpersTest extends BaseTest
             f\prop_thunk('tracking_number', $data1),
             f\prop_thunk('tracking_number', $data2)
         )));
+
+        $this->assertNull(f\either());
     }
 
     public function test_quote()
@@ -306,13 +309,22 @@ class HelpersTest extends BaseTest
             ['bar' => 2, 'baz' => 3],
             f\select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3])
         );
+        $this->assertEquals(
+            ['bar' => 2, 'baz' => 3],
+            f\select_keys(['bar', 'baz'], new \ArrayIterator(['foo' => 1, 'bar' => 2, 'baz' => 3]))
+        );
     }
 
     public function test_omit_keys()
     {
+        $f = f\omit_keys(['baz']);
         $this->assertEquals(
             ['foo' => 1, 'bar' => 2],
-            f\omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3])
+            $f(['foo' => 1, 'bar' => 2, 'baz' => 3])
+        );
+        $this->assertEquals(
+            ['foo' => 1, 'bar' => 2],
+            $f(new \ArrayIterator(['foo' => 1, 'bar' => 2, 'baz' => 3]))
         );
     }
 
@@ -365,5 +377,21 @@ class HelpersTest extends BaseTest
 
         $getTreasureItem = f\pick_random_value(new \ArrayIterator($treasure));
         $this->assertTrue(in_array($getTreasureItem(), $treasure));
+    }
+
+    public function test_map_keys()
+    {
+        $f = f\map_keys('strtoupper');
+        $f2 = $f(['shipper_country', 'consignee_country']);
+
+        $obj = $f2([
+            'shipper_country' => 'nl',
+            'consignee_country' => 'ca',
+            'name' => 'John',
+        ]);
+
+        $this->assertEquals('NL', f\prop('shipper_country', $obj));
+        $this->assertEquals('CA', f\prop('consignee_country', $obj));
+        $this->assertEquals('John', f\prop('name', $obj));
     }
 }

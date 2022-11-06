@@ -622,9 +622,9 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
 function map_keys(callable $f, $keys = null, $object = null)
 {
     if (is_null($keys) && is_null($object)) {
-        return partial(map_for, $f);
+        return partial(map_keys, $f);
     } elseif (is_null($object)) {
-        return partial(map_for, $f, $keys);
+        return partial(map_keys, $f, $keys);
     }
 
     return array_merge(
@@ -633,7 +633,7 @@ function map_keys(callable $f, $keys = null, $object = null)
     );
 }
 
-define('Basko\Functional\map_for', __NAMESPACE__ . '\\map_for');
+define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
 
 /**
  * Finds if a given array has all of the required keys set.

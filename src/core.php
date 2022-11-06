@@ -216,6 +216,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
  * @param callable $f
  * @param $list
  * @return array|callable
+ * @no-named-arguments
  */
 function flat_map(callable $f, $list = null)
 {
@@ -590,7 +591,7 @@ function ap($flist, $list = null)
     }
 
     if (is_null($list)) {
-        return partial(ap, $list);
+        return partial(ap, $flist);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);

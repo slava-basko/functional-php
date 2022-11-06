@@ -19,6 +19,10 @@ class StringTest extends BaseTest
         $this->assertEquals('abcdef', $noSpace($string));
         $this->assertEquals('cdef', f\str_replace(['a', 'b', ' '], '', $string));
         $this->assertEquals('xbcdyf', f\str_replace(['a', 'e', ' '], ['x', 'y', ''], $string));
+
+        $f = f\str_replace(' ');
+        $f2 = $f('');
+        $this->assertEquals('abcdef', $f2($string));
     }
 
     public function test_str_starts_with() {
@@ -41,13 +45,15 @@ class StringTest extends BaseTest
 
     public function test_str_pad_left()
     {
-        $padZero = f\str_pad_left('6', '0');
+        $pad6 = f\str_pad_left('6');
+        $padZero = $pad6('0');
         $this->assertEquals('000481', $padZero('481'));
     }
 
     public function test_str_pad_right()
     {
-        $padZero = f\str_pad_right('6', '0');
+        $pad6 = f\str_pad_right('6');
+        $padZero = $pad6('0');
         $this->assertEquals('481000', $padZero('481'));
     }
 }
