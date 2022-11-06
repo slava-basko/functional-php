@@ -18,6 +18,8 @@ class HelpersTest extends BaseTest
         $concatWithA = f\concat('a');
         $this->assertEquals('ab', $concatWithA('b'));
 
+        $this->assertEquals('foobarbaz', f\concat_all('foo', 'bar', 'baz'));
+
         $this->assertEquals('1|2|3', f\join('|', [1, 2, 3]));
     }
 

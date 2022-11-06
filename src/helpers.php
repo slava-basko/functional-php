@@ -136,7 +136,7 @@ function to_list()
 define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list');
 
 /**
- * Concatenates given arguments.
+ * Concatenates `$a` with `$b`.
  *
  * @param $a
  * @param $b
@@ -153,6 +153,21 @@ function concat($a, $b = null)
 }
 
 define('Basko\Functional\concat', __NAMESPACE__ . '\\concat');
+
+/**
+ * Concatenates given arguments.
+ *
+ * @param $a
+ * @param $b
+ * @return string
+ * @no-named-arguments
+ */
+function concat_all($a, $b)
+{
+    return fold(concat, '', func_get_args());
+}
+
+define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
 
 /**
  * Returns a string made by inserting the separator between each element and concatenating all the elements
