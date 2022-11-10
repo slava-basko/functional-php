@@ -193,4 +193,56 @@ class ExampleTest extends BaseTest
             $getAllUsersNames($response)
         );
     }
+
+    public function test_create_map_from_collection()
+    {
+        $countries = [
+            [
+                'name' => 'Netherlands',
+                'alpha2' => 'NL',
+                'alpha3' => 'NLD',
+                'numeric' => '528',
+                'currency' => [
+                    'EUR',
+                ]
+            ],
+            [
+                'name' => 'Ukraine',
+                'alpha2' => 'UA',
+                'alpha3' => 'UKR',
+                'numeric' => '804',
+                'currency' => [
+                    'UAH',
+                ],
+            ],
+        ];
+
+        $f = f\converge('array_combine', [
+            f\pluck('alpha2'),
+            f\pluck('name'),
+        ]);
+        $this->assertEquals([
+            'NL' => 'Netherlands',
+            'UA' => 'Ukraine',
+        ], $f($countries));
+
+        $this->assertEquals([
+            'NL' => 'Netherlands',
+            'UA' => 'Ukraine',
+        ], $f(new \ArrayIterator($countries)));
+
+
+        $f2 = f\combine('alpha2');
+        $f2 = $f2('name');
+
+        $this->assertEquals([
+            'NL' => 'Netherlands',
+            'UA' => 'Ukraine',
+        ], $f2($countries));
+
+        $this->assertEquals([
+            'NL' => 'Netherlands',
+            'UA' => 'Ukraine',
+        ], $f2(new \ArrayIterator($countries)));
+    }
 }

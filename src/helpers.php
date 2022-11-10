@@ -6,9 +6,9 @@ use Basko\Functional\Exception\InvalidArgumentException;
 use Traversable;
 
 /**
- * @internal
  * @param object $value
  * @return string
+ * @internal
  */
 function _object_to_ref($value)
 {
@@ -52,9 +52,9 @@ function _object_to_ref($value)
 }
 
 /**
- * @internal
  * @param mixed $value
  * @return string
+ * @internal
  */
 function _value_to_ref($value, $key = null)
 {
@@ -215,6 +215,7 @@ function if_else($if, $then = null, $else = null)
 
     return function () use ($if, $then, $else) {
         $args = func_get_args();
+
         return call_user_func_array($if, $args)
             ? call_user_func_array($then, $args)
             : call_user_func_array($else, $args);
@@ -656,6 +657,7 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  * @param $keys
  * @param $array
  * @return callable|int[]|string[]
+ * @no-named-arguments
  */
 function find_missing_keys($keys, $array = null)
 {
@@ -676,12 +678,14 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
  * @param $instanceof
  * @param $object
  * @return bool|callable
+ * @no-named-arguments
  */
 function instance_of($instanceof, $object = null)
 {
     if (is_null($object)) {
         return partial(instance_of, $instanceof);
     }
+
     return $object instanceof $instanceof;
 }
 
@@ -690,6 +694,7 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
 /**
  * @param $object
  * @return mixed
+ * @no-named-arguments
  */
 function copy($object)
 {
@@ -700,6 +705,7 @@ function copy($object)
         ['is_array', identity],
         [T, identity],
     ]);
+
     return $cond($object);
 }
 
@@ -709,7 +715,8 @@ define('Basko\Functional\copy', __NAMESPACE__ . '\\copy');
  * Return random value from list.
  *
  * @param $list
- * @return \Closure
+ * @return callable
+ * @no-named-arguments
  */
 function pick_random_value($list)
 {
@@ -726,3 +733,31 @@ function pick_random_value($list)
 }
 
 define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_value');
+
+/**
+ * Creates an associative array using a `$keyProp` as the path to build its keys,
+ * and optionally `$valueProp` as path to get the values.
+ *
+ * @param $keyProp
+ * @param $valueProp
+ * @param $list
+ * @return array|callable
+ * @no-named-arguments
+ */
+function combine($keyProp, $valueProp = null, $list = null)
+{
+    if (is_null($valueProp) && is_null($list)) {
+        return partial(combine, $keyProp);
+    } elseif (is_null($list)) {
+        return partial(combine, $keyProp, $valueProp);
+    }
+
+    $combineFunction = converge('array_combine', [
+        pluck($keyProp),
+        pluck($valueProp),
+    ]);
+
+    return $combineFunction($list);
+}
+
+define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
