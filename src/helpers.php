@@ -715,21 +715,19 @@ define('Basko\Functional\copy', __NAMESPACE__ . '\\copy');
  * Return random value from list.
  *
  * @param $list
- * @return callable
+ * @return mixed
  * @no-named-arguments
  */
 function pick_random_value($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    return function () use ($list) {
-        if ($list instanceof Traversable) {
-            $list = iterator_to_array($list);
-        }
-        $index = rand(0, count($list) - 1);
+    if ($list instanceof Traversable) {
+        $list = iterator_to_array($list);
+    }
+    $index = rand(0, count($list) - 1);
 
-        return $list[$index];
-    };
+    return $list[$index];
 }
 
 define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_value');

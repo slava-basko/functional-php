@@ -374,11 +374,8 @@ class HelpersTest extends BaseTest
             'jewel'
         ];
 
-        $getTreasureItem = f\pick_random_value($treasure);
-        $this->assertTrue(in_array($getTreasureItem(), $treasure));
-
-        $getTreasureItem = f\pick_random_value(new \ArrayIterator($treasure));
-        $this->assertTrue(in_array($getTreasureItem(), $treasure));
+        $this->assertTrue(in_array(f\pick_random_value($treasure), $treasure));
+        $this->assertTrue(in_array(f\pick_random_value(new \ArrayIterator($treasure)), $treasure));
     }
 
     public function test_map_keys()
