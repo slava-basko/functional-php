@@ -594,6 +594,15 @@ props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
 Creates a shallow clone of a list with an overwritten value at a specified index.
 ```php
 assoc('bar', 42, ['foo' => 'foo', 'bar' => 'bar']); // ['foo' => 'foo', 'bar' => 42]
+
+assoc(
+    'full_name', 
+    compose(join(' '), props(['first_name', 'last_name'])), 
+    [
+        'first_name' => 'Slava',
+        'last_name' => 'Basko'
+    ]
+); // ['first_name' => 'Slava', 'last_name' => 'Basko', 'full_name' => 'Slava Basko']
 ```
 
 ### assoc_path

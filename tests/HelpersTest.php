@@ -211,6 +211,15 @@ class HelpersTest extends BaseTest
         $data2 = (object)['foo' => 'foo', 'bar' => 'bar'];
         $this->assertEquals((object)['foo' => 'foo', 'bar' => 'bar', 'baz' => 42], f\assoc('baz', 42, $data2));
         $this->assertEquals((object)['foo' => 'foo', 'bar' => 'bar'], $data2);
+
+        $user = [
+            'first_name' => 'Slava',
+            'last_name' => 'Basko'
+        ];
+        $this->assertEquals(
+            $user + ['full_name' => 'Slava Basko'],
+            f\assoc('full_name', f\compose(f\join(' '), f\props(['first_name', 'last_name'])), $user)
+        );
     }
 
     public function test_assoc_path()

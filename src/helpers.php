@@ -181,7 +181,7 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
 function join($separator, $list = null)
 {
     if (is_null($list)) {
-        return partial('implode', $separator);
+        return partial(join, $separator);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -425,13 +425,13 @@ function assoc($key, $val = null, $list = null)
                 $accumulator->{$index} = $entry;
             }
 
-            $accumulator->{$key} = $val;
+            $accumulator->{$key} = is_callable($val) ? $val($accumulator) : $val;
         } elseif (\is_array($accumulator)) {
             if ($key == $index) {
                 $accumulator[$index] = $entry;
             }
 
-            $accumulator[$key] = $val;
+            $accumulator[$key] = is_callable($val) ? $val($accumulator) : $val;
         }
 
         return $accumulator;
@@ -597,7 +597,14 @@ function select_keys(array $keys, $array = null)
         $array = iterator_to_array($array);
     }
 
-    return array_intersect_key($array, array_flip($keys));
+    $aggregation = [];
+    foreach ($keys as $key) {
+        if (array_key_exists($key, $array)) {
+            $aggregation[$key] = $array[$key];
+        }
+    }
+
+    return $aggregation;
 }
 
 define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys');
