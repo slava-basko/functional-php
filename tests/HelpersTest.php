@@ -361,9 +361,6 @@ class HelpersTest extends BaseTest
     {
         $this->assertTrue(f\instance_of(\User::class, new \User([])));
         $this->assertFalse(f\instance_of(\User::class, new \stdClass()));
-
-        $instanceOfUser = f\instance_of(\User::class);
-        $this->assertTrue($instanceOfUser(new \User([])));
     }
 
     public function test_copy()

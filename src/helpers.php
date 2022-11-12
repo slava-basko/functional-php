@@ -682,17 +682,15 @@ function find_missing_keys($keys, $array = null)
 define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
 
 /**
+ * This function can't be automatically partialed because `$object` can be NULL and thant's OK.
+ *
  * @param $instanceof
  * @param $object
- * @return bool|callable
+ * @return bool
  * @no-named-arguments
  */
-function instance_of($instanceof, $object = null)
+function instance_of($instanceof, $object)
 {
-    if (is_null($object)) {
-        return partial(instance_of, $instanceof);
-    }
-
     return $object instanceof $instanceof;
 }
 
