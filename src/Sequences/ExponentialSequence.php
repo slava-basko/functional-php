@@ -42,27 +42,32 @@ class ExponentialSequence implements \Iterator
         $this->percentage = $percentage;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->value;
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->value = (int)\round(\pow($this->start * (1 + $this->percentage / 100), $this->times));
         $this->times++;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return null;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->times = 1;

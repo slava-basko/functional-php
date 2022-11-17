@@ -12,14 +12,16 @@ interface Retryer
 class RetryTest extends BaseTest
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|\PHPUnit\Framework\MockObject\MockObject
      */
     private $retryer;
 
-    protected function setUp()
+    /**
+     * @before
+     */
+    protected function setUpRetryer()
     {
-        parent::setUp();
-        $this->retryer = $this->getMock(Retryer::class);
+        $this->retryer = $this->mock(Retryer::class);
     }
 
     /**
