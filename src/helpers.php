@@ -3,6 +3,8 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Sequences\ExponentialSequence;
+use Basko\Functional\Sequences\LinearSequence;
 use Traversable;
 
 /**
@@ -764,3 +766,120 @@ function combine($keyProp, $valueProp = null, $list = null)
 }
 
 define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
+
+/**
+ * Returns an infinite, traversable sequence of constant values.
+ *
+ * @param int $value
+ * @return \Traversable
+ * @no-named-arguments
+ */
+function sequence_constant($value)
+{
+    if (!is_int($value) || $value < 0) {
+        throw new \InvalidArgumentException(
+            'sequence_constant() expects $value argument to be an integer, greater than or equal to 0'
+        );
+    }
+
+    return new \InfiniteIterator(new \ArrayIterator([$value]));
+}
+
+define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constant');
+
+/**
+ * Returns an infinite, traversable sequence that linearly grows by given amount.
+ *
+ * @param int $start
+ * @param int $amount
+ * @return LinearSequence
+ * @throws \InvalidArgumentException
+ * @no-named-arguments
+ */
+function sequence_linear($start, $amount)
+{
+    return new LinearSequence($start, $amount);
+}
+
+define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear');
+
+/**
+ * Returns an infinite, traversable sequence that exponentially grows by given percentage.
+ *
+ * @param int $start
+ * @param int $percentage Integer between 1 and 100
+ * @return ExponentialSequence
+ * @throws \InvalidArgumentException
+ * @no-named-arguments
+ */
+function sequence_exponential($start, $percentage)
+{
+    return new ExponentialSequence($start, $percentage);
+}
+
+define('Basko\Functional\sequence_exponential', __NAMESPACE__ . '\\sequence_exponential');
+
+/**
+ * Returns an infinite, traversable sequence of 0.
+ * This helper mostly to use with `retry`.
+ *
+ * @return \Traversable
+ */
+function no_delay()
+{
+    return sequence_constant(0);
+}
+
+define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
+
+/**
+ * Retry a function until the number of retries are reached or the function does no longer throw an exception.
+ *
+ * @param int $retries
+ * @param $delaySequence
+ * @param callable $f
+ * @return callable|mixed Return value of the function
+ * @throws InvalidArgumentException
+ * @throws \Exception Any exception thrown by the callback
+ * @no-named-arguments
+ */
+function retry($retries, $delaySequence = null, $f = null)
+{
+    if (is_null($delaySequence) && is_null($f)) {
+        return partial(retry, $retries);
+    } elseif (is_null($f)) {
+        return partial(retry, $retries, $delaySequence);
+    }
+
+    if (is_callable($delaySequence)) {
+        $delaySequence = $delaySequence();
+    }
+
+    InvalidArgumentException::assertIntegerGreaterThanOrEqual($retries, 1, __FUNCTION__, 1);
+    InvalidArgumentException::assertList($delaySequence, __FUNCTION__, 2);
+    InvalidArgumentException::assertCallback($f, __FUNCTION__, 3);
+
+    $delays = new \AppendIterator();
+    $delays->append(new \InfiniteIterator($delaySequence));
+    $delays->append(new \InfiniteIterator(new \ArrayIterator([0])));
+    $delays = new \LimitIterator($delays, 0, $retries);
+
+    $retry = 0;
+    foreach ($delays as $delay) {
+        try {
+            return $f($retry, $delay);
+        } catch (\Exception $e) {
+            if ($retry === $retries - 1) {
+                throw $e;
+            }
+        }
+
+        if ($delay > 0) {
+            usleep($delay);
+        }
+
+        ++$retry;
+    }
+}
+
+define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');

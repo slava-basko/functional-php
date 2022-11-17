@@ -1055,6 +1055,13 @@ Alias of `str_pad`.
 str_pad_right('6', '0', '481'); // 481000
 ```
 
+### retry
+Retry a function until the number of retries are reached or the function does no longer throw an exception.
+```php
+retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
+retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
+```
+
 ## Optional
 Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
 Let's take CRUD operation as an example. Does a `null` `$description` mean "remove the description", 

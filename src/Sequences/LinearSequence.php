@@ -1,0 +1,65 @@
+<?php
+
+namespace Basko\Functional\Sequences;
+
+class LinearSequence implements \Iterator
+{
+    /**
+     * @var int
+     */
+    private $start;
+
+    /**
+     * @var int
+     */
+    private $amount;
+
+    /**
+     * @var int
+     */
+    private $value;
+
+    public function __construct($start, $amount)
+    {
+        if (!\is_int($start) || $start < 0) {
+            throw new \InvalidArgumentException(
+                'LinearSequence expects $start argument to be an integer, greater than or equal to 0'
+            );
+        }
+
+        if (!\is_int($amount)) {
+            throw new \InvalidArgumentException(sprintf(
+                'LinearSequence expects $amount argument to be integer, %s given',
+                gettype($amount)
+            ));
+        }
+
+        $this->start = $start;
+        $this->amount = $amount;
+    }
+
+    public function current()
+    {
+        return $this->value;
+    }
+
+    public function next()
+    {
+        $this->value += $this->amount;
+    }
+
+    public function key()
+    {
+        return 0;
+    }
+
+    public function valid()
+    {
+        return true;
+    }
+
+    public function rewind()
+    {
+        $this->value = $this->start;
+    }
+}
