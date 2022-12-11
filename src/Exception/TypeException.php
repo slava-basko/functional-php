@@ -9,7 +9,8 @@ class TypeException extends \Exception
      * @param string $target
      * @return static
      */
-    public static function forValue($value, $target) {
+    public static function forValue($value, $target)
+    {
         return new self(sprintf('Could not convert "%s" to type "%s"', get_debug_type($value), $target));
     }
 }
