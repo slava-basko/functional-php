@@ -353,6 +353,14 @@ class CoreTest extends BaseTest
 
         $emptyCond = f\cond([]);
         $this->assertNull($emptyCond(2));
+
+        $typeOf = f\cond([
+            [f\is_instance_of(\User::class), f\always('user')],
+            [f\is_instance_of(\Value::class), f\always('value')],
+            [f\T, f\always('unknown')]
+        ]);
+        $this->assertEquals('user', $typeOf(new \User([])));
+        $this->assertEquals('value', $typeOf(new \Value(null)));
     }
 
     public function test_flipped()

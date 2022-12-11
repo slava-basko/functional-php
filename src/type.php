@@ -23,6 +23,19 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
  * @param $instanceof
  * @return callable
  */
+function is_instance_of($instanceof)
+{
+    return function ($value) use ($instanceof) {
+        return instance_of($instanceof, $value);
+    };
+}
+
+define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of');
+
+/**
+ * @param $instanceof
+ * @return callable
+ */
 function type_of($instanceof)
 {
     return function ($value) use ($instanceof) {

@@ -225,13 +225,12 @@ class TypeTest extends BaseTest
     public function test_type_of()
     {
         $typeOfUser = f\type_of(\User::class);
-
-        $user = new \User([
-            'first_name' => 'Slava',
-            'last_name' => 'Basko',
-        ]);
-
+        $user = new \User([]);
         $this->assertSame($user, $typeOfUser($user));
+
+        $typeOfVal = f\type_of(\Value::class);
+        $value = new \Value(null);
+        $this->assertSame($value, $typeOfVal($value));
 
         $this->setExpectedException(
             f\Exception\TypeException::class,
