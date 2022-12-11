@@ -227,6 +227,8 @@ class HelpersTest extends BaseTest
         $data = ['foo' => 'foo', 'bar' => ['baz' => 41]];
         $this->assertEquals(['foo' => 'foo', 'bar' => ['baz' => 42]], f\assoc_path(['bar', 'baz'], 42, $data));
 
+        $this->assertEquals($data, f\assoc_path([], 42, $data));
+
         $data = ['foo' => 'foo', 'bar' => ['baz' => 43]];
         $bazTo42 = f\assoc_path(['bar', 'baz'], 42);
         $this->assertEquals(['foo' => 'foo', 'bar' => ['baz' => 42]], $bazTo42($data));
@@ -357,12 +359,6 @@ class HelpersTest extends BaseTest
         );
     }
 
-    public function test_instance_of()
-    {
-        $this->assertTrue(f\instance_of(\User::class, new \User([])));
-        $this->assertFalse(f\instance_of(\User::class, new \stdClass()));
-    }
-
     public function test_copy()
     {
         $dataObj = new \stdClass();
@@ -398,5 +394,23 @@ class HelpersTest extends BaseTest
         $this->assertEquals('NL', f\prop('shipper_country', $obj));
         $this->assertEquals('CA', f\prop('consignee_country', $obj));
         $this->assertEquals('John', f\prop('name', $obj));
+    }
+
+    public function test_call()
+    {
+        $func = function ($one, $two, $three) {
+            $this->assertEquals(1, $one);
+            $this->assertEquals(2, $two);
+            $this->assertEquals(3, $three);
+
+            return true;
+        };
+
+        $this->assertTrue(f\call($func, 1, 2, 3));
+        $this->assertTrue(f\call($func, [1, 2, 3]));
+
+        $fP = f\call($func);
+        $this->assertTrue($fP(1, 2, 3));
+        $this->assertTrue($fP([1, 2, 3]));
     }
 }

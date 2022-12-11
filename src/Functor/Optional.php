@@ -43,12 +43,12 @@ class Optional extends Monad
         return $this->hasValue ? $just($this->value) : $nothing();
     }
 
-    public static function fromArrayKey($key, array $data)
+    public static function fromArrayKey($key, array $data, callable $f = null)
     {
         if (!array_key_exists($key, $data)) {
             return static::nothing();
         }
 
-        return static::just($data[$key]);
+        return static::just(is_callable($f) ? call_user_func_array($f, [$data[$key]]) : $data[$key]);
     }
 }

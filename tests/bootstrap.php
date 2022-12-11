@@ -62,6 +62,11 @@ class Value
     {
         return $this->value.$str.$str2;
     }
+
+    public function __toString()
+    {
+        return (string)$this->value;
+    }
 }
 
 class Repeated

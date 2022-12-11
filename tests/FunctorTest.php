@@ -148,8 +148,34 @@ class FunctorTest extends BaseTest
             $called = true;
         };
 
+        $optionalNoKey->map(f\tap);
         $optionalNoKey->match($func, f\N);
 
         $this->assertFalse($called);
+    }
+
+    public function test_optional_type_no()
+    {
+        $this->assertEquals(
+            Optional::nothing(),
+            Optional::fromArrayKey('no_key', [], f\type_string)
+        );
+    }
+
+    public function test_optional_type()
+    {
+        $this->assertEquals(
+            Optional::just('value'),
+            Optional::fromArrayKey('key', ['key' => 'value'], f\type_string)
+        );
+    }
+
+    public function test_optional_type_non_convertable()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Could not convert "string" to type "int"'
+        );
+        Optional::fromArrayKey('key', ['key' => 'non-convertable-string'], f\type_int);
     }
 }

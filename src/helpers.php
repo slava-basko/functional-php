@@ -684,21 +684,6 @@ function find_missing_keys($keys, $array = null)
 define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
 
 /**
- * This function can't be automatically partialed because `$object` can be NULL and thant's OK.
- *
- * @param $instanceof
- * @param $object
- * @return bool
- * @no-named-arguments
- */
-function instance_of($instanceof, $object)
-{
-    return $object instanceof $instanceof;
-}
-
-define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
-
-/**
  * @param $object
  * @return mixed
  * @no-named-arguments
@@ -883,3 +868,21 @@ function retry($retries, $delaySequence = null, $f = null)
 }
 
 define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
+
+/**
+ * @param callable $f
+ * @param mixed $args
+ * @return mixed
+ * @no-named-arguments
+ */
+function call($f, $args = null)
+{
+    if (is_null($args)) {
+        return partial(call, $f);
+    }
+
+    $args = func_get_args();
+    return call_user_func_array(head($args), flatten(tail($args)));
+}
+
+define('Basko\Functional\call', __NAMESPACE__ . '\\call');

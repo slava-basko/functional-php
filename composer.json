@@ -23,7 +23,9 @@
       "src/partial.php",
       "src/lens.php",
       "src/helpers.php",
-      "src/string.php"
+      "src/string.php",
+      "src/polyfill.php",
+      "src/type.php"
     ]
   },
   "autoload-dev": {

@@ -126,6 +126,14 @@ class ListTest extends BaseTest
 
         $containsSome = f\contains('some');
         $this->assertTrue($containsSome('some story'));
+
+        $this->assertTrue(f\contains('', 'abc'));
+        $this->assertTrue(f\contains('국', '한국어'));
+        $this->assertTrue(f\contains('', '한국어'));
+        $this->assertFalse(f\contains('d', 'abc'));
+        $this->assertFalse(f\contains('à', 'DÉJÀ'));
+        $this->assertFalse(f\contains('à', 'a'));
+        $this->assertTrue(f\contains('🙌', '🙌🎉✨🚀'));
     }
 
     public function test_take()

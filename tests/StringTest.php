@@ -29,12 +29,53 @@ class StringTest extends BaseTest
         $http = f\str_starts_with('http://');
         $this->assertTrue($http('http://gitbub.com'));
         $this->assertFalse($http('gitbub.com'));
+
+        $testStr = 'beginningMiddleEnd';
+        $testStrF = f\partial_r(f\str_starts_with, 'beginningMiddleEnd');
+
+        $this->assertTrue($testStrF('beginning'));
+        $this->assertTrue($testStrF($testStr));
+        $this->assertTrue($testStrF(''));
+        $this->assertTrue(f\str_starts_with('', "\x00"));
+        $this->assertTrue(f\str_starts_with("\x00", "\x00"));
+        $this->assertTrue(f\str_starts_with("\x00", "\x00a"));
+        $this->assertTrue(f\str_starts_with("a\x00b", "a\x00bc"));
+
+        $this->assertFalse($testStrF('Beginning'));
+        $this->assertFalse($testStrF('eginning'));
+        $this->assertFalse($testStrF($testStr.$testStr));
+        $this->assertFalse($testStrF("\x00"));
+        $this->assertFalse(f\str_starts_with("a\x00d", "a\x00b"));
+        $this->assertFalse(f\str_starts_with("z\x00b", "a\x00b"));
+        $this->assertFalse(f\str_starts_with("a\x00", 'a'));
+        $this->assertFalse(f\str_starts_with("\x00a", 'a'));
+
+        // අයේෂ් = අ + ය + "ේ" + ෂ + ්
+        // අයේෂ් = (0xe0 0xb6 0x85) + (0xe0 0xb6 0xba) + (0xe0 0xb7 0x9a) + (0xe0 0xb7 0x82) + (0xe0 0xb7 0x8a)
+        $testMultiByteF = f\partial_r(f\str_starts_with, 'අයේෂ්');; // 0xe0 0xb6 0x85 0xe0 0xb6 0xba 0xe0 0xb7 0x9a 0xe0 0xb7 0x82 0xe0 0xb7 0x8a
+        $this->assertTrue($testMultiByteF('අයේ')); // 0xe0 0xb6 0x85 0xe0 0xb6 0xba 0xe0 0xb7 0x9a
+        $this->assertTrue($testMultiByteF('අය')); // 0xe0 0xb6 0x85 0xe0 0xb6 0xba
+        $this->assertFalse($testMultiByteF('ය')); // 0xe0 0xb6 0xba
+        $this->assertFalse($testMultiByteF('අේ')); // 0xe0 0xb6 0x85 0xe0 0xb7 0x9a
+
+        $testEmoji = '🙌🎉✨🚀'; // 0xf0 0x9f 0x99 0x8c 0xf0 0x9f 0x8e 0x89 0xe2 0x9c 0xa8 0xf0 0x9f 0x9a 0x80
+        $this->assertTrue(f\str_starts_with('🙌', $testEmoji)); // 0xf0 0x9f 0x99 0x8c
+        $this->assertFalse(f\str_starts_with('✨', $testEmoji)); // 0xe2 0x9c 0xa8
     }
 
     public function test_str_ends_with() {
         $dotCom = f\str_ends_with('.com');
         $this->assertTrue($dotCom('http://gitbub.com'));
         $this->assertFalse($dotCom('php.net'));
+
+        $testMultiByte = 'අයේෂ්'; // 0xe0 0xb6 0x85 0xe0 0xb6 0xba 0xe0 0xb7 0x9a 0xe0 0xb7 0x82 0xe0 0xb7 0x8a
+        $this->assertTrue(f\str_ends_with('ෂ්', $testMultiByte)); // 0xe0 0xb7 0x82 0xe0 0xb7 0x8a
+        $this->assertTrue(f\str_ends_with('්', $testMultiByte)); // 0xe0 0xb7 0x8a
+        $this->assertFalse(f\str_ends_with('ෂ', $testMultiByte)); // 0xe0 0xb7 0x82
+
+        $testEmoji = '🙌🎉✨🚀'; // 0xf0 0x9f 0x99 0x8c 0xf0 0x9f 0x8e 0x89 0xe2 0x9c 0xa8 0xf0 0x9f 0x9a 0x80
+        $this->assertTrue(f\str_ends_with('🚀', $testEmoji)); // 0xf0 0x9f 0x9a 0x80
+        $this->assertFalse(f\str_ends_with('✨', $testEmoji)); // 0xe2 0x9c 0xa8
     }
 
     public function test_str_test() {
