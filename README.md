@@ -30,7 +30,7 @@ function with any arity and return new function that accept only one argument.
 
 That's what I mean when I talk about combining imperative/OOP and functional code.
 
-One more example with the collection. We need to filter users by isActive method for example.
+One more example with the collection. We need to filter users by `isActive` method for example.
 ```php
 $collection = collect([$user1, $user2, $user3]);
 $collection->filter(function ($user) {
