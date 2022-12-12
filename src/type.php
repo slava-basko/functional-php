@@ -20,6 +20,8 @@ function instance_of($instanceof, $object)
 define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
 
 /**
+ * Curryied version of `instance_of`.
+ *
  * @param $instanceof
  * @return callable
  */
@@ -33,6 +35,8 @@ function is_instance_of($instanceof)
 define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of');
 
 /**
+ * Return a function that checks `$value instanceof SomeClass.
+ *
  * @param $instanceof
  * @return callable
  */
@@ -50,6 +54,8 @@ function type_of($instanceof)
 define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of');
 
 /**
+ * Checks and coerces value to `bool`.
+ *
  * @param $value
  * @return bool
  * @no-named-arguments
@@ -75,6 +81,8 @@ function type_bool($value)
 define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool');
 
 /**
+ * Checks and coerces value to `string`.
+ *
  * @param $value
  * @return string
  * @no-named-arguments
@@ -96,6 +104,8 @@ function type_string($value)
 define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
 
 /**
+ * Checks and coerces value to `int`.
+ *
  * @param $value
  * @return int
  * @no-named-arguments
@@ -139,6 +149,8 @@ function type_int($value)
 define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
 
 /**
+ * Checks and coerces value to `float`.
+ *
  * @param $value
  * @return float
  * @no-named-arguments

@@ -1062,6 +1062,61 @@ retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without d
 retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
 ```
 
+### instance_of
+Checks if value instance of SomeClass.
+```php
+instance_of(stdClass::class, new stdClass()); // true
+instance_of(User::class, new stdClass()); // false
+```
+
+### is_instance_of
+Curryied version of `instance_of`.
+```php
+is_instance_of(stdClass::class)(new stdClass()); // true
+is_instance_of(User::class)(new stdClass()); // false
+```
+
+### type_of
+Return a function that checks `$value instanceof SomeClass.
+```php
+type_of(\User::class)(new User()); // User
+type_of(\User::class)(new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
+```
+
+### type_bool
+Checks and coerces value to `bool`.
+```php
+type_bool(true); // true
+type_bool(1); // true
+type_bool('1'); // true
+type_bool(false); // false
+type_bool(0); // false
+type_bool('0'); // false
+type_bool('some-string'); // TypeException: Could not convert "string" to type "bool"
+```
+
+### type_string
+Checks and coerces value to `string`.
+```php
+type_string('hello'); // 'hello'
+type_string(123); // '123'
+```
+
+### type_int
+Checks and coerces value to `int`.
+```php
+type_int('123'); // 123
+type_int('007'); // 7
+type_int('1.0'); // 1
+```
+
+### type_float
+Checks and coerces value to `float`.
+```php
+type_float(123); // 123.0
+type_float('123'); // 123.0
+```
+
 ## Optional
 Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
 Let's take CRUD operation as an example. Does a `null` `$description` mean "remove the description", 
