@@ -107,7 +107,7 @@ define('Basko\Functional\first', __NAMESPACE__ . '\\first');
  * @return callable|mixed
  * @no-named-arguments
  */
-function head_by($f, $list = null)
+function head_by(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(head_by, $f);
@@ -117,7 +117,7 @@ function head_by($f, $list = null)
 
 
     foreach ($list as $index => $element) {
-        if ($f($element, $index, $list)) {
+        if (call_user_func_array($f, [$element, $index, $list])) {
             return $element;
         }
     }
@@ -159,7 +159,7 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
  * @return callable|array
  * @no-named-arguments
  */
-function tail_by($f, $list = null)
+function tail_by(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(tail_by, $f);
@@ -176,7 +176,7 @@ function tail_by($f, $list = null)
             continue;
         }
 
-        if ($f($element, $index, $list)) {
+        if (call_user_func_array($f, [$element, $index, $list])) {
             $tail[$index] = $element;
         }
     }
@@ -190,12 +190,12 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
  * Opposite is Functional\reject(). Function arguments will be element, index, list
  *
- * @param callable|null $f
+ * @param callable $f
  * @param \Traversable|array $list
  * @return callable|array
  * @no-named-arguments
  */
-function select($f, $list = null)
+function select(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(select, $f);
@@ -206,7 +206,7 @@ function select($f, $list = null)
     $aggregation = [];
 
     foreach ($list as $index => $element) {
-        if ($f($element, $index, $list)) {
+        if (call_user_func_array($f, [$element, $index, $list])) {
             $aggregation[$index] = $element;
         }
     }
@@ -220,12 +220,12 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select');
  * Returns the elements in list without the elements that the test (function) passes.
  * The opposite of Functional\select(). Function arguments will be element, index, list
  *
- * @param callable|null $f
+ * @param callable $f
  * @param \Traversable|array $list
  * @return callable|array
  * @no-named-arguments
  */
-function reject($f, $list = null)
+function reject(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(reject, $f);
@@ -236,7 +236,7 @@ function reject($f, $list = null)
     $aggregation = [];
 
     foreach ($list as $index => $element) {
-        if (!$f($element, $index, $list)) {
+        if (!call_user_func_array($f, [$element, $index, $list])) {
             $aggregation[$index] = $element;
         }
     }
@@ -338,7 +338,7 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
  * @return callable|array
  * @no-named-arguments
  */
-function group($f, $list = null)
+function group(callable $f, $list = null)
 {
     if (is_null($list)) {
         return partial(group, $f);
@@ -349,7 +349,7 @@ function group($f, $list = null)
     $groups = [];
 
     foreach ($list as $index => $element) {
-        $groupKey = $f($element, $index, $list);
+        $groupKey = call_user_func_array($f, [$element, $index, $list]);
 
         if (!isset($groups[$groupKey])) {
             $groups[$groupKey] = [];
@@ -389,7 +389,7 @@ function partition($functions, $list = null)
 
     foreach ($list as $index => $element) {
         foreach ($functions as $partition => $fn) {
-            if ($fn($element, $index, $list)) {
+            if (call_user_func_array($fn, [$element, $index, $list])) {
                 $partitions[$partition][$index] = $element;
                 continue 2;
             }
@@ -407,7 +407,7 @@ define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
  * Takes a nested combination of list and returns their contents as a single, flat list.
  *
  * @param \Traversable|array $list
- * @return array|mixed
+ * @return array
  * @no-named-arguments
  */
 function flatten($list)
@@ -481,7 +481,7 @@ function sort(callable $f, $list = null)
     }
 
     uasort($array, function ($left, $right) use ($f, $list) {
-        return $f($left, $right, $list);
+        return call_user_func_array($f, [$left, $right, $list]);
     });
 
     return $array;
@@ -499,7 +499,7 @@ define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
 function comparator(callable $f)
 {
     return function ($a, $b) use ($f) {
-        return $f($a, $b) ? -1 : ($f($b, $a) ? 1 : 0);
+        return call_user_func_array($f, [$a, $b]) ? -1 : (call_user_func_array($f, [$b, $a]) ? 1 : 0);
     };
 }
 
@@ -521,8 +521,8 @@ function ascend(callable $f, $a = null, $b = null)
         return partial(ascend, $f, $a);
     }
 
-    $aa = $f($a);
-    $bb = $f($b);
+    $aa = call_user_func_array($f, [$a]);
+    $bb = call_user_func_array($f, [$b]);
 
     return $aa < $bb ? -1 : ($aa > $bb ? 1 : 0);
 }
@@ -545,8 +545,8 @@ function descend(callable $f, $a = null, $b = null)
         return partial(descend, $f, $a);
     }
 
-    $aa = $f($a);
-    $bb = $f($b);
+    $aa = call_user_func_array($f, [$a]);
+    $bb = call_user_func_array($f, [$b]);
 
     return $aa > $bb ? -1 : ($aa < $bb ? 1 : 0);
 }
@@ -575,7 +575,7 @@ function uniq_by(callable $f, $list = null)
     $aggregation = [];
 
     foreach ($list as $element) {
-        $appliedItem = $f($element);
+        $appliedItem = call_user_func_array($f, [$element]);
         if (!in_array($appliedItem, $_aggregation, true)) {
             $_aggregation[] = $appliedItem;
             $aggregation[] = $element;

@@ -198,7 +198,7 @@ function map(callable $f, $list = null)
     $aggregation = [];
 
     foreach ($list as $index => $element) {
-        $aggregation[$index] = $f($element, $index, $list);
+        $aggregation[$index] = call_user_func_array($f, [$element, $index, $list]);
     }
 
     return $aggregation;
@@ -228,7 +228,7 @@ function flat_map(callable $f, $list = null)
     $flattened = [];
 
     foreach ($list as $index => $element) {
-        $result = $f($element, $index, $list);
+        $result = call_user_func_array($f, [$element, $index, $list]);
 
         if (\is_array($result) || $result instanceof \Traversable) {
             foreach ($result as $item) {
@@ -261,7 +261,7 @@ function each(callable $f, $list = null)
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     foreach ($list as $index => $element) {
-        $f($element, $index, $list);
+        call_user_func_array($f, [$element, $index, $list]);
     }
 
     return $list;
@@ -279,7 +279,7 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
 function not(callable $f)
 {
     return function ($value) use ($f) {
-        return !$f($value);
+        return !call_user_func_array($f, [$value]);
     };
 }
 
@@ -304,7 +304,7 @@ function tap(callable $f, $value = null)
         $value_for_caller = clone $value_for_caller;
     }
 
-    $f($value_for_caller);
+    call_user_func_array($f, [$value_for_caller]);
 
     return $value;
 }
@@ -330,7 +330,7 @@ function fold(callable $f, $accumulator = null, $list = null)
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     foreach ($list as $index => $value) {
-        $accumulator = $f($accumulator, $value, $index, $list);
+        $accumulator = call_user_func_array($f, [$accumulator, $value, $index, $list]);
     }
 
     return $accumulator;
@@ -361,7 +361,7 @@ function fold_r(callable $f, $accumulator = null, $list = null)
 
     for ($i = count($data) - 1; $i >= 0; $i--) {
         list($index, $value) = $data[$i];
-        $accumulator = $f($value, $accumulator, $index, $list);
+        $accumulator = call_user_func_array($f, [$value, $accumulator, $index, $list]);
     }
 
     return $accumulator;
@@ -478,8 +478,8 @@ function apply_to($arg)
 {
     $args = func_get_args();
 
-    return function (callable $fn) use ($args) {
-        return call_user_func_array($fn, $args);
+    return function (callable $f) use ($args) {
+        return call_user_func_array($f, $args);
     };
 }
 
@@ -547,7 +547,7 @@ function on(callable $f, callable $g = null)
     InvalidArgumentException::assertCallback($g, __FUNCTION__, 2);
 
     return function ($a, $b) use ($f, $g) {
-        return $f($g($a), $g($b));
+        return call_user_func_array($f, [call_user_func_array($g, [$a]), call_user_func_array($g, [$b])]);
     };
 }
 
@@ -569,7 +569,7 @@ function both($a, $b = null)
 
     if (is_callable($a) && is_callable($b)) {
         return function ($value) use ($a, $b) {
-            return $a($value) && $b($value);
+            return call_user_func_array($a, [$value]) && call_user_func_array($b, [$value]);
         };
     }
 

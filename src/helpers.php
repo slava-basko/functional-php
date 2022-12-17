@@ -237,7 +237,7 @@ function repeat(callable $f)
 {
     return function ($times) use ($f) {
         for ($i = 0; $i < (int)$times; $i++) {
-            $f();
+            call_user_func($f);
         }
     };
 }
@@ -852,7 +852,7 @@ function retry($retries, $delaySequence = null, $f = null)
     $retry = 0;
     foreach ($delays as $delay) {
         try {
-            return $f($retry, $delay);
+            return call_user_func_array($f, [$retry, $delay]);
         } catch (\Exception $e) {
             if ($retry === $retries - 1) {
                 throw $e;
@@ -875,7 +875,7 @@ define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
  * @return mixed
  * @no-named-arguments
  */
-function call($f, $args = null)
+function call(callable $f, $args = null)
 {
     if (is_null($args)) {
         return partial(call, $f);
