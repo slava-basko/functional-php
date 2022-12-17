@@ -25,7 +25,7 @@ class HelpersTest extends BaseTest
 
     public function test_with_iterable()
     {
-        $f = function() {
+        $f = function () {
             yield 1;
             yield 2;
             yield 3;
@@ -129,12 +129,12 @@ class HelpersTest extends BaseTest
         $data = [
             'a' => 1,
             'b' => [
-                'c' => 2
+                'c' => 2,
             ],
             'x' => [
                 'y' => [
-                    'z' => 3
-                ]
+                    'z' => 3,
+                ],
             ],
         ];
         $this->assertEquals(2, f\prop_path(['b', 'c'], $data));
@@ -169,16 +169,16 @@ class HelpersTest extends BaseTest
         $v = new \Value('val');
 
         $inv = f\to_fn($v, 'concatWith', ['ue']);
-        $this->assertEquals('value',  $inv());
+        $this->assertEquals('value', $inv());
 
         $inv = f\to_fn($v, 'concatWith', 'ue');
-        $this->assertEquals('value',  $inv());
+        $this->assertEquals('value', $inv());
 
         $inv = f\to_fn($v, 'concatWith2', ['ue', 1]);
-        $this->assertEquals('value1',  $inv());
+        $this->assertEquals('value1', $inv());
 
         $inv = f\to_fn($v, 'concatWith2', 'ue', 1);
-        $this->assertEquals('value1',  $inv());
+        $this->assertEquals('value1', $inv());
     }
 
     public function test_memoized()
@@ -214,7 +214,7 @@ class HelpersTest extends BaseTest
 
         $user = [
             'first_name' => 'Slava',
-            'last_name' => 'Basko'
+            'last_name' => 'Basko',
         ];
         $this->assertEquals(
             $user + ['full_name' => 'Slava Basko'],
@@ -243,7 +243,7 @@ class HelpersTest extends BaseTest
 
         $product = [
             'value' => 10,
-            'qty' => 2
+            'qty' => 2,
         ];
         $prdct = f\apply_to($product);
         $this->assertEquals([10, 2], f\pair($prdct(f\prop('value')), $prdct(f\prop('qty'))));
@@ -373,7 +373,7 @@ class HelpersTest extends BaseTest
             'sword',
             'gold',
             'ring',
-            'jewel'
+            'jewel',
         ];
 
         $this->assertTrue(in_array(f\pick_random_value($treasure), $treasure));

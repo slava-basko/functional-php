@@ -333,7 +333,7 @@ function prop($property, $object = null)
         return $object->{$property};
     }
 
-    if (isset($object[$property])) {
+    if (array_key_exists($property, $object)) {
         return $object[$property];
     }
 
