@@ -71,13 +71,9 @@ class FunctorTest extends BaseTest
     {
         $half = function ($x) {
             f\Exception\InvalidArgumentException::assertInteger($x, __FUNCTION__, 1);
-            if (f\is_even($x)) {
-                return f\Functor\Maybe::just($x)->map(function ($n) {
-                    return $n / 2;
-                });
-            } else {
-                return f\Functor\Maybe::nothing();
-            }
+            $f = f\if_else(f\is_even, f\pipe(f\div(2), f\Functor\Maybe::just), f\Functor\Maybe::nothing);
+
+            return $f($x);
         };
 
         $this->assertEquals(
@@ -167,6 +163,14 @@ class FunctorTest extends BaseTest
         $this->assertEquals(
             Optional::just('value'),
             Optional::fromArrayKey('key', ['key' => 'value'], f\type_string)
+        );
+    }
+
+    public function test_optional_type_convert()
+    {
+        $this->assertInternalType(
+            'int',
+            Optional::fromArrayKey('key', ['key' => '1'], f\type_int)->extract()
         );
     }
 

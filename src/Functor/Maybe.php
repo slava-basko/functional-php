@@ -10,6 +10,10 @@ class Maybe extends Monad
 
     const of = "Basko\Functional\Functor\Maybe::of";
 
+    const just = "Basko\Functional\Functor\Maybe::just";
+
+    const nothing = "Basko\Functional\Functor\Maybe::nothing";
+
     public static function just($value)
     {
         return static::of($value);
