@@ -168,7 +168,7 @@ class FunctorTest extends BaseTest
 
     public function test_optional_type_convert()
     {
-        $this->assertInternalType(
+        $this->assertType(
             'int',
             Optional::fromArrayKey('key', ['key' => '1'], f\type_int)->extract()
         );

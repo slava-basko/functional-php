@@ -34,4 +34,13 @@ abstract class BaseTest extends TestCase
             throw new RuntimeException("Don't know how to expect exceptions");
         }
     }
+
+    protected function assertType($type, $value)
+    {
+        if (method_exists($this, 'assertInternalType')) {
+            $this->assertInternalType($type, $value);
+        } else {
+            $this->{'assertIs' . ucfirst($type)}($value);
+        }
+    }
 }
