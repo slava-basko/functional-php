@@ -405,7 +405,7 @@ class InvalidArgumentException extends \InvalidArgumentException
         if (
             !is_string($value)
             && !is_numeric($value)
-            && !(is_object($value) && method_exists($value, '__toString' ))
+            && !(is_object($value) && method_exists($value, '__toString'))
         ) {
             throw new static(
                 sprintf(
