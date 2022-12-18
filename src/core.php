@@ -423,7 +423,7 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
  */
 function pipe(callable $f, callable $g)
 {
-    $f = call_user_func_array(__NAMESPACE__ . '\compose', array_reverse(func_get_args()));
+    $f = call_user_func_array(compose, array_reverse(func_get_args()));
 
     return function () use ($f) {
         $args = func_get_args();
@@ -446,12 +446,15 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  * @return callable A flipped version of the given function
  * @no-named-arguments
  */
-function converge($convergingFunction, $branchingFunctions = null)
+function converge(callable $convergingFunction, $branchingFunctions = null)
 {
     if (!is_array($branchingFunctions)) {
         return partial(converge, $convergingFunction);
     }
-    InvalidArgumentException::assertCallback($convergingFunction, __FUNCTION__, 1);
+
+    foreach ($branchingFunctions as $branchingFunc) {
+        InvalidArgumentException::assertCallback($branchingFunc, __FUNCTION__, 2);
+    }
 
     return function () use ($convergingFunction, $branchingFunctions) {
         $values = func_get_args();
@@ -497,7 +500,6 @@ function apply_to($arg, callable $f = null)
     if (is_null($f)) {
         return partial(apply_to, $arg);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 2);
 
     $args = func_get_args();
     return call_user_func_array(array_pop($args), $args);
@@ -564,7 +566,6 @@ function on(callable $f, callable $g = null)
     if (is_null($g)) {
         return partial(on, $f);
     }
-    InvalidArgumentException::assertCallback($g, __FUNCTION__, 2);
 
     return function ($a, $b) use ($f, $g) {
         return call_user_func_array($f, [call_user_func_array($g, [$a]), call_user_func_array($g, [$b])]);

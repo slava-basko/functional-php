@@ -171,13 +171,7 @@ class HelpersTest extends BaseTest
         $inv = f\to_fn($v, 'concatWith', ['ue']);
         $this->assertEquals('value', $inv());
 
-        $inv = f\to_fn($v, 'concatWith', 'ue');
-        $this->assertEquals('value', $inv());
-
         $inv = f\to_fn($v, 'concatWith2', ['ue', 1]);
-        $this->assertEquals('value1', $inv());
-
-        $inv = f\to_fn($v, 'concatWith2', 'ue', 1);
         $this->assertEquals('value1', $inv());
     }
 

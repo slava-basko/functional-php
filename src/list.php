@@ -88,6 +88,8 @@ define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
  */
 function head($list)
 {
+    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
     foreach ($list as $element) {
         return $element;
     }
@@ -112,7 +114,6 @@ function head_by(callable $f, $list = null)
     if (is_null($list)) {
         return partial(head_by, $f);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
 
@@ -136,6 +137,8 @@ define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
  */
 function tail($list)
 {
+    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
     $tail = [];
     $isHead = true;
 
@@ -164,7 +167,6 @@ function tail_by(callable $f, $list = null)
     if (is_null($list)) {
         return partial(tail_by, $f);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $tail = [];
@@ -200,7 +202,6 @@ function select(callable $f, $list = null)
     if (is_null($list)) {
         return partial(select, $f);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
@@ -230,7 +231,6 @@ function reject(callable $f, $list = null)
     if (is_null($list)) {
         return partial(reject, $f);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
@@ -264,6 +264,8 @@ function contains($needle, $haystack = null)
     if (is_string($haystack)) {
         return '' === $needle || false !== strpos($haystack, $needle);
     }
+
+    InvalidArgumentException::assertList($haystack, __FUNCTION__, 2);
 
     foreach ($haystack as $element) {
         if ($needle === $element) {
@@ -343,7 +345,6 @@ function group(callable $f, $list = null)
     if (is_null($list)) {
         return partial(group, $f);
     }
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $groups = [];
@@ -379,6 +380,10 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  */
 function partition($functions, $list = null)
 {
+    foreach ($functions as $f) {
+        InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
+    }
+
     if (is_null($list)) {
         return partial(partition, $functions);
     }

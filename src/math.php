@@ -215,9 +215,11 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power');
 function median($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
     \sort($list);
     $count = count($list);
     $middle_value = floor(($count - 1) / 2); // find the middle value, or the lowest middle value
+
     if ($count % 2) { // odd number, middle is the median
         $median = $list[$middle_value];
     } else { // even number, calculate avg of 2 medians

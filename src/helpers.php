@@ -206,14 +206,13 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join');
  * @return mixed the return value of the given $then or $else functions
  * @no-named-arguments
  */
-function if_else($if, $then = null, $else = null)
+function if_else(callable $if, callable $then = null, callable $else = null)
 {
     if (is_null($then) && is_null($else)) {
         return partial(if_else, $if);
     } elseif (is_null($else)) {
         return partial(if_else, $if, $then);
     }
-    InvalidArgumentException::assertCallback($else, __FUNCTION__, 3);
 
     return function () use ($if, $then, $else) {
         $args = func_get_args();
@@ -255,13 +254,11 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
  * @return callable
  * @no-named-arguments
  */
-function try_catch($tryer, $catcher = null)
+function try_catch(callable $tryer, callable $catcher = null)
 {
     if (is_null($catcher)) {
         return partial(try_catch, $tryer);
     }
-    InvalidArgumentException::assertCallback($tryer, __FUNCTION__, 1);
-    InvalidArgumentException::assertCallback($catcher, __FUNCTION__, 2);
 
     return function () use ($tryer, $catcher) {
         $args = func_get_args();
@@ -488,7 +485,7 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
  * @return callable
  * @no-named-arguments
  */
-function to_fn($object, $methodName = null, $arguments = null)
+function to_fn($object, $methodName = null, array $arguments = null)
 {
     //todo: curry?
     $args = func_get_args();
@@ -663,15 +660,13 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
 /**
  * Finds if a given array has all of the required keys set.
  *
- * @param $keys
+ * @param array $keys
  * @param $array
  * @return callable|int[]|string[]
  * @no-named-arguments
  */
-function find_missing_keys($keys, $array = null)
+function find_missing_keys(array $keys, $array = null)
 {
-    InvalidArgumentException::assertList($keys, __FUNCTION__, 1);
-
     if (is_null($array)) {
         return partial(find_missing_keys, $keys);
     }
