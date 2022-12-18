@@ -469,18 +469,38 @@ function converge($convergingFunction, $branchingFunctions = null)
 define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
 
 /**
- * @param mixed $arg
- * @param mixed ...
+ * @param callable $f
+ * @param mixed $args
+ * @return mixed
+ * @no-named-arguments
+ */
+function call(callable $f, $args = null)
+{
+    if (is_null($args)) {
+        return partial(call, $f);
+    }
+
+    $args = func_get_args();
+    return call_user_func_array(head($args), flatten(tail($args)));
+}
+
+define('Basko\Functional\call', __NAMESPACE__ . '\\call');
+
+/**
+ * @param $arg
+ * @param callable|null $f
  * @return callable
  * @no-named-arguments
  */
-function apply_to($arg)
+function apply_to($arg, callable $f = null)
 {
-    $args = func_get_args();
+    if (is_null($f)) {
+        return partial(apply_to, $arg);
+    }
+    InvalidArgumentException::assertCallback($f, __FUNCTION__, 2);
 
-    return function (callable $f) use ($args) {
-        return call_user_func_array($f, $args);
-    };
+    $args = func_get_args();
+    return call_user_func_array(array_pop($args), $args);
 }
 
 define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');

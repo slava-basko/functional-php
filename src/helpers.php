@@ -868,21 +868,3 @@ function retry($retries, $delaySequence = null, $f = null)
 }
 
 define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
-
-/**
- * @param callable $f
- * @param mixed $args
- * @return mixed
- * @no-named-arguments
- */
-function call(callable $f, $args = null)
-{
-    if (is_null($args)) {
-        return partial(call, $f);
-    }
-
-    $args = func_get_args();
-    return call_user_func_array(head($args), flatten(tail($args)));
-}
-
-define('Basko\Functional\call', __NAMESPACE__ . '\\call');
