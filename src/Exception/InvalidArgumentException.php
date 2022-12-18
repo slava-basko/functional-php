@@ -4,6 +4,8 @@ namespace Basko\Functional\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {
+    const ALL = 99;
+
     /**
      * @param mixed $callback
      * @param string $callee
@@ -11,49 +13,88 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function assertCallback($callback, $callee, $parameterPosition)
+    public static function assertCallable($callback, $callee, $parameterPosition)
     {
-        if (!is_callable($callback)) {
-            if (!is_array($callback) && !is_string($callback)) {
-                throw new static(
-                    \sprintf(
-                        '%s() expected parameter %d to be a valid callback, no array, string, closure or functor given',
-                        $callee,
-                        $parameterPosition
-                    )
-                );
-            }
+        if (is_callable($callback)) {
+            return;
+        }
 
-            $type = gettype($callback);
-            switch ($type) {
-                case 'array':
-                    $type = 'method';
-                    $callback = array_values($callback);
-
-                    $sep = '::';
-                    if (is_object($callback[0])) {
-                        $callback[0] = get_class($callback[0]);
-                        $sep = '->';
-                    }
-
-                    $callback = implode($sep, $callback);
-                    break;
-
-                default:
-                    $type = 'function';
-                    break;
-            }
-
+        if (!is_array($callback) && !is_string($callback)) {
             throw new static(
-                sprintf(
-                    "%s() expects parameter %d to be a valid callback, %s '%s' not found or invalid %s name",
+                \sprintf(
+                    '%s() expected parameter %d to be a valid callback, no array, string, closure or functor given',
                     $callee,
-                    $parameterPosition,
-                    $type,
-                    $callback,
-                    $type
+                    $parameterPosition
                 )
             );
+        }
+
+        $type = gettype($callback);
+        switch ($type) {
+            case 'array':
+                $type = 'method';
+                $callback = array_values($callback);
+
+                $sep = '::';
+                if (is_object($callback[0])) {
+                    $callback[0] = get_class($callback[0]);
+                    $sep = '->';
+                }
+
+                $callback = implode($sep, $callback);
+                break;
+
+            default:
+                $type = 'function';
+                break;
+        }
+
+        throw new static(
+            sprintf(
+                "%s() expects parameter %d to be a valid callback, %s '%s' not found or invalid %s name",
+                $callee,
+                $parameterPosition,
+                $type,
+                $callback,
+                $type
+            )
+        );
+    }
+
+    /**
+     * @param callable[] $listOfCallables
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public static function assertListOfCallables($listOfCallables, $callee, $parameterPosition)
+    {
+        foreach ($listOfCallables as $index => $possiblyCallable) {
+            try {
+                InvalidArgumentException::assertCallable($possiblyCallable, __FUNCTION__, $index);
+            } catch (InvalidArgumentException $invalidArgumentException) {
+                if ($parameterPosition === static::ALL) {
+                    throw new static(
+                        sprintf(
+                            '%s() expects all parameters to be "callable"',
+                            $callee
+                        ),
+                        0,
+                        $invalidArgumentException
+                    );
+                } else {
+                    throw new static(
+                        sprintf(
+                            '%s() expects parameter %d to be "callable[]"',
+                            $callee,
+                            $parameterPosition
+                        ),
+                        0,
+                        $invalidArgumentException
+                    );
+                }
+            }
         }
     }
 
@@ -349,6 +390,31 @@ class InvalidArgumentException extends \InvalidArgumentException
                 $callee,
                 $position
             ));
+        }
+    }
+
+    /**
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
+    public static function assertString($value, $callee, $parameterPosition)
+    {
+        if (
+            !is_string($value)
+            && !is_numeric($value)
+            && !(is_object($value) && method_exists($value, '__toString' ))
+        ) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be string, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
         }
     }
 

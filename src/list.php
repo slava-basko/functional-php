@@ -62,19 +62,21 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
 /**
  * Extract a property from a list of objects.
  *
- * @param string $propertyName
+ * @param string $property
  * @param \Traversable|array $list
  * @return callable|array
  * @no-named-arguments
  */
-function pluck($propertyName, $list = null)
+function pluck($property, $list = null)
 {
+    InvalidArgumentException::assertString($property, __FUNCTION__, 1);
+
     if (is_null($list)) {
-        return partial(pluck, $propertyName);
+        return partial(pluck, $property);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    return map(prop($propertyName), $list);
+    return map(prop($property), $list);
 }
 
 define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
@@ -380,9 +382,7 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  */
 function partition($functions, $list = null)
 {
-    foreach ($functions as $f) {
-        InvalidArgumentException::assertCallback($f, __FUNCTION__, 1);
-    }
+    InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
 
     if (is_null($list)) {
         return partial(partition, $functions);

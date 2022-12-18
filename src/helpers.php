@@ -175,13 +175,15 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
  * Returns a string made by inserting the separator between each element and concatenating all the elements
  * into a single string.
  *
- * @param $separator
- * @param $list
- * @return callable
+ * @param string $separator
+ * @param array|\Traversable $list
+ * @return string|callable
  * @no-named-arguments
  */
 function join($separator, $list = null)
 {
+    InvalidArgumentException::assertString($separator, __FUNCTION__, 1);
+
     if (is_null($list)) {
         return partial(join, $separator);
     }
@@ -265,7 +267,7 @@ function try_catch(callable $tryer, callable $catcher = null)
         try {
             return call_user_func_array($tryer, $args);
         } catch (\Exception $exception) {
-            return $catcher();
+            return call_user_func_array($catcher, [$exception]);
         }
     };
 }
@@ -322,6 +324,8 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len');
  */
 function prop($property, $object = null)
 {
+    InvalidArgumentException::assertString($property, __FUNCTION__, 1);
+
     if (is_null($object)) {
         return partial(prop, $property);
     }
@@ -348,6 +352,8 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop');
  */
 function prop_thunk($property, $object = null)
 {
+    InvalidArgumentException::assertString($property, __FUNCTION__, 1);
+
     $prop_thunk = _thunkify_n(prop, 2);
 
     return $prop_thunk($property, $object);
@@ -358,12 +364,12 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
 /**
  * Nested version of `prop` function.
  *
- * @param $path
+ * @param array $path
  * @param $object
  * @return mixed
  * @no-named-arguments
  */
-function prop_path($path, $object = null)
+function prop_path(array $path, $object = null)
 {
     if (is_null($object)) {
         return partial(prop_path, $path);
@@ -384,7 +390,7 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
  * @return callable|array
  * @no-named-arguments
  */
-function props($properties, $object = null)
+function props(array $properties, $object = null)
 {
     if (is_null($object)) {
         return partial(props, $properties);
@@ -410,11 +416,15 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props');
  */
 function assoc($key, $val = null, $list = null)
 {
+    InvalidArgumentException::assertString($key, __FUNCTION__, 1);
+
     if (is_null($val) && is_null($list)) {
         return partial(assoc, $key);
     } elseif (is_null($list)) {
         return partial(assoc, $key, $val);
     }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     $possibleCopy = if_else(unary('is_object'), copy, identity);
 
@@ -448,7 +458,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
  * @return mixed
  * @no-named-arguments
  */
-function assoc_path($path, $val = null, $list = null)
+function assoc_path(array $path, $val = null, $list = null)
 {
     if (is_null($val) && is_null($list)) {
         return partial(assoc_path, $path);
@@ -529,12 +539,17 @@ define('Basko\Functional\pair', __NAMESPACE__ . '\\pair');
  */
 function either()
 {
-    $all_functions = $functions = func_get_args();
+    $allFunctions = $functions = func_get_args();
     $arg = array_pop($functions);
     if (is_callable($arg)) {
-        return function () use ($all_functions) {
+        InvalidArgumentException::assertListOfCallables(
+            $allFunctions,
+            __FUNCTION__,
+            InvalidArgumentException::ALL
+        );
+        return function () use ($allFunctions) {
             $args = func_get_args();
-            foreach ($all_functions as $function) {
+            foreach ($allFunctions as $function) {
                 if ($res = call_user_func_array($function, $args)) {
                     return $res;
                 }
@@ -543,6 +558,12 @@ function either()
             return null;
         };
     }
+
+    InvalidArgumentException::assertListOfCallables(
+        $functions,
+        __FUNCTION__,
+        InvalidArgumentException::ALL
+    );
 
     foreach ($functions as $function) {
         if ($res = $function($arg)) {
@@ -561,6 +582,8 @@ define('Basko\Functional\either', __NAMESPACE__ . '\\either');
  */
 function quote($value)
 {
+    InvalidArgumentException::assertString($value, __FUNCTION__, 1);
+
     return '"' . $value . '"';
 }
 
@@ -572,6 +595,8 @@ define('Basko\Functional\quote', __NAMESPACE__ . '\\quote');
  */
 function safe_quote($value)
 {
+    InvalidArgumentException::assertString($value, __FUNCTION__, 1);
+
     return quote(addslashes($value));
 }
 
@@ -636,12 +661,12 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
  * Applies provided function to specified keys.
  *
  * @param callable $f
- * @param $keys
+ * @param array $keys
  * @param $object
  * @return callable|array
  * @no-named-arguments
  */
-function map_keys(callable $f, $keys = null, $object = null)
+function map_keys(callable $f, array $keys = null, $object = null)
 {
     if (is_null($keys) && is_null($object)) {
         return partial(map_keys, $f);
@@ -723,19 +748,23 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
  * Creates an associative array using a `$keyProp` as the path to build its keys,
  * and optionally `$valueProp` as path to get the values.
  *
- * @param $keyProp
- * @param $valueProp
+ * @param string $keyProp
+ * @param string $valueProp
  * @param $list
  * @return array|callable
  * @no-named-arguments
  */
 function combine($keyProp, $valueProp = null, $list = null)
 {
+    InvalidArgumentException::assertString($keyProp, __FUNCTION__, 1);
+
     if (is_null($valueProp) && is_null($list)) {
         return partial(combine, $keyProp);
     } elseif (is_null($list)) {
         return partial(combine, $keyProp, $valueProp);
     }
+
+    InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
 
     $combineFunction = converge('array_combine', [
         pluck($keyProp),
@@ -837,7 +866,7 @@ function retry($retries, $delaySequence = null, $f = null)
 
     InvalidArgumentException::assertIntegerGreaterThanOrEqual($retries, 1, __FUNCTION__, 1);
     InvalidArgumentException::assertList($delaySequence, __FUNCTION__, 2);
-    InvalidArgumentException::assertCallback($f, __FUNCTION__, 3);
+    InvalidArgumentException::assertCallable($f, __FUNCTION__, 3);
 
     $delays = new \AppendIterator();
     $delays->append(new \InfiniteIterator($delaySequence));

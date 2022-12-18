@@ -299,12 +299,7 @@ function tap(callable $f, $value = null)
         return partial(tap, $f);
     }
 
-    $value_for_caller = $value;
-    if (is_object($value_for_caller)) {
-        $value_for_caller = clone $value_for_caller;
-    }
-
-    call_user_func_array($f, [$value_for_caller]);
+    call_user_func_array($f, [copy($value)]);
 
     return $value;
 }
@@ -452,9 +447,7 @@ function converge(callable $convergingFunction, $branchingFunctions = null)
         return partial(converge, $convergingFunction);
     }
 
-    foreach ($branchingFunctions as $branchingFunc) {
-        InvalidArgumentException::assertCallback($branchingFunc, __FUNCTION__, 2);
-    }
+    InvalidArgumentException::assertListOfCallables($branchingFunctions, __FUNCTION__, 2);
 
     return function () use ($convergingFunction, $branchingFunctions) {
         $values = func_get_args();
@@ -607,9 +600,7 @@ define('Basko\Functional\both', __NAMESPACE__ . '\\both');
  */
 function ap($flist, $list = null)
 {
-    foreach ($flist as $f) {
-        InvalidArgumentException::assertCallback($f, __FUNCTION__, 1); // TODO: move?
-    }
+    InvalidArgumentException::assertListOfCallables($flist, __FUNCTION__, 1);
 
     if (is_null($list)) {
         return partial(ap, $flist);

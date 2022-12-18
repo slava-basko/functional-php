@@ -2,6 +2,8 @@
 
 namespace Basko\Functional;
 
+use Basko\Functional\Exception\InvalidArgumentException;
+
 /**
  * Alias of `explode`.
  *
@@ -12,9 +14,13 @@ namespace Basko\Functional;
  */
 function str_split($separator, $string = null)
 {
+    InvalidArgumentException::assertString($separator, __FUNCTION__, 1);
+
     if (is_null($string)) {
         return partial(str_split, $separator);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
     return explode($separator, $string);
 }
@@ -60,9 +66,13 @@ define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
  */
 function str_starts_with($token, $string = null)
 {
+    InvalidArgumentException::assertString($token, __FUNCTION__, 1);
+
     if (is_null($string)) {
         return partial(str_starts_with, $token);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
     return strlen($token) <= strlen($string) && substr($string, 0, strlen($token)) === $token;
 }
@@ -79,9 +89,13 @@ define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
  */
 function str_ends_with($token, $string = null)
 {
+    InvalidArgumentException::assertString($token, __FUNCTION__, 1);
+
     if (is_null($string)) {
         return partial(str_ends_with, $token);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
     return strlen($token) <= strlen($string) && substr($string, -strlen($token)) === $token;
 }
@@ -98,9 +112,13 @@ define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
  */
 function str_test($pattern, $string = null)
 {
+    InvalidArgumentException::assertString($pattern, __FUNCTION__, 1);
+
     if (is_null($string)) {
         return partial(str_test, $pattern);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
     return 1 === preg_match($pattern, $string);
 }
@@ -118,11 +136,16 @@ define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
  */
 function str_pad_left($length, $pad_string = null, $string = null)
 {
+    InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
+
     if (is_null($pad_string) && is_null($string)) {
         return partial(str_pad_left, $length);
     } elseif (is_null($string)) {
+        InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
         return partial(str_pad_left, $length, $pad_string);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     return str_pad($string, $length, $pad_string, STR_PAD_LEFT);
 }
@@ -140,11 +163,16 @@ define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
  */
 function str_pad_right($length, $pad_string = null, $string = null)
 {
+    InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
+
     if (is_null($pad_string) && is_null($string)) {
         return partial(str_pad_right, $length);
     } elseif (is_null($string)) {
+        InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
         return partial(str_pad_right, $length, $pad_string);
     }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     return str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
 }

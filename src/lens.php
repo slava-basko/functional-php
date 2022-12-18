@@ -2,6 +2,7 @@
 
 namespace Basko\Functional;
 
+use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Functor\Constant;
 use Basko\Functional\Functor\Identity;
 
@@ -93,12 +94,14 @@ define('Basko\Functional\set', __NAMESPACE__ . '\\set');
 /**
  * Returns a lens whose focus is the specified property.
  *
- * @param $property
+ * @param string $property
  * @return callable
  * @no-named-arguments
  */
 function lens_prop($property)
 {
+    InvalidArgumentException::assertString($property, __FUNCTION__, 1);
+
     return lens(prop($property), assoc($property));
 }
 
@@ -107,11 +110,11 @@ define('Basko\Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
 /**
  * Returns a lens whose focus is the specified path.
  *
- * @param $path
+ * @param array $path
  * @return callable
  * @no-named-arguments
  */
-function lens_path($path)
+function lens_path(array $path)
 {
     return lens(prop_path($path), assoc_path($path));
 }
