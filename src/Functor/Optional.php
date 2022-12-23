@@ -36,7 +36,7 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return static::just($f($this->value));
+            return static::just(call_user_func_array($f, [$this->value]));
         }
 
         return $this::nothing();
@@ -44,7 +44,12 @@ class Optional extends Monad
 
     public function match(callable $just, callable $nothing)
     {
-        return $this->hasValue ? $just($this->value) : $nothing();
+        if ($this->hasValue) {
+            return static::just(call_user_func_array($just, [$this->value]));
+        } else {
+            $nothing();
+            return static::nothing();
+        }
     }
 
     public static function fromArrayKey($key, array $data, callable $f = null)

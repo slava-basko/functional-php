@@ -203,22 +203,22 @@ class FunctorTest extends BaseTest
         };
 
         $this->assertEquals(
-            Either::success('name@example.com'),
-            Either::success('name@example.com')
+            Either::right('name@example.com'),
+            Either::right('name@example.com')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );
 
         $this->assertEquals(
-            Either::failure('The string should contain an @ sign'),
-            Either::success('nameexample.com')
+            Either::left('The string should contain an @ sign'),
+            Either::right('nameexample.com')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );
 
         $this->assertEquals(
-            Either::failure('The string should contain a . sign'),
-            Either::success('name@examplecom')
+            Either::left('The string should contain a . sign'),
+            Either::right('name@examplecom')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );
@@ -228,10 +228,10 @@ class FunctorTest extends BaseTest
     {
         $shouldContainAtSign = function($string) {
             if (!stristr($string, '@')) {
-                return Either::failure('The string should contain an @ sign');
+                return Either::left('The string should contain an @ sign');
             }
 
-            return Either::success($string);
+            return Either::right($string);
         };
 
         $shouldContainDot = function($string) {
@@ -243,22 +243,22 @@ class FunctorTest extends BaseTest
         };
 
         $this->assertEquals(
-            Either::success('name@example.com'),
-            Either::success('name@example.com')
+            Either::right('name@example.com'),
+            Either::right('name@example.com')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );
 
         $this->assertEquals(
-            Either::failure('The string should contain an @ sign'),
-            Either::success('nameexample.com')
+            Either::left('The string should contain an @ sign'),
+            Either::right('nameexample.com')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );
 
         $this->assertEquals(
-            Either::failure('The string should contain a . sign'),
-            Either::success('name@examplecom')
+            Either::left('The string should contain a . sign'),
+            Either::right('name@examplecom')
                 ->map($shouldContainAtSign)
                 ->map($shouldContainDot)
         );

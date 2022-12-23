@@ -6,6 +6,10 @@ class Either extends Monad
 {
     const of = "Basko\Functional\Functor\Either::of";
 
+    const right = "Basko\Functional\Functor\Either::right";
+
+    const left = "Basko\Functional\Functor\Either::left";
+
     const success = "Basko\Functional\Functor\Either::success";
 
     const failure = "Basko\Functional\Functor\Either::failure";
@@ -24,14 +28,48 @@ class Either extends Monad
         return $m;
     }
 
-    public static function success($value)
+    /**
+     * Aka "success"
+     *
+     * @param $value
+     * @return \Basko\Functional\Functor\Either
+     */
+    public static function right($value)
     {
         return static::of(true, $value);
     }
 
-    public static function failure($error)
+    /**
+     * Aka "failure"
+     *
+     * @param $error
+     * @return \Basko\Functional\Functor\Either
+     */
+    public static function left($error)
     {
         return static::of(false, $error);
+    }
+
+    /**
+     * Alias, syntax sugar, for self::right()
+     *
+     * @param $value
+     * @return \Basko\Functional\Functor\Either
+     */
+    public static function success($value)
+    {
+        return static::right($value);
+    }
+
+    /**
+     * Alias, syntax sugar, for self::left()
+     *
+     * @param $error
+     * @return \Basko\Functional\Functor\Either
+     */
+    public static function failure($error)
+    {
+        return static::left($error);
     }
 
     public function map(callable $f)
@@ -41,14 +79,18 @@ class Either extends Monad
         }
 
         try {
-            return static::success(call_user_func_array($f, [$this->value]));
+            return static::right(call_user_func_array($f, [$this->value]));
         } catch (\Exception $exception) {
-            return static::failure($exception->getMessage());
+            return static::left($exception->getMessage());
         }
     }
 
     public function match(callable $success, callable $failure)
     {
-        return $this->validValue ? $success($this->value) : $failure($this->value);
+        if ($this->validValue) {
+            return static::right(call_user_func_array($success, [$this->value]));
+        } else {
+            return static::left(call_user_func_array($failure, [$this->value]));
+        }
     }
 }
