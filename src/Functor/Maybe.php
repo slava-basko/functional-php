@@ -27,7 +27,7 @@ class Maybe extends Monad
     public function map(callable $f)
     {
         if (!is_null($this->value)) {
-            return static::just($f($this->value));
+            return static::just(call_user_func_array($f, [$this->value]));
         }
 
         return $this::nothing();

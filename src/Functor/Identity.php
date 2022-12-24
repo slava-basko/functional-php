@@ -12,6 +12,6 @@ class Identity extends Monad
 
     public function map(callable $f)
     {
-        return static::of($f($this->value));
+        return static::of(call_user_func_array($f, [$this->value]));
     }
 }
