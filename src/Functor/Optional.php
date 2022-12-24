@@ -45,10 +45,9 @@ class Optional extends Monad
     public function match(callable $just, callable $nothing)
     {
         if ($this->hasValue) {
-            return static::just(call_user_func_array($just, [$this->value]));
+            call_user_func_array($just, [$this->value]);
         } else {
-            $nothing();
-            return static::nothing();
+            call_user_func($nothing);
         }
     }
 

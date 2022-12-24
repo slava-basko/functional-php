@@ -35,6 +35,10 @@ class Maybe extends Monad
 
     public function match(callable $just, callable $nothing)
     {
-        return !is_null($this->value) ? $just($this->value) : $nothing();
+        if (!is_null($this->value)) {
+            call_user_func_array($just, [$this->value]);
+        } else {
+            call_user_func($nothing);
+        }
     }
 }

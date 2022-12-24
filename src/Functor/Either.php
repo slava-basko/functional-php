@@ -88,9 +88,9 @@ class Either extends Monad
     public function match(callable $success, callable $failure)
     {
         if ($this->validValue) {
-            return static::right(call_user_func_array($success, [$this->value]));
+            call_user_func_array($success, [$this->value]);
         } else {
-            return static::left(call_user_func_array($failure, [$this->value]));
+            call_user_func_array($failure, [$this->value]);
         }
     }
 }

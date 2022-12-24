@@ -224,7 +224,7 @@ class FunctorTest extends BaseTest
         );
     }
 
-    public function test_either2()
+    public function test_either_with_functions_that_returns_either()
     {
         $shouldContainAtSign = function($string) {
             if (!stristr($string, '@')) {
@@ -256,12 +256,21 @@ class FunctorTest extends BaseTest
                 ->map($shouldContainDot)
         );
 
+        $m = Either::right('name@examplecom')
+            ->map($shouldContainAtSign)
+            ->map($shouldContainDot);
         $this->assertEquals(
             Either::left('The string should contain a . sign'),
-            Either::right('name@examplecom')
-                ->map($shouldContainAtSign)
-                ->map($shouldContainDot)
+            $m
         );
+
+        $failureCalled = false;
+        $failureF = function ($value) use (&$failureCalled) {
+            $failureCalled = true;
+            return $value;
+        };
+        $m->match(f\N, $failureF);
+        $this->assertTrue($failureCalled);
     }
 
 }
