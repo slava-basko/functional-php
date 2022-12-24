@@ -50,28 +50,6 @@ class Either extends Monad
         return static::of(false, $error);
     }
 
-    /**
-     * Alias, syntax sugar, for self::right()
-     *
-     * @param $value
-     * @return \Basko\Functional\Functor\Either
-     */
-    public static function success($value)
-    {
-        return static::right($value);
-    }
-
-    /**
-     * Alias, syntax sugar, for self::left()
-     *
-     * @param $error
-     * @return \Basko\Functional\Functor\Either
-     */
-    public static function failure($error)
-    {
-        return static::left($error);
-    }
-
     public function map(callable $f)
     {
         if (!$this->validValue) {
@@ -85,12 +63,12 @@ class Either extends Monad
         }
     }
 
-    public function match(callable $success, callable $failure)
+    public function match(callable $right, callable $left)
     {
         if ($this->validValue) {
-            call_user_func_array($success, [$this->value]);
+            call_user_func_array($right, [$this->value]);
         } else {
-            call_user_func_array($failure, [$this->value]);
+            call_user_func_array($left, [$this->value]);
         }
     }
 }

@@ -236,10 +236,10 @@ class FunctorTest extends BaseTest
 
         $shouldContainDot = function($string) {
             if (!stristr($string, '.')) {
-                return Either::failure('The string should contain a . sign');
+                return Either::left('The string should contain a . sign');
             }
 
-            return Either::success($string);
+            return Either::right($string);
         };
 
         $this->assertEquals(
