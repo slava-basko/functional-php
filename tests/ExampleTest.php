@@ -94,9 +94,6 @@ class ExampleTest extends BaseTest
 
     public function test_repeat_either()
     {
-//        $shipper_country=strOr($obj['shipper_country'],$oldObj['shipper_country']);
-//        $consignee_country=strOr($obj['consignee_country'],$oldObj['consignee_country']);
-//        $pickup_hub_id = strOr($obj['pickup_hub_id'], $oldObj['pickup_hub_id']);
         $obj = [
             'shipper_country' => 'NL',
             'consignee_country' => '',
