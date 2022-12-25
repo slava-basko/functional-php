@@ -242,4 +242,72 @@ class ExampleTest extends BaseTest
             'UA' => 'Ukraine',
         ], $f2(new \ArrayIterator($countries)));
     }
+
+    public function test_user_process()
+    {
+        $user = [
+            'first_name' => ' Slava',
+            'last_name' => 'Basko  ',
+            'role' => 'developer',
+            'location' => [
+                'country' => 'ua',
+                'city' => 'odessa',
+                'zip' => '',
+            ],
+            'contacts' => [
+                'some@exemple.com',
+                'some2@exemple.com',
+                'some@exemple.com',
+            ]
+        ];
+
+        $normalizeFunction = f\pipe(
+            f\map_keys('trim', ['first_name', 'last_name']),
+            f\map_keys('ucfirst', ['role']),
+            f\assoc('location', f\pipe(
+                f\prop('location'),
+                f\reject(f\not('strlen')),
+                f\map_keys('strtoupper', ['country']),
+                f\map_keys('ucfirst', ['city'])
+            )),
+            f\assoc('contacts', f\pipe(
+                f\prop('contacts'),
+                f\uniq
+            ))
+        );
+
+        $this->assertEquals(
+            [
+                'first_name' => 'Slava',
+                'last_name' => 'Basko',
+                'role' => 'Developer',
+                'location' => [
+                    'country' => 'UA',
+                    'city' => 'Odessa',
+                ],
+                'contacts' => [
+                    'some@exemple.com',
+                    'some2@exemple.com',
+                ]
+            ],
+            $normalizeFunction($user)
+        );
+
+        $this->assertEquals(
+            (object)[
+                'first_name' => 'Slava',
+                'last_name' => 'Basko',
+                'role' => 'Developer',
+                'location' => [
+                    'country' => 'UA',
+                    'city' => 'Odessa',
+                ],
+                'contacts' => [
+                    'some@exemple.com',
+                    'some2@exemple.com',
+                ]
+            ],
+            $normalizeFunction((object)$user)
+        );
+    }
 }

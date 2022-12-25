@@ -409,7 +409,7 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props');
  * Creates a shallow clone of a list with an overwritten value at a specified index.
  *
  * @param $key
- * @param $val
+ * @param mixed|callable $val
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -453,7 +453,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
  * Nested version of `assoc` function.
  *
  * @param array $path
- * @param $val
+ * @param mixed|callable $val
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -606,25 +606,27 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
  * Select the specified keys from the array.
  *
  * @param array $keys
- * @param Traversable|array $array
+ * @param Traversable|array $object
  * @return callable|array
  * @no-named-arguments
  */
-function select_keys(array $keys, $array = null)
+function select_keys(array $keys, $object = null)
 {
-    if (is_null($array)) {
+    if (is_null($object)) {
         return partial(select_keys, $keys);
     }
-    InvalidArgumentException::assertList($array, __FUNCTION__, 2);
+    InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
-    if ($array instanceof Traversable) {
-        $array = iterator_to_array($array);
+    if ($object instanceof Traversable) {
+        $object = iterator_to_array($object);
     }
 
     $aggregation = [];
     foreach ($keys as $key) {
-        if (array_key_exists($key, $array)) {
-            $aggregation[$key] = $array[$key];
+        if (is_array($object) && array_key_exists($key, $object)) {
+            $aggregation[$key] = $object[$key];
+        } elseif (is_object($object) && property_exists($object, $key)) {
+            $aggregation[$key] = $object->{$key};
         }
     }
 
@@ -637,22 +639,24 @@ define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys');
  * Returns an array with the specified keys omitted from the array.
  *
  * @param array $keys
- * @param Traversable|array $array
+ * @param Traversable|array $object
  * @return callable|array
  * @no-named-arguments
  */
-function omit_keys(array $keys, $array = null)
+function omit_keys(array $keys, $object = null)
 {
-    if (is_null($array)) {
+    if (is_null($object)) {
         return partial(omit_keys, $keys);
     }
-    InvalidArgumentException::assertList($array, __FUNCTION__, 2);
+    InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
-    if ($array instanceof Traversable) {
-        $array = iterator_to_array($array);
+    if ($object instanceof Traversable) {
+        $object = iterator_to_array($object);
+    } elseif (is_object($object)) {
+        $object = get_object_vars($object);
     }
 
-    return array_diff_key($array, array_flip($keys));
+    return array_diff_key($object, array_flip($keys));
 }
 
 define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
@@ -674,10 +678,16 @@ function map_keys(callable $f, array $keys = null, $object = null)
         return partial(map_keys, $f, $keys);
     }
 
-    return array_merge(
-        $object,
-        map(unary($f), select_keys($keys, $object))
-    );
+    InvalidArgumentException::assertList($object, __FUNCTION__, 3);
+
+    foreach ($keys as $key) {
+        if (is_object($object)) {
+            $object->{$key} = call_user_func_array($f, [$object->{$key}]);
+        } else {
+            $object[$key] = call_user_func_array($f, [$object[$key]]);
+        }
+    }
+    return $object;
 }
 
 define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
