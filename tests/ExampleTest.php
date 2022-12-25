@@ -310,4 +310,40 @@ class ExampleTest extends BaseTest
             $normalizeFunction((object)$user)
         );
     }
+
+    public function test_parse_json_and_get_needed_value()
+    {
+        $response = <<<JSON
+{
+  "products": [
+    {
+      "title": "Socks",
+      "restricted": false
+    },
+    {
+      "title": "Boots",
+      "restricted": false
+    },
+    {
+      "title": "T-shirts",
+      "restricted": true
+    }
+  ]
+}
+JSON;
+
+        $getRestrictedItems = f\pipe(
+            f\partial_r('json_decode', true),
+            f\prop('products'),
+            f\select(f\pipe(f\prop('restricted'), f\identical(true))),
+            f\pluck('title'),
+            f\join(','),
+            f\concat('Restricted items: ')
+        );
+
+        $this->assertEquals(
+            'Restricted items: T-shirts',
+            $getRestrictedItems($response)
+        );
+    }
 }

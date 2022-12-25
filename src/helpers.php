@@ -775,6 +775,7 @@ function combine($keyProp, $valueProp = null, $list = null)
     }
 
     InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
+    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     $combineFunction = converge('array_combine', [
         pluck($keyProp),
