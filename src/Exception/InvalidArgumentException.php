@@ -219,26 +219,6 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param mixed $collection
-     * @param mixed $key
-     * @param string $callee
-     * @return void
-     * @throws static
-     */
-    public static function assertArrayKeyExists($collection, $key, $callee)
-    {
-        if (!isset($collection[$key])) {
-            throw new static(
-                sprintf(
-                    '%s(): unknown key "%s"',
-                    $callee,
-                    $key
-                )
-            );
-        }
-    }
-
-    /**
      * @param mixed $value
      * @param string $callee
      * @param int $parameterPosition
@@ -320,21 +300,6 @@ class InvalidArgumentException extends \InvalidArgumentException
                     $parameterPosition,
                     $limit
                 )
-            );
-        }
-    }
-
-    /**
-     * @param array<array-key, mixed> $args
-     * @param int $position
-     * @return void
-     * @throws static
-     */
-    public static function assertResolvablePlaceholder(array $args, $position)
-    {
-        if (count($args) === 0) {
-            throw new static(
-                sprintf('Cannot resolve parameter placeholder at position %d. Parameter stack is empty.', $position)
             );
         }
     }
