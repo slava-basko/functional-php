@@ -10,10 +10,6 @@ class Either extends Monad
 
     const left = "Basko\Functional\Functor\Either::left";
 
-    const success = "Basko\Functional\Functor\Either::success";
-
-    const failure = "Basko\Functional\Functor\Either::failure";
-
     protected $validValue = false;
 
     public static function of($validValue, $value)
