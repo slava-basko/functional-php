@@ -242,6 +242,15 @@ class FunctorTest extends BaseTest
             return Either::right($string);
         };
 
+        $pipe = f\pipe(
+            $shouldContainAtSign,
+            f\liftm($shouldContainDot)
+        );
+        $this->assertEquals(
+            Either::right('name@example.com'),
+            $pipe('name@example.com')
+        );
+
         $this->assertEquals(
             Either::right('name@example.com'),
             Either::right('name@example.com')

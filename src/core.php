@@ -631,7 +631,9 @@ define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
 function liftm(callable $f)
 {
     return function () use ($f) {
-        return Maybe::of(call_user_func_array($f, map(function ($m) {
+        $cond = if_else(is_instance_of(Monad::class), identity, Maybe::of);
+
+        return $cond(call_user_func_array($f, map(function ($m) {
             if (instance_of(Monad::class, $m)) {
                 return $m->extract();
             }
