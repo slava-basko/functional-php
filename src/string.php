@@ -28,6 +28,36 @@ function str_split($separator, $string = null)
 define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
 
 /**
+ * Example:
+ * ```
+ * str_split_on(2, 'GB123456789000'); // ['GB', '123456789000']
+ * ```
+ *
+ * @param int $num
+ * @param string $string
+ * @return callable|string[]
+ * @no-named-arguments
+ */
+function str_split_on($num, $string = null)
+{
+    InvalidArgumentException::assertPositiveInteger($num, __FUNCTION__, 1);
+
+    if (is_null($string)) {
+        return partial(str_split_on, $num);
+    }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
+
+    $length = strlen($string);
+    $output[0] = substr($string, 0, $num);
+    $output[1] = substr($string, $num, $length);
+
+    return $output;
+}
+
+define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
+
+/**
  * Alias of native `str_replace`.
  *
  * Use `partial_p` if you need $count argument:

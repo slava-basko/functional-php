@@ -12,6 +12,11 @@ class StringTest extends BaseTest
         $this->assertEquals(['Hello', 'World'], $words('Hello World'));
     }
 
+    public function test_str_split_on()
+    {
+        $this->assertEquals(['UA', '1234567890'], f\str_split_on(2, 'UA1234567890'));
+    }
+
     public function test_str_replace()
     {
         $string = 'a b c d e f';
