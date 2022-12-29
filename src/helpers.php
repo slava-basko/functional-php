@@ -130,8 +130,12 @@ define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize');
 /**
  * @return array
  */
-function to_list()
+function to_list($arg)
 {
+    if (is_string($arg)) {
+        return array_unique(array_filter(array_map('trim', explode(',', $arg)), 'strlen'));
+    }
+
     return func_get_args();
 }
 

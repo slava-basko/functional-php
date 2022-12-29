@@ -10,6 +10,9 @@ class HelpersTest extends BaseTest
     public function test_to_list()
     {
         $this->assertEquals([1, 2, 3], f\to_list(1, 2, 3));
+        $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava,Basko'));
+        $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava,Basko,Slava'));
+        $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava, Basko'));
     }
 
     public function test_concat_and_join()
