@@ -128,12 +128,13 @@ function memoized(callable $f)
 define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize');
 
 /**
+ * @param ...$args
  * @return array
  */
-function to_list($arg)
+function to_list($args)
 {
-    if (is_string($arg)) {
-        return array_unique(array_filter(array_map('trim', explode(',', $arg)), 'strlen'));
+    if (is_string($args)) {
+        return array_unique(array_filter(array_map('trim', explode(',', $args)), 'strlen'));
     }
 
     return func_get_args();
