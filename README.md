@@ -1017,6 +1017,12 @@ Alias of `explode`.
 str_split(' ', 'Hello World'); // ['Hello', 'World']
 ```
 
+### str_split_on
+Splits string on 2 parts by X position.
+```php
+str_split_on(2, 'UA1234567890'); // ['UA', '1234567890']
+```
+
 ### str_replace
 Alias of native `str_replace`.
 ```php
