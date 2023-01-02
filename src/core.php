@@ -3,6 +3,7 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Maybe;
 use Basko\Functional\Functor\Monad;
 
@@ -394,6 +395,9 @@ function compose(callable $f, callable $g)
 {
     $functions = func_get_args();
 
+    /**
+     * @return mixed|Maybe|Either
+     */
     return function () use ($functions) {
         $args = func_get_args();
         foreach (array_reverse($functions) as $function) {
@@ -413,13 +417,16 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
  * @param callable $f
  * @param callable $g
  * @param callable ...
- * @return mixed
+ * @return callable
  * @no-named-arguments
  */
 function pipe(callable $f, callable $g)
 {
     $f = call_user_func_array(compose, array_reverse(func_get_args()));
 
+    /**
+     * @return mixed|Maybe|Either
+     */
     return function () use ($f) {
         $args = func_get_args();
 
