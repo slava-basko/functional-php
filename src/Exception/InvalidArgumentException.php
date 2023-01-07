@@ -262,6 +262,27 @@ class InvalidArgumentException extends \InvalidArgumentException
 
     /**
      * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
+    public static function assertNumeric($value, $callee, $parameterPosition)
+    {
+        if (!is_numeric($value)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be numeric, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param mixed $value
      * @param int $limit
      * @param string $callee
      * @param int $parameterPosition
@@ -378,6 +399,22 @@ class InvalidArgumentException extends \InvalidArgumentException
                     $callee,
                     $parameterPosition,
                     self::getType($value)
+                )
+            );
+        }
+    }
+
+    public static function assertType($value, $type, $callee, $parameterPosition)
+    {
+        if (!class_exists($value) || !is_a($value, $type, true)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be %s, %s (%s) given',
+                    $callee,
+                    $parameterPosition,
+                    $type,
+                    self::getType($value),
+                    $value
                 )
             );
         }

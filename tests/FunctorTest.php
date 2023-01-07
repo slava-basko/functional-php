@@ -31,6 +31,17 @@ class FunctorTest extends BaseTest
         $this->assertFalse($called);
     }
 
+    public function test_maybe_is_methods()
+    {
+        $m = f\Functor\Maybe::just(1);
+        $this->assertTrue($m->isJust());
+        $this->assertFalse($m->isNothing());
+
+        $m2 = f\Functor\Maybe::nothing();
+        $this->assertTrue($m2->isNothing());
+        $this->assertFalse($m2->isJust());
+    }
+
     public function test_maybe_chain()
     {
         $getParent = f\invoker('getParent');
@@ -224,6 +235,17 @@ class FunctorTest extends BaseTest
         );
     }
 
+    public function test_either_is_methods()
+    {
+        $e = Either::right(1);
+        $this->assertTrue($e->isRight());
+        $this->assertFalse($e->isLeft());
+
+        $e2 = Either::left('error');
+        $this->assertTrue($e2->isLeft());
+        $this->assertFalse($e2->isRight());
+    }
+
     public function test_either_with_functions_that_returns_either()
     {
         $shouldContainAtSign = function($string) {
@@ -244,7 +266,7 @@ class FunctorTest extends BaseTest
 
         $pipe = f\pipe(
             $shouldContainAtSign,
-            f\liftm($shouldContainDot)
+            f\lift_e($shouldContainDot)
         );
         $this->assertEquals(
             Either::right('name@example.com'),

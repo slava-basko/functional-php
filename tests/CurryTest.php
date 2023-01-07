@@ -36,7 +36,7 @@ class CurryTest extends BaseTest
 
     public function test_curry_n()
     {
-        $curriedAdd = f\curry_n(3, function($a, $b, $c, $d) {
+        $curriedAdd = f\curry_n(4, function($a, $b, $c, $d) {
             return $a + $b + $c + $d;
         });
 

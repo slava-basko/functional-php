@@ -44,7 +44,7 @@ define('Basko\Functional\count_args', __NAMESPACE__ . '\\count_args');
  */
 function curry_n($count, callable $f)
 {
-    $accumulator = function ($arguments) use ($count, $f, &$accumulator) {
+    $accumulator = function (array $arguments) use ($count, $f, &$accumulator) {
         return function () use ($count, $f, $arguments, $accumulator) {
             $newArguments = func_get_args();
             if (!$newArguments) {

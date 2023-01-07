@@ -11,6 +11,8 @@ use Basko\Functional\Exception\InvalidArgumentException;
  */
 function is_even($n)
 {
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
     return $n % 2 === 0;
 }
 
@@ -23,6 +25,8 @@ define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
  */
 function is_odd($n)
 {
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
     $odd = not(is_even);
 
     return $odd($n);
@@ -38,9 +42,13 @@ define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
  */
 function plus($a, $b = null)
 {
+    InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
+
     if (is_null($b)) {
         return partial(plus, $a);
     }
+
+    InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
 
     return $a + $b;
 }
@@ -55,9 +63,13 @@ define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
  */
 function minus($a, $b = null)
 {
+    InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
+
     if (is_null($b)) {
         return partial(flipped(minus), $a);
     }
+
+    InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
 
     return $a - $b;
 }
@@ -72,9 +84,13 @@ define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
  */
 function div($a, $b = null)
 {
+    InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
+
     if (is_null($b)) {
         return partial(flipped(div), $a);
     }
+
+    InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
 
     return $a / $b;
 }
@@ -89,9 +105,13 @@ define('Basko\Functional\div', __NAMESPACE__ . '\\div');
  */
 function multiply($a, $b = null)
 {
+    InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
+
     if (is_null($b)) {
         return partial(multiply, $a);
     }
+
+    InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
 
     return $a * $b;
 }
@@ -176,6 +196,8 @@ define('Basko\Functional\average', __NAMESPACE__ . '\\average');
  */
 function inc($n)
 {
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
     return plus($n, 1);
 }
 
@@ -189,6 +211,8 @@ define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
  */
 function dec($n)
 {
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
     return minus($n, 1);
 }
 
@@ -202,6 +226,8 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
  */
 function power($n)
 {
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
     return $n * $n;
 }
 

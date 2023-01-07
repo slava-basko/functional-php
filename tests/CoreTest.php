@@ -415,16 +415,40 @@ class CoreTest extends BaseTest
         );
     }
 
-    public function test_liftm()
+    public function test_lift_to()
     {
-        $plusm = f\liftm(f\plus);
+        $f = function ($arg) {
+            if (!is_string($arg)) {
+                throw new \InvalidArgumentException();
+            }
+
+            return $arg;
+        };
+
+        $id = f\Functor\Identity::of('Slava');
+        $const = f\Functor\Constant::of('Slava');
+        $maybe = f\Functor\Maybe::just('Slava');
+        $either = f\Functor\Either::right('Slava');
+        $optional = f\Functor\Optional::just('Slava');
+
+        $lift_m = f\lift_to(f\Functor\Identity::class);
+        $this->assertEquals($id, f\call($lift_m($f), $id));
+        $this->assertEquals($const, f\call(f\lift_to(f\Functor\Constant::class, $f), $const));
+        $this->assertEquals($maybe, f\call(f\lift_to(f\Functor\Maybe::class, $f), $maybe));
+        $this->assertEquals($either, f\call(f\lift_to(f\Functor\Either::class, $f), $either));
+        $this->assertEquals($optional, f\call(f\lift_to(f\Functor\Optional::class, $f), $optional));
+    }
+
+    public function test_lift_m()
+    {
+        $plusm = f\lift_m(f\plus);
         $this->assertEquals(f\Functor\Maybe::just(5), $plusm(3, f\Functor\Maybe::just(2)));
         $this->assertEquals(
             f\Functor\Maybe::just(5),
             $plusm(f\Functor\Maybe::just(3), f\Functor\Maybe::just(2))
         );
 
-        $containsm = f\liftm(f\contains);
+        $containsm = f\lift_m(f\contains);
         $this->assertEquals(
             f\Functor\Maybe::just(true),
             $containsm('foo', f\Functor\Maybe::just('foobar'))

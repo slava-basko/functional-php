@@ -6,6 +6,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Maybe;
 use Basko\Functional\Functor\Monad;
+use Basko\Functional\Functor\Optional;
 
 /**
  * @param mixed $value
@@ -484,6 +485,7 @@ function call(callable $f, $args = null)
     }
 
     $args = func_get_args();
+
     return call_user_func_array(head($args), flatten(tail($args)));
 }
 
@@ -502,6 +504,7 @@ function apply_to($arg, callable $f = null)
     }
 
     $args = func_get_args();
+
     return call_user_func_array(array_pop($args), $args);
 }
 
@@ -627,18 +630,32 @@ function ap($flist, $list = null)
 define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
 
 /**
- * Lift a function so that it accepts Monad as parameters. Lifted function returns Monad.
+ * Lift a function so that it accepts Monad as parameters. Lifted function returns specified Monad type.
  *
  * Note, that you cannot use curry on a lifted function.
  *
+ * @param string $type
  * @param callable $f
  * @return callable
  * @no-named-arguments
  */
-function liftm(callable $f)
+function lift_to($type, callable $f = null)
 {
-    return function () use ($f) {
-        $cond = if_else(is_instance_of(Monad::class), identity, Maybe::of);
+    InvalidArgumentException::assertType($type, Monad::class, __FUNCTION__, 1);
+
+    if (is_null($f)) {
+        return partial(lift_to, $type);
+    }
+
+    $ofFunc = $type::of;
+    if ($type == Maybe::class || $type == Optional::class) {
+        $ofFunc = $type::just;
+    } elseif ($type == Either::class) {
+        $ofFunc = $type::right;
+    }
+
+    return function () use ($type, $f, $ofFunc) {
+        $cond = if_else(is_instance_of(Monad::class), identity, $ofFunc);
 
         return $cond(call_user_func_array($f, map(function ($m) {
             if (instance_of(Monad::class, $m)) {
@@ -650,4 +667,40 @@ function liftm(callable $f)
     };
 }
 
-define('Basko\Functional\liftm', __NAMESPACE__ . '\\liftm');
+define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to');
+
+/**
+ * Lift a function so that it accepts Maybe as parameters. Lifted function returns Maybe.
+ *
+ * Note, that you cannot use curry on a lifted function.
+ *
+ * @param callable $f
+ * @return callable
+ * @no-named-arguments
+ */
+function lift_m(callable $f)
+{
+    return function () use ($f) {
+        return call_user_func_array(lift_to(Maybe::class, $f), func_get_args());
+    };
+}
+
+define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
+
+/**
+ * Lift a function so that it accepts Either as parameters. Lifted function returns Either.
+ *
+ * Note, that you cannot use curry on a lifted function.
+ *
+ * @param callable $f
+ * @return callable
+ * @no-named-arguments
+ */
+function lift_e(callable $f)
+{
+    return function () use ($f) {
+        return call_user_func_array(lift_to(Either::class, $f), func_get_args());
+    };
+}
+
+define('Basko\Functional\lift_e', __NAMESPACE__ . '\\lift_e');

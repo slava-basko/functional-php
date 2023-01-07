@@ -67,4 +67,24 @@ class Either extends Monad
             call_user_func_array($left, [$this->value]);
         }
     }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isRight()
+    {
+        return $this->validValue === true;
+    }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isLeft()
+    {
+        return $this->validValue === false;
+    }
 }

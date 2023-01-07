@@ -41,4 +41,24 @@ class Maybe extends Monad
             call_user_func($nothing);
         }
     }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isJust()
+    {
+        return is_null($this->value) === false;
+    }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isNothing()
+    {
+        return is_null($this->value) === true;
+    }
 }
