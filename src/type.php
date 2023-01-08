@@ -184,3 +184,43 @@ function type_float($value)
 }
 
 define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
+
+/**
+ * @param callable $firsts
+ * @param callable $second
+ * @return callable
+ */
+function type_union($firsts, $second)
+{
+    $u = function($left, $right) {
+        return function ($value) use ($left, $right) {
+            try {
+                return call_user_func($left, $value);
+            } catch (TypeException $typeException) {
+                $left = $typeException->getTarget();
+            }
+
+            try {
+                return call_user_func($right, $value);
+            } catch (TypeException $typeException) {
+                $right = $typeException->getTarget();
+            }
+
+            throw TypeException::forValue($value, sprintf('%s|%s', $left, $right));
+        };
+    };
+
+    $types = func_get_args();
+    $firsts = array_shift($types);
+    $second = array_shift($types);
+
+    $accumulated_type = $u($firsts, $second);
+
+    foreach ($types as $type) {
+        $accumulated_type = $u($accumulated_type, $type);
+    }
+
+    return $accumulated_type;
+}
+
+define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');

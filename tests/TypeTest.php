@@ -61,8 +61,6 @@ class TypeTest extends BaseTest
     }
 
 
-
-
     public function getFloatValid()
     {
         yield [123.0, 123];
@@ -126,8 +124,6 @@ class TypeTest extends BaseTest
     }
 
 
-
-
     public function getStringValid()
     {
         yield ['hello', 'hello'];
@@ -171,8 +167,6 @@ class TypeTest extends BaseTest
     }
 
 
-
-
     public function getBoolValid()
     {
         yield [false, false];
@@ -212,8 +206,6 @@ class TypeTest extends BaseTest
     }
 
 
-
-
     public function test_instance_of()
     {
         $this->assertTrue(f\instance_of(\User::class, new \User([])));
@@ -237,5 +229,34 @@ class TypeTest extends BaseTest
             sprintf('Could not convert "null" to type "User"')
         );
         $typeOfUser(null);
+    }
+
+    public function test_type_union()
+    {
+        $t = f\type_union(f\type_int, f\type_float);
+        $t2 = f\type_union($t, f\type_bool);
+        $t3 = f\type_union(f\type_int, f\type_float, f\type_bool);
+
+        $this->assertEquals(1, $t(1));
+        $this->assertEquals(1, $t(1.00));
+        $this->assertEquals(1, $t('1'));
+
+        $this->assertEquals(true, $t2('1'));
+        $this->assertEquals(true, $t2(1));
+        $this->assertEquals(false, $t2(0));
+
+        $this->assertEquals(3, $t3(3));
+        $this->assertEquals(3, $t3(3.00));
+        $this->assertEquals(3, $t3('3'));
+
+        $this->assertEquals(true, $t3('1'));
+        $this->assertEquals(true, $t3(1));
+        $this->assertEquals(false, $t3(0));
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Could not convert "stdClass" to type "int|float|bool"'
+        );
+        $t3(new \stdClass());
     }
 }
