@@ -192,7 +192,7 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
  */
 function type_union($firsts, $second)
 {
-    $u = function($left, $right) {
+    $u = function ($left, $right) {
         return function ($value) use ($left, $right) {
             try {
                 return call_user_func($left, $value);
