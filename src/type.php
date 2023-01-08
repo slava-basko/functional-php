@@ -118,9 +118,9 @@ function type_int($value)
     }
 
     if (is_float($value)) {
-        $integer_value = (int)$value;
-        if (((float)$integer_value) === $value) {
-            return $integer_value;
+        $integerValue = (int)$value;
+        if (((float)$integerValue) === $value) {
+            return $integerValue;
         }
     }
 
@@ -214,13 +214,13 @@ function type_union($firsts, $second)
     $firsts = array_shift($types);
     $second = array_shift($types);
 
-    $accumulated_type = $u($firsts, $second);
+    $accumulatedType = $u($firsts, $second);
 
     foreach ($types as $type) {
-        $accumulated_type = $u($accumulated_type, $type);
+        $accumulatedType = $u($accumulatedType, $type);
     }
 
-    return $accumulated_type;
+    return $accumulatedType;
 }
 
 define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');

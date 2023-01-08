@@ -244,13 +244,13 @@ function median($list)
 
     \sort($list);
     $count = count($list);
-    $middle_value = floor(($count - 1) / 2); // find the middle value, or the lowest middle value
+    $middleValue = floor(($count - 1) / 2); // find the middle value, or the lowest middle value
 
     if ($count % 2) { // odd number, middle is the median
-        $median = $list[$middle_value];
+        $median = $list[$middleValue];
     } else { // even number, calculate avg of 2 medians
-        $low = $list[$middle_value];
-        $high = $list[$middle_value + 1];
+        $low = $list[$middleValue];
+        $high = $list[$middleValue + 1];
         $median = (($low + $high) / 2);
     }
 
