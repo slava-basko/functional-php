@@ -25,7 +25,7 @@ function str_split($separator, $string = null)
     return explode($separator, $string);
 }
 
-define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
+define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split', false);
 
 /**
  * Example:
@@ -55,7 +55,7 @@ function str_split_on($num, $string = null)
     return $output;
 }
 
-define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
+define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on', false);
 
 /**
  * Alias of native `str_replace`.
@@ -84,7 +84,7 @@ function str_replace($search, $replace = null, $subject = null)
     return \str_replace($search, $replace, $subject);
 }
 
-define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
+define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace', false);
 
 /**
  * Checks if `$string` starts with `$token`.
@@ -107,7 +107,7 @@ function str_starts_with($token, $string = null)
     return strlen($token) <= strlen($string) && substr($string, 0, strlen($token)) === $token;
 }
 
-define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
+define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with', false);
 
 /**
  * Checks if `$string` ends with `$token`.
@@ -130,7 +130,7 @@ function str_ends_with($token, $string = null)
     return strlen($token) <= strlen($string) && substr($string, -strlen($token)) === $token;
 }
 
-define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
+define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with', false);
 
 /**
  * Checks if a string matches a regular expression.
@@ -153,7 +153,7 @@ function str_test($pattern, $string = null)
     return 1 === preg_match($pattern, $string);
 }
 
-define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
+define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test', false);
 
 /**
  * Alias of `str_pad`.
@@ -180,7 +180,7 @@ function str_pad_left($length, $pad_string = null, $string = null)
     return str_pad($string, $length, $pad_string, STR_PAD_LEFT);
 }
 
-define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
+define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left', false);
 
 /**
  * Alias of `str_pad`.
@@ -207,4 +207,4 @@ function str_pad_right($length, $pad_string = null, $string = null)
     return str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
 }
 
-define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');
+define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right', false);

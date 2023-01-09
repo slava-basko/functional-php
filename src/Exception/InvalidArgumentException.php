@@ -2,6 +2,8 @@
 
 namespace Basko\Functional\Exception;
 
+use ArrayAccess;
+
 class InvalidArgumentException extends \InvalidArgumentException
 {
     const ALL = 99;
@@ -370,8 +372,8 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertPair($pair, $callee, $position)
     {
-        if (!(is_array($pair) || $pair instanceof \ArrayAccess) || !isset($pair[0], $pair[1])) {
-            throw new static(\sprintf(
+        if (!(is_array($pair) || $pair instanceof ArrayAccess) || !isset($pair[0], $pair[1])) {
+            throw new static(sprintf(
                 '%s() expects parameter %d to be a pair (array with two elements)',
                 $callee,
                 $position

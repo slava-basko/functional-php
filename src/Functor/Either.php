@@ -2,6 +2,8 @@
 
 namespace Basko\Functional\Functor;
 
+use Exception;
+
 class Either extends Monad
 {
     const of = "Basko\Functional\Functor\Either::of";
@@ -54,7 +56,7 @@ class Either extends Monad
 
         try {
             return static::right(call_user_func_array($f, [$this->value]));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }
     }

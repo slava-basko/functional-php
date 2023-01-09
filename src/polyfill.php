@@ -14,10 +14,10 @@ if (!function_exists('get_debug_type')) {
             ['is_array', \Basko\Functional\always('array')],
             ['is_int', \Basko\Functional\always('int')],
             ['is_float', \Basko\Functional\always('float')],
-            [\Basko\Functional\is_instance_of(\__PHP_Incomplete_Class::class),
+            [\Basko\Functional\is_instance_of(__PHP_Incomplete_Class::class),
                 \Basko\Functional\always('__PHP_Incomplete_Class')],
             ['is_object', function ($value) {
-                $class = \get_class($value);
+                $class = get_class($value);
 
                 if (false === strpos($class, '@')) {
                     return $class;

@@ -17,7 +17,7 @@ function instance_of($instanceof, $object)
     return $object instanceof $instanceof;
 }
 
-define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of');
+define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of', false);
 
 /**
  * Curryied version of `instance_of`.
@@ -32,7 +32,7 @@ function is_instance_of($instanceof)
     };
 }
 
-define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of');
+define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
 
 /**
  * Return a function that checks `$value instanceof SomeClass.
@@ -51,7 +51,7 @@ function type_of($instanceof)
     };
 }
 
-define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of');
+define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
 
 /**
  * Checks and coerces value to `bool`.
@@ -78,7 +78,7 @@ function type_bool($value)
     throw TypeException::forValue($value, 'bool');
 }
 
-define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool');
+define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
 
 /**
  * Checks and coerces value to `string`.
@@ -101,7 +101,7 @@ function type_string($value)
     throw TypeException::forValue($value, 'string');
 }
 
-define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
+define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string', false);
 
 /**
  * Checks and coerces value to `int`.
@@ -146,7 +146,7 @@ function type_int($value)
     throw TypeException::forValue($value, 'int');
 }
 
-define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
+define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int', false);
 
 /**
  * Checks and coerces value to `float`.
@@ -183,7 +183,7 @@ function type_float($value)
     throw TypeException::forValue($value, 'float');
 }
 
-define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
+define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float', false);
 
 /**
  * @param callable $firsts
@@ -223,4 +223,4 @@ function type_union($firsts, $second)
     return $accumulatedType;
 }
 
-define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
+define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union', false);

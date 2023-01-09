@@ -7,6 +7,7 @@ use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Maybe;
 use Basko\Functional\Functor\Monad;
 use Basko\Functional\Functor\Optional;
+use Traversable;
 
 /**
  * @param mixed $value
@@ -18,7 +19,7 @@ function identity($value)
     return $value;
 }
 
-define('Basko\Functional\identity', __NAMESPACE__ . '\\identity');
+define('Basko\Functional\identity', __NAMESPACE__ . '\\identity', false);
 
 /**
  * @return true
@@ -28,7 +29,7 @@ function T()
     return true;
 }
 
-define('Basko\Functional\T', __NAMESPACE__ . '\\T');
+define('Basko\Functional\T', __NAMESPACE__ . '\\T', false);
 
 /**
  * @return false
@@ -38,7 +39,7 @@ function F()
     return false;
 }
 
-define('Basko\Functional\F', __NAMESPACE__ . '\\F');
+define('Basko\Functional\F', __NAMESPACE__ . '\\F', false);
 
 /**
  * @return null
@@ -48,7 +49,7 @@ function N()
     return null;
 }
 
-define('Basko\Functional\N', __NAMESPACE__ . '\\N');
+define('Basko\Functional\N', __NAMESPACE__ . '\\N', false);
 
 /**
  * @param mixed $a
@@ -65,7 +66,7 @@ function eq($a, $b = null)
     return $a == $b;
 }
 
-define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
+define('Basko\Functional\eq', __NAMESPACE__ . '\\eq', false);
 
 /**
  * @param mixed $a
@@ -82,7 +83,7 @@ function identical($a, $b = null)
     return $a === $b;
 }
 
-define('Basko\Functional\identical', __NAMESPACE__ . '\\identical');
+define('Basko\Functional\identical', __NAMESPACE__ . '\\identical', false);
 
 /**
  * @param mixed $a
@@ -99,7 +100,7 @@ function lt($a, $b = null)
     return $a < $b;
 }
 
-define('Basko\Functional\lt', __NAMESPACE__ . '\\lt');
+define('Basko\Functional\lt', __NAMESPACE__ . '\\lt', false);
 
 /**
  * @param mixed $a
@@ -116,7 +117,7 @@ function lte($a, $b = null)
     return $a <= $b;
 }
 
-define('Basko\Functional\lte', __NAMESPACE__ . '\\lte');
+define('Basko\Functional\lte', __NAMESPACE__ . '\\lte', false);
 
 /**
  * @param mixed $a
@@ -133,7 +134,7 @@ function gt($a, $b = null)
     return $a > $b;
 }
 
-define('Basko\Functional\gt', __NAMESPACE__ . '\\gt');
+define('Basko\Functional\gt', __NAMESPACE__ . '\\gt', false);
 
 /**
  * @param mixed $a
@@ -150,7 +151,7 @@ function gte($a, $b = null)
     return $a >= $b;
 }
 
-define('Basko\Functional\gte', __NAMESPACE__ . '\\gte');
+define('Basko\Functional\gte', __NAMESPACE__ . '\\gte', false);
 
 /**
  * Decorates given function with tail recursion optimization.
@@ -179,7 +180,7 @@ function tail_recursion(callable $f)
     };
 }
 
-define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion');
+define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion', false);
 
 /**
  * Produces a new list of elements by mapping each element in list through a transformation function.
@@ -206,7 +207,7 @@ function map(callable $f, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\map', __NAMESPACE__ . '\\map');
+define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
 
 /**
  * `flat_map` works applying `$f` that returns a sequence for each element in a list,
@@ -232,7 +233,7 @@ function flat_map(callable $f, $list = null)
     foreach ($list as $index => $element) {
         $result = call_user_func_array($f, [$element, $index, $list]);
 
-        if (\is_array($result) || $result instanceof \Traversable) {
+        if (is_array($result) || $result instanceof Traversable) {
             foreach ($result as $item) {
                 $flattened[] = $item;
             }
@@ -244,7 +245,7 @@ function flat_map(callable $f, $list = null)
     return $flattened;
 }
 
-define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
+define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map', false);
 
 /**
  * Calls `$f` on each element in list. Returns origin `$list`.
@@ -269,7 +270,7 @@ function each(callable $f, $list = null)
     return $list;
 }
 
-define('Basko\Functional\each', __NAMESPACE__ . '\\each');
+define('Basko\Functional\each', __NAMESPACE__ . '\\each', false);
 
 /**
  * Logical negation of the given $function
@@ -285,7 +286,7 @@ function not(callable $f)
     };
 }
 
-define('Basko\Functional\not', __NAMESPACE__ . '\\not');
+define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
 
 /**
  * Call the given function with the given value, then return the value.
@@ -306,7 +307,7 @@ function tap(callable $f, $value = null)
     return $value;
 }
 
-define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
+define('Basko\Functional\tap', __NAMESPACE__ . '\\tap', false);
 
 /**
  * Applies a function to each element in the list and reduces it to a single value.
@@ -333,7 +334,7 @@ function fold(callable $f, $accumulator = null, $list = null)
     return $accumulator;
 }
 
-define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
+define('Basko\Functional\fold', __NAMESPACE__ . '\\fold', false);
 
 /**
  * @param callable $f
@@ -364,7 +365,7 @@ function fold_r(callable $f, $accumulator = null, $list = null)
     return $accumulator;
 }
 
-define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
+define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r', false);
 
 /**
  * Wrap value within a function, which will return it, without any modifications. Kinda constant function.
@@ -380,7 +381,7 @@ function always($value)
     };
 }
 
-define('Basko\Functional\always', __NAMESPACE__ . '\\always');
+define('Basko\Functional\always', __NAMESPACE__ . '\\always', false);
 
 /**
  * Returns new function which applies each given function to the result of another from right to left.
@@ -409,7 +410,7 @@ function compose(callable $f, callable $g)
     };
 }
 
-define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
+define('Basko\Functional\compose', __NAMESPACE__ . '\\compose', false);
 
 /**
  * Performs left to right function composition.
@@ -435,7 +436,7 @@ function pipe(callable $f, callable $g)
     };
 }
 
-define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
+define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe', false);
 
 /**
  * Accepts a converging function and a list of branching functions and returns a new function.
@@ -470,7 +471,7 @@ function converge(callable $convergingFunction, $branchingFunctions = null)
     };
 }
 
-define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
+define('Basko\Functional\converge', __NAMESPACE__ . '\\converge', false);
 
 /**
  * @param callable $f
@@ -489,7 +490,7 @@ function call(callable $f, $args = null)
     return call_user_func_array(head($args), flatten(tail($args)));
 }
 
-define('Basko\Functional\call', __NAMESPACE__ . '\\call');
+define('Basko\Functional\call', __NAMESPACE__ . '\\call', false);
 
 /**
  * @param $arg
@@ -508,7 +509,7 @@ function apply_to($arg, callable $f = null)
     return call_user_func_array(array_pop($args), $args);
 }
 
-define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
+define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to', false);
 
 /**
  * Performs an operation checking for the given conditions
@@ -533,7 +534,7 @@ function cond(array $conditions)
     };
 }
 
-define('Basko\Functional\cond', __NAMESPACE__ . '\\cond');
+define('Basko\Functional\cond', __NAMESPACE__ . '\\cond', false);
 
 /**
  * Returns function which accepts arguments in the reversed order.
@@ -552,7 +553,7 @@ function flipped(callable $f)
     };
 }
 
-define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped');
+define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped', false);
 
 /**
  * Takes a binary function f, and unary function g, and two values. Applies g to each value,
@@ -575,7 +576,7 @@ function on(callable $f, callable $g = null)
     };
 }
 
-define('Basko\Functional\on', __NAMESPACE__ . '\\on');
+define('Basko\Functional\on', __NAMESPACE__ . '\\on', false);
 
 /**
  * Acts as the boolean and statement.
@@ -600,7 +601,7 @@ function both($a, $b = null)
     return $a && $b;
 }
 
-define('Basko\Functional\both', __NAMESPACE__ . '\\both');
+define('Basko\Functional\both', __NAMESPACE__ . '\\both', false);
 
 /**
  * @param callable[] $flist
@@ -627,7 +628,7 @@ function ap($flist, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
+define('Basko\Functional\ap', __NAMESPACE__ . '\\ap', false);
 
 /**
  * Lift a function so that it accepts Monad as parameters. Lifted function returns specified Monad type.
@@ -667,7 +668,7 @@ function lift_to($type, callable $f = null)
     };
 }
 
-define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to');
+define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to', false);
 
 /**
  * Lift a function so that it accepts Maybe as parameters. Lifted function returns Maybe.
@@ -685,7 +686,7 @@ function lift_m(callable $f)
     };
 }
 
-define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
+define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m', false);
 
 /**
  * Lift a function so that it accepts Either as parameters. Lifted function returns Either.
@@ -703,4 +704,4 @@ function lift_e(callable $f)
     };
 }
 
-define('Basko\Functional\lift_e', __NAMESPACE__ . '\\lift_e');
+define('Basko\Functional\lift_e', __NAMESPACE__ . '\\lift_e', false);

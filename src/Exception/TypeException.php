@@ -2,7 +2,9 @@
 
 namespace Basko\Functional\Exception;
 
-class TypeException extends \Exception
+use Exception;
+
+class TypeException extends Exception
 {
     private $target;
 

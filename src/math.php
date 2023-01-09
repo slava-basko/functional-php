@@ -16,7 +16,7 @@ function is_even($n)
     return $n % 2 === 0;
 }
 
-define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
+define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even', false);
 
 /**
  * @param $n
@@ -32,7 +32,7 @@ function is_odd($n)
     return $odd($n);
 }
 
-define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
+define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd', false);
 
 /**
  * @param $a
@@ -53,7 +53,7 @@ function plus($a, $b = null)
     return $a + $b;
 }
 
-define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
+define('Basko\Functional\plus', __NAMESPACE__ . '\\plus', false);
 
 /**
  * @param $a
@@ -74,12 +74,12 @@ function minus($a, $b = null)
     return $a - $b;
 }
 
-define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
+define('Basko\Functional\minus', __NAMESPACE__ . '\\minus', false);
 
 /**
  * @param $a
  * @param $b
- * @return mixed
+ * @return callable|float|int
  * @no-named-arguments
  */
 function div($a, $b = null)
@@ -95,12 +95,12 @@ function div($a, $b = null)
     return $a / $b;
 }
 
-define('Basko\Functional\div', __NAMESPACE__ . '\\div');
+define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
 
 /**
  * @param $a
  * @param $b
- * @return mixed
+ * @return callable|float|int
  * @no-named-arguments
  */
 function multiply($a, $b = null)
@@ -116,7 +116,7 @@ function multiply($a, $b = null)
     return $a * $b;
 }
 
-define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply');
+define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply', false);
 
 /**
  * @param $list
@@ -130,7 +130,7 @@ function sum($list)
     return fold(plus, 0, $list);
 }
 
-define('Basko\Functional\sum', __NAMESPACE__ . '\\sum');
+define('Basko\Functional\sum', __NAMESPACE__ . '\\sum', false);
 
 /**
  * @param $list
@@ -144,7 +144,7 @@ function diff($list)
     return fold(minus, array_shift($list), $list);
 }
 
-define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
+define('Basko\Functional\diff', __NAMESPACE__ . '\\diff', false);
 
 /**
  * @param $list
@@ -158,7 +158,7 @@ function divide($list)
     return fold(div, array_shift($list), $list);
 }
 
-define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
+define('Basko\Functional\divide', __NAMESPACE__ . '\\divide', false);
 
 /**
  * @param $list
@@ -172,11 +172,11 @@ function product($list)
     return fold(multiply, array_shift($list), $list);
 }
 
-define('Basko\Functional\product', __NAMESPACE__ . '\\product');
+define('Basko\Functional\product', __NAMESPACE__ . '\\product', false);
 
 /**
  * @param $list
- * @return mixed
+ * @return float|int
  * @no-named-arguments
  */
 function average($list)
@@ -186,7 +186,7 @@ function average($list)
     return sum($list) / count($list);
 }
 
-define('Basko\Functional\average', __NAMESPACE__ . '\\average');
+define('Basko\Functional\average', __NAMESPACE__ . '\\average', false);
 
 /**
  * Increments its argument.
@@ -201,7 +201,7 @@ function inc($n)
     return plus($n, 1);
 }
 
-define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
+define('Basko\Functional\inc', __NAMESPACE__ . '\\inc', false);
 
 /**
  * Decrements its argument.
@@ -216,7 +216,7 @@ function dec($n)
     return minus($n, 1);
 }
 
-define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
+define('Basko\Functional\dec', __NAMESPACE__ . '\\dec', false);
 
 /**
  * Power its argument.
@@ -231,7 +231,7 @@ function power($n)
     return $n * $n;
 }
 
-define('Basko\Functional\power', __NAMESPACE__ . '\\power');
+define('Basko\Functional\power', __NAMESPACE__ . '\\power', false);
 
 /**
  * @param $list
@@ -256,3 +256,5 @@ function median($list)
 
     return $median;
 }
+
+define('Basko\Functional\median', __NAMESPACE__ . '\\median', false);
