@@ -406,6 +406,13 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
     }
 
+    /**
+     * @param $value
+     * @param $type
+     * @param $callee
+     * @param $parameterPosition
+     * @return void
+     */
     public static function assertType($value, $type, $callee, $parameterPosition)
     {
         if (!class_exists($value) || !is_a($value, $type, true)) {
@@ -420,6 +427,46 @@ class InvalidArgumentException extends \InvalidArgumentException
                 )
             );
         }
+    }
+
+    /**
+     * @param $value
+     * @param $callee
+     * @param $parameterPosition
+     * @return void
+     */
+    public static function assertStringOrList($value, $callee, $parameterPosition)
+    {
+        if (!static::isString($value) && !static::isListAlike($value, 'Traversable')) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be string or list, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    private static function isString($value)
+    {
+        return is_string($value) || is_numeric($value)
+            || (is_object($value) && method_exists($value, '__toString'));
+    }
+
+    /**
+     * @param $list
+     * @param $className
+     * @return bool
+     */
+    private static function isListAlike($list, $className)
+    {
+        return is_array($list) || is_object($list) || $list instanceof $className;
     }
 
     /**

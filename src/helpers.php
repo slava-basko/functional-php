@@ -157,9 +157,13 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list', false);
  */
 function concat($a, $b = null)
 {
+    InvalidArgumentException::assertString($a, __FUNCTION__, 1);
+
     if (is_null($b)) {
         return partial(concat, $a);
     }
+
+    InvalidArgumentException::assertString($b, __FUNCTION__, 2);
 
     return $a . $b;
 }
@@ -294,6 +298,8 @@ define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch', false);
  */
 function invoker($methodName, array $arguments = [])
 {
+    InvalidArgumentException::assertMethodName($methodName, __FUNCTION__, 1);
+
     //todo: curry?
     return static function ($object) use ($methodName, $arguments) {
         return call_user_func_array([$object, $methodName], $arguments);
