@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ruleset>
+    <exclude-pattern>tests/*</exclude-pattern>
+
     <rule ref="PSR12">
         <!-- we use constants to refer to functions, and functions are lowercase -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase"/>

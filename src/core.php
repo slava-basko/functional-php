@@ -214,7 +214,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  * and flattening the results into the resulting array.
  *
  * flat_map(...) differs from flatten(map(...)) because it only flattens one level of nesting,
- * whereas flatten will recursively flatten nested collections.
+ * whereas flatten will recursively flatten nested collections. Indexes will not preserve.
  *
  * @param callable $f
  * @param $list
