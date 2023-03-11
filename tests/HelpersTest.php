@@ -125,6 +125,11 @@ class HelpersTest extends BaseTest
 
         $xInc = f\compose(f\inc, f\prop('x'));
         $this->assertEquals(4, $xInc(['x' => 3]));
+
+        $object = new \ArrayObject([
+            'x' => 101,
+        ]);
+        $this->assertEquals(101, f\prop('x', $object));
     }
 
     public function test_prop_path()

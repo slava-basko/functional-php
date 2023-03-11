@@ -132,14 +132,13 @@ class TypeTest extends BaseTest
         yield ['0', '0'];
         yield ['123', '123'];
         yield ['1e23', '1e23'];
+        yield ['1, 2, 3', [1, 2, 3]];
     }
 
     public function getStringInvalid()
     {
         yield [1.0];
         yield [1.23];
-        yield [[]];
-        yield [[1]];
         yield [null];
         yield [false];
         yield [true];

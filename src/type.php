@@ -82,6 +82,8 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
 
 /**
  * Checks and coerces value to `string`.
+ * Object: method __toString will be called
+ * Array: all values will be concatenated with comma
  *
  * @param $value
  * @return string
@@ -96,6 +98,10 @@ function type_string($value)
 
     if (is_int($value) || (is_object($value) && method_exists($value, '__toString'))) {
         return (string)$value;
+    }
+
+    if (is_array($value)) {
+        return implode(', ', map(type_string, $value));
     }
 
     throw TypeException::forValue($value, 'string');

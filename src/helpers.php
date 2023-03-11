@@ -350,7 +350,11 @@ function prop($property, $object = null)
         return $object->{$property};
     }
 
-    if (array_key_exists($property, $object)) {
+    if ($object instanceof \ArrayObject) {
+        return $object->offsetGet($property);
+    }
+
+    if (is_array($object) && array_key_exists($property, $object)) {
         return $object[$property];
     }
 
@@ -563,6 +567,7 @@ function either()
             __FUNCTION__,
             InvalidArgumentException::ALL
         );
+
         return function () use ($allFunctions) {
             $args = func_get_args();
             foreach ($allFunctions as $function) {
@@ -703,6 +708,7 @@ function map_keys(callable $f, array $keys = null, $object = null)
             $object[$key] = call_user_func_array($f, [$object[$key]]);
         }
     }
+
     return $object;
 }
 
