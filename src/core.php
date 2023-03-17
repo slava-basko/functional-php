@@ -10,6 +10,19 @@ use Basko\Functional\Functor\Optional;
 use Traversable;
 
 /**
+ * Function that do nothing.
+ *
+ * @return callable
+ */
+function noop()
+{
+    return function () {
+    };
+}
+
+define('Basko\Functional\noop', __NAMESPACE__ . '\\noop', false);
+
+/**
  * @param mixed $value
  * @return mixed
  * @no-named-arguments
@@ -602,6 +615,56 @@ function both($a, $b = null)
 }
 
 define('Basko\Functional\both', __NAMESPACE__ . '\\both', false);
+
+/**
+ * @param array $functions
+ * @param mixed $value
+ * @return callable|bool
+ * @no-named-arguments
+ */
+function all_pass(array $functions, $value = null)
+{
+    InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
+
+    if (is_null($value)) {
+        return partial(all_pass, $functions);
+    }
+
+    foreach ($functions as $f) {
+        if (!call_user_func($f, $value)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass', false);
+
+/**
+ * @param array $functions
+ * @param mixed $value
+ * @return callable|bool
+ * @no-named-arguments
+ */
+function any_pass(array $functions, $value = null)
+{
+    InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
+
+    if (is_null($value)) {
+        return partial(any_pass, $functions);
+    }
+
+    foreach ($functions as $f) {
+        if (call_user_func($f, $value)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass', false);
 
 /**
  * @param callable[] $flist

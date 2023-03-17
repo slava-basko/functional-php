@@ -111,12 +111,12 @@ class CoreTest extends BaseTest
         $numArray5 = [1, 2, 3, 4, 5];
         $numArray5Nested = [[1, 2], [3, 4], [5]];
 
-        $flatten = f\flat_map(function($n) {
+        $flatten = f\flat_map(function ($n) {
             return $n;
         }, $numArray5Nested);
         $this->assertEquals($numArray5, $flatten);
 
-        $curriedDoubles = f\flat_map(function($n) {
+        $curriedDoubles = f\flat_map(function ($n) {
             return [$n, $n];
         });
         $doubles = $curriedDoubles($numArray5);
@@ -143,6 +143,7 @@ class CoreTest extends BaseTest
         $calls = 0;
         $func = function ($v) use (&$calls) {
             $calls++;
+
             return $v . '-other-value';
         };
 
@@ -357,7 +358,7 @@ class CoreTest extends BaseTest
         $typeOf = f\cond([
             [f\is_instance_of(\User::class), f\always('user')],
             [f\is_instance_of(\Value::class), f\always('value')],
-            [f\T, f\always('unknown')]
+            [f\T, f\always('unknown')],
         ]);
         $this->assertEquals('user', $typeOf(new \User([])));
         $this->assertEquals('value', $typeOf(new \Value(null)));
@@ -397,6 +398,27 @@ class CoreTest extends BaseTest
         $this->assertFalse($between6And9(10));
     }
 
+    public function test_all_pass()
+    {
+        $isQueen = f\pipe(f\prop('rank'), f\eq('Q'));
+        $isSpade = f\pipe(f\prop('suit'), f\eq('♠︎'));
+        $isQueenOfSpades = f\all_pass([$isQueen, $isSpade]);
+
+        $this->assertFalse($isQueenOfSpades(['rank' => 'Q', 'suit' => '♣︎']));
+        $this->assertTrue($isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']));
+    }
+
+    public function test_any_pass()
+    {
+        $isClub = f\pipe(f\prop('suit'), f\eq('♣'));
+        $isSpade = f\pipe(f\prop('suit'), f\eq('♠'));;
+        $isBlackCard = f\any_pass([$isClub, $isSpade]);
+
+        $this->assertTrue($isBlackCard(['rank' => '10', 'suit' => '♣']));
+        $this->assertTrue($isBlackCard(['rank' => 'Q', 'suit' => '♠']));
+        $this->assertFalse($isBlackCard(['rank' => 'Q', 'suit' => '♦']));
+    }
+
     public function test_null()
     {
         $this->assertNull(f\N());
@@ -407,7 +429,7 @@ class CoreTest extends BaseTest
         $f = f\ap([f\multiply(2), f\plus(3)]);
         $this->assertEquals(
             [2, 4, 6, 4, 5, 6],
-            $f([1,2,3])
+            $f([1, 2, 3])
         );
         $this->assertEquals(
             ['tasty pizza', 'tasty salad', 'PIZZA', 'SALAD'],
