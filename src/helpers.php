@@ -550,16 +550,11 @@ function pair($fst, $snd = null)
 
 define('Basko\Functional\pair', __NAMESPACE__ . '\\pair', false);
 
-/**
- * A function wrapping calls to the functions in an || operation, returning the result of the first function
- * if it is truth-y and the result of the next function otherwise.
- *
- * @return callable|mixed
- * @no-named-arguments
- */
-function either()
+function _either()
 {
-    $allFunctions = $functions = func_get_args();
+    $arguments = func_get_args();
+    $strict = (bool)array_shift($arguments);
+    $allFunctions = $functions = $arguments;
     $arg = array_pop($functions);
     if (is_callable($arg)) {
         InvalidArgumentException::assertListOfCallables(
@@ -568,10 +563,13 @@ function either()
             InvalidArgumentException::ALL
         );
 
-        return function () use ($allFunctions) {
+        return function () use ($allFunctions, $strict) {
             $args = func_get_args();
             foreach ($allFunctions as $function) {
-                if ($res = call_user_func_array($function, $args)) {
+                $res = call_user_func_array($function, $args);
+                if ($strict && !is_null($res)) {
+                    return $res;
+                } elseif ($res) {
                     return $res;
                 }
             }
@@ -587,7 +585,10 @@ function either()
     );
 
     foreach ($functions as $function) {
-        if ($res = $function($arg)) {
+        $res = call_user_func_array($function, [$arg]);
+        if ($strict && !is_null($res)) {
+            return $res;
+        } elseif ($res) {
             return $res;
         }
     }
@@ -595,7 +596,33 @@ function either()
     return null;
 }
 
+/**
+ * A function wrapping calls to the functions in an `||` operation, returning the result of the first function
+ * if it is truth-y and the result of the next function otherwise.
+ *
+ * @return callable|mixed
+ * @no-named-arguments
+ */
+function either()
+{
+    return call_user_func_array('Basko\Functional\_either', array_merge([false], func_get_args()));
+}
+
 define('Basko\Functional\either', __NAMESPACE__ . '\\either', false);
+
+/**
+ * The same as `either`, but returning the result of the first function
+ * if it is not NULL and the result of the next function otherwise.
+ *
+ * @return callable|mixed
+ * @no-named-arguments
+ */
+function either_strict()
+{
+    return call_user_func_array('Basko\Functional\_either', array_merge([true], func_get_args()));
+}
+
+define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict', false);
 
 /**
  * @param $value
@@ -769,7 +796,16 @@ function pick_random_value($list)
     if ($list instanceof Traversable) {
         $list = iterator_to_array($list);
     }
-    $index = rand(0, count($list) - 1);
+
+    if (class_exists('Random\Randomizer')) {
+        $randomizer = new \Random\Randomizer();
+        $randomKeys = $randomizer->pickArrayKeys($list, 1);
+        $index = $randomKeys[0];
+    } elseif (function_exists('mt_rand')) {
+        $index = mt_rand(0, count($list) - 1);
+    } else {
+        $index = rand(0, count($list) - 1);
+    }
 
     return $list[$index];
 }

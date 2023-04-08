@@ -310,6 +310,17 @@ class HelpersTest extends BaseTest
         $this->assertNull(f\either());
     }
 
+    public function test_either_strict()
+    {
+        $tn = f\either_strict(f\prop('tracking_number'), f\always([]));
+        $this->assertSame('', $tn([
+            'tracking_number' => ''
+        ]));
+        $this->assertSame([], $tn([
+            'unknown_field' => ''
+        ]));
+    }
+
     public function test_quote()
     {
         $this->assertEquals('"foo"', f\quote('foo'));
