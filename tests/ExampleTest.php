@@ -201,7 +201,7 @@ class ExampleTest extends BaseTest
                 'numeric' => '528',
                 'currency' => [
                     'EUR',
-                ]
+                ],
             ],
             [
                 'name' => 'Ukraine',
@@ -258,7 +258,7 @@ class ExampleTest extends BaseTest
                 'some@exemple.com',
                 'some2@exemple.com',
                 'some@exemple.com',
-            ]
+            ],
         ];
 
         $normalizeFunction = f\pipe(
@@ -288,7 +288,7 @@ class ExampleTest extends BaseTest
                 'contacts' => [
                     'some@exemple.com',
                     'some2@exemple.com',
-                ]
+                ],
             ],
             $normalizeFunction($user)
         );
@@ -305,7 +305,7 @@ class ExampleTest extends BaseTest
                 'contacts' => [
                     'some@exemple.com',
                     'some2@exemple.com',
-                ]
+                ],
             ],
             $normalizeFunction((object)$user)
         );
@@ -345,5 +345,30 @@ JSON;
             'Restricted items: T-shirts',
             $getRestrictedItems($response)
         );
+    }
+
+    public function test_group_and_count()
+    {
+        $data = [
+            [
+                'parcel_id' => 1,
+                'hub_id' => 11,
+            ],
+            [
+                'parcel_id' => 2,
+                'hub_id' => 11,
+            ],
+            [
+                'parcel_id' => 3,
+                'hub_id' => 22,
+            ],
+        ];
+
+        $groupedCount = f\pipe(f\group(f\prop('hub_id')), f\map(f\len));
+
+        $this->assertEquals([
+            11 => 2,
+            22 => 1,
+        ], $groupedCount($data));
     }
 }
