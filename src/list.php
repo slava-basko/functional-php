@@ -285,7 +285,7 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains', false);
  * Creates a slice of $list with $count elements taken from the beginning. If the list has less than $count,
  * the whole list will be returned as an array.
  *
- * @param \Traversable|array $list
+ * @param \Traversable|array|string $list
  * @param int $count
  *
  * @return callable|array
@@ -296,8 +296,11 @@ function take($count, $list = null)
     if (is_null($list)) {
         return partial(take, $count);
     }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+    InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
+    if (is_string($list)) {
+        return substr($list, 0, $count);
+    }
 
     return array_slice(
         is_array($list) ? $list : iterator_to_array($list),
@@ -312,7 +315,7 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take', false);
  * Creates a slice of $list with $count elements taken from the end. If the list has less than $count,
  * the whole list will be returned as an array.
  *
- * @param \Traversable|array $list
+ * @param \Traversable|array|string $list
  * @param int $count
  *
  * @return callable|array
@@ -323,7 +326,11 @@ function take_r($count, $list = null)
     if (is_null($list)) {
         return partial(take_r, $count);
     }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+    InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
+
+    if (is_string($list)) {
+        return substr($list, -$count);
+    }
 
     return array_slice(
         is_array($list) ? $list : iterator_to_array($list),
@@ -334,6 +341,37 @@ function take_r($count, $list = null)
 }
 
 define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r', false);
+
+/**
+ * @param int $offset
+ * @param \Traversable|array|string $list
+ * @return callable|mixed
+ * @no-named-arguments
+ */
+function nth($offset, $list = null)
+{
+    if (is_null($list)) {
+        return partial(nth, $offset);
+    }
+    InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
+
+    if ($list instanceof Traversable) {
+        $list = iterator_to_array($list);
+    }
+
+    if ($offset < 0) {
+        $offset = len($list) - abs($offset);
+    }
+
+
+    if (is_array($list)) {
+        return array_key_exists($offset, $list) ? $list[$offset] : null;
+    }
+
+    return isset($list[$offset]) ? $list[$offset] : null;
+}
+
+define('Basko\Functional\nth', __NAMESPACE__ . '\\nth', false);
 
 /**
  * Groups a list by index returned by function.

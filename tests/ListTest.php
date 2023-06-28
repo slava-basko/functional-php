@@ -145,6 +145,25 @@ class ListTest extends BaseTest
         $this->assertEquals([1, 2], f\take(2, [1, 2, 3]));
         $this->assertEquals([1 => 2, 2 => 3], f\take_r(2, [1, 2, 3]));
         $this->assertEquals([1 => 'b', 2 => 'c'], f\take_r(2, ['a', 'b', 'c']));
+
+        $this->assertEquals('Slav', f\take(4, 'Slava'));
+        $this->assertEquals('Slava', f\take(99, 'Slava'));
+        $this->assertEquals('lava', f\take_r(4, 'Slava'));
+    }
+
+    public function test_nth()
+    {
+        $nth = f\nth(1);
+        $this->assertEquals('bar', $nth(['foo', 'bar', 'baz', 'qwe']));
+
+        $this->assertEquals(null, f\nth(999, ['foo', 'bar', 'baz', 'qwe']));
+        $this->assertEquals('qwe', f\nth(-1, ['foo', 'bar', 'baz', 'qwe']));
+        $this->assertEquals(null, f\nth(-999, ['foo', 'bar', 'baz', 'qwe']));
+
+        $this->assertEquals('S', f\nth(0, 'Slava'));
+        $this->assertEquals('v', f\nth(-2, 'Slava'));
+        $this->assertEquals(null, f\nth(999, 'Slava'));
+        $this->assertEquals(null, f\nth(-999, 'Slava'));
     }
 
     public function test_group()

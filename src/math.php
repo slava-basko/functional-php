@@ -27,7 +27,7 @@ function is_odd($n)
 {
     InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
 
-    $odd = not(is_even);
+    $odd = complement(is_even);
 
     return $odd($n);
 }

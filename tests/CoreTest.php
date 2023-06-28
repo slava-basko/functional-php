@@ -153,9 +153,17 @@ class CoreTest extends BaseTest
         $this->assertEquals(3, $calls);
     }
 
-    function test_not()
+    public function test_not()
     {
-        $notString = f\not('is_string');
+        $this->assertFalse(f\not(true));
+        $this->assertTrue(f\not(false));
+        $this->assertTrue(f\not(0));
+        $this->assertFalse(f\not(1));
+    }
+
+    function test_complement()
+    {
+        $notString = f\complement('is_string');
         $this->assertTrue($notString(1));
     }
 
@@ -264,10 +272,10 @@ class CoreTest extends BaseTest
         ];
         $pipe = f\pipe(
             f\pluck('description'),
-            f\partial('array_map', 'trim'),
-            f\partial_r('array_filter', 'strlen'),
-            f\partial('implode', ', '),
-            f\partial_r('substr', 0, 34),
+            f\map(f\unary('trim')),
+            f\select(f\unary('strlen')),
+            f\join(', '),
+            f\take(34),
             f\partial_r('trim', ', ')
         );
         $this->assertEquals('CD Player, Abba Volume 1, Kim Wild', $pipe($products));

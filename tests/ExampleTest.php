@@ -80,7 +80,7 @@ class ExampleTest extends BaseTest
     public function test_json_encode_if_not_string()
     {
         // $response = !is_string($data['response']) ? json_encode($data['response']) : $data['response'];
-        $prepareResponseToSave = f\if_else(f\not('is_string'), 'json_encode', f\identity);
+        $prepareResponseToSave = f\if_else(f\complement('is_string'), 'json_encode', f\identity);
         $this->assertEquals('OK', $prepareResponseToSave(f\prop('response', [
             'response' => 'OK',
         ])));
@@ -266,7 +266,7 @@ class ExampleTest extends BaseTest
             f\map_keys('ucfirst', ['role']),
             f\assoc('location', f\pipe(
                 f\prop('location'),
-                f\reject(f\not('strlen')),
+                f\reject(f\complement(f\unary('strlen'))),
                 f\map_keys('strtoupper', ['country']),
                 f\map_keys('ucfirst', ['city'])
             )),

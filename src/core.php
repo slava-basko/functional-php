@@ -286,20 +286,34 @@ function each(callable $f, $list = null)
 define('Basko\Functional\each', __NAMESPACE__ . '\\each', false);
 
 /**
+ * Returns the `!` of its argument
+ *
+ * @param mixed $a The value
+ * @no-named-arguments
+ */
+function not($a)
+{
+    return !$a;
+}
+
+define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
+
+/**
  * Logical negation of the given $function
  *
  * @param callable $f The function to run value against
  * @return callable A negation version on the given $function
  * @no-named-arguments
  */
-function not(callable $f)
+function complement(callable $f)
 {
     return function ($value) use ($f) {
-        return !call_user_func_array($f, [$value]);
+        $args = func_get_args();
+        return !call_user_func_array($f, $args);
     };
 }
 
-define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
+define('Basko\Functional\complement', __NAMESPACE__ . '\\complement', false);
 
 /**
  * Call the given function with the given value, then return the value.
