@@ -143,10 +143,10 @@ The functional code could be like this:
 ```php
 $commonDescription = pipe(
     pluck('description'),
-    partial('array_map', 'trim'),
-    partial_r('array_filter', 'strlen'),
-    partial('implode', ', '),
-    partial_r('substr', 0, 34),
+    map(unary('trim')),
+    select(unary('strlen')),
+    join(', '),
+    take(34),
     partial_r('trim', ', ')
 )($products);
 ```
