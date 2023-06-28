@@ -296,12 +296,20 @@ ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
 ```
 
 ### not
-Logical negation of the given function.
+Returns the `!` of its argument.
 ```php
-$notString = not('is_string');
-$notString(1); // true
+f\not(true); // false
+f\not(false); // true
+f\not(0); // true
+f\not(1); // false
 ```
 
+### complement
+Logical negation of the given function.
+```php
+$notString = complement('is_string');
+$notString(1); // true
+```
 
 ### tap
 Call the given function with the given value, then return the value.
