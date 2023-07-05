@@ -317,6 +317,8 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker', false);
  */
 function len($a)
 {
+    InvalidArgumentException::assertStringOrList($a, __FUNCTION__, 1);
+
     if (is_string($a)) {
         return strlen($a);
     }
