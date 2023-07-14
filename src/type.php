@@ -230,3 +230,22 @@ function type_union($firsts, $second)
 }
 
 define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union', false);
+
+/**
+ * Checks and coerces value to positive `int`.
+ *
+ * @param $value
+ * @return int Positive int
+ * @no-named-arguments
+ * @throws \Basko\Functional\Exception\TypeException
+ */
+function type_positive_int($value)
+{
+    if (type_int($value) && $value > 0) {
+        return $value;
+    }
+
+    throw TypeException::forValue($value, 'positive_int');
+}
+
+define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_int', false);

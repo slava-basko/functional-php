@@ -258,4 +258,28 @@ class TypeTest extends BaseTest
         );
         $t3(new \stdClass());
     }
+
+    public function test_type_positive_int_valid()
+    {
+        $this->assertEquals(2, f\type_positive_int(2));
+        $this->assertEquals(2, f\type_positive_int('2'));
+    }
+
+    public function test_type_positive_int_invalid()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            sprintf('Could not convert "%s" to type "positive_int"', get_debug_type(-1))
+        );
+        f\type_positive_int(-1);
+    }
+
+    public function test_type_positive_int_zero_invalid()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            sprintf('Could not convert "%s" to type "positive_int"', get_debug_type(0))
+        );
+        f\type_positive_int(0);
+    }
 }
