@@ -304,4 +304,14 @@ class FunctorTest extends BaseTest
         $this->assertTrue($failureCalled);
     }
 
+    public function test_io()
+    {
+        $m = f\Functor\IO::of('file_get_contents')
+            ->map('ucfirst')
+            ->map(f\take(4))
+            ->map(f\partial_r(f\concat, 'ik'));
+
+        $this->assertEquals('Slavik', $m(__DIR__ . '/name.txt')->extract());
+    }
+
 }
