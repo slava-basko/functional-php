@@ -716,29 +716,29 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
  *
  * @param callable $f
  * @param array $keys
- * @param $object
+ * @param $list
  * @return callable|array
  * @no-named-arguments
  */
-function map_keys(callable $f, array $keys = null, $object = null)
+function map_keys(callable $f, array $keys = null, $list = null)
 {
-    if (is_null($keys) && is_null($object)) {
+    if (is_null($keys) && is_null($list)) {
         return partial(map_keys, $f);
-    } elseif (is_null($object)) {
+    } elseif (is_null($list)) {
         return partial(map_keys, $f, $keys);
     }
 
-    InvalidArgumentException::assertList($object, __FUNCTION__, 3);
+    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     foreach ($keys as $key) {
-        if (is_object($object)) {
-            $object->{$key} = call_user_func_array($f, [$object->{$key}]);
+        if (is_object($list)) {
+            $list->{$key} = call_user_func_array($f, [$list->{$key}]);
         } else {
-            $object[$key] = call_user_func_array($f, [$object[$key]]);
+            $list[$key] = call_user_func_array($f, [$list[$key]]);
         }
     }
 
-    return $object;
+    return $list;
 }
 
 define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys', false);
