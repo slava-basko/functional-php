@@ -744,6 +744,41 @@ function map_keys(callable $f, array $keys = null, $list = null)
 define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys', false);
 
 /**
+ * Applies provided function to N-th elements of an array.
+ * First element is first, but not zero (similar to `nth` function).
+ *
+ * @param callable $f
+ * @param array $elementsNumbers
+ * @param array|\ArrayAccess $list
+ * @return callable|array
+ * @no-named-arguments
+ */
+function map_elements(callable $f, array $elementsNumbers = null, $list = null)
+{
+    if (is_null($elementsNumbers) && is_null($list)) {
+        return partial(map_elements, $f);
+    } elseif (is_null($list)) {
+        return partial(map_elements, $f, $elementsNumbers);
+    }
+
+    InvalidArgumentException::assertArrayAccess($list, __FUNCTION__, 3);
+
+    foreach ($elementsNumbers as $elementNumber) {
+        if ($elementNumber < 0) {
+            $internalElementNumber = len($list) - abs($elementNumber);
+        } else {
+            $internalElementNumber = $elementNumber - 1;
+        }
+
+        $list[$internalElementNumber] = call_user_func_array($f, [nth($elementNumber, $list)]);
+    }
+
+    return $list;
+}
+
+define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements', false);
+
+/**
  * Finds if a given array has all of the required keys set.
  *
  * @param array $keys

@@ -314,10 +314,10 @@ class HelpersTest extends BaseTest
     {
         $tn = f\either_strict(f\prop('tracking_number'), f\always([]));
         $this->assertSame('', $tn([
-            'tracking_number' => ''
+            'tracking_number' => '',
         ]));
         $this->assertSame([], $tn([
-            'unknown_field' => ''
+            'unknown_field' => '',
         ]));
     }
 
@@ -407,6 +407,25 @@ class HelpersTest extends BaseTest
         $this->assertEquals('NL', f\prop('shipper_country', $obj));
         $this->assertEquals('CA', f\prop('consignee_country', $obj));
         $this->assertEquals('John', f\prop('name', $obj));
+    }
+
+    public function test_map_elements()
+    {
+        $f = f\map_elements('strtoupper');
+        $f2 = $f([1, -1]);
+
+        $obj = $f2([
+            'Slava',
+            'Slava Limited LDT',
+            '10th ave',
+            'vancouver',
+            'ca',
+        ]);
+
+        $this->assertEquals('SLAVA', $obj[0]);
+        $this->assertEquals('CA', $obj[4]);
+        $this->assertEquals($obj[4], f\map_elements('strtoupper', [4], $obj)[4]);
+        $this->assertEquals('Vancouver', f\map_elements('ucfirst', [4], $obj)[3]);
     }
 
     public function test_call()
