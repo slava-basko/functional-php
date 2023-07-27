@@ -343,32 +343,40 @@ function take_r($count, $list = null)
 define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r', false);
 
 /**
- * @param int $offset
+ * Return N-th element of an array or string.
+ * First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
+ *
+ * @param int $elementNumber
  * @param \Traversable|array|string $list
  * @return callable|mixed
  * @no-named-arguments
  */
-function nth($offset, $list = null)
+function nth($elementNumber, $list = null)
 {
     if (is_null($list)) {
-        return partial(nth, $offset);
+        return partial(nth, $elementNumber);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
     if ($list instanceof Traversable) {
-        $list = iterator_to_array($list);
+        $list = array_values(iterator_to_array($list));
     }
 
-    if ($offset < 0) {
-        $offset = len($list) - abs($offset);
+    if ($elementNumber < 0) {
+        $elementNumber = len($list) - abs($elementNumber);
+    } else {
+        $elementNumber = $elementNumber - 1;
     }
-
 
     if (is_array($list)) {
-        return array_key_exists($offset, $list) ? $list[$offset] : null;
+        for ($i = 1; $i <= len($list); $i++) {
+            if ($i == $elementNumber) {
+                return $list[$elementNumber];
+            }
+        }
     }
 
-    return isset($list[$offset]) ? $list[$offset] : null;
+    return isset($list[$elementNumber]) ? $list[$elementNumber] : null;
 }
 
 define('Basko\Functional\nth', __NAMESPACE__ . '\\nth', false);
