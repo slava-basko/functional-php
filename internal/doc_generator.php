@@ -5,11 +5,6 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // composer autoload
 use Basko\Functional as f;
 
-//$f = get_defined_functions()['user'][202];
-//$r = new ReflectionFunction($f);
-//var_dump($r->name);
-//exit;
-
 f\pipe(
     f\prop('user'),
     f\select(f\contains('basko\functional')),
@@ -40,8 +35,9 @@ f\pipe(
         f\str_replace([' * ', '/**', ' *'], ''),
         'trim'
     )),
-    f\map(function ($value, $key) {
-        return f\concat_all('### ', $key, PHP_EOL, $value, PHP_EOL, PHP_EOL);
-    }),
+    f\map(f\binary(f\flipped(f\partial_p(
+        f\ary(f\concat_all, 6),
+        [1 => '### ', 3 => PHP_EOL, 5 => PHP_EOL, 6 => PHP_EOL]
+    )))),
     f\partial('file_put_contents', dirname(__DIR__) . '/docs/functions.md')
 )(get_defined_functions());
