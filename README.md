@@ -158,6 +158,8 @@ Written in an entirely point-free manner.
 
 [Show me your doc_generator.php](internal/doc_generator.php)
 
+No variable were harmed in making this script (c).
+
 ## General
 
 ### Import functions
