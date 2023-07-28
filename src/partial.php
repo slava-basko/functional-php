@@ -4,7 +4,12 @@ namespace Basko\Functional;
 
 /**
  * Returns new function which will behave like $f with
- * predefined left arguments passed to partial
+ * predefined left arguments passed to partial.
+ *
+ * ```php
+ * $implode_coma = partial('implode', ',');
+ * $implode_coma([1, 2]); // 1,2
+ * ```
  *
  * @param callable $f
  * @param mixed $arg1
@@ -16,15 +21,22 @@ namespace Basko\Functional;
 function partial(callable $f, $arg1)
 {
     $args = array_slice(func_get_args(), 1);
+
     return function () use ($f, $args) {
         return call_user_func_array($f, array_merge($args, func_get_args()));
     };
 }
+
 define('Basko\Functional\partial', __NAMESPACE__ . '\\partial', false);
 
 /**
  * Returns new partial function which will behave like $f with
- * predefined right arguments passed to rpartial
+ * predefined right arguments passed to rpartial.
+ *
+ * ```php
+ * $implode12 = partial_r('implode', [1, 2]);
+ * $implode12(','); // 1,2
+ * ```
  *
  * @param callable $f
  * @param mixed $arg1
@@ -36,15 +48,25 @@ define('Basko\Functional\partial', __NAMESPACE__ . '\\partial', false);
 function partial_r(callable $f, $arg1)
 {
     $args = array_slice(func_get_args(), 1);
+
     return function () use ($f, $args) {
         return call_user_func_array($f, array_merge(func_get_args(), $args));
     };
 }
+
 define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r', false);
 
 /**
  * Returns new partial function which will behave like $f with
- * predefined positional arguments passed to ppartial
+ * predefined positional arguments passed to ppartial.
+ *
+ * ```php
+ * $sub_abcdef_from = partial_p('substr', [
+ *      1 => 'abcdef',
+ *      3 => 2
+ * ]);
+ * $sub_abcdef_from(0); // 'ab'
+ * ```
  *
  * @param callable $f
  * @param array $args Predefined positional args (position => value)
@@ -63,7 +85,9 @@ function partial_p(callable $f, array $args)
             ++$position;
         } while ($_args);
         ksort($args);
+
         return call_user_func_array($f, $args);
     };
 }
+
 define('Basko\Functional\partial_p', __NAMESPACE__ . '\\partial_p', false);

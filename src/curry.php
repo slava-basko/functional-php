@@ -71,6 +71,16 @@ define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n', false);
  * Return a curried version of the given function. You can decide if you also
  * want to curry optional parameters or not.
  *
+ * ```php
+ * $add = function($a, $b, $c) {
+ *      return $a + $b + $c;
+ * };
+ * $curryiedAdd = curry($add);
+ * $addTen = $curryiedAdd(10);
+ * $addEleven = $addTen(1);
+ * $addEleven(4); // 15
+ * ```
+ *
  * @param callable $f the function to curry
  * @param bool $required curry optional parameters ?
  * @return callable a curryied version of the given function
@@ -88,6 +98,16 @@ define('Basko\Functional\curry', __NAMESPACE__ . '\\curry', false);
 /**
  * Creates a thunk out of a function. A thunk delays a calculation until its result is needed,
  * providing lazy evaluation of arguments.
+ *
+ * ```php
+ * $add = function($a, $b) {
+ *      return $a + $b;
+ * };
+ * $curryiedAdd = thunkify($add);
+ * $addTen = $curryiedAdd(10);
+ * $eleven = $addTen(1);
+ * $eleven(); // 11
+ * ```
  *
  * @param callable $f
  * @param bool $required
@@ -116,6 +136,15 @@ function _thunkify_n(callable $f, $count)
  * Return function $f that will be called only with `abs($count)` arguments,
  * taken either from the left or right depending on the sign.
  *
+ * ```php
+ * $f = static function ($a = 0, $b = 0, $c = 0) {
+ *      return $a + $b + $c;
+ * };
+ * ary($f, 2)([5, 5]); // 10
+ * ary($f, 1)([5, 5]); // 5
+ * ary($f, -1)([5, 6]); // 6
+ * ```
+ *
  * @param callable $f
  * @param int $count a non-zero count (could be negative)
  * @return callable
@@ -141,6 +170,13 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary', false);
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 1 parameter.
  * Any extraneous parameters will not be passed to the supplied function.
  *
+ * ```php
+ * $f = static function ($a = '', $b = '', $c = '') {
+ *      return $a . $b . $c;
+ * };
+ * unary($f)(['one', 'two', 'three]); // one
+ * ```
+ *
  * @param callable $f
  * @return callable
  */
@@ -154,6 +190,13 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary', false);
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 2 parameters.
  * Any extraneous parameters will not be passed to the supplied function.
+ *
+ * ```php
+ * $f = static function ($a = '', $b = '', $c = '') {
+ *      return $a . $b . $c;
+ * };
+ * binary($f)(['one', 'two', 'three]); // onetwo
+ * ```
  *
  * @param callable $f
  * @return callable

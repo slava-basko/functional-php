@@ -7,6 +7,11 @@ use Basko\Functional\Exception\TypeException;
 /**
  * This function can't be automatically partialed because `$object` can be NULL and thant's OK.
  *
+ * ```php
+ * instance_of(stdClass::class, new stdClass()); // true
+ * instance_of(User::class, new stdClass()); // false
+ * ```
+ *
  * @param $instanceof
  * @param $object
  * @return bool
@@ -22,6 +27,11 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of', false);
 /**
  * Curryied version of `instance_of`.
  *
+ * ```php
+ * is_instance_of(stdClass::class)(new stdClass()); // true
+ * is_instance_of(User::class)(new stdClass()); // false
+ * ```
+ *
  * @param $instanceof
  * @return callable
  */
@@ -36,6 +46,11 @@ define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', fa
 
 /**
  * Return a function that checks `$value instanceof SomeClass.
+ *
+ * ```php
+ * type_of(\User::class)(new User()); // User
+ * type_of(\User::class)(new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
+ * ```
  *
  * @param $instanceof
  * @return callable
@@ -55,6 +70,16 @@ define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
 
 /**
  * Checks and coerces value to `bool`.
+ *
+ * ```php
+ * type_bool(true); // true
+ * type_bool(1); // true
+ * type_bool('1'); // true
+ * type_bool(false); // false
+ * type_bool(0); // false
+ * type_bool('0'); // false
+ * type_bool('some-string'); // TypeException: Could not convert "string" to type "bool"
+ * ```
  *
  * @param $value
  * @return bool
@@ -83,7 +108,12 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
 /**
  * Checks and coerces value to `string`.
  * Object: method __toString will be called
- * Array: all values will be concatenated with comma
+ * Array: all values will be concatenated with comma.
+ *
+ * ```php
+ * type_string('hello'); // 'hello'
+ * type_string(123); // '123'
+ * ```
  *
  * @param $value
  * @return string
@@ -111,6 +141,12 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string', false);
 
 /**
  * Checks and coerces value to `int`.
+ *
+ * ```php
+ * type_int('123'); // 123
+ * type_int('007'); // 7
+ * type_int('1.0'); // 1
+ * ```
  *
  * @param $value
  * @return int
@@ -157,6 +193,11 @@ define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int', false);
 /**
  * Checks and coerces value to `float`.
  *
+ * ```php
+ * type_float(123); // 123.0
+ * type_float('123'); // 123.0
+ * ```
+ *
  * @param $value
  * @return float
  * @no-named-arguments
@@ -192,6 +233,15 @@ function type_float($value)
 define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float', false);
 
 /**
+ * Union type.
+ *
+ * ```php
+ * $t = type_union(type_int, type_float);
+ * $t(1); // 1;
+ * $t(1.00); // 1
+ * $t('1'); // 1
+ * ```
+ *
  * @param callable $firsts
  * @param callable $second
  * @return callable

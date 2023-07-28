@@ -7,6 +7,10 @@ use Basko\Functional\Exception\InvalidArgumentException;
 /**
  * Alias of `explode`.
  *
+ * ```php
+ * str_split(' ', 'Hello World'); // ['Hello', 'World']
+ * ```
+ *
  * @param string $separator
  * @param string $string
  * @return callable|false|string[]
@@ -28,9 +32,10 @@ function str_split($separator, $string = null)
 define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split', false);
 
 /**
- * Example:
- * ```
- * str_split_on(2, 'GB123456789000'); // ['GB', '123456789000']
+ * Splits string on 2 parts by X position.
+ *
+ * ```php
+ * str_split_on(2, 'UA1234567890'); // ['UA', '1234567890']
  * ```
  *
  * @param int $num
@@ -60,12 +65,18 @@ define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on', false)
 /**
  * Alias of native `str_replace`.
  *
+ * ```php
+ * str_replace(' ', '', 'a b c d e f'); // abcdef
+ * ```
+ *
  * Use `partial_p` if you need $count argument:
+ * ```php
  * $f = partial_p('str_replace', [
- *  1 => $search,
- *  2 => $replace,
- *  4 => &$count
+ *      1 => $search,
+ *      2 => $replace,
+ *      4 => &$count
  * ]);
+ * ```
  *
  * @param array|string $search
  * @param array|string $replace
@@ -88,6 +99,10 @@ define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace', false);
 
 /**
  * Checks if `$string` starts with `$token`.
+ *
+ * ```php
+ * str_starts_with('http://', 'http://gitbub.com'); // true
+ * ```
  *
  * @param $token
  * @param $string
@@ -112,6 +127,10 @@ define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with', 
 /**
  * Checks if `$string` ends with `$token`.
  *
+ * ```php
+ * str_ends_with('.com', 'http://gitbub.com'); // true
+ * ```
+ *
  * @param $token
  * @param $string
  * @return bool|callable
@@ -134,6 +153,12 @@ define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with', fals
 
 /**
  * Checks if a string matches a regular expression.
+ *
+ * ```php
+ * $is_numeric = str_test('/^[0-9.]+$/');
+ * $is_numeric('123.43'); // true
+ * $is_numeric('12a3.43'); // false
+ * ```
  *
  * @param $pattern
  * @param $string
@@ -158,6 +183,10 @@ define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test', false);
 /**
  * Alias of `str_pad`.
  *
+ * ```php
+ * str_pad_left('6', '0', '481'); // 000481
+ * ```
+ *
  * @param $length
  * @param $pad_string
  * @param $string
@@ -172,6 +201,7 @@ function str_pad_left($length, $pad_string = null, $string = null)
         return partial(str_pad_left, $length);
     } elseif (is_null($string)) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
+
         return partial(str_pad_left, $length, $pad_string);
     }
 
@@ -184,6 +214,10 @@ define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left', false)
 
 /**
  * Alias of `str_pad`.
+ *
+ * ```php
+ * str_pad_right('6', '0', '481'); // 481000
+ * ```
  *
  * @param $length
  * @param $pad_string
@@ -199,6 +233,7 @@ function str_pad_right($length, $pad_string = null, $string = null)
         return partial(str_pad_right, $length);
     } elseif (is_null($string)) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
+
         return partial(str_pad_right, $length, $pad_string);
     }
 

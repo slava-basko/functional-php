@@ -23,6 +23,15 @@ function noop()
 define('Basko\Functional\noop', __NAMESPACE__ . '\\noop', false);
 
 /**
+ * Does nothing, return the parameter supplied to it.
+ *
+ * ```php
+ * identity(1); // 1
+ *
+ * $obj = new \stdClass;
+ * identity($obj) === $obj; // true
+ * ```
+ *
  * @param mixed $value
  * @return mixed
  * @no-named-arguments
@@ -35,6 +44,12 @@ function identity($value)
 define('Basko\Functional\identity', __NAMESPACE__ . '\\identity', false);
 
 /**
+ * Always return `true`.
+ *
+ * ```php
+ * T(); // true
+ * ```
+ *
  * @return true
  */
 function T()
@@ -45,6 +60,12 @@ function T()
 define('Basko\Functional\T', __NAMESPACE__ . '\\T', false);
 
 /**
+ * Always return `false`.
+ *
+ * ```php
+ * F(); // false
+ * ```
+ *
  * @return false
  */
 function F()
@@ -55,6 +76,12 @@ function F()
 define('Basko\Functional\F', __NAMESPACE__ . '\\F', false);
 
 /**
+ * Always return `null`.
+ *
+ * ```php
+ * NULL(); // null
+ * ```
+ *
  * @return null
  */
 function N()
@@ -65,6 +92,14 @@ function N()
 define('Basko\Functional\N', __NAMESPACE__ . '\\N', false);
 
 /**
+ * Run PHP comparison operator `==`.
+ *
+ * ```php
+ * eq(1, 1); // true
+ * eq(1, '1'); // true
+ * eq(1, 2); // false
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -82,6 +117,13 @@ function eq($a, $b = null)
 define('Basko\Functional\eq', __NAMESPACE__ . '\\eq', false);
 
 /**
+ * Run PHP comparison operator `===`.
+ *
+ * ```php
+ * identical(1, 1); // true
+ * identical(1, '1'); // false
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -99,6 +141,16 @@ function identical($a, $b = null)
 define('Basko\Functional\identical', __NAMESPACE__ . '\\identical', false);
 
 /**
+ * Returns true if the first argument is less than the second; false otherwise.
+ *
+ * ```php
+ * lt(2, 1); // false
+ * lt(2, 2); // false
+ * lt(2, 3); // true
+ * lt('a', 'z'); // true
+ * lt('z', 'a'); // false
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -116,6 +168,16 @@ function lt($a, $b = null)
 define('Basko\Functional\lt', __NAMESPACE__ . '\\lt', false);
 
 /**
+ * Returns true if the first argument is less than or equal to the second; false otherwise.
+ *
+ * ```php
+ * lte(2, 1); // false
+ * lte(2, 2); // true
+ * lte(2, 3); // true
+ * lte('a', 'z'); // true
+ * lte('z', 'a'); // false
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -133,6 +195,16 @@ function lte($a, $b = null)
 define('Basko\Functional\lte', __NAMESPACE__ . '\\lte', false);
 
 /**
+ * Returns true if the first argument is greater than the second; false otherwise.
+ *
+ * ```php
+ * gt(2, 1); // true
+ * gt(2, 2); // false
+ * gt(2, 3); // false
+ * gt('a', 'z'); // false
+ * gt('z', 'a'); // true
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -150,6 +222,16 @@ function gt($a, $b = null)
 define('Basko\Functional\gt', __NAMESPACE__ . '\\gt', false);
 
 /**
+ * Returns true if the first argument is greater than or equal to the second; false otherwise.
+ *
+ * ```php
+ * gte(2, 1); // true
+ * gte(2, 2); // true
+ * gte(2, 3); // false
+ * gte('a', 'z'); // false
+ * gte('z', 'a'); // true
+ * ```
+ *
  * @param mixed $a
  * @param mixed $b
  * @return bool|callable
@@ -167,7 +249,18 @@ function gte($a, $b = null)
 define('Basko\Functional\gte', __NAMESPACE__ . '\\gte', false);
 
 /**
- * Decorates given function with tail recursion optimization.
+ * Decorates given function with tail recursion optimization using trampoline.
+ *
+ * ```php
+ * $fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
+ *      if ($n == 0) {
+ *          return $acc;
+ *      }
+ *
+ *      return $fact($n - 1, $acc * $n);
+ * });
+ * $fact(10); // 3628800
+ * ```
  *
  * @param callable $f
  * @return callable
@@ -197,7 +290,11 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion', fa
 
 /**
  * Produces a new list of elements by mapping each element in list through a transformation function.
- * Function arguments will be element, index, list
+ * Function arguments will be element, index, list.
+ *
+ * ```php
+ * map(plus(1), [1, 2, 3]); // [2, 3, 4]
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array|null $list
@@ -262,7 +359,11 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map', false);
 
 /**
  * Calls `$f` on each element in list. Returns origin `$list`.
- * Function arguments will be element, index, list
+ * Function arguments will be element, index, list.
+ *
+ * ```php
+ * each(unary('print_r'), [1, 2, 3]); // Print: 123
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array|null $list
@@ -286,7 +387,14 @@ function each(callable $f, $list = null)
 define('Basko\Functional\each', __NAMESPACE__ . '\\each', false);
 
 /**
- * Returns the `!` of its argument
+ * Returns the `!` of its argument.
+ *
+ * ```php
+ * not(true); // false
+ * not(false); // true
+ * not(0); // true
+ * not(1); // false
+ * ```
  *
  * @param mixed $a The value
  * @no-named-arguments
@@ -299,7 +407,11 @@ function not($a)
 define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
 
 /**
- * Logical negation of the given $function
+ * Logical negation of the given function `$f`.
+ * ```php
+ * $notString = complement('is_string');
+ * $notString(1); // true
+ * ```
  *
  * @param callable $f The function to run value against
  * @return callable A negation version on the given $function
@@ -309,6 +421,7 @@ function complement(callable $f)
 {
     return function ($value) use ($f) {
         $args = func_get_args();
+
         return !call_user_func_array($f, $args);
     };
 }
@@ -317,6 +430,15 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement', false);
 
 /**
  * Call the given function with the given value, then return the value.
+ *
+ * ```php
+ * $input = new \stdClass();
+ * $input->property = 'foo';
+ * tap(function ($o) {
+ *      $o->property = 'bar';
+ * }, $input);
+ * $input->property; // 'foo'
+ * ```
  *
  * @param callable $f
  * @param mixed $value
@@ -338,6 +460,10 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap', false);
 
 /**
  * Applies a function to each element in the list and reduces it to a single value.
+ *
+ * ```php
+ * fold(concat, '4', [5, 1]); // 451
+ * ```
  *
  * @param callable $f
  * @param mixed $accumulator
@@ -364,6 +490,12 @@ function fold(callable $f, $accumulator = null, $list = null)
 define('Basko\Functional\fold', __NAMESPACE__ . '\\fold', false);
 
 /**
+ * The same as `fold` but accumulator on the right.
+ *
+ * ```php
+ * fold_r(concat, '4', [5, 1]); // 514
+ * ```
+ *
  * @param callable $f
  * @param mixed $accumulator
  * @param iterable|null $list
@@ -397,6 +529,12 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r', false);
 /**
  * Wrap value within a function, which will return it, without any modifications. Kinda constant function.
  *
+ * ```php
+ * $constA = always('a');
+ * $constA(); // 'a'
+ * $constA(); // 'a'
+ * ```
+ *
  * @param mixed $value
  * @return callable
  * @no-named-arguments
@@ -412,7 +550,12 @@ define('Basko\Functional\always', __NAMESPACE__ . '\\always', false);
 
 /**
  * Returns new function which applies each given function to the result of another from right to left.
- * compose(f, g, h) is the same as f(g(h(x)))
+ * compose(f, g, h) is the same as f(g(h(x))).
+ *
+ * ```php
+ * $powerPlus1 = compose(plus(1), power);
+ * $powerPlus1(3); // 10
+ * ```
  *
  * @param callable $f
  * @param callable $g
@@ -441,7 +584,12 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose', false);
 
 /**
  * Performs left to right function composition.
- * pipe(f, g, h) is the same as h(g(f(x)))
+ * pipe(f, g, h) is the same as h(g(f(x))).
+ *
+ * ```php
+ * $plus1AndPower = pipe(plus(1), power);
+ * $plus1AndPower(3); // 16
+ * ```
  *
  * @param callable $f
  * @param callable $g
@@ -470,6 +618,15 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe', false);
  *
  * The results of each branching function are passed as arguments
  * to the converging function to produce the return value.
+ *
+ * ```php
+ * function div($dividend, $divisor) {
+ *      return $dividend / $divisor;
+ * }
+ *
+ * $average = converge('div', ['array_sum', 'count']);
+ * $average([1, 2, 3, 4]); // 2.5
+ * ```
  *
  * @param callable $convergingFunction Will be invoked with the return values of all branching functions
  *                                     as its arguments
@@ -520,6 +677,13 @@ function call(callable $f, $args = null)
 define('Basko\Functional\call', __NAMESPACE__ . '\\call', false);
 
 /**
+ * Create a function that will pass arguments to a given function.
+ *
+ * ```php
+ * $fiveAndThree = apply_to([5, 3]);
+ * $fiveAndThree(sum); // 8
+ * ```
+ *
  * @param $arg
  * @param callable|null $f
  * @return callable
@@ -539,7 +703,22 @@ function apply_to($arg, callable $f = null)
 define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to', false);
 
 /**
- * Performs an operation checking for the given conditions
+ * Performs an operation checking for the given conditions.
+ * Returns a new function that behaves like a match operator. Encapsulates `if/elseif,elseif, ...` logic.
+ *
+ * ```php
+ * $cond = cond([
+ *      [eq(0), always('water freezes')],
+ *      [gte(100), always('water boils')],
+ *      [T, function ($t) {
+ *          return "nothing special happens at $t °C";
+ *      }],
+ * ]);
+ *
+ * $cond(0); // 'water freezes'
+ * $cond(100); // 'water boils'
+ * $cond(50) // 'nothing special happens at 50 °C'
+ * ```
  *
  * @param callable[][] $conditions the conditions to check against
  *
@@ -569,6 +748,14 @@ define('Basko\Functional\cond', __NAMESPACE__ . '\\cond', false);
  * Note, that you cannot use curry on a flipped function. curry uses reflection to get the number of function arguments,
  * but this is not possible on the function returned from flip. Instead, use curry_n on flipped functions.
  *
+ * ```php
+ * $mergeStrings = function ($head, $tail) {
+ *      return $head . $tail;
+ * };
+ * $flippedMergeStrings = flipped($mergeStrings);
+ * $flippedMergeStrings('two', 'one'); // 'onetwo'
+ * ```
+ *
  * @param callable $f
  * @return callable
  * @no-named-arguments
@@ -586,6 +773,11 @@ define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped', false);
  * Takes a binary function f, and unary function g, and two values. Applies g to each value,
  * then applies the result of each to f.
  * Also known as the P combinator.
+ *
+ * ```php
+ * $containsInsensitive = on(contains, 'strtolower');
+ * $containsInsensitive('o', 'FOO'); // true
+ * ```
  *
  * @param callable $f
  * @param callable $g
@@ -606,7 +798,15 @@ function on(callable $f, callable $g = null)
 define('Basko\Functional\on', __NAMESPACE__ . '\\on', false);
 
 /**
- * Acts as the boolean and statement.
+ * Acts as the boolean `and` statement.
+ *
+ * ```php
+ * both(T(), T()); // true
+ * both(F(), T()); // false
+ * $between6And9 = both(gt(6), lt(9));
+ * $between6And9(7); // true
+ * $between6And9(10); // false
+ * ```
  *
  * @param mixed $a
  * @param mixed $b
@@ -681,6 +881,12 @@ function any_pass(array $functions, $value = null)
 define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass', false);
 
 /**
+ * Applies a list of functions to a list of values.
+ *
+ * ```php
+ * ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
+ * ```
+ *
  * @param callable[] $flist
  * @param $list
  * @return array|callable
@@ -751,6 +957,20 @@ define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to', false);
  * Lift a function so that it accepts Maybe as parameters. Lifted function returns Maybe.
  *
  * Note, that you cannot use curry on a lifted function.
+ *
+ * ```php
+ * $plus = function ($a, $b) {
+ *      if (!is_int($a) || !is_int($b)) {
+ *          throw new \InvalidArgumentException('Params should INT');
+ *      }
+ *
+ *      return $a + $b;
+ * };
+ * $plus(3, Maybe::just(2)); // InvalidArgumentException: Params should INT
+ *
+ * $plusm = liftm($plus);
+ * $plusm(3, Maybe::just(2)); // Maybe::just(5)
+ * ```
  *
  * @param callable $f
  * @return callable

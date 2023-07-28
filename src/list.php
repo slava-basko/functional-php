@@ -8,6 +8,10 @@ use Traversable;
 /**
  * Returns a new list containing the contents of the given list, followed by the given element.
  *
+ * ```php
+ * append('three', ['one', 'two']); // ['one', 'two', 'three']
+ * ```
+ *
  * @param $element
  * @param $list
  * @return array|callable
@@ -36,6 +40,10 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append', false);
 /**
  * Returns a new list with the given element at the front, followed by the contents of the list.
  *
+ * ```php
+ * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
+ * ```
+ *
  * @param $element
  * @param $list
  * @return array|callable
@@ -63,6 +71,10 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend', false);
 /**
  * Extract a property from a list of objects.
  *
+ * ```php
+ * pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
+ * ```
+ *
  * @param string $property
  * @param \Traversable|array $list
  * @return callable|array
@@ -85,6 +97,14 @@ define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck', false);
 /**
  * Looks through each element in the list, returning the first one.
  *
+ * ```php
+ * head([
+ *      ['name' => 'jack', 'score' => 1],
+ *      ['name' => 'mark', 'score' => 9],
+ *      ['name' => 'john', 'score' => 1],
+ * ]); // ['name' => 'jack', 'score' => 1]
+ * ```
+ *
  * @param \Traversable|array $list
  * @return mixed
  * @no-named-arguments
@@ -100,7 +120,7 @@ function head($list)
     return null;
 }
 
-define('Basko\Functional\first', __NAMESPACE__ . '\\first', false);
+define('Basko\Functional\head', __NAMESPACE__ . '\\head', false);
 
 /**
  * Looks through each element in the list, returning the first one that passes a truthy test (function). The
@@ -133,6 +153,14 @@ define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by', false);
 
 /**
  * Returns all items from $list except first element (head). Preserves $list keys.
+ *
+ * ```php
+ * tail([
+ *      ['name' => 'jack', 'score' => 1],
+ *      ['name' => 'mark', 'score' => 9],
+ *      ['name' => 'john', 'score' => 1],
+ * ]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
+ * ```
  *
  * @param \Traversable|array $list
  * @return array
@@ -193,7 +221,11 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by', false);
 
 /**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
- * Opposite is Functional\reject(). Function arguments will be element, index, list
+ * Opposite is Functional\reject(). Function arguments will be element, index, list.
+ *
+ * ```php
+ * $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array $list
@@ -222,7 +254,11 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select', false);
 
 /**
  * Returns the elements in list without the elements that the test (function) passes.
- * The opposite of Functional\select(). Function arguments will be element, index, list
+ * The opposite of Functional\select(). Function arguments will be element, index, list.
+ *
+ * ```php
+ * $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array $list
@@ -251,7 +287,12 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject', false);
 
 /**
  * Returns true if the list contains the given value. If the third parameter is
- * true values will be compared in strict mode
+ * true values will be compared in strict mode.
+ *
+ * ```php
+ * contains('foo', ['foo', 'bar']); // true
+ * contains('foo', 'foo and bar'); // true
+ * ```
  *
  * @param mixed $needle
  * @param string|\Traversable|array $haystack
@@ -284,10 +325,15 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains', false);
 /**
  * Creates a slice of $list with $count elements taken from the beginning. If the list has less than $count,
  * the whole list will be returned as an array.
+ * For strings its works like `substr`.
+ *
+ * ```php
+ * take(2, [1, 2, 3]); // [0 => 1, 1 => 2]
+ * take(4, 'Slava'); // 'Slav'
+ * ```
  *
  * @param \Traversable|array|string $list
  * @param int $count
- *
  * @return callable|array
  * @no-named-arguments
  */
@@ -314,6 +360,12 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take', false);
 /**
  * Creates a slice of $list with $count elements taken from the end. If the list has less than $count,
  * the whole list will be returned as an array.
+ * For strings its works like `substr`.
+ *
+ * ```php
+ * take_r(2, [1, 2, 3]); // [1 => 2, 2 => 3]
+ * take_r(4, 'Slava'); // 'lava'
+ * ```
  *
  * @param \Traversable|array|string $list
  * @param int $count
@@ -345,6 +397,13 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r', false);
 /**
  * Return N-th element of an array or string.
  * First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
+ *
+ * ```php
+ * nth(1, ['foo', 'bar', 'baz', 'qwe']); // 'foo'
+ * nth(-1, ['foo', 'bar', 'baz', 'qwe']); // 'qwe'
+ * nth(1, 'Slava'); // 'S'
+ * nth(-2, 'Slava'); // 'v'
+ * ```
  *
  * @param int $elementNumber
  * @param \Traversable|array|string $list
@@ -384,6 +443,27 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth', false);
 /**
  * Groups a list by index returned by function.
  *
+ * ```php
+ * group(prop('type'), [
+ *      [
+ *          'name' => 'john',
+ *          'type' => 'admin'
+ *      ],
+ *      [
+ *          'name' => 'mark',
+ *          'type' => 'user'
+ *      ],
+ *      [
+ *          'name' => 'bill',
+ *          'type' => 'user'
+ *      ],
+ *      [
+ *          'name' => 'jack',
+ *          'type' => 'anonymous'
+ *      ],
+ * ]); // ['admin' => [...], 'user' => [...], 'anonymous' => [...]]
+ * ```
+ *
  * @param callable $f
  * @param \Traversable|array $list
  * @return callable|array
@@ -422,6 +502,16 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group', false);
  * Elements are not re-ordered and have the same index they had in the
  * original array.
  *
+ * ```php
+ * list($best, $good_students, $others) = partition(
+ *      [
+ *          compose(gte(9), prop('score')),
+ *          compose(both(gt(6), lt(9)), prop('score'))
+ *      ],
+ *      $students
+ * );
+ * ```
+ *
  * @param callable[] $functions
  * @param \Traversable|array $list
  * @return callable|array
@@ -458,6 +548,11 @@ define('Basko\Functional\partition', __NAMESPACE__ . '\\partition', false);
 /**
  * Takes a nested combination of list and returns their contents as a single, flat list.
  *
+ * ```php
+ * flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ * flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
+ * ```
+ *
  * @param \Traversable|array $list
  * @return array
  * @no-named-arguments
@@ -483,6 +578,10 @@ define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten', false);
 /**
  * Insert a given value between each element of a collection.
  * Indexes are not preserved.
+ *
+ * ```php
+ * intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
+ * ```
  *
  * @param mixed $separator
  * @param \Traversable|array $list
@@ -512,6 +611,10 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse', false);
 
 /**
  * Sorts a list with a user-defined function.
+ *
+ * ```php
+ * sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array $list
@@ -545,6 +648,24 @@ define('Basko\Functional\sort', __NAMESPACE__ . '\\sort', false);
  * Makes a comparator function out of a function that reports whether the first
  * element is less than the second.
  *
+ * ```php
+ * $ar = [1, 1, 2, 3, 5, 8];
+ * usort($ar, comparator(function ($a, $b) {
+ *      return $a < $b;
+ * })); // $ar = [1, 1, 2, 3, 5, 8]
+ *
+ * sort(
+ *      comparator(function ($a, $b) {
+ *          return prop('age', $a) < prop('age', $b);
+ *      }),
+ *      [
+ *          ['name' => 'Emma', 'age' => 70],
+ *          ['name' => 'Peter', 'age' => 78],
+ *          ['name' => 'Mikhail', 'age' => 62],
+ *      ]
+ * ); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
+ * ```
+ *
  * @param callable $f
  * @return callable
  */
@@ -559,6 +680,14 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator', false);
 
 /**
  * Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+ *
+ * ```php
+ * sort(ascend(prop('age')), [
+ *      ['name' => 'Emma', 'age' => 70],
+ *      ['name' => 'Peter', 'age' => 78],
+ *      ['name' => 'Mikhail', 'age' => 62],
+ * ]); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
+ * ```
  *
  * @param callable $f
  * @param $a
@@ -583,6 +712,14 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend', false);
 
 /**
  * Makes a descending comparator function out of a function that returns a value that can be compared with `<` and `>`.
+ *
+ * ```php
+ * sort(descend(prop('age')), [
+ *      ['name' => 'Emma', 'age' => 70],
+ *      ['name' => 'Peter', 'age' => 78],
+ *      ['name' => 'Mikhail', 'age' => 62],
+ * ]); // [['name' => 'Peter', 'age' => 78], ['name' => 'Emma', 'age' => 70], ['name' => 'Mikhail', 'age' => 62]]
+ * ```
  *
  * @param callable $f
  * @param $a
@@ -609,6 +746,10 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend', false);
  * Returns a new list containing only one copy of each element in the original list,
  * based upon the value returned by applying the supplied function to each list element.
  * Prefers the first item if the supplied function produces the same value on two items.
+ *
+ * ```php
+ * uniq_by('abs', [-1, -5, 2, 10, 1, 2]); // [-1, -5, 2, 10]
+ * ```
  *
  * @param callable $f
  * @param \Traversable|array $list
@@ -641,6 +782,11 @@ define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by', false);
 
 /**
  * Returns a new list containing only one copy of each element in the original list.
+ *
+ * ```php
+ * uniq([1, 1, 2, 1]); // [1, 2]
+ * uniq([1, '1']); // [1, '1']
+ * ```
  *
  * @param \Traversable|array $list
  * @return array|callable

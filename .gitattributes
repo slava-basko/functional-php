@@ -6,3 +6,5 @@
 /psalm-baseline.xml export-ignore
 /README.md export-ignore
 /phpcs.xml export-ignore
+/internal export-ignore
+/docs export-ignore

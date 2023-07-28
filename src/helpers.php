@@ -13,6 +13,8 @@ use LimitIterator;
 use Traversable;
 
 /**
+ * Internal function.
+ *
  * @param object $value
  * @return string
  * @internal
@@ -59,6 +61,8 @@ function _object_to_ref($value)
 }
 
 /**
+ * Internal function.
+ *
  * @param mixed $value
  * @return string
  * @internal
@@ -89,6 +93,8 @@ function _value_to_ref($value, $key = null)
 define('Basko\Functional\_value_to_ref', __NAMESPACE__ . '\\_value_to_ref', false);
 
 /**
+ * Internal function.
+ *
  * @param mixed $value
  * @return string
  */
@@ -109,6 +115,15 @@ function value_to_key($value)
  *
  * In particular, the function to be memoized should never rely on a state of a
  * mutable object. Only immutable objects are safe.
+ *
+ * ```php
+ * $randAndSalt = function ($salt) {
+ *      return rand(1, 100) . $salt;
+ * };
+ * $memoizedRandAndSalt = f\memoized($randAndSalt);
+ * $memoizedRandAndSalt('x'); // 42x
+ * $memoizedRandAndSalt('x'); // 42x
+ * ```
  *
  * @param callable $f
  * @return callable
@@ -133,6 +148,13 @@ function memoized(callable $f)
 define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize', false);
 
 /**
+ * Returns arguments as a list.
+ *
+ * ```php
+ * to_list(1, 2, 3); // [1, 2, 3]
+ * to_list('1, 2, 3'); // [1, 2, 3]
+ * ```
+ *
  * @param ...$args
  * @return array
  */
@@ -149,6 +171,10 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list', false);
 
 /**
  * Concatenates `$a` with `$b`.
+ *
+ * ```php
+ * concat('foo', 'bar'); // 'foobar'
+ * ```
  *
  * @param $a
  * @param $b
@@ -171,7 +197,11 @@ function concat($a, $b = null)
 define('Basko\Functional\concat', __NAMESPACE__ . '\\concat', false);
 
 /**
- * Concatenates given arguments.
+ * Concatenates all given arguments.
+ *
+ * ```php
+ * concat('foo', 'bar', 'baz'); // 'foobarbaz'
+ * ```
  *
  * @param $a
  * @param $b
@@ -188,6 +218,10 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all', false);
 /**
  * Returns a string made by inserting the separator between each element and concatenating all the elements
  * into a single string.
+ *
+ * ```php
+ * join('|', [1, 2, 3]); // '1|2|3'
+ * ```
  *
  * @param string $separator
  * @param array|\Traversable $list
@@ -214,6 +248,12 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join', false);
 
 /**
  * Performs an if/else condition over a value using functions as statements.
+ *
+ * ```php
+ * $ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
+ * $ifFoo('foo'); // 'bar'
+ * $ifFoo('qux'); // 'baz'
+ * ```
  *
  * @param callable $if the condition function
  * @param callable $then function to call if condition is true
@@ -244,6 +284,10 @@ define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else', false);
 /**
  * Creates a function that can be used to repeat the execution of $f.
  *
+ * ```php
+ * repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
+ * ```
+ *
  * @param callable $f
  * @return callable
  * @no-named-arguments
@@ -264,6 +308,12 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat', false);
  * it simply returns the result. If the tryer does throw, the returned function evaluates the catcher function
  * and returns its result. For effective composition with this function, both the tryer and catcher functions
  * must return the same type of results.
+ *
+ * ```php
+ * try_catch(function () {
+ *      throw new \Exception();
+ * }, always('val'))(); // 'val'
+ * ```
  *
  * @param callable $tryer
  * @param callable $catcher
@@ -291,6 +341,10 @@ define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch', false);
 /**
  * Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
  *
+ * ```php
+ * array_filter([$user1, $user2], invoker('isActive')); // only active users
+ * ```
+ *
  * @param string $methodName
  * @param array $arguments
  * @return callable
@@ -310,6 +364,11 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker', false);
 
 /**
  * Count length of string or number of elements in the array.
+ *
+ * ```php
+ * len('foo'); // 3
+ * len(['a', 'b']); // 2
+ * ```
  *
  * @param $a
  * @return int
@@ -334,6 +393,14 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len', false);
 
 /**
  * Returns a function that when supplied an object returns the indicated property of that object, if it exists.
+ *
+ * ```php
+ * prop(0, [99]); // 99
+ * prop('x', ['x' => 100]); // 100
+ * $object = new \stdClass();
+ * $object->x = 101;
+ * prop('x', $object); // 101
+ * ```
  *
  * @param $property
  * @param $object
@@ -368,6 +435,10 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop', false);
 /**
  * Thunkified version of `prop` function, for more easily composition with `either` for example.
  *
+ * ```php
+ * prop_thunk(0, [99])(); // 99
+ * ```
+ *
  * @param $property
  * @param $object
  * @return callable
@@ -385,6 +456,15 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk', false);
 
 /**
  * Nested version of `prop` function.
+ *
+ * ```php
+ * prop_path(['b', 'c'], [
+ *      'a' => 1,
+ *      'b' => [
+ *          'c' => 2
+ *      ],
+ * ]); // 2
+ * ```
  *
  * @param array $path
  * @param $object
@@ -406,6 +486,10 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
 
 /**
  * Acts as multiple prop: array of keys in, array of values out. Preserves order.
+ *
+ * ```php
+ * props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
+ * ```
  *
  * @param array $properties
  * @param $object
@@ -429,6 +513,19 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props', false);
 
 /**
  * Creates a shallow clone of a list with an overwritten value at a specified index.
+ *
+ * ```php
+ * assoc('bar', 42, ['foo' => 'foo', 'bar' => 'bar']); // ['foo' => 'foo', 'bar' => 42]
+ *
+ * assoc(
+ *      'full_name',
+ *      compose(join(' '), props(['first_name', 'last_name'])),
+ *      [
+ *          'first_name' => 'Slava',
+ *          'last_name' => 'Basko'
+ *      ]
+ * ); // ['first_name' => 'Slava', 'last_name' => 'Basko', 'full_name' => 'Slava Basko']
+ * ```
  *
  * @param $key
  * @param mixed|callable $val
@@ -474,6 +571,10 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc', false);
 /**
  * Nested version of `assoc` function.
  *
+ * ```php
+ * assoc_path(['bar', 'baz'], 42, ['foo' => 'foo', 'bar' => ['baz' => 41]]); // ['foo' => 'foo', 'bar' => ['baz' => 42]]
+ * ```
+ *
  * @param array $path
  * @param mixed|callable $val
  * @param $list
@@ -511,6 +612,10 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path', false);
 /**
  * Returns a function that invokes `$method` with arguments `$arguments` on the $object.
  *
+ * ```php
+ * to_fn($obj, 'someMethod', ['arg'])(); // Equal to $obj->someMethod('arg');
+ * ```
+ *
  * @param object $object
  * @param string $methodName
  * @param ...
@@ -536,6 +641,10 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn', false);
 /**
  * Takes two arguments, $fst and $snd, and returns [$fst, $snd].
  *
+ * ```php
+ * pair('foo', 'bar'); // ['foo', 'bar']
+ * ```
+ *
  * @param $fst
  * @param $snd
  * @return callable|array
@@ -552,6 +661,9 @@ function pair($fst, $snd = null)
 
 define('Basko\Functional\pair', __NAMESPACE__ . '\\pair', false);
 
+/**
+ * @return \Closure|mixed|null
+ */
 function _either()
 {
     $arguments = func_get_args();
@@ -602,6 +714,14 @@ function _either()
  * A function wrapping calls to the functions in an `||` operation, returning the result of the first function
  * if it is truth-y and the result of the next function otherwise.
  *
+ * ```php
+ * either(gt(10), is_even, 101); // true
+ * $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
+ * $value([
+ *      'prop2' => 'some value'
+ * ]); // 'some value'
+ * ```
+ *
  * @return callable|mixed
  * @no-named-arguments
  */
@@ -627,6 +747,13 @@ function either_strict()
 define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict', false);
 
 /**
+ * Quote given string.
+ *
+ * ```php
+ * quote('foo'); // "foo"
+ * map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
+ * ```
+ *
  * @param $value
  * @return string
  */
@@ -640,6 +767,8 @@ function quote($value)
 define('Basko\Functional\quote', __NAMESPACE__ . '\\quote', false);
 
 /**
+ * Same as `quote`, but with `addslashes` before.
+ *
  * @param $value
  * @return string
  */
@@ -654,6 +783,10 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote', false);
 
 /**
  * Select the specified keys from the array.
+ *
+ * ```php
+ * select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
+ * ```
  *
  * @param array $keys
  * @param Traversable|array $object
@@ -688,6 +821,10 @@ define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys', false);
 /**
  * Returns an array with the specified keys omitted from the array.
  *
+ * ```php
+ * omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
+ * ```
+ *
  * @param array $keys
  * @param Traversable|array $object
  * @return callable|array
@@ -713,6 +850,10 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
 
 /**
  * Applies provided function to specified keys.
+ *
+ * ```php
+ * map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
+ * ```
  *
  * @param callable $f
  * @param array $keys
@@ -781,6 +922,13 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements', false)
 /**
  * Finds if a given array has all of the required keys set.
  *
+ * ```php
+ * find_missing_keys(
+ *      ['login', 'email'],
+ *      ['login' => 'admin']
+ * ); // ['email']
+ * ```
+ *
  * @param array $keys
  * @param $array
  * @return callable|int[]|string[]
@@ -800,6 +948,8 @@ function find_missing_keys(array $keys, $array = null)
 define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys', false);
 
 /**
+ * Creates copy of provided value. `clone` will be called for objects.
+ *
  * @param $object
  * @return mixed
  * @no-named-arguments
@@ -821,6 +971,10 @@ define('Basko\Functional\copy', __NAMESPACE__ . '\\copy', false);
 
 /**
  * Return random value from list.
+ *
+ * ```php
+ * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
+ * ```
  *
  * @param $list
  * @return mixed
@@ -950,6 +1104,11 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay', false);
 /**
  * Retry a function until the number of retries are reached or the function does no longer throw an exception.
  *
+ * ```php
+ * retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
+ * retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
+ * ```
+ *
  * @param int $retries
  * @param $delaySequence
  * @param callable $f
@@ -998,3 +1157,47 @@ function retry($retries, $delaySequence = null, $f = null)
 }
 
 define('Basko\Functional\retry', __NAMESPACE__ . '\\retry', false);
+
+/**
+ * Creates instance of given class.
+ *
+ * ```php
+ * construct('stdClass'); // object(stdClass)
+ * ```
+ *
+ * @param $class
+ * @return mixed
+ */
+function construct($class)
+{
+    InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
+
+    return new $class();
+}
+
+define('Basko\Functional\construct', __NAMESPACE__ . '\\construct', false);
+
+/**
+ * Creates instance of given class with arguments passed to __construct method.
+ *
+ * ```php
+ * $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);
+ * echo $user->first_name; // Slava
+ * ```
+ *
+ * @param $class
+ * @param $constructArguments
+ * @return callable|mixed
+ */
+function construct_with_args($class, $constructArguments = null)
+{
+    if (is_null($constructArguments)) {
+        return partial(construct_with_args, $class);
+    }
+
+    InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
+
+    return new $class($constructArguments);
+}
+
+define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with_args', false);

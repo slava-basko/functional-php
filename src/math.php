@@ -5,6 +5,13 @@ namespace Basko\Functional;
 use Basko\Functional\Exception\InvalidArgumentException;
 
 /**
+ * Check if number is even.
+ *
+ * ```php
+ * is_even(4); // true
+ * is_even(3); // false
+ * ```
+ *
  * @param $n
  * @return bool
  * @no-named-arguments
@@ -19,6 +26,13 @@ function is_even($n)
 define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even', false);
 
 /**
+ * Check if number is odd.
+ *
+ * ```php
+ * is_odd(5); // true
+ * is_odd(2); // false
+ * ```
+ *
  * @param $n
  * @return mixed
  * @no-named-arguments
@@ -35,6 +49,12 @@ function is_odd($n)
 define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd', false);
 
 /**
+ * Perform $a + $b.
+ *
+ * ```php
+ * plus(4, 2); // 6
+ * ```
+ *
  * @param $a
  * @param $b
  * @return mixed
@@ -56,6 +76,12 @@ function plus($a, $b = null)
 define('Basko\Functional\plus', __NAMESPACE__ . '\\plus', false);
 
 /**
+ * Perform $a - $b.
+ *
+ * ```php
+ * minus(4, 2); // 2
+ * ```
+ *
  * @param $a
  * @param $b
  * @return mixed
@@ -77,6 +103,12 @@ function minus($a, $b = null)
 define('Basko\Functional\minus', __NAMESPACE__ . '\\minus', false);
 
 /**
+ * Perform $a / $b.
+ *
+ * ```php
+ * div(4, 2); // 2
+ * ```
+ *
  * @param $a
  * @param $b
  * @return callable|float|int
@@ -98,6 +130,12 @@ function div($a, $b = null)
 define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
 
 /**
+ * Perform $a * $b.
+ *
+ * ```php
+ * multiply(4, 2); // 8
+ * ```
+ *
  * @param $a
  * @param $b
  * @return callable|float|int
@@ -119,6 +157,12 @@ function multiply($a, $b = null)
 define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply', false);
 
 /**
+ * Fold list with `plus`.
+ *
+ * ```php
+ * sum([3, 2, 1]); // 6
+ * ```
+ *
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -133,6 +177,12 @@ function sum($list)
 define('Basko\Functional\sum', __NAMESPACE__ . '\\sum', false);
 
 /**
+ * Fold list with `minus`.
+ *
+ * ```php
+ * diff([10, 2, 1]); // 7
+ * ```
+ *
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -147,6 +197,12 @@ function diff($list)
 define('Basko\Functional\diff', __NAMESPACE__ . '\\diff', false);
 
 /**
+ * Fold list with `div`.
+ *
+ * ```php
+ * divide([20, 2, 2]); // 5
+ * ```
+ *
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -161,6 +217,12 @@ function divide($list)
 define('Basko\Functional\divide', __NAMESPACE__ . '\\divide', false);
 
 /**
+ * Fold list with `multiply`.
+ *
+ * ```php
+ * product([4, 2, 2]); // 16
+ * ```
+ *
  * @param $list
  * @return mixed
  * @no-named-arguments
@@ -175,6 +237,12 @@ function product($list)
 define('Basko\Functional\product', __NAMESPACE__ . '\\product', false);
 
 /**
+ * Calculate average value.
+ *
+ * ```php
+ * average([1, 2, 3, 4, 5, 6, 7]); // 4
+ * ```
+ *
  * @param $list
  * @return float|int
  * @no-named-arguments
@@ -191,6 +259,10 @@ define('Basko\Functional\average', __NAMESPACE__ . '\\average', false);
 /**
  * Increments its argument.
  *
+ * ```php
+ * inc(41); // 42
+ * ```
+ *
  * @return float|int
  * @no-named-arguments
  */
@@ -205,6 +277,10 @@ define('Basko\Functional\inc', __NAMESPACE__ . '\\inc', false);
 
 /**
  * Decrements its argument.
+ *
+ * ```php
+ * dec(43); // 42
+ * ```
  *
  * @return float|int
  * @no-named-arguments
@@ -221,6 +297,10 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec', false);
 /**
  * Power its argument.
  *
+ * ```php
+ * power(4); // 16
+ * ```
+ *
  * @return float|int
  * @no-named-arguments
  */
@@ -234,6 +314,13 @@ function power($n)
 define('Basko\Functional\power', __NAMESPACE__ . '\\power', false);
 
 /**
+ * Calculate median.
+ *
+ * ```php
+ * median([2, 9, 7]); // 7
+ * median([7, 2, 10, 9]); // 8
+ * ```
+ *
  * @param $list
  * @return mixed
  * @no-named-arguments

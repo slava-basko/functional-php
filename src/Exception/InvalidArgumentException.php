@@ -451,6 +451,26 @@ class InvalidArgumentException extends \InvalidArgumentException
 
     /**
      * @param $value
+     * @param $callee
+     * @param $parameterPosition
+     * @return void
+     */
+    public static function assertClass($value, $callee, $parameterPosition)
+    {
+        if (!class_exists($value)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be valid class, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param $value
      * @return bool
      */
     private static function isString($value)
