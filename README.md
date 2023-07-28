@@ -152,6 +152,12 @@ $commonDescription = pipe(
 ```
 This is precisely what we need. It's in a natural order. No intermediate states.
 
+### What about some real-life example?
+No problem, this project has a doc auto-generation script.
+Written in an entirely point-free manner.
+
+[Show me your doc_generator.php](internal/doc_generator.php)
+
 ## General
 
 ### Import functions
