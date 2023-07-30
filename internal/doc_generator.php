@@ -24,6 +24,9 @@ f\pipe(
         )),
         'array_keys',
     ]),
+    f\unary('array_flip'),
+    f\reject(f\str_starts_with('_')),
+    f\unary('array_flip'),
     f\map(f\pipe(
         f\construct_with_args(ReflectionFunction::class),
         f\invoker('getDocComment')

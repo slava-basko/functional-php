@@ -359,9 +359,6 @@ $eleven = $addTen(1);
 $eleven(); // 11
 ```
 
-### _thunkify_n
-
-
 ### ary
 Return function $f that will be called only with `abs($count)` arguments,
 taken either from the left or right depending on the sign.
@@ -833,12 +830,6 @@ view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
 view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 ```
 
-### _object_to_ref
-Internal function.
-
-### _value_to_ref
-Internal function.
-
 ### value_to_key
 Internal function.
 
@@ -1010,9 +1001,6 @@ Takes two arguments, $fst and $snd, and returns [$fst, $snd].
 ```php
 pair('foo', 'bar'); // ['foo', 'bar']
 ```
-
-### _either
-
 
 ### either
 A function wrapping calls to the functions in an `||` operation, returning the result of the first function
