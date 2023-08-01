@@ -284,6 +284,11 @@ define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union', false);
 /**
  * Checks and coerces value to positive `int`.
  *
+ * ```php
+ * type_positive_int(2); // 2
+ * type_positive_int('2'); // 2
+ * ```
+ *
  * @param $value
  * @return int Positive int
  * @no-named-arguments

@@ -9,6 +9,10 @@ use ReflectionMethod;
 /**
  * Return number of function arguments.
  *
+ * ```php
+ * count_args('explode'); // 3
+ * ```
+ *
  * @param callable $f
  * @param bool $only_required
  * @return int
