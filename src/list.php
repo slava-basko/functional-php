@@ -125,7 +125,7 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head', false);
 /**
  * Looks through each element in the list, returning the first one that passes a truthy test (function). The
  * function returns as soon as it finds an acceptable element, and doesn't traverse the entire list. Function
- * arguments will be element, index, list
+ * arguments will be `element`, `index`, `list`
  *
  * @param callable $f
  * @param \Traversable|array $list
@@ -152,7 +152,7 @@ function head_by(callable $f, $list = null)
 define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by', false);
 
 /**
- * Returns all items from $list except first element (head). Preserves $list keys.
+ * Returns all items from `$list` except first element (head). Preserves `$list` keys.
  *
  * ```php
  * tail([
@@ -221,7 +221,7 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by', false);
 
 /**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
- * Opposite is Functional\reject(). Function arguments will be element, index, list.
+ * Opposite is `reject()`. Function arguments will be `element`, `index`, `list`.
  *
  * ```php
  * $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
@@ -254,7 +254,7 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select', false);
 
 /**
  * Returns the elements in list without the elements that the test (function) passes.
- * The opposite of Functional\select(). Function arguments will be element, index, list.
+ * The opposite of `select()`. Function arguments will be `element`, `index`, `list`.
  *
  * ```php
  * $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
@@ -323,7 +323,7 @@ function contains($needle, $haystack = null)
 define('Basko\Functional\contains', __NAMESPACE__ . '\\contains', false);
 
 /**
- * Creates a slice of $list with $count elements taken from the beginning. If the list has less than $count,
+ * Creates a slice of `$list` with `$count` elements taken from the beginning. If the list has less than `$count`,
  * the whole list will be returned as an array.
  * For strings its works like `substr`.
  *
@@ -358,7 +358,7 @@ function take($count, $list = null)
 define('Basko\Functional\take', __NAMESPACE__ . '\\take', false);
 
 /**
- * Creates a slice of $list with $count elements taken from the end. If the list has less than $count,
+ * Creates a slice of `$list` with `$count` elements taken from the end. If the list has less than `$count`,
  * the whole list will be returned as an array.
  * For strings its works like `substr`.
  *

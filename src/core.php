@@ -295,7 +295,7 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion', fa
 
 /**
  * Produces a new list of elements by mapping each element in list through a transformation function.
- * Function arguments will be element, index, list.
+ * Function arguments will be `element`, `index`, `list`.
  *
  * ```php
  * map(plus(1), [1, 2, 3]); // [2, 3, 4]
@@ -328,7 +328,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  * `flat_map` works applying `$f` that returns a sequence for each element in a list,
  * and flattening the results into the resulting array.
  *
- * flat_map(...) differs from flatten(map(...)) because it only flattens one level of nesting,
+ * `flat_map(...)` differs from `flatten(map(...))` because it only flattens one level of nesting,
  * whereas flatten will recursively flatten nested collections. Indexes will not preserve.
  *
  * ```php
@@ -394,7 +394,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map', false);
 
 /**
  * Calls `$f` on each element in list. Returns origin `$list`.
- * Function arguments will be element, index, list.
+ * Function arguments will be `element`, `index`, `list`.
  *
  * ```php
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
@@ -609,7 +609,7 @@ define('Basko\Functional\always', __NAMESPACE__ . '\\always', false);
 
 /**
  * Returns new function which applies each given function to the result of another from right to left.
- * compose(f, g, h) is the same as f(g(h(x))).
+ * `compose(f, g, h)` is the same as `f(g(h(x)))`.
  *
  * ```php
  * $powerPlus1 = compose(plus(1), power);
@@ -643,7 +643,7 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose', false);
 
 /**
  * Performs left to right function composition.
- * pipe(f, g, h) is the same as h(g(f(x))).
+ * `pipe(f, g, h)` is the same as `h(g(f(x)))`.
  *
  * ```php
  * $plus1AndPower = pipe(plus(1), power);
@@ -806,8 +806,9 @@ define('Basko\Functional\cond', __NAMESPACE__ . '\\cond', false);
 /**
  * Returns function which accepts arguments in the reversed order.
  *
- * Note, that you cannot use curry on a flipped function. curry uses reflection to get the number of function arguments,
- * but this is not possible on the function returned from flip. Instead, use curry_n on flipped functions.
+ * Note, that you cannot use curry on a flipped function.
+ * `curry` uses reflection to get the number of function arguments,
+ * but this is not possible on the function returned from flip. Instead, use `curry_n` on flipped functions.
  *
  * ```php
  * $mergeStrings = function ($head, $tail) {
@@ -831,8 +832,8 @@ function flipped(callable $f)
 define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped', false);
 
 /**
- * Takes a binary function f, and unary function g, and two values. Applies g to each value,
- * then applies the result of each to f.
+ * Takes a binary function `$f`, and unary function `$g`, and two values. Applies `$g` to each value,
+ * then applies the result of each to `$f`.
  * Also known as the P combinator.
  *
  * ```php

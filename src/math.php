@@ -49,7 +49,7 @@ function is_odd($n)
 define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd', false);
 
 /**
- * Perform $a + $b.
+ * Perform `$a + $b`.
  *
  * ```php
  * plus(4, 2); // 6
@@ -76,7 +76,7 @@ function plus($a, $b = null)
 define('Basko\Functional\plus', __NAMESPACE__ . '\\plus', false);
 
 /**
- * Perform $a - $b.
+ * Perform `$a - $b`.
  *
  * ```php
  * minus(4, 2); // 2
@@ -103,7 +103,7 @@ function minus($a, $b = null)
 define('Basko\Functional\minus', __NAMESPACE__ . '\\minus', false);
 
 /**
- * Perform $a / $b.
+ * Perform `$a / $b`.
  *
  * ```php
  * div(4, 2); // 2
@@ -130,7 +130,7 @@ function div($a, $b = null)
 define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
 
 /**
- * Perform $a * $b.
+ * Perform `$a * $b`.
  *
  * ```php
  * multiply(4, 2); // 8

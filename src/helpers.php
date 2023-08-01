@@ -104,7 +104,7 @@ function value_to_key($value)
 }
 
 /**
- * Create memoized versions of $f function.
+ * Create memoized versions of `$f` function.
  *
  * Note that memoization is safe for pure functions only. For a function to be
  * pure it should:
@@ -247,7 +247,7 @@ function join($separator, $list = null)
 define('Basko\Functional\join', __NAMESPACE__ . '\\join', false);
 
 /**
- * Performs an if/else condition over a value using functions as statements.
+ * Performs an `if/else` condition over a value using functions as statements.
  *
  * ```php
  * $ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
@@ -282,7 +282,7 @@ function if_else(callable $if, callable $then = null, callable $else = null)
 define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else', false);
 
 /**
- * Creates a function that can be used to repeat the execution of $f.
+ * Creates a function that can be used to repeat the execution of `$f`.
  *
  * ```php
  * repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
@@ -485,7 +485,7 @@ function prop_path(array $path, $object = null)
 define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
 
 /**
- * Acts as multiple prop: array of keys in, array of values out. Preserves order.
+ * Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
  *
  * ```php
  * props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
@@ -639,7 +639,7 @@ function to_fn($object, $methodName = null, array $arguments = null)
 define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn', false);
 
 /**
- * Takes two arguments, $fst and $snd, and returns [$fst, $snd].
+ * Takes two arguments, `$fst` and `$snd`, and returns `[$fst, $snd]`.
  *
  * ```php
  * pair('foo', 'bar'); // ['foo', 'bar']
@@ -1178,7 +1178,7 @@ function construct($class)
 define('Basko\Functional\construct', __NAMESPACE__ . '\\construct', false);
 
 /**
- * Creates instance of given class with arguments passed to __construct method.
+ * Creates instance of given class with arguments passed to `__construct` method.
  *
  * ```php
  * $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);

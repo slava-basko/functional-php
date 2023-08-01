@@ -3,7 +3,7 @@
 namespace Basko\Functional;
 
 /**
- * Returns new function which will behave like $f with
+ * Returns new function which will behave like `$f` with
  * predefined left arguments passed to partial.
  *
  * ```php
@@ -30,7 +30,7 @@ function partial(callable $f, $arg1)
 define('Basko\Functional\partial', __NAMESPACE__ . '\\partial', false);
 
 /**
- * Returns new partial function which will behave like $f with
+ * Returns new partial function which will behave like `$f` with
  * predefined right arguments passed to rpartial.
  *
  * ```php
@@ -57,7 +57,7 @@ function partial_r(callable $f, $arg1)
 define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r', false);
 
 /**
- * Returns new partial function which will behave like $f with
+ * Returns new partial function which will behave like `$f` with
  * predefined positional arguments passed to ppartial.
  *
  * ```php

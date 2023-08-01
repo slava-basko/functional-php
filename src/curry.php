@@ -137,7 +137,7 @@ function _thunkify_n(callable $f, $count)
 }
 
 /**
- * Return function $f that will be called only with `abs($count)` arguments,
+ * Return function `$f` that will be called only with `abs($count)` arguments,
  * taken either from the left or right depending on the sign.
  *
  * ```php

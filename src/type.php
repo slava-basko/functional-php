@@ -45,7 +45,7 @@ function is_instance_of($instanceof)
 define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
 
 /**
- * Return a function that checks `$value instanceof SomeClass.
+ * Return a function that checks `$value instanceof SomeClass`.
  *
  * ```php
  * type_of(\User::class)(new User()); // User
@@ -107,7 +107,7 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
 
 /**
  * Checks and coerces value to `string`.
- * Object: method __toString will be called
+ * Object: method `__toString` will be called
  * Array: all values will be concatenated with comma.
  *
  * ```php

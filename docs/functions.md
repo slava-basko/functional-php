@@ -114,7 +114,7 @@ $fact(10); // 3628800
 
 ### map
 Produces a new list of elements by mapping each element in list through a transformation function.
-Function arguments will be element, index, list.
+Function arguments will be `element`, `index`, `list`.
 
 ```php
 map(plus(1), [1, 2, 3]); // [2, 3, 4]
@@ -124,7 +124,7 @@ map(plus(1), [1, 2, 3]); // [2, 3, 4]
 `flat_map` works applying `$f` that returns a sequence for each element in a list,
 and flattening the results into the resulting array.
 
-flat_map(...) differs from flatten(map(...)) because it only flattens one level of nesting,
+`flat_map(...)` differs from `flatten(map(...))` because it only flattens one level of nesting,
 whereas flatten will recursively flatten nested collections. Indexes will not preserve.
 
 ```php
@@ -159,7 +159,7 @@ $result = flat_map(prop('users'), $items));
 
 ### each
 Calls `$f` on each element in list. Returns origin `$list`.
-Function arguments will be element, index, list.
+Function arguments will be `element`, `index`, `list`.
 
 ```php
 each(unary('print_r'), [1, 2, 3]); // Print: 123
@@ -243,7 +243,7 @@ $constA(); // 'a'
 
 ### compose
 Returns new function which applies each given function to the result of another from right to left.
-compose(f, g, h) is the same as f(g(h(x))).
+`compose(f, g, h)` is the same as `f(g(h(x)))`.
 
 ```php
 $powerPlus1 = compose(plus(1), power);
@@ -252,7 +252,7 @@ $powerPlus1(3); // 10
 
 ### pipe
 Performs left to right function composition.
-pipe(f, g, h) is the same as h(g(f(x))).
+`pipe(f, g, h)` is the same as `h(g(f(x)))`.
 
 ```php
 $plus1AndPower = pipe(plus(1), power);
@@ -306,8 +306,9 @@ $cond(50) // 'nothing special happens at 50 °C'
 ### flipped
 Returns function which accepts arguments in the reversed order.
 
-Note, that you cannot use curry on a flipped function. curry uses reflection to get the number of function arguments,
-but this is not possible on the function returned from flip. Instead, use curry_n on flipped functions.
+Note, that you cannot use curry on a flipped function.
+`curry` uses reflection to get the number of function arguments,
+but this is not possible on the function returned from flip. Instead, use `curry_n` on flipped functions.
 
 ```php
 $mergeStrings = function ($head, $tail) {
@@ -318,8 +319,8 @@ $flippedMergeStrings('two', 'one'); // 'onetwo'
 ```
 
 ### on
-Takes a binary function f, and unary function g, and two values. Applies g to each value,
-then applies the result of each to f.
+Takes a binary function `$f`, and unary function `$g`, and two values. Applies `$g` to each value,
+then applies the result of each to `$f`.
 Also known as the P combinator.
 
 ```php
@@ -404,6 +405,10 @@ Note, that you cannot use curry on a lifted function.
 ### count_args
 Return number of function arguments.
 
+```php
+count_args('explode'); // 3
+```
+
 ### curry_n
 Return a version of the given function where the $count first arguments are curryied.
 
@@ -440,7 +445,7 @@ $eleven(); // 11
 ```
 
 ### ary
-Return function $f that will be called only with `abs($count)` arguments,
+Return function `$f` that will be called only with `abs($count)` arguments,
 taken either from the left or right depending on the sign.
 
 ```php
@@ -509,10 +514,10 @@ head([
 ### head_by
 Looks through each element in the list, returning the first one that passes a truthy test (function). The
 function returns as soon as it finds an acceptable element, and doesn't traverse the entire list. Function
-arguments will be element, index, list
+arguments will be `element`, `index`, `list`
 
 ### tail
-Returns all items from $list except first element (head). Preserves $list keys.
+Returns all items from `$list` except first element (head). Preserves `$list` keys.
 
 ```php
 tail([
@@ -527,7 +532,7 @@ tail([
 
 ### select
 Looks through each element in the list, returning an array of all the elements that pass a test (function).
-Opposite is Functional\reject(). Function arguments will be element, index, list.
+Opposite is `reject()`. Function arguments will be `element`, `index`, `list`.
 
 ```php
 $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
@@ -535,7 +540,7 @@ $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
 
 ### reject
 Returns the elements in list without the elements that the test (function) passes.
-The opposite of Functional\select(). Function arguments will be element, index, list.
+The opposite of `select()`. Function arguments will be `element`, `index`, `list`.
 
 ```php
 $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
@@ -551,7 +556,7 @@ contains('foo', 'foo and bar'); // true
 ```
 
 ### take
-Creates a slice of $list with $count elements taken from the beginning. If the list has less than $count,
+Creates a slice of `$list` with `$count` elements taken from the beginning. If the list has less than `$count`,
 the whole list will be returned as an array.
 For strings its works like `substr`.
 
@@ -561,7 +566,7 @@ take(4, 'Slava'); // 'Slav'
 ```
 
 ### take_r
-Creates a slice of $list with $count elements taken from the end. If the list has less than $count,
+Creates a slice of `$list` with `$count` elements taken from the end. If the list has less than `$count`,
 the whole list will be returned as an array.
 For strings its works like `substr`.
 
@@ -725,28 +730,28 @@ is_odd(2); // false
 ```
 
 ### plus
-Perform $a + $b.
+Perform `$a + $b`.
 
 ```php
 plus(4, 2); // 6
 ```
 
 ### minus
-Perform $a - $b.
+Perform `$a - $b`.
 
 ```php
 minus(4, 2); // 2
 ```
 
 ### div
-Perform $a / $b.
+Perform `$a / $b`.
 
 ```php
 div(4, 2); // 2
 ```
 
 ### multiply
-Perform $a$b.
+Perform `$a$b`.
 
 ```php
 multiply(4, 2); // 8
@@ -817,7 +822,7 @@ median([7, 2, 10, 9]); // 8
 ```
 
 ### partial
-Returns new function which will behave like $f with
+Returns new function which will behave like `$f` with
 predefined left arguments passed to partial.
 
 ```php
@@ -826,7 +831,7 @@ $implode_coma([1, 2]); // 1,2
 ```
 
 ### partial_r
-Returns new partial function which will behave like $f with
+Returns new partial function which will behave like `$f` with
 predefined right arguments passed to rpartial.
 
 ```php
@@ -835,7 +840,7 @@ $implode12(','); // 1,2
 ```
 
 ### partial_p
-Returns new partial function which will behave like $f with
+Returns new partial function which will behave like `$f` with
 predefined positional arguments passed to ppartial.
 
 ```php
@@ -914,7 +919,7 @@ view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 Internal function.
 
 ### memoized
-Create memoized versions of $f function.
+Create memoized versions of `$f` function.
 
 Note that memoization is safe for pure functions only. For a function to be
 pure it should:
@@ -966,7 +971,7 @@ join('|', [1, 2, 3]); // '1|2|3'
 ```
 
 ### if_else
-Performs an if/else condition over a value using functions as statements.
+Performs an `if/else` condition over a value using functions as statements.
 
 ```php
 $ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
@@ -975,7 +980,7 @@ $ifFoo('qux'); // 'baz'
 ```
 
 ### repeat
-Creates a function that can be used to repeat the execution of $f.
+Creates a function that can be used to repeat the execution of `$f`.
 
 ```php
 repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
@@ -1039,7 +1044,7 @@ prop_path(['b', 'c'], [
 ```
 
 ### props
-Acts as multiple prop: array of keys in, array of values out. Preserves order.
+Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
 
 ```php
 props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
@@ -1076,7 +1081,7 @@ to_fn($obj, 'someMethod', ['arg'])(); // Equal to $obj->someMethod('arg');
 ```
 
 ### pair
-Takes two arguments, $fst and $snd, and returns [$fst, $snd].
+Takes two arguments, `$fst` and `$snd`, and returns `[$fst, $snd]`.
 
 ```php
 pair('foo', 'bar'); // ['foo', 'bar']
@@ -1187,7 +1192,7 @@ construct('stdClass'); // object(stdClass)
 ```
 
 ### construct_with_args
-Creates instance of given class with arguments passed to __construct method.
+Creates instance of given class with arguments passed to `__construct` method.
 
 ```php
 $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);
@@ -1278,7 +1283,7 @@ is_instance_of(User::class)(new stdClass()); // false
 ```
 
 ### type_of
-Return a function that checks `$value instanceof SomeClass.
+Return a function that checks `$value instanceof SomeClass`.
 
 ```php
 type_of(\User::class)(new User()); // User
@@ -1300,7 +1305,7 @@ type_bool('some-string'); // TypeException: Could not convert "string" to type "
 
 ### type_string
 Checks and coerces value to `string`.
-Object: method __toString will be called
+Object: method `__toString` will be called
 Array: all values will be concatenated with comma.
 
 ```php
@@ -1337,4 +1342,9 @@ $t('1'); // 1
 
 ### type_positive_int
 Checks and coerces value to positive `int`.
+
+```php
+type_positive_int(2); // 2
+type_positive_int('2'); // 2
+```
 
