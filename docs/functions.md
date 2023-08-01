@@ -1,6 +1,11 @@
 ### noop
 Function that do nothing.
 
+```php
+noop(); // nothing happen
+noop('some string'); // nothing happen
+```
+
 ### identity
 Does nothing, return the parameter supplied to it.
 
@@ -122,6 +127,36 @@ and flattening the results into the resulting array.
 flat_map(...) differs from flatten(map(...)) because it only flattens one level of nesting,
 whereas flatten will recursively flatten nested collections. Indexes will not preserve.
 
+```php
+$items = [
+     [
+         'id' => 1,
+         'type' => 'train',
+         'users' => [
+             ['id' => 1, 'name' => 'Jimmy Page'],
+             ['id' => 5, 'name' => 'Roy Harper'],
+         ],
+     ],
+     [
+         'id' => 421,
+         'type' => 'hotel',
+         'users' => [
+             ['id' => 1, 'name' => 'Jimmy Page'],
+             ['id' => 2, 'name' => 'Robert Plant'],
+         ],
+     ],
+];
+
+$result = flat_map(prop('users'), $items));
+
+//$result = [
+//    ['id' => 1, 'name' => 'Jimmy Page'],
+//    ['id' => 5, 'name' => 'Roy Harper'],
+//    ['id' => 1, 'name' => 'Jimmy Page'],
+//    ['id' => 2, 'name' => 'Robert Plant'],
+//];
+```
+
 ### each
 Calls `$f` on each element in list. Returns origin `$list`.
 Function arguments will be element, index, list.
@@ -159,11 +194,28 @@ tap(function ($o) {
 $input->property; // 'foo'
 ```
 
+Also, this function useful as a debug in the `pipe`.
+
+```php
+pipe(
+     'strrev',
+     tap('var_dump'),
+     concat('Basko ')
+)('avalS'); //string(5) "Slava"
+```
+
 ### fold
 Applies a function to each element in the list and reduces it to a single value.
 
 ```php
 fold(concat, '4', [5, 1]); // 451
+
+function sc($a, $b)
+{
+     return "($a+$b)";
+}
+
+fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
 ```
 
 ### fold_r
@@ -171,6 +223,13 @@ The same as `fold` but accumulator on the right.
 
 ```php
 fold_r(concat, '4', [5, 1]); // 514
+
+function sc($a, $b)
+{
+     return "($a+$b)";
+}
+
+fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
 ```
 
 ### always
@@ -216,7 +275,7 @@ $average([1, 2, 3, 4]); // 2.5
 ```
 
 ### call
-
+TODO: rename to `apply`?
 
 ### apply_to
 Create a function that will pass arguments to a given function.
@@ -280,10 +339,31 @@ $between6And9(10); // false
 ```
 
 ### all_pass
+Takes a list of predicates and returns a predicate that returns true for a given list of arguments
+if every one of the provided predicates is satisfied by those arguments.
 
+```php
+$isQueen = pipe(prop('rank'), eq('Q'));
+$isSpade = pipe(prop('suit'), eq('♠︎'));
+$isQueenOfSpades = all_pass([$isQueen, $isSpade]);
+
+$isQueenOfSpades(['rank' => 'Q', 'suit' => '♣︎']); // false
+$isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']); // true
+```
 
 ### any_pass
+Takes a list of predicates and returns a predicate that returns true for a given list of arguments
+if at least one of the provided predicates is satisfied by those arguments.
 
+```php
+$isClub = pipe(prop('suit'), eq('♣'));
+$isSpade = pipe(prop('suit'), eq('♠'));;
+$isBlackCard = f\any_pass([$isClub, $isSpade]);
+
+$isBlackCard(['rank' => '10', 'suit' => '♣']); // true
+$isBlackCard(['rank' => 'Q', 'suit' => '♠']); // true
+$isBlackCard(['rank' => 'Q', 'suit' => '♦']); // false
+```
 
 ### ap
 Applies a list of functions to a list of values.
