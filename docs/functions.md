@@ -1151,7 +1151,7 @@ find_missing_keys(
 
 ### cp
 Creates copy of provided value. `clone` will be called for objects.
-You can overwrite `clone` and provide your specific function, just define CLONE_FUNCTION constant.
+You can overwrite `clone` and provide your specific function, just define `CLONE_FUNCTION` constant.
 
 ```php
 $obj = new \stdClass();  // object hash: 00000000000000030000000000000000
