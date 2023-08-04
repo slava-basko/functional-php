@@ -378,6 +378,13 @@ class HelpersTest extends BaseTest
         $dataObj->a = 1;
 
         $this->assertNotSame($dataObj, f\cp($dataObj));
+
+        global $custom_clone_flag;
+        $this->assertFalse($custom_clone_flag);
+        define('CLONE_FUNCTION', 'custom_clone');
+        $this->assertNotSame($dataObj, f\cp($dataObj));
+        $this->assertTrue($custom_clone_flag);
+        $custom_clone_flag = false;
     }
 
     public function test_pick_random_value()

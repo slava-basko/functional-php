@@ -2,6 +2,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // composer autoload
 
+$custom_clone_flag = false;
+function custom_clone($object) {
+    global $custom_clone_flag;
+
+    $custom_clone_flag = true;
+    return clone $object;
+};
+
 function float($str) {
     return (bool)preg_match('/^\d+([\.,]\d+)?$/D', $str);
 }
