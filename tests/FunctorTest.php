@@ -24,7 +24,7 @@ class FunctorTest extends BaseTest
         $this->assertEquals(f\Functor\Maybe::just('1'), f\Functor\Maybe::just(1)->map('strval'));
 
         $called = false;
-        $func = function($a) use (&$called) {
+        $func = function ($a) use (&$called) {
             $called = true;
         };
         $this->assertEquals(f\Functor\Maybe::nothing(), f\Functor\Maybe::nothing()->map($func));
@@ -57,10 +57,10 @@ class FunctorTest extends BaseTest
         $justHandlerCallFlag = false;
         $nothingHandlerCallFlag = false;
 
-        $justHandler = function($a) use (&$justHandlerCallFlag) {
+        $justHandler = function ($a) use (&$justHandlerCallFlag) {
             $justHandlerCallFlag = true;
         };
-        $nothingHandler = function() use (&$nothingHandlerCallFlag) {
+        $nothingHandler = function () use (&$nothingHandlerCallFlag) {
             $nothingHandlerCallFlag = true;
         };
 
@@ -127,13 +127,13 @@ class FunctorTest extends BaseTest
     {
         $_POST = [
             'title' => 'Some title',
-            'description' => null
+            'description' => null,
         ];
 
         $optionalDescription = Optional::fromArrayKey('description', $_POST);
 
         $called = false;
-        $func = function($a) use (&$called) {
+        $func = function ($a) use (&$called) {
             $called = true;
         };
 
@@ -146,13 +146,13 @@ class FunctorTest extends BaseTest
     {
         $_POST = [
             'title' => 'Some title',
-            'description' => null
+            'description' => null,
         ];
 
         $optionalNoKey = Optional::fromArrayKey('no_key', $_POST);
 
         $called = false;
-        $func = function($a) use (&$called) {
+        $func = function ($a) use (&$called) {
             $called = true;
         };
 
@@ -197,7 +197,7 @@ class FunctorTest extends BaseTest
 
     public function test_either()
     {
-        $shouldContainAtSign = function($string) {
+        $shouldContainAtSign = function ($string) {
             if (!stristr($string, '@')) {
                 throw new \InvalidArgumentException('The string should contain an @ sign');
             }
@@ -205,7 +205,7 @@ class FunctorTest extends BaseTest
             return $string;
         };
 
-        $shouldContainDot = function($string) {
+        $shouldContainDot = function ($string) {
             if (!stristr($string, '.')) {
                 throw new \InvalidArgumentException('The string should contain a . sign');
             }
@@ -248,7 +248,7 @@ class FunctorTest extends BaseTest
 
     public function test_either_with_functions_that_returns_either()
     {
-        $shouldContainAtSign = function($string) {
+        $shouldContainAtSign = function ($string) {
             if (!stristr($string, '@')) {
                 return Either::left('The string should contain an @ sign');
             }
@@ -256,7 +256,7 @@ class FunctorTest extends BaseTest
             return Either::right($string);
         };
 
-        $shouldContainDot = function($string) {
+        $shouldContainDot = function ($string) {
             if (!stristr($string, '.')) {
                 return Either::left('The string should contain a . sign');
             }
@@ -298,6 +298,7 @@ class FunctorTest extends BaseTest
         $failureCalled = false;
         $failureF = function ($value) use (&$failureCalled) {
             $failureCalled = true;
+
             return $value;
         };
         $m->match(f\N, $failureF);
@@ -311,7 +312,19 @@ class FunctorTest extends BaseTest
             ->map(f\take(4))
             ->map(f\partial_r(f\concat, 'ik'));
 
-        $this->assertEquals('Slavik', $m(__DIR__ . '/name.txt')->extract());
+        $result = $m(__DIR__ . '/name.txt');
+        $this->assertTrue($result->isRight());
+        $this->assertEquals('Slavik', $result->extract());
+    }
+
+    public function test_io_falsy()
+    {
+        $m = f\Functor\IO::of('file_get_contents')->map('ucfirst');
+
+        $result = $m(__DIR__ . '/non-existed-file.txt');
+
+        $this->assertTrue($result->isLeft());
+        $this->assertTrue(f\str_ends_with('No such file or directory', $result->extract()->getMessage()));
     }
 
 }

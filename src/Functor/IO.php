@@ -24,18 +24,31 @@ class IO extends Monad
 
     public function __invoke()
     {
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            // error was suppressed with the @-operator
+            if (error_reporting() === 0) {
+                return false;
+            }
+
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
         if (PHP_VERSION_ID >= 70000) {
             try {
-                return Either::right(call_user_func_array($this->value, func_get_args()));
+                $result = Either::right(call_user_func_array($this->value, func_get_args()));
             } catch (\Throwable $exception) {
-                return Either::left($exception);
+                $result = Either::left($exception);
             }
         } else {
             try {
-                return Either::right(call_user_func_array($this->value, func_get_args()));
+                $result = Either::right(call_user_func_array($this->value, func_get_args()));
             } catch (\Exception $exception) {
-                return Either::left($exception);
+                $result = Either::left($exception);
             }
         }
+
+        restore_error_handler();
+
+        return $result;
     }
 }
