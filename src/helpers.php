@@ -545,7 +545,7 @@ function assoc($key, $val = null, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
-    $possibleCopy = if_else(unary('is_object'), copy, identity);
+    $possibleCopy = if_else(unary('is_object'), cp, identity);
 
     return fold(function ($accumulator, $entry, $index) use ($key, $val) {
         if (is_object($accumulator)) {
@@ -949,15 +949,25 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
 
 /**
  * Creates copy of provided value. `clone` will be called for objects.
+ * You can overwrite `clone` and provide your specific function, just define CLONE_FUNCTION constant.
+ *
+ * ```php
+ * $obj = new \stdClass();  // object hash: 00000000000000030000000000000000
+ * cp($obj);                // object hash: 00000000000000070000000000000000
+ * ```
  *
  * @param $object
  * @return mixed
  * @no-named-arguments
  */
-function copy($object)
+function cp($object)
 {
     $cond = cond([
         ['is_object', function ($obj) {
+            if (defined('CLONE_FUNCTION')) {
+                return call_user_func_array(constant('CLONE_FUNCTION'), [$obj]);
+            }
+
             return clone $obj;
         }], // TODO: what todo with Traversable?
         ['is_array', identity],
@@ -967,7 +977,7 @@ function copy($object)
     return $cond($object);
 }
 
-define('Basko\Functional\copy', __NAMESPACE__ . '\\copy', false);
+define('Basko\Functional\cp', __NAMESPACE__ . '\\cp', false);
 
 /**
  * Return random value from list.

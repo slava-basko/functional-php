@@ -377,7 +377,7 @@ class HelpersTest extends BaseTest
         $dataObj = new \stdClass();
         $dataObj->a = 1;
 
-        $this->assertNotSame($dataObj, f\copy($dataObj));
+        $this->assertNotSame($dataObj, f\cp($dataObj));
     }
 
     public function test_pick_random_value()

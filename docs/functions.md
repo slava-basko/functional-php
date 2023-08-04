@@ -1149,8 +1149,14 @@ find_missing_keys(
 ); // ['email']
 ```
 
-### copy
+### cp
 Creates copy of provided value. `clone` will be called for objects.
+You can overwrite `clone` and provide your specific function, just define CLONE_FUNCTION constant.
+
+```php
+$obj = new \stdClass();  // object hash: 00000000000000030000000000000000
+cp($obj);                // object hash: 00000000000000070000000000000000
+```
 
 ### pick_random_value
 Return random value from list.

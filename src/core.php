@@ -496,7 +496,7 @@ function tap(callable $f, $value = null)
         return partial(tap, $f);
     }
 
-    call_user_func_array($f, [copy($value)]);
+    call_user_func_array($f, [cp($value)]);
 
     return $value;
 }
