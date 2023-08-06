@@ -37,8 +37,9 @@ define('Basko\Functional\noop', __NAMESPACE__ . '\\noop', false);
  * identity($obj) === $obj; // true
  * ```
  *
- * @param mixed $value
- * @return mixed
+ * @template T
+ * @psalm-param T $value
+ * @psalm-return T
  * @no-named-arguments
  */
 function identity($value)
@@ -1025,7 +1026,7 @@ function lift_to($type, callable $f = null)
         $ofFunc = $type::right;
     }
 
-    return function () use ($type, $f, $ofFunc) {
+    return function () use ($f, $ofFunc) {
         $cond = if_else(is_instance_of(Monad::class), identity, $ofFunc);
 
         return $cond(call_user_func_array($f, map(function ($m) {

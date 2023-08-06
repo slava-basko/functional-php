@@ -402,9 +402,10 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len', false);
  * prop('x', $object); // 101
  * ```
  *
- * @param $property
- * @param $object
- * @return mixed|null
+ * @param string $property
+ * @param array|object $object
+ * @return callable|mixed
+ * @psalm-return ($object is null ? callable : mixed)
  * @no-named-arguments
  */
 function prop($property, $object = null)

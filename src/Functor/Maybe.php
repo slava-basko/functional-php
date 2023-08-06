@@ -14,16 +14,35 @@ class Maybe extends Monad
 
     const nothing = "Basko\Functional\Functor\Maybe::nothing";
 
+    /**
+     * @param mixed $value
+     */
+    final protected function __construct($value)
+    {
+        parent::__construct($value);
+    }
+
+    /**
+     * @param mixed $value
+     * @return \Basko\Functional\Functor\Maybe
+     */
     public static function just($value)
     {
         return static::of($value);
     }
 
+    /**
+     * @return \Basko\Functional\Functor\Maybe
+     */
     public static function nothing()
     {
         return static::of(null);
     }
 
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Maybe
+     */
     public function map(callable $f)
     {
         if (!is_null($this->value)) {
@@ -33,6 +52,11 @@ class Maybe extends Monad
         return $this::nothing();
     }
 
+    /**
+     * @param callable $just
+     * @param callable $nothing
+     * @return void
+     */
     public function match(callable $just, callable $nothing)
     {
         if (!is_null($this->value)) {

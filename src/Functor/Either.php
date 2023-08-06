@@ -12,8 +12,24 @@ class Either extends Monad
 
     const left = "Basko\Functional\Functor\Either::left";
 
+    /**
+     * @var bool
+     */
     protected $validValue = false;
 
+    /**
+     * @param mixed $value
+     */
+    final protected function __construct($value)
+    {
+        parent::__construct($value);
+    }
+
+    /**
+     * @param bool $validValue
+     * @param mixed $value
+     * @return \Basko\Functional\Functor\Either|static
+     */
     public static function of($validValue, $value)
     {
         if ($value instanceof static) {
@@ -29,8 +45,8 @@ class Either extends Monad
     /**
      * Aka "success"
      *
-     * @param $value
-     * @return \Basko\Functional\Functor\Either
+     * @param mixed $value
+     * @return \Basko\Functional\Functor\Either|static
      */
     public static function right($value)
     {
@@ -40,14 +56,18 @@ class Either extends Monad
     /**
      * Aka "failure"
      *
-     * @param $error
-     * @return \Basko\Functional\Functor\Either
+     * @param mixed $error
+     * @return \Basko\Functional\Functor\Either|static
      */
     public static function left($error)
     {
         return static::of(false, $error);
     }
 
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Either
+     */
     public function map(callable $f)
     {
         if (!$this->validValue) {
@@ -61,6 +81,11 @@ class Either extends Monad
         }
     }
 
+    /**
+     * @param callable $right
+     * @param callable $left
+     * @return void
+     */
     public function match(callable $right, callable $left)
     {
         if ($this->validValue) {

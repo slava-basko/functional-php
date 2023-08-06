@@ -12,8 +12,8 @@ use Basko\Functional\Exception\TypeException;
  * instance_of(User::class, new stdClass()); // false
  * ```
  *
- * @param $instanceof
- * @param $object
+ * @param string $instanceof
+ * @param object $object
  * @return bool
  * @no-named-arguments
  */
@@ -32,14 +32,19 @@ define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of', false);
  * is_instance_of(User::class)(new stdClass()); // false
  * ```
  *
- * @param $instanceof
+ * @param mixed $instanceof
  * @return callable
  */
 function is_instance_of($instanceof)
 {
-    return function ($value) use ($instanceof) {
-        return instance_of($instanceof, $value);
-    };
+    return
+        /**
+         * @param mixed $value
+         * @return bool
+         */
+        function ($value) use ($instanceof) {
+            return instance_of($instanceof, $value);
+        };
 }
 
 define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
@@ -52,18 +57,24 @@ define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', fa
  * type_of(\User::class)(new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
  * ```
  *
- * @param $instanceof
+ * @param string $instanceof
  * @return callable
  */
 function type_of($instanceof)
 {
-    return function ($value) use ($instanceof) {
-        if (instance_of($instanceof, $value)) {
-            return $value;
-        }
+    return
+        /**
+         * @param mixed $value
+         * @return object
+         * @throws \Basko\Functional\Exception\TypeException
+         */
+        function ($value) use ($instanceof) {
+            if (instance_of($instanceof, $value)) {
+                return $value;
+            }
 
-        throw TypeException::forValue($value, $instanceof);
-    };
+            throw TypeException::forValue($value, $instanceof);
+        };
 }
 
 define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
@@ -81,7 +92,7 @@ define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
  * type_bool('some-string'); // TypeException: Could not convert "string" to type "bool"
  * ```
  *
- * @param $value
+ * @param mixed $value
  * @return bool
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
@@ -115,7 +126,7 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
  * type_string(123); // '123'
  * ```
  *
- * @param $value
+ * @param mixed $value
  * @return string
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
@@ -148,7 +159,7 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string', false);
  * type_int('1.0'); // 1
  * ```
  *
- * @param $value
+ * @param mixed $value
  * @return int
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
@@ -198,7 +209,7 @@ define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int', false);
  * type_float('123'); // 123.0
  * ```
  *
- * @param $value
+ * @param mixed $value
  * @return float
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
@@ -248,23 +259,33 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float', false);
  */
 function type_union($firsts, $second)
 {
-    $u = function ($left, $right) {
-        return function ($value) use ($left, $right) {
-            try {
-                return call_user_func($left, $value);
-            } catch (TypeException $typeException) {
-                $left = $typeException->getTarget();
-            }
+    $u =
+        /**
+         * @return callable
+         */
+        function (callable $left, callable $right) {
+            return
+                /**
+                 * @param mixed $value
+                 * @return mixed
+                 * @throws \Basko\Functional\Exception\TypeException
+                 */
+                function ($value) use ($left, $right) {
+                    try {
+                        return call_user_func($left, $value);
+                    } catch (TypeException $typeException) {
+                        $left = $typeException->getTarget();
+                    }
 
-            try {
-                return call_user_func($right, $value);
-            } catch (TypeException $typeException) {
-                $right = $typeException->getTarget();
-            }
+                    try {
+                        return call_user_func($right, $value);
+                    } catch (TypeException $typeException) {
+                        $right = $typeException->getTarget();
+                    }
 
-            throw TypeException::forValue($value, sprintf('%s|%s', $left, $right));
+                    throw TypeException::forValue($value, sprintf('%s|%s', $left, $right));
+                };
         };
-    };
 
     $types = func_get_args();
     $firsts = array_shift($types);
@@ -289,7 +310,7 @@ define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union', false);
  * type_positive_int('2'); // 2
  * ```
  *
- * @param $value
+ * @param mixed $value
  * @return int Positive int
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException

@@ -9,6 +9,16 @@ class InvalidArgumentException extends \InvalidArgumentException
     const ALL = 99;
 
     /**
+     * @param string $message
+     * @param int $code
+     * @param null|\Exception $previous
+     */
+    final public function __construct($message = "", $code = 0, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
      * @param mixed $callback
      * @param string $callee
      * @param int $parameterPosition
@@ -407,10 +417,33 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param $value
-     * @param $type
-     * @param $callee
-     * @param $parameterPosition
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws self
+     */
+    public static function assertNotEmptyString($value, $callee, $parameterPosition)
+    {
+        static::assertString($value, $callee, $parameterPosition);
+
+        if ($value == '') {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be non-empty-string, empty %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param mixed $value
+     * @param class-string $type
+     * @param string $callee
+     * @param int $parameterPosition
      * @return void
      */
     public static function assertType($value, $type, $callee, $parameterPosition)
@@ -430,14 +463,14 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param $value
-     * @param $callee
-     * @param $parameterPosition
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
      * @return void
      */
     public static function assertStringOrList($value, $callee, $parameterPosition)
     {
-        if (!static::isString($value) && !static::isListAlike($value, 'Traversable')) {
+        if (!static::isString($value) && !static::isListAlike($value, \Traversable::class)) {
             throw new static(
                 sprintf(
                     '%s() expects parameter %d to be string or list, %s given',
@@ -450,9 +483,9 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param $value
-     * @param $callee
-     * @param $parameterPosition
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
      * @return void
      */
     public static function assertClass($value, $callee, $parameterPosition)
@@ -470,7 +503,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return bool
      */
     private static function isString($value)
@@ -480,13 +513,13 @@ class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param $list
-     * @param $className
+     * @param array|object $list
+     * @param class-string $className
      * @return bool
      */
     private static function isListAlike($list, $className)
     {
-        return is_array($list) || is_object($list) || $list instanceof $className;
+        return is_array($list) || ($list instanceof $className);
     }
 
     /**

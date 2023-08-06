@@ -2,6 +2,9 @@
 
 namespace Basko\Functional\Sequences;
 
+/**
+ * @template-implements \Iterator<int>
+ */
 class ExponentialSequence implements \Iterator
 {
     /**

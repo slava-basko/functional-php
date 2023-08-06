@@ -8,6 +8,18 @@ class IO extends Monad
 {
     const of = "Basko\Functional\Functor\IO::of";
 
+    /**
+     * @param callable $value
+     */
+    final protected function __construct(callable $value)
+    {
+        parent::__construct($value);
+    }
+
+    /**
+     * @param callable $value
+     * @return \Basko\Functional\Functor\IO
+     */
     public static function of(callable $value)
     {
         if ($value instanceof static) {
@@ -17,6 +29,10 @@ class IO extends Monad
         return new static($value);
     }
 
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\IO
+     */
     public function map(callable $f)
     {
         return static::of(f\compose($f, $this->value));
