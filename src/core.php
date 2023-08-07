@@ -305,6 +305,7 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion', fa
  * @param callable $f
  * @param \Traversable|array|null $list
  * @return callable|array
+ * @psalm-return ($list is null ? callable : array)
  * @no-named-arguments
  */
 function map(callable $f, $list = null)
@@ -363,7 +364,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  * ```
  *
  * @param callable $f
- * @param $list
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -401,9 +402,11 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map', false);
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
  * ```
  *
+ * @template T
  * @param callable $f
  * @param \Traversable|array|null $list
- * @return callable|array
+ * @psalm-param T $list
+ * @return callable(mixed):mixed|T
  * @no-named-arguments
  */
 function each(callable $f, $list = null)
@@ -433,6 +436,7 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each', false);
  * ```
  *
  * @param mixed $a The value
+ * @return bool
  * @no-named-arguments
  */
 function not($a)
@@ -450,7 +454,7 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
  * ```
  *
  * @param callable $f The function to run value against
- * @return callable A negation version on the given $function
+ * @return callable(mixed):bool A negation version on the given $function
  * @no-named-arguments
  */
 function complement(callable $f)
@@ -595,8 +599,10 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r', false);
  * $constA(); // 'a'
  * ```
  *
+ * @template T
  * @param mixed $value
- * @return callable
+ * @psalm-param T $value
+ * @return callable():T
  * @no-named-arguments
  */
 function always($value)
@@ -654,16 +660,13 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose', false);
  * @param callable $f
  * @param callable $g
  * @param callable ...
- * @return callable
+ * @return callable(mixed):mixed
  * @no-named-arguments
  */
 function pipe(callable $f, callable $g)
 {
     $f = call_user_func_array(compose, array_reverse(func_get_args()));
 
-    /**
-     * @return mixed|Maybe|Either
-     */
     return function () use ($f) {
         $args = func_get_args();
 
@@ -691,7 +694,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe', false);
  * @param callable $convergingFunction Will be invoked with the return values of all branching functions
  *                                     as its arguments
  * @param callable[] $branchingFunctions A list of functions
- * @return callable A flipped version of the given function
+ * @return callable(mixed):mixed
  * @no-named-arguments
  */
 function converge(callable $convergingFunction, $branchingFunctions = null)
@@ -746,9 +749,12 @@ define('Basko\Functional\call', __NAMESPACE__ . '\\call', false);
  * $fiveAndThree(sum); // 8
  * ```
  *
- * @param $arg
- * @param callable|null $f
- * @return callable
+ * @template T
+ * @param mixed $arg
+ * @psalm-param T $arg
+ * @param callable(T):mixed|null $f
+ * @return callable|mixed
+ * @psalm-return ($f is null ? callable : mixed)
  * @no-named-arguments
  */
 function apply_to($arg, callable $f = null)
@@ -759,7 +765,11 @@ function apply_to($arg, callable $f = null)
 
     $args = func_get_args();
 
-    return call_user_func_array(array_pop($args), $args);
+    $function = array_pop($args);
+    InvalidArgumentException::assertCallable($function, __FUNCTION__, 2);
+
+    /** @psalm-suppress PossiblyNullFunctionCall */
+    return call_user_func_array($function, $args);
 }
 
 define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to', false);
@@ -784,7 +794,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to', false);
  *
  * @param callable[][] $conditions the conditions to check against
  *
- * @return callable|null the function that calls the callable of the first truthy condition
+ * @return callable(mixed):mixed The function that calls the callable of the first truthy condition
  * @no-named-arguments
  */
 function cond(array $conditions)
@@ -820,7 +830,7 @@ define('Basko\Functional\cond', __NAMESPACE__ . '\\cond', false);
  * ```
  *
  * @param callable $f
- * @return callable
+ * @return callable(mixed):mixed
  * @no-named-arguments
  */
 function flipped(callable $f)
@@ -845,6 +855,7 @@ define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped', false);
  * @param callable $f
  * @param callable $g
  * @return callable
+ * @psalm-return ($g is null ? callable(mixed):mixed : callable(mixed, mixed):mixed)
  * @no-named-arguments
  */
 function on(callable $f, callable $g = null)
@@ -853,9 +864,15 @@ function on(callable $f, callable $g = null)
         return partial(on, $f);
     }
 
-    return function ($a, $b) use ($f, $g) {
-        return call_user_func_array($f, [call_user_func_array($g, [$a]), call_user_func_array($g, [$b])]);
-    };
+    return
+        /**
+         * @psalm-param mixed $a
+         * @psalm-param mixed $b
+         * @psalm-return callable(mixed, mixed):mixed
+         */
+        function ($a, $b) use ($f, $g) {
+            return call_user_func_array($f, [call_user_func_array($g, [$a]), call_user_func_array($g, [$b])]);
+        };
 }
 
 define('Basko\Functional\on', __NAMESPACE__ . '\\on', false);
@@ -883,9 +900,14 @@ function both($a, $b = null)
     }
 
     if (is_callable($a) && is_callable($b)) {
-        return function ($value) use ($a, $b) {
-            return call_user_func_array($a, [$value]) && call_user_func_array($b, [$value]);
-        };
+        return
+            /**
+             * @psalm-param mixed $value
+             * @psalm-return mixed
+             */
+            function ($value) use ($a, $b) {
+                return call_user_func_array($a, [$value]) && call_user_func_array($b, [$value]);
+            };
     }
 
     return $a && $b;
@@ -976,7 +998,7 @@ define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass', false);
  * ```
  *
  * @param callable[] $flist
- * @param $list
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -1009,6 +1031,12 @@ define('Basko\Functional\ap', __NAMESPACE__ . '\\ap', false);
  * @param string $type
  * @param callable $f
  * @return callable
+ *
+ * @template T
+ * @template T2
+ * @psalm-param T $type
+ * @psalm-param callable(T2):mixed $f
+ * @psalm-return callable(T):mixed
  * @no-named-arguments
  */
 function lift_to($type, callable $f = null)
@@ -1029,13 +1057,25 @@ function lift_to($type, callable $f = null)
     return function () use ($f, $ofFunc) {
         $cond = if_else(is_instance_of(Monad::class), identity, $ofFunc);
 
-        return $cond(call_user_func_array($f, map(function ($m) {
-            if (instance_of(Monad::class, $m)) {
-                return $m->extract();
-            }
+        return $cond(
+            call_user_func_array(
+                $f,
+                map(
+                /**
+                 * @psalm-suppress MissingClosureReturnType
+                 * @param mixed $m
+                 */
+                    function ($m) {
+                        if (instance_of(Monad::class, $m)) {
+                            return $m->extract();
+                        }
 
-            return $m;
-        }, func_get_args())));
+                        return $m;
+                    },
+                    func_get_args()
+                )
+            )
+        );
     };
 }
 
@@ -1060,8 +1100,10 @@ define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to', false);
  * $plusm(3, Maybe::just(2)); // Maybe::just(5)
  * ```
  *
- * @param callable $f
- * @return callable
+ * @template T of Maybe
+ * @template T2 of mixed
+ * @psalm-param callable(T2):mixed $f
+ * @psalm-return callable(T):T
  * @no-named-arguments
  */
 function lift_m(callable $f)
@@ -1078,8 +1120,10 @@ define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m', false);
  *
  * Note, that you cannot use curry on a lifted function.
  *
- * @param callable $f
- * @return callable
+ * @template T of Either
+ * @template T2 of mixed
+ * @psalm-param callable(T2):mixed $f
+ * @psalm-return callable(T):T
  * @no-named-arguments
  */
 function lift_e(callable $f)

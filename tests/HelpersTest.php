@@ -66,6 +66,12 @@ class HelpersTest extends BaseTest
 
         $repeatedSomeMethod = f\repeat([$rep, 'someMethod']);
         $repeatedSomeMethod(5);
+
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Callable created by Basko\Functional\repeat() expects parameter 1 to be integer, string given'
+        );
+        $repeatedSomeMethod('some');
     }
 
     public function test_try_catch()

@@ -28,6 +28,7 @@ function count_args(callable $f, $only_required = false)
     } elseif (is_object($f) && method_exists($f, '__invoke')) {
         $reflection = new ReflectionMethod($f, '__invoke');
     } else {
+        /** @psalm-suppress InvalidArgument */
         $reflection = new ReflectionFunction($f);
     }
 
@@ -50,21 +51,23 @@ define('Basko\Functional\count_args', __NAMESPACE__ . '\\count_args', false);
  */
 function curry_n($count, callable $f)
 {
-    $accumulator = function (array $arguments) use ($count, $f, &$accumulator) {
-        return function () use ($count, $f, $arguments, $accumulator) {
-            $newArguments = func_get_args();
-            if (!$newArguments) {
-                $newArguments = [1];
-            }
-            $arguments = array_merge($arguments, $newArguments);
+    $accumulator =
+        /** @psalm-suppress MissingClosureReturnType */
+        function (array $arguments) use ($count, $f, &$accumulator) {
+            return function () use ($count, $f, $arguments, $accumulator) {
+                $newArguments = func_get_args();
+                if (!$newArguments) {
+                    $newArguments = [1];
+                }
+                $arguments = array_merge($arguments, $newArguments);
 
-            if ($count <= count($arguments)) {
-                return call_user_func_array($f, $arguments);
-            }
+                if ($count <= count($arguments)) {
+                    return call_user_func_array($f, $arguments);
+                }
 
-            return $accumulator($arguments);
+                return $accumulator($arguments);
+            };
         };
-    };
 
     return $accumulator([]);
 }

@@ -20,21 +20,27 @@ class ExponentialSequence implements \Iterator
     /**
      * @var int
      */
-    private $value;
+    private $value = 0;
 
     /**
      * @var int
      */
-    private $times;
+    private $times = 0;
 
+    /**
+     * @param int $start
+     * @param int $percentage
+     */
     public function __construct($start, $percentage)
     {
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_int($start) || $start < 1) {
             throw new \InvalidArgumentException(
                 'ExponentialSequence expects $start argument to be an integer, greater than or equal to 1'
             );
         }
 
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_int($percentage) || $percentage < 1 || $percentage > 100) {
             throw new \InvalidArgumentException(
                 'ExponentialSequence expects $percentage argument to be an integer, between 1 and 100'

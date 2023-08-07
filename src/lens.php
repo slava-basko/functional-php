@@ -103,7 +103,7 @@ define('Basko\Functional\over', __NAMESPACE__ . '\\over', false);
  * ```
  *
  * @param callable $lens
- * @param $value
+ * @param mixed $value
  * @param $store
  * @return mixed
  * @no-named-arguments

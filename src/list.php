@@ -12,8 +12,8 @@ use Traversable;
  * append('three', ['one', 'two']); // ['one', 'two', 'three']
  * ```
  *
- * @param $element
- * @param $list
+ * @param mixed $element
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -44,8 +44,8 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append', false);
  * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
  * ```
  *
- * @param $element
- * @param $list
+ * @param mixed $element
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */

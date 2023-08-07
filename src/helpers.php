@@ -65,6 +65,7 @@ function _object_to_ref($value)
  *
  * @param mixed $value
  * @return string
+ * @psalm-suppress MissingParamType
  * @internal
  */
 function _value_to_ref($value, $key = null)
@@ -131,18 +132,20 @@ function value_to_key($value)
  */
 function memoized(callable $f)
 {
-    return function () use ($f) {
-        static $cache = [];
+    return
+        /** @psalm-suppress MissingClosureReturnType */
+        function () use ($f) {
+            static $cache = [];
 
-        $args = func_get_args();
-        $key = value_to_key(array_merge([$f], $args));
+            $args = func_get_args();
+            $key = value_to_key(array_merge([$f], $args));
 
-        if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
-            $cache[$key] = call_user_func_array($f, $args);
-        }
+            if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
+                $cache[$key] = call_user_func_array($f, $args);
+            }
 
-        return $cache[$key];
-    };
+            return $cache[$key];
+        };
 }
 
 define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize', false);
@@ -155,7 +158,7 @@ define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize', false);
  * to_list('1, 2, 3'); // [1, 2, 3]
  * ```
  *
- * @param ...$args
+ * @param mixed $args
  * @return array
  */
 function to_list($args)
@@ -176,9 +179,10 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list', false);
  * concat('foo', 'bar'); // 'foobar'
  * ```
  *
- * @param $a
- * @param $b
+ * @param string $a
+ * @param string $b
  * @return string
+ * @psalm-return ($b is null ? callable(string):string : string)
  * @no-named-arguments
  */
 function concat($a, $b = null)
@@ -203,9 +207,11 @@ define('Basko\Functional\concat', __NAMESPACE__ . '\\concat', false);
  * concat('foo', 'bar', 'baz'); // 'foobarbaz'
  * ```
  *
- * @param $a
- * @param $b
+ * @param string $a
+ * @param string $b
  * @return string
+ * @psalm-suppress InvalidReturnType
+ * @psalm-suppress InvalidReturnStatement
  * @no-named-arguments
  */
 function concat_all($a, $b)
@@ -258,8 +264,8 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join', false);
  * @param callable $if the condition function
  * @param callable $then function to call if condition is true
  * @param callable $else function to call if condition is false
- *
- * @return mixed the return value of the given $then or $else functions
+ * @return callable(mixed):mixed The return value of the given $then or $else functions
+ * @psalm-suppress PossiblyNullFunctionCall
  * @no-named-arguments
  */
 function if_else(callable $if, callable $then = null, callable $else = null)
@@ -269,6 +275,9 @@ function if_else(callable $if, callable $then = null, callable $else = null)
     } elseif (is_null($else)) {
         return partial(if_else, $if, $then);
     }
+
+    InvalidArgumentException::assertCallable($then, __FUNCTION__, 2);
+    InvalidArgumentException::assertCallable($else, __FUNCTION__, 3);
 
     return function () use ($if, $then, $else) {
         $args = func_get_args();
@@ -289,13 +298,17 @@ define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else', false);
  * ```
  *
  * @param callable $f
- * @return callable
+ * @return callable(int):void
  * @no-named-arguments
  */
 function repeat(callable $f)
 {
-    return function ($times) use ($f) {
-        for ($i = 0; $i < (int)$times; $i++) {
+    $pfn = __FUNCTION__;
+
+    return function ($times) use ($f, $pfn) {
+        InvalidArgumentException::assertInteger($times, concat('Callable created by ', $pfn), 1);
+
+        for ($i = 0; $i < $times; $i++) {
             call_user_func($f);
         }
     };
@@ -318,6 +331,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat', false);
  * @param callable $tryer
  * @param callable $catcher
  * @return callable
+ * @psalm-return ($catcher is null ? callable(callable):callable : callable():mixed)
  * @no-named-arguments
  */
 function try_catch(callable $tryer, callable $catcher = null)
@@ -370,7 +384,7 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker', false);
  * len(['a', 'b']); // 2
  * ```
  *
- * @param $a
+ * @param string|\Traversable|array $a
  * @return int
  * @no-named-arguments
  */
@@ -440,8 +454,8 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop', false);
  * prop_thunk(0, [99])(); // 99
  * ```
  *
- * @param $property
- * @param $object
+ * @param string $property
+ * @param \Traversable|array|null $object
  * @return callable
  */
 function prop_thunk($property, $object = null)
@@ -468,7 +482,7 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk', false);
  * ```
  *
  * @param array $path
- * @param $object
+ * @param \Traversable|array|null $object
  * @return mixed
  * @no-named-arguments
  */
@@ -493,7 +507,7 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
  * ```
  *
  * @param array $properties
- * @param $object
+ * @param \Traversable|array|null $object
  * @return callable|array
  * @no-named-arguments
  */
@@ -530,7 +544,7 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props', false);
  *
  * @param $key
  * @param mixed|callable $val
- * @param $list
+ * @param \Traversable|array|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -578,7 +592,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc', false);
  *
  * @param array $path
  * @param mixed|callable $val
- * @param $list
+ * @param \Traversable|array|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -646,8 +660,8 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn', false);
  * pair('foo', 'bar'); // ['foo', 'bar']
  * ```
  *
- * @param $fst
- * @param $snd
+ * @param mixed $fst
+ * @param mixed $snd
  * @return callable|array
  * @no-named-arguments
  */
@@ -755,7 +769,7 @@ define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict', fals
  * map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
  * ```
  *
- * @param $value
+ * @param string $value
  * @return string
  */
 function quote($value)
@@ -770,7 +784,7 @@ define('Basko\Functional\quote', __NAMESPACE__ . '\\quote', false);
 /**
  * Same as `quote`, but with `addslashes` before.
  *
- * @param $value
+ * @param string $value
  * @return string
  */
 function safe_quote($value)
@@ -858,7 +872,7 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
  *
  * @param callable $f
  * @param array $keys
- * @param $list
+ * @param \Traversable|array|null $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -931,7 +945,7 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements', false)
  * ```
  *
  * @param array $keys
- * @param $array
+ * @param \Traversable|array|null $array
  * @return callable|int[]|string[]
  * @no-named-arguments
  */
@@ -942,6 +956,8 @@ function find_missing_keys(array $keys, $array = null)
     }
 
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
+
+    $array = $array instanceof \Traversable ? iterator_to_array($array) : $array;
 
     return array_keys(array_diff_key(array_flip($keys), $array));
 }
@@ -957,7 +973,7 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
  * cp($obj);                // object hash: 00000000000000070000000000000000
  * ```
  *
- * @param $object
+ * @param mixed $object
  * @return mixed
  * @no-named-arguments
  */
@@ -987,7 +1003,7 @@ define('Basko\Functional\cp', __NAMESPACE__ . '\\cp', false);
  * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
  * ```
  *
- * @param $list
+ * @param \Traversable|array|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -1176,7 +1192,7 @@ define('Basko\Functional\retry', __NAMESPACE__ . '\\retry', false);
  * construct('stdClass'); // object(stdClass)
  * ```
  *
- * @param $class
+ * @param class-string $class
  * @return mixed
  */
 function construct($class)
@@ -1196,8 +1212,8 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct', false);
  * echo $user->first_name; // Slava
  * ```
  *
- * @param $class
- * @param $constructArguments
+ * @param class-string $class
+ * @param mixed $constructArguments
  * @return callable|mixed
  */
 function construct_with_args($class, $constructArguments = null)
