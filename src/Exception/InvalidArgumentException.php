@@ -366,10 +366,10 @@ class InvalidArgumentException extends \InvalidArgumentException
      * @return void
      * @throws static
      */
-    public static function assertNonZeroInteger($value, $callee)
+    public static function assertNonZeroInteger($value, $callee, $position)
     {
         if (!is_int($value) || $value == 0) {
-            throw new static(sprintf('%s expected parameter %d to be non-zero', $callee, $value));
+            throw new static(sprintf('%s expected parameter %d to be non-zero', $callee, $position));
         }
     }
 

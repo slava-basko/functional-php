@@ -259,31 +259,50 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float', false);
  */
 function type_union($firsts, $second)
 {
+    $pfn = __FUNCTION__;
+
     $u =
         /**
          * @return callable
          */
-        function (callable $left, callable $right) {
+        function (callable $left, callable $right) use ($pfn) {
             return
                 /**
                  * @param mixed $value
                  * @return mixed
                  * @throws \Basko\Functional\Exception\TypeException
                  */
-                function ($value) use ($left, $right) {
+                function ($value) use ($left, $right, $pfn) {
                     try {
                         return call_user_func($left, $value);
                     } catch (TypeException $typeException) {
-                        $left = $typeException->getTarget();
+                        $leftType = $typeException->getTarget();
+                    } catch (\Exception $exception) {
+                        throw new TypeException(sprintf(
+                            '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
+                            $pfn
+                        ), 0, $exception);
                     }
 
                     try {
                         return call_user_func($right, $value);
                     } catch (TypeException $typeException) {
-                        $right = $typeException->getTarget();
+                        $rightType = $typeException->getTarget();
+                    } catch (\Exception $exception) {
+                        throw new TypeException(sprintf(
+                            '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
+                            $pfn
+                        ), 0, $exception);
                     }
 
-                    throw TypeException::forValue($value, sprintf('%s|%s', $left, $right));
+                    if (!is_string($leftType) || !is_string($rightType)) {
+                        throw new TypeException(sprintf(
+                            'One of type in %s() fail and TypeException::forValue() never called',
+                            $pfn
+                        ));
+                    }
+
+                    throw TypeException::forValue($value, sprintf('%s|%s', $leftType, $rightType));
                 };
         };
 

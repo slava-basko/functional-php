@@ -66,7 +66,7 @@ class Either extends Monad
 
     /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\Either
+     * @return $this
      */
     public function map(callable $f)
     {

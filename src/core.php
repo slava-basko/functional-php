@@ -17,7 +17,7 @@ use Traversable;
  * noop('some string'); // nothing happen
  * ```
  *
- * @return callable
+ * @return callable():void
  */
 function noop()
 {
@@ -38,8 +38,8 @@ define('Basko\Functional\noop', __NAMESPACE__ . '\\noop', false);
  * ```
  *
  * @template T
- * @psalm-param T $value
- * @psalm-return T
+ * @param T $value
+ * @return T
  * @no-named-arguments
  */
 function identity($value)
@@ -108,7 +108,7 @@ define('Basko\Functional\N', __NAMESPACE__ . '\\N', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function eq($a, $b = null)
@@ -132,7 +132,7 @@ define('Basko\Functional\eq', __NAMESPACE__ . '\\eq', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function identical($a, $b = null)
@@ -159,7 +159,7 @@ define('Basko\Functional\identical', __NAMESPACE__ . '\\identical', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function lt($a, $b = null)
@@ -186,7 +186,7 @@ define('Basko\Functional\lt', __NAMESPACE__ . '\\lt', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function lte($a, $b = null)
@@ -213,7 +213,7 @@ define('Basko\Functional\lte', __NAMESPACE__ . '\\lte', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function gt($a, $b = null)
@@ -240,7 +240,7 @@ define('Basko\Functional\gt', __NAMESPACE__ . '\\gt', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return bool|callable
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function gte($a, $b = null)
@@ -302,10 +302,10 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion', fa
  * map(plus(1), [1, 2, 3]); // [2, 3, 4]
  * ```
  *
- * @param callable $f
- * @param \Traversable|array|null $list
- * @return callable|array
- * @psalm-return ($list is null ? callable : array)
+ * @template T of \Traversable|array|null
+ * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @param T $list
+ * @return ($list is null ? callable(T):array : array)
  * @no-named-arguments
  */
 function map(callable $f, $list = null)
@@ -353,7 +353,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  *      ],
  * ];
  *
- * $result = flat_map(prop('users'), $items));
+ * $result = flat_map(prop('users'), $items);
  *
  * //$result = [
  * //    ['id' => 1, 'name' => 'Jimmy Page'],
@@ -363,9 +363,10 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  * //];
  * ```
  *
- * @param callable $f
- * @param \Traversable|array|null $list
- * @return array|callable
+ * @template T of \Traversable|array|null
+ * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @param T $list
+ * @return ($list is null ? callable(T):array : array)
  * @no-named-arguments
  */
 function flat_map(callable $f, $list = null)
@@ -402,11 +403,10 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map', false);
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
  * ```
  *
- * @template T
- * @param callable $f
- * @param \Traversable|array|null $list
- * @psalm-param T $list
- * @return callable(mixed):mixed|T
+ * @template T of \Traversable|array|null
+ * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @param T $list
+ * @return callable(T):T|T
  * @no-named-arguments
  */
 function each(callable $f, $list = null)
@@ -454,15 +454,13 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not', false);
  * ```
  *
  * @param callable $f The function to run value against
- * @return callable(mixed):bool A negation version on the given $function
+ * @return callable(?mixed):bool A negation version on the given $function
  * @no-named-arguments
  */
 function complement(callable $f)
 {
     return function ($value) use ($f) {
-        $args = func_get_args();
-
-        return !call_user_func_array($f, $args);
+        return !call_user_func_array($f, func_get_args());
     };
 }
 
@@ -490,9 +488,10 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement', false);
  * )('avalS'); //string(5) "Slava"
  * ```
  *
- * @param callable $f
- * @param mixed $value
- * @return callable|mixed
+ * @template T
+ * @param callable(T):void $f
+ * @param T|null $value
+ * @return ($value is null ? callable(T):T : T)
  * @no-named-arguments
  */
 function tap(callable $f, $value = null)
@@ -522,10 +521,12 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap', false);
  * fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
  * ```
  *
- * @param callable $f
- * @param mixed $accumulator
- * @param iterable|null $list
- * @return callable|scalar
+ * @template Ta
+ * @template Tl of \Traversable|array
+ * @param callable(Ta $accumulator, mixed $value, mixed $index, Tl $list):mixed $f
+ * @param Ta|null $accumulator
+ * @param Tl|null $list
+ * @return callable|Ta
  * @no-named-arguments
  */
 function fold(callable $f, $accumulator = null, $list = null)
@@ -560,10 +561,12 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold', false);
  * fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
  * ```
  *
- * @param callable $f
- * @param mixed $accumulator
- * @param iterable|null $list
- * @return callable|scalar
+ * @template Ta
+ * @template Tl of \Traversable|array
+ * @param callable(mixed $value, Ta $accumulator, mixed $index, Tl $list):mixed $f
+ * @param Ta|null $accumulator
+ * @param Tl|null $list
+ * @return callable|Ta
  * @no-named-arguments
  */
 function fold_r(callable $f, $accumulator = null, $list = null)
@@ -600,8 +603,7 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r', false);
  * ```
  *
  * @template T
- * @param mixed $value
- * @psalm-param T $value
+ * @param T $value
  * @return callable():T
  * @no-named-arguments
  */
@@ -750,11 +752,9 @@ define('Basko\Functional\call', __NAMESPACE__ . '\\call', false);
  * ```
  *
  * @template T
- * @param mixed $arg
- * @psalm-param T $arg
+ * @param T $arg
  * @param callable(T):mixed|null $f
- * @return callable|mixed
- * @psalm-return ($f is null ? callable : mixed)
+ * @return ($f is null ? callable(callable(T):mixed):mixed : mixed)
  * @no-named-arguments
  */
 function apply_to($arg, callable $f = null)
@@ -854,8 +854,7 @@ define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped', false);
  *
  * @param callable $f
  * @param callable $g
- * @return callable
- * @psalm-return ($g is null ? callable(mixed):mixed : callable(mixed, mixed):mixed)
+ * @return ($g is null ? callable(mixed):mixed : callable(mixed, mixed):mixed)
  * @no-named-arguments
  */
 function on(callable $f, callable $g = null)
@@ -890,7 +889,7 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on', false);
  *
  * @param mixed $a
  * @param mixed $b
- * @return callable|bool
+ * @return ($b is null ? callable(mixed $b):bool : bool)
  * @no-named-arguments
  */
 function both($a, $b = null)
@@ -928,9 +927,10 @@ define('Basko\Functional\both', __NAMESPACE__ . '\\both', false);
  * $isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']); // true
  * ```
  *
- * @param array $functions
- * @param mixed $value
- * @return callable|bool
+ * @template T
+ * @param callable[] $functions
+ * @param T|null $value
+ * @return ($value is null ? callable(T $value):bool : bool)
  * @no-named-arguments
  */
 function all_pass(array $functions, $value = null)
@@ -966,9 +966,10 @@ define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass', false);
  * $isBlackCard(['rank' => 'Q', 'suit' => '♦']); // false
  * ```
  *
- * @param array $functions
- * @param mixed $value
- * @return callable|bool
+ * @template T
+ * @param callable[] $functions
+ * @param T|null $value
+ * @return ($value is null ? callable(T $value):bool : bool)
  * @no-named-arguments
  */
 function any_pass(array $functions, $value = null)
@@ -997,9 +998,10 @@ define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass', false);
  * ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
  * ```
  *
+ * @template T of \Traversable|array
  * @param callable[] $flist
- * @param \Traversable|array|null $list
- * @return array|callable
+ * @param T|null $list
+ * @return ($list is null ? callable(T $list):mixed : array)
  * @no-named-arguments
  */
 function ap($flist, $list = null)
@@ -1028,15 +1030,11 @@ define('Basko\Functional\ap', __NAMESPACE__ . '\\ap', false);
  *
  * Note, that you cannot use curry on a lifted function.
  *
- * @param string $type
- * @param callable $f
- * @return callable
- *
  * @template T
  * @template T2
- * @psalm-param T $type
- * @psalm-param callable(T2):mixed $f
- * @psalm-return callable(T):mixed
+ * @param T $type
+ * @param callable(T2):mixed|null $f
+ * @return ($f is null ? callable(T2):mixed : callable(T):mixed)
  * @no-named-arguments
  */
 function lift_to($type, callable $f = null)
@@ -1054,6 +1052,7 @@ function lift_to($type, callable $f = null)
         $ofFunc = $type::right;
     }
 
+    /** @psalm-suppress MissingClosureReturnType */
     return function () use ($f, $ofFunc) {
         $cond = if_else(is_instance_of(Monad::class), identity, $ofFunc);
 
@@ -1100,10 +1099,8 @@ define('Basko\Functional\lift_to', __NAMESPACE__ . '\\lift_to', false);
  * $plusm(3, Maybe::just(2)); // Maybe::just(5)
  * ```
  *
- * @template T of Maybe
- * @template T2 of mixed
- * @psalm-param callable(T2):mixed $f
- * @psalm-return callable(T):T
+ * @param callable(mixed):mixed $f
+ * @return callable(Maybe):Maybe
  * @no-named-arguments
  */
 function lift_m(callable $f)
@@ -1120,10 +1117,8 @@ define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m', false);
  *
  * Note, that you cannot use curry on a lifted function.
  *
- * @template T of Either
- * @template T2 of mixed
- * @psalm-param callable(T2):mixed $f
- * @psalm-return callable(T):T
+ * @param callable(mixed):mixed $f
+ * @return callable(Either):Either
  * @no-named-arguments
  */
 function lift_e(callable $f)

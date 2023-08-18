@@ -87,7 +87,10 @@ class CurryTest extends BaseTest
         $this->assertSame(6, call_user_func_array(f\ary($f, -1), [5, 6]));
         $this->assertSame(7, call_user_func_array(f\ary($f, 2), [5, 2]));
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\ary expected parameter 2 to be non-zero'
+        );
         $f = function ($a = 0, $b = 0, $c = 0) {
             return $a + $b + $c;
         };

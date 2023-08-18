@@ -330,7 +330,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat', false);
  *
  * @param callable $tryer
  * @param callable $catcher
- * @return callable
+ * @return callable():mixed
  * @psalm-return ($catcher is null ? callable(callable):callable : callable():mixed)
  * @no-named-arguments
  */
@@ -361,7 +361,7 @@ define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch', false);
  *
  * @param string $methodName
  * @param array $arguments
- * @return callable
+ * @return callable(object):mixed
  * @no-named-arguments
  */
 function invoker($methodName, array $arguments = [])
@@ -416,9 +416,9 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len', false);
  * prop('x', $object); // 101
  * ```
  *
- * @param string $property
+ * @param string|int $property
  * @param array|object $object
- * @return callable|mixed
+ * @return callable|mixed|null
  * @psalm-return ($object is null ? callable : mixed)
  * @no-named-arguments
  */
@@ -492,6 +492,7 @@ function prop_path(array $path, $object = null)
         return partial(prop_path, $path);
     }
 
+    /** @psalm-suppress MissingClosureParamType */
     return fold(function ($object, $property) {
         return prop($property, $object);
     }, $object, $path);
@@ -507,8 +508,8 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
  * ```
  *
  * @param array $properties
- * @param \Traversable|array|null $object
- * @return callable|array
+ * @param array|object $object
+ * @return callable(mixed):mixed|array
  * @no-named-arguments
  */
 function props(array $properties, $object = null)
@@ -517,6 +518,7 @@ function props(array $properties, $object = null)
         return partial(props, $properties);
     }
 
+    /** @psalm-suppress MissingClosureParamType */
     return fold(function ($accumulator, $property) use ($object) {
         $accumulator[] = prop($property, $object);
 
@@ -542,9 +544,9 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props', false);
  * ); // ['first_name' => 'Slava', 'last_name' => 'Basko', 'full_name' => 'Slava Basko']
  * ```
  *
- * @param $key
+ * @param string $key
  * @param mixed|callable $val
- * @param \Traversable|array|null $list
+ * @param \Traversable|array|object|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -562,6 +564,7 @@ function assoc($key, $val = null, $list = null)
 
     $possibleCopy = if_else(unary('is_object'), cp, identity);
 
+    /** @psalm-suppress MissingClosureParamType */
     return fold(function ($accumulator, $entry, $index) use ($key, $val) {
         if (is_object($accumulator)) {
             if ($key == $index) {
@@ -592,7 +595,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc', false);
  *
  * @param array $path
  * @param mixed|callable $val
- * @param \Traversable|array|null $list
+ * @param \Traversable|array|object|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -603,6 +606,8 @@ function assoc_path(array $path, $val = null, $list = null)
     } elseif (is_null($list)) {
         return partial(assoc_path, $path, $val);
     }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     $path_len = count($path);
     if ($path_len == 0) {
@@ -633,11 +638,11 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path', false);
  *
  * @param object $object
  * @param string $methodName
- * @param ...
- * @return callable
+ * @param array $arguments
+ * @return callable():mixed
  * @no-named-arguments
  */
-function to_fn($object, $methodName = null, array $arguments = null)
+function to_fn($object, $methodName, array $arguments = [])
 {
     //todo: curry?
     $args = func_get_args();
@@ -804,7 +809,7 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote', false);
  * ```
  *
  * @param array $keys
- * @param Traversable|array $object
+ * @param Traversable|array|object $object
  * @return callable|array
  * @no-named-arguments
  */
@@ -841,7 +846,7 @@ define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys', false);
  * ```
  *
  * @param array $keys
- * @param Traversable|array $object
+ * @param Traversable|array|object $object
  * @return callable|array
  * @no-named-arguments
  */
@@ -873,7 +878,7 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
  * @param callable $f
  * @param array $keys
  * @param \Traversable|array|null $list
- * @return callable|array
+ * @return callable|\Traversable|array
  * @no-named-arguments
  */
 function map_keys(callable $f, array $keys = null, $list = null)
@@ -884,8 +889,10 @@ function map_keys(callable $f, array $keys = null, $list = null)
         return partial(map_keys, $f, $keys);
     }
 
+    InvalidArgumentException::assertList($keys, __FUNCTION__, 2);
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
+    /** @psalm-suppress PossiblyNullIterator */
     foreach ($keys as $key) {
         if (is_object($list)) {
             $list->{$key} = call_user_func_array($f, [$list->{$key}]);
@@ -906,7 +913,7 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys', false);
  * @param callable $f
  * @param array $elementsNumbers
  * @param array|\ArrayAccess $list
- * @return callable|array
+ * @return callable|array|\ArrayAccess
  * @no-named-arguments
  */
 function map_elements(callable $f, array $elementsNumbers = null, $list = null)
@@ -917,15 +924,19 @@ function map_elements(callable $f, array $elementsNumbers = null, $list = null)
         return partial(map_elements, $f, $elementsNumbers);
     }
 
+    InvalidArgumentException::assertList($elementsNumbers, __FUNCTION__, 2);
     InvalidArgumentException::assertArrayAccess($list, __FUNCTION__, 3);
 
+    /** @psalm-suppress PossiblyNullIterator */
     foreach ($elementsNumbers as $elementNumber) {
         if ($elementNumber < 0) {
+            /** @psalm-suppress PossiblyInvalidArgument */
             $internalElementNumber = len($list) - abs($elementNumber);
         } else {
             $internalElementNumber = $elementNumber - 1;
         }
 
+        /** @psalm-suppress PossiblyInvalidArgument */
         $list[$internalElementNumber] = call_user_func_array($f, [nth($elementNumber, $list)]);
     }
 
@@ -979,12 +990,14 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
  */
 function cp($object)
 {
+    /** @psalm-suppress MissingClosureParamType, MissingClosureReturnType */
     $cond = cond([
         ['is_object', function ($obj) {
             if (defined('CLONE_FUNCTION')) {
                 return call_user_func_array(constant('CLONE_FUNCTION'), [$obj]);
             }
 
+            /** @psalm-suppress MixedClone */
             return clone $obj;
         }], // TODO: what todo with Traversable?
         ['is_array', identity],
@@ -1003,7 +1016,7 @@ define('Basko\Functional\cp', __NAMESPACE__ . '\\cp', false);
  * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
  * ```
  *
- * @param \Traversable|array|null $list
+ * @param \Traversable|array $list
  * @return mixed
  * @no-named-arguments
  */
@@ -1018,14 +1031,13 @@ function pick_random_value($list)
     if (class_exists('Random\Randomizer')) {
         $randomizer = new \Random\Randomizer();
         $randomKeys = $randomizer->pickArrayKeys($list, 1);
-        $index = $randomKeys[0];
-    } elseif (function_exists('mt_rand')) {
-        $index = mt_rand(0, count($list) - 1);
-    } else {
-        $index = rand(0, count($list) - 1);
+
+        return $list[$randomKeys[0]];
     }
 
-    return $list[$index];
+    $fN = function_exists('mt_rand') ? 'mt_rand' : 'rand';
+
+    return nth(call_user_func_array($fN, [1, count($list)]), $list);
 }
 
 define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_value', false);
@@ -1036,7 +1048,7 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
  *
  * @param string $keyProp
  * @param string $valueProp
- * @param $list
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -1053,6 +1065,7 @@ function combine($keyProp, $valueProp = null, $list = null)
     InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
+    /** @psalm-suppress PossiblyNullArgument */
     $combineFunction = converge('array_combine', [
         pluck($keyProp),
         pluck($valueProp),
@@ -1072,6 +1085,7 @@ define('Basko\Functional\combine', __NAMESPACE__ . '\\combine', false);
  */
 function sequence_constant($value)
 {
+    /** @psalm-suppress DocblockTypeContradiction */
     if (!is_int($value) || $value < 0) {
         throw new \InvalidArgumentException(
             'sequence_constant() expects $value argument to be an integer, greater than or equal to 0'
@@ -1137,14 +1151,14 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay', false);
  * ```
  *
  * @param int $retries
- * @param $delaySequence
+ * @param \Iterator $delaySequence
  * @param callable $f
  * @return callable|mixed Return value of the function
  * @throws InvalidArgumentException
  * @throws \Exception Any exception thrown by the callback
  * @no-named-arguments
  */
-function retry($retries, $delaySequence = null, $f = null)
+function retry($retries, \Iterator $delaySequence = null, $f = null)
 {
     if (is_null($delaySequence) && is_null($f)) {
         return partial(retry, $retries);
@@ -1152,15 +1166,12 @@ function retry($retries, $delaySequence = null, $f = null)
         return partial(retry, $retries, $delaySequence);
     }
 
-    if (is_callable($delaySequence)) {
-        $delaySequence = $delaySequence();
-    }
-
     InvalidArgumentException::assertIntegerGreaterThanOrEqual($retries, 1, __FUNCTION__, 1);
     InvalidArgumentException::assertList($delaySequence, __FUNCTION__, 2);
     InvalidArgumentException::assertCallable($f, __FUNCTION__, 3);
 
     $delays = new AppendIterator();
+    /** @psalm-suppress PossiblyNullArgument */
     $delays->append(new InfiniteIterator($delaySequence));
     $delays->append(new InfiniteIterator(new ArrayIterator([0])));
     $delays = new LimitIterator($delays, 0, $retries);

@@ -259,6 +259,32 @@ class TypeTest extends BaseTest
         $t3(new \stdClass());
     }
 
+    public function test_type_union_fail()
+    {
+        $t = f\type_union(f\type_float, function ($value) {
+            throw new \Exception();
+        });
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\type_union() fail and there no \Basko\Functional\Exception\TypeException exception was thrown'
+        );
+        $t('some');
+    }
+
+    public function test_type_union_fail_2()
+    {
+        $t = f\type_union(f\type_float, function ($value) {
+            throw new f\Exception\TypeException();
+        });
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'One of type in Basko\Functional\type_union() fail and TypeException::forValue() never called'
+        );
+        $t('some');
+    }
+
     public function test_type_positive_int_valid()
     {
         $this->assertEquals(2, f\type_positive_int(2));

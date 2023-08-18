@@ -42,7 +42,7 @@ class RetryTest extends BaseTest
             ->willReturn('value');
 
         $retry10 = f\retry(10);
-        $retry10WithoutDelay = $retry10(f\no_delay);
+        $retry10WithoutDelay = $retry10(f\no_delay());
         $this->assertSame('value', $retry10WithoutDelay([$this->retryer, 'retry']));
     }
 
@@ -57,7 +57,7 @@ class RetryTest extends BaseTest
                 'value'
             );
 
-        $this->assertSame('value', f\retry(10, f\no_delay, [$this->retryer, 'retry']));
+        $this->assertSame('value', f\retry(10, f\no_delay(), [$this->retryer, 'retry']));
     }
 
     public function testThrowsExceptionIfRetryCountIsReached()
@@ -73,7 +73,7 @@ class RetryTest extends BaseTest
 
         $this->setExpectedException(\Exception::class, 'second');
 
-        f\retry(2, f\no_delay, [$this->retryer, 'retry']);
+        f\retry(2, f\no_delay(), [$this->retryer, 'retry']);
     }
 
     public function testRetryWithEmptyDelaySequence()
@@ -96,7 +96,7 @@ class RetryTest extends BaseTest
         $this->expectArgumentError(
             'Basko\Functional\retry() expects parameter 1 to be an integer greater than or equal to 1'
         );
-        f\retry(0, f\no_delay, [$this->retryer, 'retry']);
+        f\retry(0, f\no_delay(), [$this->retryer, 'retry']);
     }
 
     public function testUsesDelayTraversableForSleeping()
@@ -111,7 +111,7 @@ class RetryTest extends BaseTest
 
         $this->setExpectedException(\Exception::class, 'second');
 
-        f\retry(2, f\no_delay, [$this->retryer, 'retry']);
+        f\retry(2, f\no_delay(), [$this->retryer, 'retry']);
     }
 
     public function testDelayerSmallerThanRetries()

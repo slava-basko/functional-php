@@ -24,18 +24,27 @@ use Basko\Functional\Functor\Identity;
  */
 function lens(callable $getter, callable $setter)
 {
-    return function ($func) use ($getter, $setter) {
+    return function (callable $func) use ($getter, $setter) {
         // apply functor function (Constant, Identity)
-        return function ($list) use ($getter, $setter, $func) {
-            // apply list (array, object)
-            return call_user_func($func, $getter($list))
-                ->map(
-                    function ($replacement) use ($setter, $list) {
-                        // apply setter to list item
-                        return $setter($replacement, $list);
-                    }
-                );
-        };
+        return
+            /**
+             * @param mixed $list
+             * @return mixed
+             */
+            function ($list) use ($getter, $setter, $func) {
+                // apply list (array, object)
+                return call_user_func($func, $getter($list))
+                    ->map(
+                        /**
+                         * @param mixed $replacement
+                         * @return mixed
+                         */
+                        function ($replacement) use ($setter, $list) {
+                            // apply setter to list item
+                            return $setter($replacement, $list);
+                        }
+                    );
+            };
     };
 }
 
@@ -51,7 +60,7 @@ define('Basko\Functional\lens', __NAMESPACE__ . '\\lens', false);
  * ```
  *
  * @param callable $lens
- * @param $store
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */
@@ -76,12 +85,13 @@ define('Basko\Functional\view', __NAMESPACE__ . '\\view', false);
  *
  * @param callable $lens
  * @param callable $operation
- * @param $store
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */
 function over(callable $lens, callable $operation, $store)
 {
+    /** @psalm-suppress MissingClosureParamType */
     $fn = $lens(function ($res) use ($operation) {
         // transform value in lens context
         return Identity::of($operation($res));
@@ -104,7 +114,7 @@ define('Basko\Functional\over', __NAMESPACE__ . '\\over', false);
  *
  * @param callable $lens
  * @param mixed $value
- * @param $store
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */
