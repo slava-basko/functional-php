@@ -355,7 +355,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map', false);
  *
  * $result = flat_map(prop('users'), $items);
  *
- * //$result = [
+ * //$result is [
  * //    ['id' => 1, 'name' => 'Jimmy Page'],
  * //    ['id' => 5, 'name' => 'Roy Harper'],
  * //    ['id' => 1, 'name' => 'Jimmy Page'],

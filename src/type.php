@@ -443,6 +443,7 @@ define('Basko\Functional\type_map', __NAMESPACE__ . '\\type_map', false);
 
 /**
  * Checks array keys presence and coerces values to according types.
+ * All `key => value` pair that not described will be removed.
  *
  * ```php
  * $parcelShape = type_shape([

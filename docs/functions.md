@@ -147,9 +147,9 @@ $items = [
      ],
 ];
 
-$result = flat_map(prop('users'), $items));
+$result = flat_map(prop('users'), $items);
 
-//$result = [
+//$result is [
 //    ['id' => 1, 'name' => 'Jimmy Page'],
 //    ['id' => 5, 'name' => 'Roy Harper'],
 //    ['id' => 1, 'name' => 'Jimmy Page'],
@@ -1347,10 +1347,75 @@ $t('1'); // 1
 ```
 
 ### type_positive_int
-Checks and coerces value to positive `int`.
+Checks and coerces value to `positive_int`.
 
 ```php
 type_positive_int(2); // 2
 type_positive_int('2'); // 2
 ```
 
+### type_array_key
+Checks and coerces value to valid array key that can either be an `int` or a `string`.
+
+```php
+type_array_key(1); // 1
+type_array_key('some_key'); // some_key
+```
+
+### type_list
+Checks and coerces list values to `$type[]`.
+
+```php
+type_list(f\type_int, [1, '2']); // [1, 2]
+type_list(f\type_int, [1, 2.0]); // [1, 2]
+type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
+```
+
+### type_map
+Checks and coerces array keys to `$keyType` and values to `$valueType`.
+
+```php
+type_map(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
+```
+
+### type_shape
+Checks array keys presence and coerces values to according types.
+All `key => value` pair that not described will be removed.
+
+```php
+$parcelShape = type_shape([
+     'description' => type_string,
+     'value' => type_union(type_int, type_float),
+     'dimensions' => type_shape([
+         'width' => type_union(type_int, type_float),
+         'height' => type_union(type_int, type_float),
+     ]),
+     'products' => type_list(type_shape([
+         'description' => type_string,
+         'qty' => type_int,
+         'price' => type_union(f\type_int, f\type_float),
+     ]))
+]);
+
+$parcelShape([
+     'description' => 'some goods',
+     'value' => 200,
+     'dimensions' => [
+         'width' => 0.1,
+         'height' => 2.4,
+     ],
+     'products' => [
+         [
+             'description' => 'product 1',
+             'qty' => 2,
+             'price' => 50,
+         ],
+         [
+             'description' => 'product 2',
+             'qty' => 2,
+             'price' => 50,
+         ],
+     ],
+     'additional' => 'some additional element value that should not present in result'
+]); // checked and coerced array will be returned and `additional` will be removed
+```
