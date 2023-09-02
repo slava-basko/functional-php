@@ -27,7 +27,9 @@ abstract class BaseTest extends TestCase
     public function setExpectedException($exceptionClass, $exceptionMessage = '', $exceptionCode = null)
     {
         if (method_exists($this, 'expectException')) {
-            $this->expectException($exceptionClass, $exceptionMessage, $exceptionCode);
+            $this->expectException($exceptionClass);
+            $this->expectExceptionMessage($exceptionMessage);
+            $this->expectExceptionCode($exceptionCode);
         } else if (method_exists(parent::class, 'setExpectedException')) {
             parent::setExpectedException($exceptionClass, $exceptionMessage, $exceptionCode);
         } else {

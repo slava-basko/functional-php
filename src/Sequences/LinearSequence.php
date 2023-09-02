@@ -17,8 +17,12 @@ class LinearSequence implements \Iterator
     /**
      * @var int
      */
-    private $value;
+    private $value = 0;
 
+    /**
+     * @param int $start
+     * @param int $amount
+     */
     public function __construct($start, $amount)
     {
         if (!\is_int($start) || $start < 0) {

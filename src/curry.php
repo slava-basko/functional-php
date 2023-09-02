@@ -43,9 +43,9 @@ define('Basko\Functional\count_args', __NAMESPACE__ . '\\count_args', false);
  * If you give a smaller number you will have an error when calling the given function. If
  * you give a higher number, arguments will simply be ignored.
  *
- * @param int $count number of arguments you want to curry
- * @param callable $f the function you want to curry
- * @return callable a curryied version of the given function
+ * @param int $count Number of arguments you want to curry
+ * @param callable $f The function you want to curry
+ * @return callable A curryied version of the given function
  * @no-named-arguments
  */
 function curry_n($count, callable $f)
@@ -85,9 +85,9 @@ define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n', false);
  * $addEleven(4); // 15
  * ```
  *
- * @param callable $f the function to curry
- * @param bool $required curry optional parameters ?
- * @return callable a curryied version of the given function
+ * @param callable $f The function to curry
+ * @param bool $required Curry optional parameters ?
+ * @return callable A curryied version of the given function
  * @no-named-arguments
  * @throws \ReflectionException
  * @no-named-arguments
@@ -150,13 +150,13 @@ function _thunkify_n(callable $f, $count)
  * ```
  *
  * @param callable $f
- * @param int $count a non-zero count (could be negative)
+ * @param int $count A non-zero count (could be negative)
  * @return callable
  * @no-named-arguments
  */
 function ary(callable $f, $count)
 {
-    InvalidArgumentException::assertNonZeroInteger($count, __FUNCTION__);
+    InvalidArgumentException::assertNonZeroInteger($count, __FUNCTION__, 2);
 
     return function () use ($f, $count) {
         $args = func_get_args();
@@ -182,7 +182,7 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary', false);
  * ```
  *
  * @param callable $f
- * @return callable
+ * @return callable(mixed):mixed
  */
 function unary(callable $f)
 {
@@ -203,7 +203,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary', false);
  * ```
  *
  * @param callable $f
- * @return callable
+ * @return callable(mixed, mixed):mixed
  */
 function binary(callable $f)
 {

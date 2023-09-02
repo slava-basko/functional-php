@@ -66,6 +66,12 @@ class HelpersTest extends BaseTest
 
         $repeatedSomeMethod = f\repeat([$rep, 'someMethod']);
         $repeatedSomeMethod(5);
+
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Callable created by Basko\Functional\repeat() expects parameter 1 to be integer, string given'
+        );
+        $repeatedSomeMethod('some');
     }
 
     public function test_try_catch()
@@ -234,6 +240,17 @@ class HelpersTest extends BaseTest
         $data = ['foo' => 'foo', 'bar' => ['baz' => 43]];
         $bazTo42 = f\assoc_path(['bar', 'baz'], 42);
         $this->assertEquals(['foo' => 'foo', 'bar' => ['baz' => 42]], $bazTo42($data));
+
+        $a = new \stdClass();
+        $a->a = 1;
+        $a->b = 2;
+
+        $b = new \stdClass();
+        $b->a = 3;
+        $b->b = $a;
+
+        $c = f\assoc_path(['b', 'a'], 9, $b);
+        $this->assertEquals(9, $c->b->a);
     }
 
     public function test_pair()

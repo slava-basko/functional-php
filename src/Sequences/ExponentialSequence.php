@@ -17,13 +17,17 @@ class ExponentialSequence implements \Iterator
     /**
      * @var int
      */
-    private $value;
+    private $value = 0;
 
     /**
      * @var int
      */
-    private $times;
+    private $times = 0;
 
+    /**
+     * @param int $start
+     * @param int $percentage
+     */
     public function __construct($start, $percentage)
     {
         if (!\is_int($start) || $start < 1) {

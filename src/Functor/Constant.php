@@ -10,6 +10,18 @@ class Constant extends Monad
 
     const of = "Basko\Functional\Functor\Constant::of";
 
+    /**
+     * @param mixed $value
+     */
+    final protected function __construct($value)
+    {
+        parent::__construct($value);
+    }
+
+    /**
+     * @param callable $f
+     * @return $this
+     */
     public function map(callable $f)
     {
         return $this;

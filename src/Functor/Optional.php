@@ -10,8 +10,24 @@ class Optional extends Monad
 
     const nothing = "Basko\Functional\Functor\Optional::nothing";
 
+    /**
+     * @var bool
+     */
     protected $hasValue = false;
 
+    /**
+     * @param mixed $value
+     */
+    final protected function __construct($value)
+    {
+        parent::__construct($value);
+    }
+
+    /**
+     * @param bool $hasValue
+     * @param mixed $value
+     * @return \Basko\Functional\Functor\Optional
+     */
     public static function of($hasValue, $value)
     {
         if ($value instanceof static) {
@@ -20,19 +36,31 @@ class Optional extends Monad
 
         $m = new static($value);
         $m->hasValue = $hasValue;
+
         return $m;
     }
 
+    /**
+     * @param mixed $value
+     * @return \Basko\Functional\Functor\Optional
+     */
     public static function just($value)
     {
         return static::of(true, $value);
     }
 
+    /**
+     * @return \Basko\Functional\Functor\Optional
+     */
     public static function nothing()
     {
         return static::of(false, null);
     }
 
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Optional
+     */
     public function map(callable $f)
     {
         if ($this->hasValue) {
@@ -42,6 +70,11 @@ class Optional extends Monad
         return $this::nothing();
     }
 
+    /**
+     * @param callable $just
+     * @param callable $nothing
+     * @return void
+     */
     public function match(callable $just, callable $nothing)
     {
         if ($this->hasValue) {
@@ -51,6 +84,12 @@ class Optional extends Monad
         }
     }
 
+    /**
+     * @param string|int $key
+     * @param array $data
+     * @param callable|null $f
+     * @return \Basko\Functional\Functor\Optional
+     */
     public static function fromArrayKey($key, array $data, callable $f = null)
     {
         if (array_key_exists($key, $data)) {

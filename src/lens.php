@@ -24,7 +24,7 @@ use Basko\Functional\Functor\Identity;
  */
 function lens(callable $getter, callable $setter)
 {
-    return function ($func) use ($getter, $setter) {
+    return function (callable $func) use ($getter, $setter) {
         // apply functor function (Constant, Identity)
         return function ($list) use ($getter, $setter, $func) {
             // apply list (array, object)
@@ -51,7 +51,7 @@ define('Basko\Functional\lens', __NAMESPACE__ . '\\lens', false);
  * ```
  *
  * @param callable $lens
- * @param $store
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */
@@ -76,7 +76,7 @@ define('Basko\Functional\view', __NAMESPACE__ . '\\view', false);
  *
  * @param callable $lens
  * @param callable $operation
- * @param $store
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */
@@ -103,8 +103,8 @@ define('Basko\Functional\over', __NAMESPACE__ . '\\over', false);
  * ```
  *
  * @param callable $lens
- * @param $value
- * @param $store
+ * @param mixed $value
+ * @param mixed $store
  * @return mixed
  * @no-named-arguments
  */

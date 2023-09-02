@@ -297,18 +297,5 @@ lstrojny/functional-php good choice but functions are not curried by default and
 ircmaxell/monad-php wonderful monad implementation in my opinion, but it's only monad with no additional functions. 
 yuhanz/ramda-php abandoned RamdaJS port plus I don't like all these public static properties.
 
-
-
-## How to run tests
-
-PHP 5
-```shell
-docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer composer install
-docker run -v `pwd`:/var/www --rm feitosa/php55-with-composer vendor/bin/phpunit
-```
-
-PHP 8
-```shell
-docker run -v `pwd`:/var/www --rm composer:2.5.8 composer install -d /var/www/
-docker run -v `pwd`:/var/www --rm php:8.2-cli var/www/vendor/bin/phpunit /var/www/ -c /var/www/phpunit.xml.dist
-```
+## License
+Use as you want. No liability or warranty from me. Can be considered as MIT.

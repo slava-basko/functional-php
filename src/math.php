@@ -12,7 +12,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * is_even(3); // false
  * ```
  *
- * @param $n
+ * @param numeric $n
  * @return bool
  * @no-named-arguments
  */
@@ -33,7 +33,7 @@ define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even', false);
  * is_odd(2); // false
  * ```
  *
- * @param $n
+ * @param numeric $n
  * @return mixed
  * @no-named-arguments
  */
@@ -55,8 +55,8 @@ define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd', false);
  * plus(4, 2); // 6
  * ```
  *
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return mixed
  * @no-named-arguments
  */
@@ -82,8 +82,8 @@ define('Basko\Functional\plus', __NAMESPACE__ . '\\plus', false);
  * minus(4, 2); // 2
  * ```
  *
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return mixed
  * @no-named-arguments
  */
@@ -109,8 +109,8 @@ define('Basko\Functional\minus', __NAMESPACE__ . '\\minus', false);
  * div(4, 2); // 2
  * ```
  *
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return callable|float|int
  * @no-named-arguments
  */
@@ -136,8 +136,8 @@ define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
  * multiply(4, 2); // 8
  * ```
  *
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return callable|float|int
  * @no-named-arguments
  */
@@ -163,7 +163,7 @@ define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply', false);
  * sum([3, 2, 1]); // 6
  * ```
  *
- * @param $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
@@ -183,13 +183,15 @@ define('Basko\Functional\sum', __NAMESPACE__ . '\\sum', false);
  * diff([10, 2, 1]); // 7
  * ```
  *
- * @param $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
 function diff($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
 
     return fold(minus, array_shift($list), $list);
 }
@@ -203,13 +205,15 @@ define('Basko\Functional\diff', __NAMESPACE__ . '\\diff', false);
  * divide([20, 2, 2]); // 5
  * ```
  *
- * @param $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
 function divide($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
 
     return fold(div, array_shift($list), $list);
 }
@@ -223,13 +227,15 @@ define('Basko\Functional\divide', __NAMESPACE__ . '\\divide', false);
  * product([4, 2, 2]); // 16
  * ```
  *
- * @param $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
 function product($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
 
     return fold(multiply, array_shift($list), $list);
 }
@@ -243,7 +249,8 @@ define('Basko\Functional\product', __NAMESPACE__ . '\\product', false);
  * average([1, 2, 3, 4, 5, 6, 7]); // 4
  * ```
  *
- * @param $list
+ * @template T
+ * @param T[] $list
  * @return float|int
  * @no-named-arguments
  */
@@ -263,6 +270,7 @@ define('Basko\Functional\average', __NAMESPACE__ . '\\average', false);
  * inc(41); // 42
  * ```
  *
+ * @param numeric $n
  * @return float|int
  * @no-named-arguments
  */
@@ -282,6 +290,7 @@ define('Basko\Functional\inc', __NAMESPACE__ . '\\inc', false);
  * dec(43); // 42
  * ```
  *
+ * @param numeric $n
  * @return float|int
  * @no-named-arguments
  */
@@ -301,6 +310,7 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec', false);
  * power(4); // 16
  * ```
  *
+ * @param numeric $n
  * @return float|int
  * @no-named-arguments
  */
@@ -321,8 +331,9 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power', false);
  * median([7, 2, 10, 9]); // 8
  * ```
  *
- * @param $list
- * @return mixed
+ * @template T
+ * @param T[] $list
+ * @return T
  * @no-named-arguments
  */
 function median($list)
@@ -331,7 +342,7 @@ function median($list)
 
     \sort($list);
     $count = count($list);
-    $middleValue = floor(($count - 1) / 2); // find the middle value, or the lowest middle value
+    $middleValue = (int)floor(($count - 1) / 2); // find the middle value, or the lowest middle value
 
     if ($count % 2) { // odd number, middle is the median
         $median = $list[$middleValue];

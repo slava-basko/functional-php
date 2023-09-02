@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use Basko\Functional as f;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 class TypeTest extends BaseTest
 {
@@ -259,6 +260,32 @@ class TypeTest extends BaseTest
         $t3(new \stdClass());
     }
 
+    public function test_type_union_fail()
+    {
+        $t = f\type_union(f\type_float, function ($value) {
+            throw new \Exception();
+        });
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\type_union() fail and there no \Basko\Functional\Exception\TypeException exception was thrown'
+        );
+        $t('some');
+    }
+
+    public function test_type_union_fail_2()
+    {
+        $t = f\type_union(f\type_float, function ($value) {
+            throw new f\Exception\TypeException();
+        });
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'One of type in Basko\Functional\type_union() fail and TypeException::forValue() never called'
+        );
+        $t('some');
+    }
+
     public function test_type_positive_int_valid()
     {
         $this->assertEquals(2, f\type_positive_int(2));
@@ -281,5 +308,112 @@ class TypeTest extends BaseTest
             sprintf('Could not convert "%s" to type "positive_int"', get_debug_type(0))
         );
         f\type_positive_int(0);
+    }
+
+    public function test_type_array_key()
+    {
+        $this->assertEquals(1, f\type_array_key(1));
+        $this->assertEquals('some_key', f\type_array_key('some_key'));
+    }
+
+    public function test_type_list()
+    {
+        $intList = f\type_list(f\type_int);
+        $this->assertEquals([1, 2], $intList([1, 2]));
+        $this->assertEquals([1, 2], $intList([1, '2']));
+        $this->assertEquals([1, 2], $intList([1, 2.0]));
+
+        $u1 = new \User([]);
+        $u2 = new \User([]);
+        $this->assertEquals([$u1, $u2], f\type_list(f\type_of(\User::class), [$u1, $u2]));
+    }
+
+    public function test_type_map()
+    {
+        $t = f\type_map(f\type_array_key);
+        $t2 = $t(f\type_int);
+
+        $this->assertEquals(['one' => 1], $t2(['one' => 1]));
+        $this->assertEquals(['one' => 1], $t2(['one' => 1.0]));
+    }
+
+    public function test_type_shape()
+    {
+        $parcelShape = f\type_shape([
+            'description' => f\type_string,
+            'value' => f\type_union(f\type_int, f\type_float),
+        ]);
+
+        $parcel = [
+            'description' => 'some goods',
+            'value' => 200,
+        ];
+
+        $this->assertEquals($parcel, $parcelShape($parcel));
+    }
+
+    public function test_type_shape_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Exception on shape element \'description\': error on description'
+        );
+
+        $parcelShape = f\type_shape([
+            'description' => function($v) {
+                throw new \Exception('error on description');
+            },
+            'value' => f\type_union(f\type_int, f\type_float),
+        ]);
+
+        $parcel = [
+            'description' => 'some goods',
+            'value' => 200,
+        ];
+
+        $this->assertEquals($parcel, $parcelShape($parcel));
+    }
+
+    public function test_type_shape_complex()
+    {
+        $parcelShape = f\type_shape([
+            'description' => f\type_string,
+            'value' => f\type_positive_int,
+            'dimensions' => f\type_shape([
+                'width' => f\type_union(f\type_int, f\type_float),
+                'height' => f\type_union(f\type_int, f\type_float),
+            ]),
+            'products' => f\type_list(f\type_shape([
+                'description' => f\type_string,
+                'qty' => f\type_positive_int,
+                'price' => f\type_union(f\type_int, f\type_float),
+            ]))
+        ]);
+
+        $parcel = [
+            'description' => 'some goods',
+            'value' => 200,
+            'dimensions' => [
+                'width' => 0.1,
+                'height' => 2.4,
+            ],
+            'products' => [
+                [
+                    'description' => 'product 1',
+                    'qty' => 2,
+                    'price' => 50,
+                ],
+                [
+                    'description' => 'product 2',
+                    'qty' => 2,
+                    'price' => 50,
+                ],
+            ],
+            'additional' => 'some additional element value tha should not present in result'
+        ];
+
+        $comparableParcel = $parcel;
+        array_pop($comparableParcel);
+        $this->assertEquals($comparableParcel, $parcelShape($parcel));
     }
 }

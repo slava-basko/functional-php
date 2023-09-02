@@ -12,8 +12,8 @@ use Traversable;
  * append('three', ['one', 'two']); // ['one', 'two', 'three']
  * ```
  *
- * @param $element
- * @param $list
+ * @param mixed $element
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -44,8 +44,8 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append', false);
  * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
  * ```
  *
- * @param $element
- * @param $list
+ * @param mixed $element
+ * @param \Traversable|array|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -334,11 +334,13 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains', false);
  *
  * @param \Traversable|array|string $list
  * @param int $count
- * @return callable|array
+ * @return callable|array|string
  * @no-named-arguments
  */
 function take($count, $list = null)
 {
+    InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
+
     if (is_null($list)) {
         return partial(take, $count);
     }
@@ -369,12 +371,13 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take', false);
  *
  * @param \Traversable|array|string $list
  * @param int $count
- *
- * @return callable|array
+ * @return callable|array|string
  * @no-named-arguments
  */
 function take_r($count, $list = null)
 {
+    InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
+
     if (is_null($list)) {
         return partial(take_r, $count);
     }
@@ -526,8 +529,8 @@ function partition($functions, $list = null)
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    $partition = 0;
-    $partitions = array_fill(0, count($functions) + 1, []);
+    $lastPartition = count($functions);
+    $partitions = array_fill(0, $lastPartition + 1, []);
 
     foreach ($list as $index => $element) {
         foreach ($functions as $partition => $fn) {
@@ -536,8 +539,8 @@ function partition($functions, $list = null)
                 continue 2;
             }
         }
-        ++$partition;
-        $partitions[$partition][$index] = $element;
+
+        $partitions[$lastPartition][$index] = $element;
     }
 
     return $partitions;
@@ -635,9 +638,17 @@ function sort(callable $f, $list = null)
         $array = $list;
     }
 
-    uasort($array, function ($left, $right) use ($f, $list) {
-        return call_user_func_array($f, [$left, $right, $list]);
-    });
+    uasort(
+        $array,
+        /**
+         * @param mixed $left
+         * @param mixed $right
+         * @return int
+         */
+        function ($left, $right) use ($f, $list) {
+            return call_user_func_array($f, [$left, $right, $list]);
+        }
+    );
 
     return $array;
 }
@@ -666,8 +677,9 @@ define('Basko\Functional\sort', __NAMESPACE__ . '\\sort', false);
  * ); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
  * ```
  *
- * @param callable $f
- * @return callable
+ * @template T
+ * @param callable(T, T):bool $f
+ * @return callable(T, T):int
  */
 function comparator(callable $f)
 {
@@ -690,8 +702,8 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator', false);
  * ```
  *
  * @param callable $f
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return int|callable
  */
 function ascend(callable $f, $a = null, $b = null)
@@ -722,8 +734,8 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend', false);
  * ```
  *
  * @param callable $f
- * @param $a
- * @param $b
+ * @param numeric $a
+ * @param numeric $b
  * @return int|callable
  */
 function descend(callable $f, $a = null, $b = null)
