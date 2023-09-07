@@ -462,11 +462,11 @@ class CoreTest extends BaseTest
         $optional = f\Functor\Optional::just('Slava');
 
         $lift_m = f\lift_to(f\Functor\Identity::class);
-        $this->assertEquals($id, f\call($lift_m($f), $id));
-        $this->assertEquals($const, f\call(f\lift_to(f\Functor\Constant::class, $f), $const));
-        $this->assertEquals($maybe, f\call(f\lift_to(f\Functor\Maybe::class, $f), $maybe));
-        $this->assertEquals($either, f\call(f\lift_to(f\Functor\Either::class, $f), $either));
-        $this->assertEquals($optional, f\call(f\lift_to(f\Functor\Optional::class, $f), $optional));
+        $this->assertEquals($id, f\apply($lift_m($f), $id));
+        $this->assertEquals($const, f\apply(f\lift_to(f\Functor\Constant::class, $f), $const));
+        $this->assertEquals($maybe, f\apply(f\lift_to(f\Functor\Maybe::class, $f), $maybe));
+        $this->assertEquals($either, f\apply(f\lift_to(f\Functor\Either::class, $f), $either));
+        $this->assertEquals($optional, f\apply(f\lift_to(f\Functor\Optional::class, $f), $optional));
     }
 
     public function test_lift_m()

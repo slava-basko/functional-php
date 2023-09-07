@@ -723,17 +723,17 @@ function converge(callable $convergingFunction, $branchingFunctions = null)
 define('Basko\Functional\converge', __NAMESPACE__ . '\\converge', false);
 
 /**
- * TODO: rename to `apply`?
+ * Applies function `$f` to provided argument.
  *
  * @param callable $f
  * @param mixed $args
- * @return mixed
+ * @return ($args is null ? callable(...$args):mixed : mixed)
  * @no-named-arguments
  */
-function call(callable $f, $args = null)
+function apply(callable $f, $args = null)
 {
     if (is_null($args)) {
-        return partial(call, $f);
+        return partial(apply, $f);
     }
 
     $args = func_get_args();
@@ -741,7 +741,7 @@ function call(callable $f, $args = null)
     return call_user_func_array(head($args), flatten(tail($args)));
 }
 
-define('Basko\Functional\call', __NAMESPACE__ . '\\call', false);
+define('Basko\Functional\apply', __NAMESPACE__ . '\\apply', false);
 
 /**
  * Create a function that will pass arguments to a given function.
