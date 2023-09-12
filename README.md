@@ -22,6 +22,10 @@ Here you can find available function.
 
 [Functions list](docs/functions.md)
 
+Other useful things.
+* [Maybe](docs/maybe.md)
+* [Optional](docs/optional.md)
+
 ## OOP 🤝 FP
 The purpose of this library is not to replace imperative and OOP. They can be combined, and I believe
 they should be combined because any of these approaches is not a silver bullet.
@@ -158,11 +162,6 @@ Written in an entirely point-free manner.
 [Show me your doc_generator.php](internal/doc_generator.php)
 
 No variable were harmed during script development (c).
-
-## Other
-[Maybe](docs/maybe.md)
-
-[Optional](docs/optional.md)
 
 ## License
 Use as you want. No liability or warranty from me. Can be considered as MIT.
