@@ -161,6 +161,7 @@ No variable were harmed during script development (c).
 
 ## Other
 [Maybe](docs/maybe.md)
+
 [Optional](docs/optional.md)
 
 ## License
