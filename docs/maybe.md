@@ -45,3 +45,9 @@ $articleTitle = $repository->get(120)->map(prop('title'))->map(take(22))->map('s
 
 // use $articleTitle somewhere below, you can call `$articleTitle->extract()` if you want to get value outside from container.
 ```
+
+The point is that your methods and function return one type. Usually they return value or NULL, so it lead to 
+additional IFs.
+
+You may notice that Maybe can't tell what exactly happened. No entity in DB or it was connection issue?
+User [Either](either.md) if error is matter for you.

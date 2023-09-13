@@ -28,7 +28,7 @@ class Either extends Monad
     /**
      * @param bool $validValue
      * @param mixed $value
-     * @return \Basko\Functional\Functor\Either|static
+     * @return \Basko\Functional\Functor\Either
      */
     public static function of($validValue, $value)
     {
