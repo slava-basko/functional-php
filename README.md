@@ -24,6 +24,7 @@ Here you can find available function.
 
 Other useful things.
 * [Maybe](docs/maybe.md)
+* [Either](docs/either.md)
 * [Optional](docs/optional.md)
 
 ## OOP 🤝 FP
