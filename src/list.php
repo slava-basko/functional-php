@@ -566,7 +566,7 @@ function flatten($list)
 
     $result = [];
     foreach ($list as $value) {
-        if (is_array($value)) {
+        if (is_array($value) || $value instanceof Traversable) {
             $result = array_merge($result, flatten($value));
         } else {
             $result[] = $value;
@@ -577,6 +577,61 @@ function flatten($list)
 }
 
 define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten', false);
+
+/**
+ * Takes a nested combination of list and returns their contents as a single, flat list.
+ * Keys concatenated by `.` and element index.
+ *
+ * ```php
+ * flatten_with_keys([
+ *  'title' => 'Some title',
+ *  'body' => 'content',
+ *  'comments' => [
+ *      [
+ *          'author' => 'user1',
+ *          'body' => 'comment body 1'
+ *      ],
+ *      [
+ *          'author' => 'user2',
+ *          'body' => 'comment body 2'
+ *      ]
+ *  ]
+ * ]);
+ *
+ * //  [
+ * //      'title' => 'Some title',
+ * //      'body' => 'content',
+ * //      'comments.0.author' => 'user1',
+ * //      'comments.0.body' => 'comment body 1',
+ * //      'comments.1.author' => 'user2',
+ * //      'comments.1.body' => 'comment body 2',
+ * //  ]
+ * ```
+ *
+ * @param \Traversable|array $list
+ * @return array
+ * @no-named-arguments
+ */
+function flatten_with_keys($list)
+{
+    $args = func_get_args();
+    $prefix = (!array_key_exists(1, $args) || is_null($args[1])) ? '' : $args[1];
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $result = [];
+    foreach ($list as $key => $value) {
+        if (is_array($value) || $value instanceof Traversable) {
+            $result = array_merge($result, flatten_with_keys($value, $prefix . $key . '.'));
+        } else {
+            $result[$prefix . $key] = $value;
+        }
+    }
+
+    return $result;
+}
+
+define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_keys', false);
 
 /**
  * Insert a given value between each element of a collection.

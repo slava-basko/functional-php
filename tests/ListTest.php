@@ -284,6 +284,34 @@ class ListTest extends BaseTest
         $this->assertSame([null, null], f\flatten([[null], null]));
     }
 
+    public function test_flatten_with_keys()
+    {
+        $this->assertEquals(
+            [
+                'title' => 'Some title',
+                'body' => 'content',
+                'comments.0.author' => 'user1',
+                'comments.0.body' => 'comment body 1',
+                'comments.1.author' => 'user2',
+                'comments.1.body' => 'comment body 2',
+            ],
+            f\flatten_with_keys([
+                'title' => 'Some title',
+                'body' => 'content',
+                'comments' => [
+                    [
+                        'author' => 'user1',
+                        'body' => 'comment body 1'
+                    ],
+                    [
+                        'author' => 'user2',
+                        'body' => 'comment body 2'
+                    ]
+                ]
+            ])
+        );
+    }
+
     public function test_intersperse()
     {
         $a_intersperse = f\intersperse('a');
