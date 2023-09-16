@@ -725,6 +725,10 @@ define('Basko\Functional\converge', __NAMESPACE__ . '\\converge', false);
 /**
  * Applies function `$f` to provided argument.
  *
+ * ```php
+ * apply('strtoupper', 'slava'); // SLAVA
+ * ```
+ *
  * @param callable $f
  * @param mixed $args
  * @return ($args is null ? callable(...$args):mixed : mixed)

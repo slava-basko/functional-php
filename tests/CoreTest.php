@@ -308,6 +308,12 @@ class CoreTest extends BaseTest
         $this->assertEquals('2-1', $scoreboardInfo());
     }
 
+    public function test_apply()
+    {
+        $f = f\apply('strtoupper');
+        $this->assertEquals('SLAVA', $f('slava'));
+    }
+
     public function test_apply_to()
     {
         $call = f\apply_to('some');

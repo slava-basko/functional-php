@@ -274,8 +274,12 @@ $average = converge('div', ['array_sum', 'count']);
 $average([1, 2, 3, 4]); // 2.5
 ```
 
-### call
-TODO: rename to `apply`?
+### apply
+Applies function `$f` to provided argument.
+
+```php
+apply('strtoupper', 'slava'); // SLAVA
+```
 
 ### apply_to
 Create a function that will pass arguments to a given function.
@@ -635,6 +639,36 @@ Takes a nested combination of list and returns their contents as a single, flat 
 ```php
 flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
+```
+
+### flatten_with_keys
+Takes a nested combination of list and returns their contents as a single, flat list.
+Keys concatenated by `.` and element index.
+
+```php
+flatten_with_keys([
+ 'title' => 'Some title',
+ 'body' => 'content',
+ 'comments' => [
+     [
+         'author' => 'user1',
+         'body' => 'comment body 1'
+     ],
+     [
+         'author' => 'user2',
+         'body' => 'comment body 2'
+     ]
+ ]
+]);
+
+//  [
+//      'title' => 'Some title',
+//      'body' => 'content',
+//      'comments.0.author' => 'user1',
+//      'comments.0.body' => 'comment body 1',
+//      'comments.1.author' => 'user2',
+//      'comments.1.body' => 'comment body 2',
+//  ]
 ```
 
 ### intersperse
@@ -1419,3 +1453,4 @@ $parcelShape([
      'additional' => 'some additional element value that should not present in result'
 ]); // checked and coerced array will be returned and `additional` will be removed
 ```
+
