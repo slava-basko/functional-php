@@ -28,7 +28,8 @@
       "src/helpers.php",
       "src/string.php",
       "src/polyfill.php",
-      "src/type.php"
+      "src/type.php",
+      "src/io.php"
     ]
   },
   "autoload-dev": {

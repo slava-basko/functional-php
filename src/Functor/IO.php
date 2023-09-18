@@ -41,8 +41,13 @@ class IO extends Monad
     public function __invoke()
     {
         set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            $errLvl = error_reporting();
+            $okLvl = 0; // Prior to PHP 8.0.0 https://www.php.net/manual/en/language.operators.errorcontrol.php
+            if (PHP_VERSION_ID >= 80000) {
+                $okLvl = E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
+            }
             // error was suppressed with the @-operator
-            if (error_reporting() === 0) {
+            if ($errLvl === $okLvl) {
                 return false;
             }
 
