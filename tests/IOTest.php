@@ -86,10 +86,10 @@ class IOTest extends BaseTest
         $io()->match(
             f\N,
             function ($exception) {
-                $this->assertEquals(
-                    'Could not create temporary file in directory "/var/folders/r8/hcx5nmzd4jj7gfrbz0jq52340000gn/T/unwritable"',
+                $this->assertTrue(f\str_starts_with(
+                    'Could not create temporary file in directory',
                     $exception->getMessage()
-                );
+                ));
                 $this->assertInstanceOf(RuntimeException::class, $exception);
             }
         );
