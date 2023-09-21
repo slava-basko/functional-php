@@ -462,10 +462,10 @@ class HelpersTest extends BaseTest
             return true;
         };
 
-        $this->assertTrue(f\apply($func, 1, 2, 3));
-        $this->assertTrue(f\apply($func, [1, 2, 3]));
+        $this->assertTrue(f\call($func, 1, 2, 3));
+        $this->assertTrue(f\call($func, [1, 2, 3]));
 
-        $fP = f\apply($func);
+        $fP = f\call($func);
         $this->assertTrue($fP(1, 2, 3));
         $this->assertTrue($fP([1, 2, 3]));
     }

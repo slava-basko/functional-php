@@ -26,7 +26,7 @@ function write_file($chmod, $file = null, $content = null)
         $tmp = @tempnam($dir, 'wsw'); // @ to suppress notice for system temp dir fallback
 
         if ($tmp === false) {
-            throw Exception\IO\RuntimeException::unableToCreateTemporaryFile($dir);
+            throw Exception\IO\RuntimeException::unableToCreateTemporaryFile($dir); // TODO: return Either?
         }
 
         if (dirname($tmp) !== realpath($dir)) {

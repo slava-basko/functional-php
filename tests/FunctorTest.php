@@ -266,7 +266,7 @@ class FunctorTest extends BaseTest
 
         $pipe = f\pipe(
             $shouldContainAtSign,
-            f\lift_e($shouldContainDot)
+            f\lift_m($shouldContainDot)
         );
         $this->assertEquals(
             Either::right('name@example.com'),
