@@ -2,10 +2,15 @@
 
 namespace Basko\Functional;
 
+use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\IO;
 
 /**
  * Race conditions safe file write.
+ *
+ * ```php
+ * write_file(0666, '/path/to/file.txt', 'content');
+ * ```
  *
  * @param int $chmod
  * @param string $file
@@ -20,28 +25,31 @@ function write_file($chmod, $file = null, $content = null)
         return partial(write_file, $chmod, $file);
     }
 
-    return IO::of(function ($flags = 0) use ($chmod, $file, $content) {
+    return IO::of(function () use ($chmod, $file, $content) {
         $dir = dirname($file);
 
         $tmp = @tempnam($dir, 'wsw'); // @ to suppress notice for system temp dir fallback
 
         if ($tmp === false) {
-            throw Exception\IO\RuntimeException::unableToCreateTemporaryFile($dir); // TODO: return Either?
+            return Either::left(sprintf('Could not create temporary file in directory "%s"', $dir));
         }
 
         if (dirname($tmp) !== realpath($dir)) {
             unlink($tmp);
-            throw Exception\IO\RuntimeException::unableToCreateTemporaryFile($dir);
+
+            return Either::left(sprintf('Could not create temporary file in directory "%s"', $dir));
         }
 
-        if (file_put_contents($tmp, $content, $flags) === false) {
+        if (file_put_contents($tmp, $content) === false) {
             unlink($tmp);
-            throw Exception\IO\WriteContentException::unableToWriteContent($tmp);
+
+            return Either::left(sprintf('Could not write content to the file "%s"', $file));
         }
 
         if (chmod($tmp, $chmod & ~umask()) === false) {
             unlink($tmp);
-            throw Exception\IO\ChmodException::unableToChangeChmod($tmp);
+
+            return Either::left(sprintf('Could not change chmod of the file "%s"', $file));
         }
 
         // On windows try again if rename was not successful but target file is writable.
@@ -51,10 +59,16 @@ function write_file($chmod, $file = null, $content = null)
             }
 
             unlink($tmp);
-            throw Exception\IO\RenameException::unableToMoveFile($tmp, $file);
+
+            return Either::left(sprintf(
+                'Could not move file "%s" to location "%s": '
+                . 'either the source file is not readable, or the destination is not writable',
+                $tmp,
+                $file
+            ));
         }
 
-        return true;
+        return Either::right(true);
     });
 }
 

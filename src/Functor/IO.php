@@ -54,15 +54,17 @@ class IO extends Monad
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
 
+        $toE = f\if_else(f\is_instance_of(Monad::class), f\identity, Either::right);
+
         if (PHP_VERSION_ID >= 70000) {
             try {
-                $result = Either::right(call_user_func_array($this->value, func_get_args()));
+                $result = $toE(call_user_func_array($this->value, func_get_args()));
             } catch (\Throwable $exception) {
                 $result = Either::left($exception);
             }
         } else {
             try {
-                $result = Either::right(call_user_func_array($this->value, func_get_args()));
+                $result = $toE(call_user_func_array($this->value, func_get_args()));
             } catch (\Exception $exception) {
                 $result = Either::left($exception);
             }

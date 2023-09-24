@@ -3,7 +3,6 @@
 namespace Tests\Functional;
 
 use Basko\Functional as f;
-use Basko\Functional\Exception\IO\RuntimeException;
 
 class IOTest extends BaseTest
 {
@@ -22,9 +21,6 @@ class IOTest extends BaseTest
      */
     protected function tearDownTestFiles()
     {
-        if (file_exists(__DIR__ . '/test.php')) {
-            unlink(__DIR__ . '/test.php');
-        }
         if (file_exists(sys_get_temp_dir() . '/unwritable')) {
             unlink(sys_get_temp_dir() . '/unwritable');
         }
@@ -85,12 +81,8 @@ class IOTest extends BaseTest
         $io = f\write_file(0666, $dir . '/test', 'foo');
         $io()->match(
             f\N,
-            function ($exception) {
-                $this->assertTrue(f\str_starts_with(
-                    'Could not create temporary file in directory',
-                    $exception->getMessage()
-                ));
-                $this->assertInstanceOf(RuntimeException::class, $exception);
+            function ($errorMsg) {
+                $this->assertTrue(f\str_starts_with('Could not create temporary file in directory', $errorMsg));
             }
         );
     }
