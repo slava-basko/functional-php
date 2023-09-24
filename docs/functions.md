@@ -1445,3 +1445,4 @@ Read file contents.
 $io = f\read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```
+

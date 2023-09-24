@@ -86,14 +86,22 @@ class Optional extends Monad
 
     /**
      * @param string|int $key
-     * @param array $data
+     * @param array|object $data
      * @param callable|null $f
      * @return \Basko\Functional\Functor\Optional
      */
-    public static function fromArrayKey($key, array $data, callable $f = null)
+    public static function fromProp($key, $data, callable $f = null)
     {
-        if (array_key_exists($key, $data)) {
+        if ($data instanceof \Traversable) {
+            $data = iterator_to_array($data);
+        }
+
+        if (is_array($data) && array_key_exists($key, $data)) {
             return static::just(is_callable($f) ? call_user_func_array($f, [$data[$key]]) : $data[$key]);
+        }
+
+        if (is_object($data) && property_exists($data, $key)) {
+            return static::just(is_callable($f) ? call_user_func_array($f, [$data->{$key}]) : $data->{$key});
         }
 
         return static::nothing();

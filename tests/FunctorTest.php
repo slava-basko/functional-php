@@ -130,7 +130,7 @@ class FunctorTest extends BaseTest
             'description' => null,
         ];
 
-        $optionalDescription = Optional::fromArrayKey('description', $_POST);
+        $optionalDescription = Optional::fromProp('description', $_POST);
 
         $called = false;
         $func = function ($a) use (&$called) {
@@ -149,7 +149,7 @@ class FunctorTest extends BaseTest
             'description' => null,
         ];
 
-        $optionalNoKey = Optional::fromArrayKey('no_key', $_POST);
+        $optionalNoKey = Optional::fromProp('no_key', $_POST);
 
         $called = false;
         $func = function ($a) use (&$called) {
@@ -162,11 +162,36 @@ class FunctorTest extends BaseTest
         $this->assertFalse($called);
     }
 
+    public function test_optional_with_object()
+    {
+        $request = new \stdClass();
+        $request->title = 'Some title';
+        $request->description = null;
+
+        $optionalTitle = Optional::fromProp('title', $request);
+        $optionalTitle->match(
+            function ($value) {
+                $this->assertEquals('Some title', $value);
+            },
+            function () {
+                $this->fail('test_optional_with_object() failed');
+            }
+        );
+
+        $optionalNoKey = Optional::fromProp('no_key', $request);
+        $optionalNoKey->match(
+            function () {
+                $this->fail('test_optional_with_object() with no_key failed');
+            },
+            f\noop
+        );
+    }
+
     public function test_optional_type_no()
     {
         $this->assertEquals(
             Optional::nothing(),
-            Optional::fromArrayKey('no_key', [], f\type_string)
+            Optional::fromProp('no_key', [], f\type_string)
         );
     }
 
@@ -174,7 +199,7 @@ class FunctorTest extends BaseTest
     {
         $this->assertEquals(
             Optional::just('value'),
-            Optional::fromArrayKey('key', ['key' => 'value'], f\type_string)
+            Optional::fromProp('key', ['key' => 'value'], f\type_string)
         );
     }
 
@@ -182,7 +207,7 @@ class FunctorTest extends BaseTest
     {
         $this->assertType(
             'int',
-            Optional::fromArrayKey('key', ['key' => '1'], f\type_int)->extract()
+            Optional::fromProp('key', ['key' => '1'], f\type_int)->extract()
         );
     }
 
@@ -192,7 +217,7 @@ class FunctorTest extends BaseTest
             f\Exception\TypeException::class,
             'Could not convert "string" to type "int"'
         );
-        Optional::fromArrayKey('key', ['key' => 'non-convertable-string'], f\type_int);
+        Optional::fromProp('key', ['key' => 'non-convertable-string'], f\type_int);
     }
 
     public function test_either()

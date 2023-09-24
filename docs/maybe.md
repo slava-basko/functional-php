@@ -9,7 +9,7 @@ if(!is_null($value)) {
     // do something with $value
 }
 ```
-`Maybe` helps you avoid code duplication like `if(!is_null($value))`.
+`Maybe` helps you avoid code duplication like above.
 
 Let's imagine that you need took `$article` from repository, take only 22 characters from title, and make it caps.
 ```php

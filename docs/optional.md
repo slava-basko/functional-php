@@ -1,7 +1,7 @@
 # Optional
 
 Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
-Let's take CRUD operation as an example. Does a `null` `$description` mean "remove the description",
+Let's take CRUD operation as an example. Does a `null` value of `$description` mean "remove the description",
 or "skip setting the description"?
 
 ```php
@@ -67,8 +67,8 @@ class EditArticle {
                 
         return new self(
             prop('id', $post), 
-            Optional::fromArrayKey('title', $post), 
-            Optional::fromArrayKey('description', $post)
+            Optional::fromProp('title', $post), 
+            Optional::fromProp('description', $post)
         );
     }
 }

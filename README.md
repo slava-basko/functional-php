@@ -43,7 +43,7 @@ $collection->map(function ($value) {
     return strtoupper($value);
 });
 ```
-Because you can get an error like `ArgumentCountError : strtoupper() expects exactly 1 argument, X given` 
+You can get an error like `ArgumentCountError : strtoupper() expects exactly 1 argument, X given` 
 when you will write `$collection->map('strtoupper');`.
 Only user defined functions does not throw an exception when called with more arguments. But you can do this:
 ```php
@@ -102,7 +102,7 @@ You can read code `compose(sum, pluck('qty'))` like `sum of 'quantity' propertie
 Ok, I understand that this could be a bit odd for you. You get used to writing code differently.
 
 #### Pipe and partial application
-We have a `$product[]` and we need to create a common description from the `description` property of each one.
+We have a `$products[]` and we need to create a common description from the `description` property of each one.
 So, here are the basic steps:
 1. Fetch property 'description' from products.
 2. Strip whitespace from the beginning and end of each value.
