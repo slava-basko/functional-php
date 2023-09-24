@@ -38,6 +38,12 @@ class IO extends Monad
         return static::of(f\compose($f, $this->value));
     }
 
+    /**
+     * Runs IO
+     *
+     * @return \Basko\Functional\Functor\Monad
+     * @throws \ErrorException
+     */
     public function __invoke()
     {
         set_error_handler(function ($errno, $errstr, $errfile, $errline) {

@@ -2,6 +2,7 @@
 
 namespace Basko\Functional;
 
+use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\IO;
 
@@ -9,21 +10,26 @@ use Basko\Functional\Functor\IO;
  * Race conditions safe file write.
  *
  * ```php
- * write_file(0666, '/path/to/file.txt', 'content');
+ * $io = write_file(0666, '/path/to/file.txt', 'content');
+ * $io(); // Content write into file at this moment.
  * ```
  *
  * @param int $chmod
  * @param string $file
- * @param string $content
+ * @param mixed $content
  * @return callable|IO
  */
 function write_file($chmod, $file = null, $content = null)
 {
+    InvalidArgumentException::assertInteger($chmod, __FUNCTION__, 1);
+
     if (is_null($file) && is_null($content)) {
         return partial(write_file, $chmod);
     } elseif (is_null($content)) {
         return partial(write_file, $chmod, $file);
     }
+
+    InvalidArgumentException::assertString($file, __FUNCTION__, 2);
 
     return IO::of(function () use ($chmod, $file, $content) {
         $dir = dirname($file);
@@ -73,3 +79,71 @@ function write_file($chmod, $file = null, $content = null)
 }
 
 define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file', false);
+
+/**
+ * Read file contents.
+ *
+ * ```php
+ * $io = f\read_file('/path/to/file.txt');
+ * $content = $io(); // Content read from file at this moment.
+ * ```
+ *
+ * @param string $file
+ * @return IO
+ */
+function read_file($file)
+{
+    InvalidArgumentException::assertString($file, __FUNCTION__, 1);
+
+    return IO::of(function () use ($file) {
+        if (!file_exists($file)) {
+            return Either::left(sprintf('File "%s" does not exist', $file));
+        }
+
+        $handle = fopen($file, 'rb');
+
+        if (!is_resource($handle)) {
+            return Either::left(sprintf('Can not open file "%s"', $file));
+        }
+
+        /**
+         * @param string $file
+         * @return \Basko\Functional\Functor\Either
+         */
+        $read = function ($file) use (&$handle, &$contents) {
+            $contents = '';
+
+            if (flock($handle, LOCK_SH)) {
+                clearstatcache(true, $file);
+
+                $contents = fread($handle, filesize($file) ?: 1);
+
+                flock($handle, LOCK_UN);
+            } else {
+                return Either::left(sprintf('flock() failed on "%s"', $file));
+            }
+
+            return Either::right($contents);
+        };
+
+        if (PHP_VERSION_ID >= 70000) {
+            try {
+                $result = $read($file);
+            } catch (\Throwable $throwable) {
+                $result = Either::left($throwable);
+            } finally {
+                fclose($handle);
+            }
+        } else {
+            try {
+                $result = $read($file);
+            } catch (\Exception $exception) {
+                $result = Either::left($exception);
+            } finally {
+                fclose($handle);
+            }
+        }
+
+        return $result;
+    });
+}

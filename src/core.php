@@ -724,10 +724,10 @@ function converge(callable $convergingFunction, $branchingFunctions = null)
 define('Basko\Functional\converge', __NAMESPACE__ . '\\converge', false);
 
 /**
- * Applies function `$f` to provided argument.
+ * Calls function `$f` with provided argument(s).
  *
  * ```php
- * apply('strtoupper', 'slava'); // SLAVA
+ * call('strtoupper', 'slava'); // SLAVA
  * ```
  *
  * @param callable $f

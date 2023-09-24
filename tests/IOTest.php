@@ -97,4 +97,34 @@ class IOTest extends BaseTest
 
         self::assertSame('some data', file_get_contents($targetFile));
     }
+
+    public function testReadFile()
+    {
+        $io = f\read_file(__DIR__ . '/name.txt')->map(f\lift_m('ucfirst'));
+
+        $nameM = $io();
+
+        $nameM->match(
+            function ($name) {
+                $this->assertEquals('Slava', $name);
+            },
+            function () {
+                $this->fail('testReadFile test failed');
+            }
+        );
+
+        $this->assertEquals('Slava', $nameM->extract());
+    }
+
+    public function testReadFileFail()
+    {
+        $io = f\read_file('/non-existed-file.txt');
+
+        $io()->match(
+            function () {
+                $this->fail('testReadFileFail test failed');
+            },
+            f\partial([$this, 'assertEquals'], 'File "/non-existed-file.txt" does not exist')
+        );
+    }
 }

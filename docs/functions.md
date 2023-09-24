@@ -274,11 +274,11 @@ $average = converge('div', ['array_sum', 'count']);
 $average([1, 2, 3, 4]); // 2.5
 ```
 
-### apply
-Applies function `$f` to provided argument.
+### call
+Calls function `$f` with provided argument(s).
 
 ```php
-apply('strtoupper', 'slava'); // SLAVA
+call('strtoupper', 'slava'); // SLAVA
 ```
 
 ### apply_to
@@ -377,32 +377,8 @@ Applies a list of functions to a list of values.
 ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
 ```
 
-### lift_to
-Lift a function so that it accepts Monad as parameters. Lifted function returns specified Monad type.
-
-Note, that you cannot use curry on a lifted function.
-
 ### lift_m
-Lift a function so that it accepts Maybe as parameters. Lifted function returns Maybe.
-
-Note, that you cannot use curry on a lifted function.
-
-```php
-$plus = function ($a, $b) {
-     if (!is_int($a) || !is_int($b)) {
-         throw new \InvalidArgumentException('Params should INT');
-     }
-
-     return $a + $b;
-};
-$plus(3, Maybe::just(2)); // InvalidArgumentException: Params should INT
-
-$plusm = liftm($plus);
-$plusm(3, Maybe::just(2)); // Maybe::just(5)
-```
-
-### lift_e
-Lift a function so that it accepts Either as parameters. Lifted function returns Either.
+Lift a function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
 
 Note, that you cannot use curry on a lifted function.
 
@@ -1454,3 +1430,18 @@ $parcelShape([
 ]); // checked and coerced array will be returned and `additional` will be removed
 ```
 
+### write_file
+Race conditions safe file write.
+
+```php
+$io = write_file(0666, '/path/to/file.txt', 'content');
+$io(); // Content write into file at this moment.
+```
+
+### read_file
+Read file contents.
+
+```php
+$io = f\read_file('/path/to/file.txt');
+$content = $io(); // Content read from file at this moment.
+```
