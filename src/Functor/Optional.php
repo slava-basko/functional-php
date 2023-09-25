@@ -92,16 +92,18 @@ class Optional extends Monad
      */
     public static function fromProp($key, $data, callable $f = null)
     {
-        if ($data instanceof \Traversable) {
-            $data = iterator_to_array($data);
-        }
-
         if (is_array($data) && array_key_exists($key, $data)) {
             return static::just(is_callable($f) ? call_user_func_array($f, [$data[$key]]) : $data[$key]);
         }
 
         if (is_object($data) && property_exists($data, $key)) {
             return static::just(is_callable($f) ? call_user_func_array($f, [$data->{$key}]) : $data->{$key});
+        }
+
+        if ($data instanceof \ArrayAccess && $data->offsetExists($key)) {
+            return static::just(
+                is_callable($f) ? call_user_func_array($f, [$data->offsetGet($key)]) : $data->offsetGet($key)
+            );
         }
 
         return static::nothing();

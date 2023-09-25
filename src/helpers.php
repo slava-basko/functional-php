@@ -425,7 +425,7 @@ function prop($property, $object = null)
         return $object->{$property};
     }
 
-    if ($object instanceof \ArrayObject) {
+    if ($object instanceof \ArrayAccess) {
         return $object->offsetGet($property);
     }
 
