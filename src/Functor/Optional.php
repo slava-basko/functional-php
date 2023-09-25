@@ -86,7 +86,7 @@ class Optional extends Monad
 
     /**
      * @param string|int $key
-     * @param array|object $data
+     * @param array|\ArrayAccess|object $data
      * @param callable|null $f
      * @return \Basko\Functional\Functor\Optional
      */
