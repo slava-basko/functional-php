@@ -1215,6 +1215,13 @@ $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' =
 echo $user->first_name; // Slava
 ```
 
+### flip_values
+Swaps the values of keys `a` and `b`.
+
+```php
+flip_values('key1', 'key2', ['key1' => 'val1', 'key2' => 'val2']); // ['key1' => 'val2', 'key2' => 'val1']
+```
+
 ### str_split
 Alias of `explode`.
 

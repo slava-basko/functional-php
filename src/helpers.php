@@ -1218,3 +1218,37 @@ function construct_with_args($class, $constructArguments = null)
 }
 
 define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with_args', false);
+
+/**
+ * Swaps the values of keys `a` and `b`.
+ *
+ * ```php
+ * flip_values('key1', 'key2', ['key1' => 'val1', 'key2' => 'val2']); // ['key1' => 'val2', 'key2' => 'val1']
+ * ```
+ *
+ * @template T of array|object
+ * @param string $keyA
+ * @param string|null $keyB
+ * @param T $object
+ * @return callable|T
+ */
+function flip_values($keyA, $keyB = null, $object = null)
+{
+    InvalidArgumentException::assertString($keyA, __FUNCTION__, 1);
+
+    if (is_null($keyB) && is_null($object)) {
+        return partial(flip_values, $keyA);
+    } elseif (is_null($object)) {
+        return partial(flip_values, $keyA, $keyB);
+    }
+
+    InvalidArgumentException::assertString($keyB, __FUNCTION__, 2);
+    InvalidArgumentException::assertList($object, __FUNCTION__, 3);
+
+    $valueA = prop($keyA, $object);
+    $valueB = prop($keyB, $object);
+
+    return assoc($keyB, $valueA, assoc($keyA, $valueB, $object));
+}
+
+define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values', false);

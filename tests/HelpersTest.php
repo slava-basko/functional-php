@@ -469,4 +469,38 @@ class HelpersTest extends BaseTest
         $this->assertTrue($fP(1, 2, 3));
         $this->assertTrue($fP([1, 2, 3]));
     }
+
+    public function test_flip_values()
+    {
+        $data = [
+            'key1' => 'val1',
+            'key2' => 'val2',
+        ];
+        $data2 = (object)$data;
+
+        $f = f\flip_values('key1');
+        $flipAB = $f('key2');
+
+        $this->assertEquals(
+            [
+                'key1' => 'val2',
+                'key2' => 'val1',
+            ],
+            $flipAB($data)
+        );
+
+        $this->assertEquals('val1', $data2->key1);
+        $newData2 = $flipAB($data2);
+        $this->assertEquals('val2', $newData2->key1);
+        $this->assertEquals('val1', $newData2->key2);
+    }
+
+    public function test_flip_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\flip_values() expects parameter 1 to be string, NULL given'
+        );
+        f\flip_values(null, 'key', []);
+    }
 }
