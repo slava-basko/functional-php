@@ -18,14 +18,6 @@ class Either extends Monad
     protected $validValue = false;
 
     /**
-     * @param mixed $value
-     */
-    final protected function __construct($value)
-    {
-        parent::__construct($value);
-    }
-
-    /**
      * @param bool $validValue
      * @param mixed $value
      * @return \Basko\Functional\Functor\Either
@@ -75,7 +67,7 @@ class Either extends Monad
         }
 
         try {
-            return static::right(call_user_func_array($f, [$this->value]));
+            return static::right(call_user_func_array($f, [$this->extract()]));
         } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }
@@ -89,9 +81,9 @@ class Either extends Monad
     public function match(callable $right, callable $left)
     {
         if ($this->validValue) {
-            call_user_func_array($right, [$this->value]);
+            call_user_func_array($right, [$this->extract()]);
         } else {
-            call_user_func_array($left, [$this->value]);
+            call_user_func_array($left, [$this->extract()]);
         }
     }
 

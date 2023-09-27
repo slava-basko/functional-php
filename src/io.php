@@ -37,25 +37,25 @@ function write_file($chmod, $file = null, $content = null)
         $tmp = @tempnam($dir, 'wsw'); // @ to suppress notice for system temp dir fallback
 
         if ($tmp === false) {
-            return Either::left(sprintf('Could not create temporary file in directory "%s"', $dir));
+            throw new \Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 1);
         }
 
         if (dirname($tmp) !== realpath($dir)) {
             unlink($tmp);
 
-            return Either::left(sprintf('Could not create temporary file in directory "%s"', $dir));
+            throw new \Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 2);
         }
 
         if (file_put_contents($tmp, $content) === false) {
             unlink($tmp);
 
-            return Either::left(sprintf('Could not write content to the file "%s"', $file));
+            throw new \Exception(sprintf('Could not write content to the file "%s"', $file), 3);
         }
 
         if (chmod($tmp, $chmod & ~umask()) === false) {
             unlink($tmp);
 
-            return Either::left(sprintf('Could not change chmod of the file "%s"', $file));
+            throw new \Exception(sprintf('Could not change chmod of the file "%s"', $file), 4);
         }
 
         // On windows try again if rename was not successful but target file is writable.
@@ -66,15 +66,15 @@ function write_file($chmod, $file = null, $content = null)
 
             unlink($tmp);
 
-            return Either::left(sprintf(
+            throw new \Exception(sprintf(
                 'Could not move file "%s" to location "%s": '
                 . 'either the source file is not readable, or the destination is not writable',
                 $tmp,
                 $file
-            ));
+            ), 5);
         }
 
-        return Either::right(true);
+        return true;
     });
 }
 
@@ -97,18 +97,19 @@ function read_file($file)
 
     return IO::of(function () use ($file) {
         if (!file_exists($file)) {
-            return Either::left(sprintf('File "%s" does not exist', $file));
+            throw new \Exception(sprintf('File "%s" does not exist', $file), 1);
         }
 
         $handle = fopen($file, 'rb');
 
         if (!is_resource($handle)) {
-            return Either::left(sprintf('Can not open file "%s"', $file));
+            throw new \Exception(sprintf('Can not open file "%s"', $file), 2);
         }
 
         /**
-         * @param string $file
-         * @return \Basko\Functional\Functor\Either
+         * @param $file
+         * @return false|string
+         * @throws \Exception
          */
         $read = function ($file) use (&$handle, &$contents) {
             $contents = '';
@@ -120,30 +121,16 @@ function read_file($file)
 
                 flock($handle, LOCK_UN);
             } else {
-                return Either::left(sprintf('flock() failed on "%s"', $file));
+                throw new \Exception(sprintf('flock() failed on "%s"', $file), 3);
             }
 
-            return Either::right($contents);
+            return $contents;
         };
 
-        if (PHP_VERSION_ID >= 70000) {
-            try {
-                $result = $read($file);
-            } catch (\Throwable $throwable) {
-                $result = Either::left($throwable);
-            } finally {
-                fclose($handle);
-            }
-        } else {
-            try {
-                $result = $read($file);
-            } catch (\Exception $exception) {
-                $result = Either::left($exception);
-            } finally {
-                fclose($handle);
-            }
+        try {
+            return $read($file);
+        } finally {
+            fclose($handle);
         }
-
-        return $result;
     });
 }

@@ -16,14 +16,6 @@ class Maybe extends Monad
 
     /**
      * @param mixed $value
-     */
-    final protected function __construct($value)
-    {
-        parent::__construct($value);
-    }
-
-    /**
-     * @param mixed $value
      * @return \Basko\Functional\Functor\Maybe
      */
     public static function just($value)
@@ -45,8 +37,8 @@ class Maybe extends Monad
      */
     public function map(callable $f)
     {
-        if (!is_null($this->value)) {
-            return static::just(call_user_func_array($f, [$this->value]));
+        if (!is_null($this->extract())) {
+            return static::just(call_user_func_array($f, [$this->extract()]));
         }
 
         return $this::nothing();
@@ -59,8 +51,8 @@ class Maybe extends Monad
      */
     public function match(callable $just, callable $nothing)
     {
-        if (!is_null($this->value)) {
-            call_user_func_array($just, [$this->value]);
+        if (!is_null($this->extract())) {
+            call_user_func_array($just, [$this->extract()]);
         } else {
             call_user_func($nothing);
         }
@@ -73,7 +65,7 @@ class Maybe extends Monad
      */
     public function isJust()
     {
-        return is_null($this->value) === false;
+        return is_null($this->extract()) === false;
     }
 
     /**
@@ -83,6 +75,6 @@ class Maybe extends Monad
      */
     public function isNothing()
     {
-        return is_null($this->value) === true;
+        return is_null($this->extract()) === true;
     }
 }

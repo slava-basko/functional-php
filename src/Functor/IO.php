@@ -9,24 +9,19 @@ class IO extends Monad
     const of = "Basko\Functional\Functor\IO::of";
 
     /**
-     * @param callable $value
-     */
-    final protected function __construct(callable $value)
-    {
-        parent::__construct($value);
-    }
-
-    /**
-     * @param callable $value
+     * Wraps unsafe IO function `$f` like: read file, DB fetch, HTTP requests, etc.
+     * IMPORTANT: throw Exception in `$f` to clearly show error path.
+     *
+     * @param callable $f
      * @return \Basko\Functional\Functor\IO
      */
-    public static function of(callable $value)
+    public static function of(callable $f)
     {
-        if ($value instanceof static) {
-            return $value;
+        if ($f instanceof static) {
+            return $f;
         }
 
-        return new static($value);
+        return new static($f);
     }
 
     /**
@@ -35,7 +30,7 @@ class IO extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(f\compose($f, $this->value));
+        return static::of(f\compose($f, $this->extract()));
     }
 
     /**
@@ -60,17 +55,15 @@ class IO extends Monad
             throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
 
-        $toE = f\if_else(f\is_instance_of(Monad::class), f\identity, Either::right);
-
         if (PHP_VERSION_ID >= 70000) {
             try {
-                $result = $toE(call_user_func_array($this->value, func_get_args()));
+                $result = Either::right(call_user_func_array($this->extract(), func_get_args()));
             } catch (\Throwable $exception) {
                 $result = Either::left($exception);
             }
         } else {
             try {
-                $result = $toE(call_user_func_array($this->value, func_get_args()));
+                $result = Either::right(call_user_func_array($this->extract(), func_get_args()));
             } catch (\Exception $exception) {
                 $result = Either::left($exception);
             }

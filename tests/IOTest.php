@@ -81,8 +81,8 @@ class IOTest extends BaseTest
         $io = f\write_file(0666, $dir . '/test', 'foo');
         $io()->match(
             f\N,
-            function ($errorMsg) {
-                $this->assertTrue(f\str_starts_with('Could not create temporary file in directory', $errorMsg));
+            function (\Exception $errorMsg) {
+                $this->assertTrue(f\str_starts_with('Could not create temporary file in directory', $errorMsg->getMessage()));
             }
         );
     }
@@ -100,7 +100,7 @@ class IOTest extends BaseTest
 
     public function testReadFile()
     {
-        $io = f\read_file(__DIR__ . '/name.txt')->map(f\lift_m('ucfirst'));
+        $io = f\read_file(__DIR__ . '/name.txt')->map('ucfirst');
 
         $nameM = $io();
 
@@ -124,7 +124,12 @@ class IOTest extends BaseTest
             function () {
                 $this->fail('testReadFileFail test failed');
             },
-            f\partial([$this, 'assertEquals'], 'File "/non-existed-file.txt" does not exist')
+            function (\Exception $exception) {
+                $this->assertEquals(
+                    'File "/non-existed-file.txt" does not exist',
+                    $exception->getMessage()
+                );
+            }
         );
     }
 }
