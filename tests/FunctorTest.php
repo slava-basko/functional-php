@@ -339,7 +339,14 @@ class FunctorTest extends BaseTest
 
         $result = $m(__DIR__ . '/name.txt');
         $this->assertTrue($result->isRight());
-        $this->assertEquals('Slavik', $result->extract());
+        $result->match(
+            function ($value) {
+                $this->assertEquals('Slavik', $value);
+            },
+            function () {
+                $this->fail('test_io() failed');
+            }
+        );
     }
 
     public function test_io_falsy()

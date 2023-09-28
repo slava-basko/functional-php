@@ -66,7 +66,7 @@ class IOTest extends BaseTest
         $io = f\write_file($chmod, $targetFile, 'content');
         $io()->match(
             [$this, 'assertTrue'],
-            f\N
+            [$this, 'fail']
         );
         umask($currentUmask);
 
@@ -80,7 +80,7 @@ class IOTest extends BaseTest
 
         $io = f\write_file(0666, $dir . '/test', 'foo');
         $io()->match(
-            f\N,
+            [$this, 'fail'],
             function (\Exception $errorMsg) {
                 $this->assertTrue(f\str_starts_with('Could not create temporary file in directory', $errorMsg->getMessage()));
             }

@@ -48,12 +48,12 @@ class Either extends Monad
     /**
      * Aka "failure"
      *
-     * @param mixed $error
+     * @param mixed $value
      * @return \Basko\Functional\Functor\Either
      */
-    public static function left($error)
+    public static function left($value)
     {
-        return static::of(false, $error);
+        return static::of(false, $value);
     }
 
     /**
