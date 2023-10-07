@@ -16,7 +16,7 @@ class IO extends Monad
      * @param callable $f
      * @return \Basko\Functional\Functor\IO
      */
-    public static function of(callable $f): IO
+    public static function of(callable $f)
     {
         if ($f instanceof static) {
             return $f;
