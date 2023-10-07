@@ -19,6 +19,8 @@ abstract class Monad
 
     abstract public function map(callable $f);
 
+    abstract public function flatMap(callable $f);
+
     /**
      * @return mixed
      */

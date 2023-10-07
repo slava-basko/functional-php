@@ -12,9 +12,18 @@ class Constant extends Monad
 
     /**
      * @param callable $f
-     * @return $this
+     * @return \Basko\Functional\Functor\Constant
      */
     public function map(callable $f)
+    {
+        return $this;
+    }
+
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Constant
+     */
+    public function flatMap(callable $f)
     {
         return $this;
     }

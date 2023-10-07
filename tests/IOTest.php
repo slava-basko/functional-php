@@ -36,10 +36,7 @@ class IOTest extends BaseTest
         $fileIO666AndPath = $fileIO666($targetFile);
 
         $io = $fileIO666AndPath('some data');
-        $io()->match(
-            [$this, 'assertTrue'],
-            f\N
-        );
+        $this->assertTrue($io());
 
         self::assertSame('some data', file_get_contents($targetFile));
     }
@@ -64,10 +61,7 @@ class IOTest extends BaseTest
         $currentUmask = umask($umask);
 
         $io = f\write_file($chmod, $targetFile, 'content');
-        $io()->match(
-            [$this, 'assertTrue'],
-            [$this, 'fail']
-        );
+        $this->assertTrue($io());
         umask($currentUmask);
 
         self::assertSame($expectedChmod, $this->getFilePermission($targetFile));
@@ -78,13 +72,12 @@ class IOTest extends BaseTest
         $dir = sys_get_temp_dir() . '/unwritable';
         touch($dir);
 
-        $io = f\write_file(0666, $dir . '/test', 'foo');
-        $io()->match(
-            [$this, 'fail'],
-            function (\Exception $errorMsg) {
-                $this->assertTrue(f\str_starts_with('Could not create temporary file in directory', $errorMsg->getMessage()));
-            }
+        $this->setExpectedException(
+            \Exception::class,
+            'Could not create temporary file in directory "' . $dir . '"'
         );
+        $io = f\write_file(0666, $dir . '/test', 'foo');
+        $io();
     }
 
     public function testRelativeDirectorySaves()
@@ -100,7 +93,10 @@ class IOTest extends BaseTest
 
     public function testReadFile()
     {
-        $io = f\read_file(__DIR__ . '/name.txt')->map('ucfirst');
+        $io = f\try_catch(
+            f\compose(f\Functor\Either::right, f\read_file(__DIR__ . '/name.txt')->map('ucfirst')),
+            f\N
+        );
 
         $nameM = $io();
 
@@ -118,18 +114,8 @@ class IOTest extends BaseTest
 
     public function testReadFileFail()
     {
+        $this->setExpectedException(\Exception::class, 'File "/non-existed-file.txt" does not exist');
         $io = f\read_file('/non-existed-file.txt');
-
-        $io()->match(
-            function () {
-                $this->fail('testReadFileFail test failed');
-            },
-            function (\Exception $exception) {
-                $this->assertEquals(
-                    'File "/non-existed-file.txt" does not exist',
-                    $exception->getMessage()
-                );
-            }
-        );
+        $io();
     }
 }

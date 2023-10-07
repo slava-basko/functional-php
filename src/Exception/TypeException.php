@@ -41,4 +41,25 @@ class TypeException extends Exception
     {
         return $this->target;
     }
+
+    /**
+     * @param mixed $value
+     * @param class-string $type
+     * @param string $callee
+     * @return void
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public static function assertReturnType($value, $type, $callee)
+    {
+        if (!$value instanceof $type) {
+            throw new static(
+                sprintf(
+                    '%s(): Return value must be of type %s, %s returned',
+                    $callee,
+                    $type,
+                    is_object($value) ? get_class($value) : get_debug_type($value)
+                )
+            );
+        }
+    }
 }

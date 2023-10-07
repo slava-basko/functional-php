@@ -14,6 +14,25 @@ class FunctorTest extends BaseTest
         $this->assertEquals(f\Functor\Identity::of(6), f\Functor\Identity::of(3)->map(f\multiply(2)));
     }
 
+    public function test_identity_flat_map()
+    {
+        $this->assertEquals(
+            f\Functor\Identity::of(6),
+            f\Functor\Identity::of(3)->flatMap(function ($x) {
+                return f\Functor\Identity::of($x * 2);
+            })
+        );
+    }
+
+    public function test_identity_flat_map_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\Functor\Identity::flatMap(): Return value must be of type Basko\Functional\Functor\Identity, int returned'
+        );
+        f\Functor\Identity::of(3)->flatMap(f\multiply(2));
+    }
+
     public function test_constant()
     {
         $this->assertEquals(f\Functor\Constant::of(3), f\Functor\Constant::of(3)->map(f\multiply(2)));
@@ -123,6 +142,25 @@ class FunctorTest extends BaseTest
         );
     }
 
+    public function test_maybe_flat_map()
+    {
+        $this->assertEquals(
+            f\Functor\Maybe::just(6),
+            f\Functor\Maybe::just(3)->flatMap(function ($x) {
+                return f\Functor\Maybe::just($x * 2);
+            })
+        );
+    }
+
+    public function test_maybe_flat_map_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\Functor\Maybe::flatMap(): Return value must be of type Basko\Functional\Functor\Maybe, int returned'
+        );
+        f\Functor\Maybe::just(3)->flatMap(f\multiply(2));
+    }
+
     public function test_optional()
     {
         $_POST = [
@@ -218,6 +256,25 @@ class FunctorTest extends BaseTest
             'Could not convert "string" to type "int"'
         );
         Optional::fromProp('key', ['key' => 'non-convertable-string'], f\type_int);
+    }
+
+    public function test_optional_flat_map()
+    {
+        $this->assertEquals(
+            f\Functor\Optional::just(6),
+            f\Functor\Optional::just(3)->flatMap(function ($x) {
+                return f\Functor\Optional::just($x * 2);
+            })
+        );
+    }
+
+    public function test_optional_flat_map_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\Functor\Optional::flatMap(): Return value must be of type Basko\Functional\Functor\Optional, int returned'
+        );
+        f\Functor\Optional::just(3)->flatMap(f\multiply(2));
     }
 
     public function test_either()
@@ -330,6 +387,25 @@ class FunctorTest extends BaseTest
         $this->assertTrue($failureCalled);
     }
 
+    public function test_either_flat_map()
+    {
+        $this->assertEquals(
+            f\Functor\Either::right(6),
+            f\Functor\Either::right(3)->flatMap(function ($x) {
+                return f\Functor\Either::right($x * 2);
+            })
+        );
+    }
+
+    public function test_either_flat_map_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\Functor\Either::flatMap(): Return value must be of type Basko\Functional\Functor\Either, int returned'
+        );
+        f\Functor\Either::right(3)->flatMap(f\multiply(2));
+    }
+
     public function test_io()
     {
         $m = f\Functor\IO::of('file_get_contents')
@@ -337,26 +413,30 @@ class FunctorTest extends BaseTest
             ->map(f\take(4))
             ->map(f\partial_r(f\concat, 'ik'));
 
-        $result = $m(__DIR__ . '/name.txt');
-        $this->assertTrue($result->isRight());
-        $result->match(
-            function ($value) {
-                $this->assertEquals('Slavik', $value);
-            },
-            function () {
-                $this->fail('test_io() failed');
-            }
-        );
+        $this->assertEquals('Slavik', $m(__DIR__ . '/name.txt'));
     }
 
     public function test_io_falsy()
     {
-        $m = f\Functor\IO::of('file_get_contents')->map('ucfirst');
+        $m = f\try_catch(
+            f\compose(f\Functor\Either::right, f\Functor\IO::of('file_get_contents')->map('ucfirst')),
+            f\compose(f\Functor\Either::left, f\invoker('getMessage'), f\identity)
+        );
 
         $result = $m(__DIR__ . '/non-existed-file.txt');
 
-        $this->assertTrue($result->isLeft());
-        $this->assertTrue(f\str_ends_with('No such file or directory', $result->extract()->getMessage()));
+        $this->assertTrue(
+            f\str_ends_with('Failed to open stream: No such file or directory', $result->extract())
+        );
+    }
+
+    public function test_io_flat_map_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Basko\Functional\Functor\IO::flatMap(): Return value must be of type Basko\Functional\Functor\IO, int returned'
+        );
+        f\Functor\IO::of(f\always(3))->flatMap(f\multiply(2));
     }
 
 }

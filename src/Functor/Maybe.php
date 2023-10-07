@@ -2,6 +2,7 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Exception\TypeException;
 use Basko\Functional\Functor\Traits\OfTrait;
 
 class Maybe extends Monad
@@ -37,11 +38,29 @@ class Maybe extends Monad
      */
     public function map(callable $f)
     {
-        if (!is_null($this->extract())) {
-            return static::just(call_user_func_array($f, [$this->extract()]));
+        if (is_null($this->value)) {
+            return $this::nothing();
         }
 
-        return $this::nothing();
+        return static::just(call_user_func($f, $this->value));
+    }
+
+    /**
+     * @param callable(mixed):\Basko\Functional\Functor\Maybe $f
+     * @return \Basko\Functional\Functor\Maybe
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public function flatMap(callable $f)
+    {
+        if (is_null($this->value)) {
+            return $this::nothing();
+        }
+
+        $result = call_user_func($f, $this->value);
+
+        TypeException::assertReturnType($result, static::class, __METHOD__);
+
+        return $result;
     }
 
     /**
@@ -51,8 +70,8 @@ class Maybe extends Monad
      */
     public function match(callable $just, callable $nothing)
     {
-        if (!is_null($this->extract())) {
-            call_user_func_array($just, [$this->extract()]);
+        if (!is_null($this->value)) {
+            call_user_func_array($just, [$this->value]);
         } else {
             call_user_func($nothing);
         }
@@ -65,7 +84,7 @@ class Maybe extends Monad
      */
     public function isJust()
     {
-        return is_null($this->extract()) === false;
+        return is_null($this->value) === false;
     }
 
     /**
@@ -75,6 +94,6 @@ class Maybe extends Monad
      */
     public function isNothing()
     {
-        return is_null($this->extract()) === true;
+        return is_null($this->value) === true;
     }
 }

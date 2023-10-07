@@ -2,6 +2,8 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Exception\TypeException;
+
 class Optional extends Monad
 {
     const of = "Basko\Functional\Functor\Optional::of";
@@ -56,10 +58,28 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return static::just(call_user_func_array($f, [$this->extract()]));
+            return static::just(call_user_func_array($f, [$this->value]));
         }
 
         return $this::nothing();
+    }
+
+    /**
+     * @param callable(mixed):\Basko\Functional\Functor\Optional $f
+     * @return \Basko\Functional\Functor\Optional
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public function flatMap(callable $f)
+    {
+        if ($this->hasValue) {
+            $result = call_user_func($f, $this->value);
+        } else {
+            $result = $this::nothing();
+        }
+
+        TypeException::assertReturnType($result, static::class, __METHOD__);
+
+        return $result;
     }
 
     /**
@@ -70,7 +90,7 @@ class Optional extends Monad
     public function match(callable $just, callable $nothing)
     {
         if ($this->hasValue) {
-            call_user_func_array($just, [$this->extract()]);
+            call_user_func_array($just, [$this->value]);
         } else {
             call_user_func($nothing);
         }

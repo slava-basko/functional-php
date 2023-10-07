@@ -3,6 +3,7 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional as f;
+use Basko\Functional\Exception\TypeException;
 
 class IO extends Monad
 {
@@ -15,7 +16,7 @@ class IO extends Monad
      * @param callable $f
      * @return \Basko\Functional\Functor\IO
      */
-    public static function of(callable $f)
+    public static function of(callable $f): IO
     {
         if ($f instanceof static) {
             return $f;
@@ -30,47 +31,34 @@ class IO extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(f\compose($f, $this->extract()));
+//        return static::of(function () use ($f) {
+//            return call_user_func($f, $this->__invoke());
+//        });
+
+        return static::of(f\compose($f, $this->value));
+    }
+
+    /**
+     * @param callable(mixed):\Basko\Functional\Functor\IO $f
+     * @return \Basko\Functional\Functor\IO
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public function flatMap(callable $f)
+    {
+        $result = call_user_func($f, $this->__invoke());
+
+        TypeException::assertReturnType($result, static::class, __METHOD__);
+
+        return $result;
     }
 
     /**
      * Runs IO
      *
-     * @return \Basko\Functional\Functor\Monad
-     * @throws \ErrorException
+     * @return mixed
      */
     public function __invoke()
     {
-        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-            $errLvl = error_reporting();
-            $okLvl = 0; // Prior to PHP 8.0.0 https://www.php.net/manual/en/language.operators.errorcontrol.php
-            if (PHP_VERSION_ID >= 80000) {
-                $okLvl = E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
-            }
-            // error was suppressed with the @-operator
-            if ($errLvl === $okLvl) {
-                return false;
-            }
-
-            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-        });
-
-        if (PHP_VERSION_ID >= 70000) {
-            try {
-                $result = Either::right(call_user_func_array($this->extract(), func_get_args()));
-            } catch (\Throwable $exception) {
-                $result = Either::left($exception);
-            }
-        } else {
-            try {
-                $result = Either::right(call_user_func_array($this->extract(), func_get_args()));
-            } catch (\Exception $exception) {
-                $result = Either::left($exception);
-            }
-        }
-
-        restore_error_handler();
-
-        return $result;
+        return call_user_func_array($this->value, func_get_args());
     }
 }

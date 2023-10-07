@@ -334,11 +334,38 @@ function try_catch(callable $tryer, callable $catcher = null)
 
     return function () use ($tryer, $catcher) {
         $args = func_get_args();
-        try {
-            return call_user_func_array($tryer, $args);
-        } catch (Exception $exception) {
-            return call_user_func_array($catcher, [$exception]);
+
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            $errLvl = error_reporting();
+            $okLvl = 0; // Prior to PHP 8.0.0 https://www.php.net/manual/en/language.operators.errorcontrol.php
+            if (PHP_VERSION_ID >= 80000) {
+                $okLvl = E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE;
+            }
+            // error was suppressed with the @-operator
+            if ($errLvl === $okLvl) {
+                return false;
+            }
+
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
+        if (PHP_VERSION_ID >= 70000) {
+            try {
+                $result = call_user_func_array($tryer, $args);
+            } catch (\Throwable $exception) {
+                $result = call_user_func_array($catcher, [$exception]);
+            }
+        } else {
+            try {
+                $result = call_user_func_array($tryer, $args);
+            } catch (\Exception $exception) {
+                $result = call_user_func_array($catcher, [$exception]);
+            }
         }
+
+        restore_error_handler();
+
+        return $result;
     };
 }
 

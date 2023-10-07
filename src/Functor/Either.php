@@ -2,6 +2,7 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Exception\TypeException;
 use Exception;
 
 class Either extends Monad
@@ -56,10 +57,6 @@ class Either extends Monad
         return static::of(false, $value);
     }
 
-    /**
-     * @param callable $f
-     * @return $this
-     */
     public function map(callable $f)
     {
         if (!$this->validValue) {
@@ -67,10 +64,32 @@ class Either extends Monad
         }
 
         try {
-            return static::right(call_user_func_array($f, [$this->extract()]));
+            return static::right(call_user_func($f, $this->value));
         } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }
+    }
+
+    /**
+     * @param callable(mixed):\Basko\Functional\Functor\Either $f
+     * @return \Basko\Functional\Functor\Either
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public function flatMap(callable $f)
+    {
+        if (!$this->validValue) {
+            return $this;
+        }
+
+        try {
+            $result = call_user_func($f, $this->value);
+        } catch (Exception $exception) {
+            $result = static::left($exception->getMessage());
+        }
+
+        TypeException::assertReturnType($result, static::class, __METHOD__);
+
+        return $result;
     }
 
     /**
