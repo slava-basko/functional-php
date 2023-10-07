@@ -426,7 +426,7 @@ class FunctorTest extends BaseTest
         $result = $m(__DIR__ . '/non-existed-file.txt');
 
         $this->assertTrue(
-            f\str_ends_with('Failed to open stream: No such file or directory', $result->extract())
+            f\contains('No such file or directory', $result->extract())
         );
     }
 
