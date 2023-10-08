@@ -328,6 +328,15 @@ class TypeTest extends BaseTest
         $this->assertEquals([$u1, $u2], f\type_list(f\type_of(\User::class), [$u1, $u2]));
     }
 
+    public function test_type_list_false()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'List element \'1\': Could not convert "string" to type "int"'
+        );
+        f\type_list(f\type_int, [1, 'two']);
+    }
+
     public function test_type_map()
     {
         $t = f\type_map(f\type_array_key);
@@ -415,5 +424,32 @@ class TypeTest extends BaseTest
         $comparableParcel = $parcel;
         array_pop($comparableParcel);
         $this->assertEquals($comparableParcel, $parcelShape($parcel));
+    }
+
+    public function test_type_shape_complex_fail()
+    {
+        $parcelShape = f\type_shape([
+            'products' => f\type_list(f\type_shape([
+                'description' => f\type_string,
+                'qty' => f\type_positive_int,
+                'price' => f\type_union(f\type_int, f\type_float),
+            ]))
+        ]);
+
+        $parcel = [
+            'products' => [
+                [
+                    'description' => 'product 1',
+                    'qty' => 'aaa',
+                    'price' => 50,
+                ]
+            ]
+        ];
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Shape element \'products\': List element \'0\': Shape element \'qty\': Could not convert "string" to type "int"'
+        );
+        $parcelShape($parcel);
     }
 }

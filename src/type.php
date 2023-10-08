@@ -385,6 +385,7 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key', fa
  * @param callable $type
  * @param T $value
  * @return ($value is null ? callable(T):array : array)
+ * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
 function type_list(callable $type, $value = null)
@@ -397,8 +398,16 @@ function type_list(callable $type, $value = null)
 
     $result = [];
 
-    foreach ($value as $v) {
-        $result[] = call_user_func($type, $v);
+    foreach ($value as $k => $v) {
+        try {
+            $result[] = call_user_func($type, $v);
+        } catch (TypeException $typeException) {
+            throw new TypeException(
+                'List element \'' . $k . '\': ' . $typeException->getMessage(),
+                0,
+                $typeException
+            );
+        }
     }
 
     return $result;
