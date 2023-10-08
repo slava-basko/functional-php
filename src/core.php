@@ -1058,3 +1058,89 @@ function lift_m(callable $f)
 }
 
 define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m', false);
+
+function _zip()
+{
+    $arrays = func_get_args();
+    $functionName = array_shift($arrays);
+    $callback = array_shift($arrays);
+
+    foreach ($arrays as $position => $arr) {
+        InvalidArgumentException::assertList($arr, $functionName, $position + 1);
+    }
+
+    $resultKeys = [];
+    foreach ($arrays as $arg) {
+        foreach ($arg as $index => $value) {
+            $resultKeys[] = $index;
+        }
+    }
+
+    $resultKeys = array_unique($resultKeys);
+
+    $result = [];
+
+    foreach ($resultKeys as $key) {
+        $zipped = [];
+
+        foreach ($arrays as $arg) {
+            $zipped[] = isset($arg[$key]) ? $arg[$key] : null;
+        }
+
+        $result[$key] = call_user_func($callback, $zipped);
+    }
+
+    return $result;
+}
+
+/**
+ * Zips two or more sequences.
+ *
+ * Note: This function is not curried because of no fixed arity.
+ *
+ * ```php
+ * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
+ * ```
+ *
+ * @param \Traversable|array $sequence1
+ * @param \Traversable|array $sequence2
+ * @return array
+ * @no-named-arguments
+ */
+function zip($sequence1, $sequence2)
+{
+    return call_user_func_array('Basko\Functional\_zip', array_merge([__FUNCTION__, identity], func_get_args()));
+}
+
+define('Basko\Functional\zip', __NAMESPACE__ . '\\zip', false);
+
+/**
+ * Zips two or more sequences with given function `$f`.
+ *
+ * Note: `$f` signature is `callable(array $arg):mixed`.
+ * As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
+ * But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
+ *
+ * ```php
+ * zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
+ * ```
+ *
+ * @param callable $f
+ * @param \Traversable|array $sequence1
+ * @param \Traversable|array $sequence2
+ * @return array|callable(...\Traversable|array):array
+ * @no-named-arguments
+ */
+function zip_with(callable $f, $sequence1 = null, $sequence2 = null)
+{
+    $args = func_get_args();
+    $f = array_shift($args);
+
+    if (empty($args)) {
+        return partial(zip_with, $f);
+    }
+
+    return call_user_func_array('Basko\Functional\_zip', array_merge([__FUNCTION__, $f], $args));
+}
+
+define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with', false);

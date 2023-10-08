@@ -6,6 +6,12 @@ Collection of PHP functions that allows you to write code in a declarative way.
 #### Name convention
 The `snake_case` is used to be closer to a PHP native functions.
 
+#### Zero dependencies
+This library has no dependencies on any external libs.
+
+#### PHP 5.5+
+Supporting PHP versions since 5.5. Why? Because legacy projects also deserve a bit of functional approach.
+
 #### "Data last" principe
 The data to be operated on is generally supplied last (last functions argument).
 Functions is more convenient for currying in this way.

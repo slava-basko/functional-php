@@ -382,6 +382,26 @@ Lift a function so that it accepts `Monad` as parameters. Lifted function return
 
 Note, that you cannot use curry on a lifted function.
 
+### zip
+Zips two or more sequences.
+
+Note: This function is not curried because of no fixed arity.
+
+```php
+zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
+```
+
+### zip_with
+Zips two or more sequences with given function `$f`.
+
+Note: `$f` signature is `callable(array $arg):mixed`.
+As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
+But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
+
+```php
+zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
+```
+
 ### count_args
 Return number of function arguments.
 

@@ -489,4 +489,35 @@ class CoreTest extends BaseTest
             $containsm('foo', f\Functor\Maybe::just('foobar'))
         );
     }
+
+    public function test_zip()
+    {
+        $result = [[1, 'a'], [2, 'b'], [3, 'c']];
+        $this->assertEquals($result, f\zip([1, 2, 3], ['a', 'b', 'c']));
+        $this->assertEquals($result, f\zip(
+            new \ArrayIterator([1, 2, 3]),
+            new \ArrayIterator(['a', 'b', 'c'])
+        ));
+
+        $this->assertEquals([[1, 'a'], [2, 'b'], [null, 'c']], f\zip([1, 2], ['a', 'b', 'c']));
+        $this->assertEquals([[1, 'a', 'A'], [2, 'b', 'B']], f\zip([1, 2], ['a', 'b'], ['A', 'B']));
+    }
+
+    public function test_zip_fail()
+    {
+        $this->setExpectedException(
+            \InvalidArgumentException::class,
+            'Basko\Functional\zip() expects parameter 2 to be array or instance of Traversable, string given'
+        );
+        f\zip([1, 2], 'some string');
+    }
+
+    public function test_zip_with()
+    {
+        $sumZip = f\zip_with(f\sum);
+        $concatZip = f\zip_with(f\join('-'));
+
+        $this->assertEquals([11, 22, 33], $sumZip([1, 2, 3], [10, 20, 30]));
+        $this->assertEquals(['one-один', 'two-два'], $concatZip(['one', 'two'], ['один', 'два']));
+    }
 }
