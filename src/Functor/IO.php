@@ -31,10 +31,6 @@ class IO extends Monad
      */
     public function map(callable $f)
     {
-//        return static::of(function () use ($f) {
-//            return call_user_func($f, $this->__invoke());
-//        });
-
         return static::of(f\compose($f, $this->value));
     }
 
