@@ -780,6 +780,13 @@ Perform `$a / $b`.
 div(4, 2); // 2
 ```
 
+### modulo
+Modulo of two numbers.
+
+```php
+modulo(1089, 37)); // 16
+```
+
 ### multiply
 Perform `$a$b`.
 
@@ -1240,6 +1247,19 @@ Swaps the values of keys `a` and `b`.
 
 ```php
 flip_values('key1', 'key2', ['key1' => 'val1', 'key2' => 'val2']); // ['key1' => 'val2', 'key2' => 'val1']
+```
+
+### is_nth
+Function that helps you determine every Nth iteration of a loop.
+
+```php
+$is10thIteration = is_nth(10);
+
+for ($i = 1; $i <= 20; $i++) {
+     if ($is10thIteration($i)) {
+         // do something on each 10th iteration (when $i is 10 and 20 in this case)
+     }
+}
 ```
 
 ### str_split

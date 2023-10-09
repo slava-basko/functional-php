@@ -130,6 +130,33 @@ function div($a, $b = null)
 define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
 
 /**
+ * Modulo of two numbers.
+ *
+ * ```php
+ * modulo(1089, 37)); // 16
+ * ```
+ *
+ * @template T of int
+ * @param T $a
+ * @param T $b
+ * @return ($b is null ? callable(T $b):T : T)
+ */
+function modulo($a, $b = null)
+{
+    InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
+
+    if (is_null($b)) {
+        return partial(flipped(modulo), $a);
+    }
+
+    InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
+
+    return $a % $b;
+}
+
+define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo', false);
+
+/**
  * Perform `$a * $b`.
  *
  * ```php

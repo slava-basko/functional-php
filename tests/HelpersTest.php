@@ -503,4 +503,20 @@ class HelpersTest extends BaseTest
         );
         f\flip_values(null, 'key', []);
     }
+
+    public function test_is_nth()
+    {
+        $checkStr = '';
+
+        for ($i = 1; $i <= 20; $i++) {
+            if (f\is_nth(10, $i)) {
+                $checkStr .= "This is the 10th iteration ($i);";
+            }
+        }
+
+        $this->assertEquals(
+            'This is the 10th iteration (10);This is the 10th iteration (20);',
+            $checkStr
+        );
+    }
 }

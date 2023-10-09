@@ -41,6 +41,16 @@ class MathTest extends BaseTest
         $this->assertSame(2, $div2(4));
     }
 
+    public function test_modulo()
+    {
+        $this->assertEquals(20 % 10, f\modulo(20, 10)); // 0
+        $this->assertEquals(1089 % 37, f\modulo(1089, 37)); // 16
+        $this->assertEquals(1089 % -37, f\modulo(1089, -37)); // 16
+        $this->assertEquals(-1089 % 37, f\modulo(-1089, 37)); // -16
+        $this->assertEquals(-1089 % -37, f\modulo(-1089, -37)); // -16
+        $this->assertEquals(-55 % -4, f\modulo(-55, -4)); // -3
+    }
+
     public function test_multiply()
     {
         $this->assertSame(8, f\multiply(4, 2));

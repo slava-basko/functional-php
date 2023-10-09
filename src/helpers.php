@@ -1279,3 +1279,34 @@ function flip_values($keyA, $keyB = null, $object = null)
 }
 
 define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values', false);
+
+/**
+ * Function that helps you determine every Nth iteration of a loop.
+ *
+ * ```php
+ * $is10thIteration = is_nth(10);
+ *
+ * for ($i = 1; $i <= 20; $i++) {
+ *      if ($is10thIteration($i)) {
+ *          // do something on each 10th iteration (when $i is 10 and 20 in this case)
+ *      }
+ * }
+ * ```
+ *
+ * @template T of int
+ * @param T $n
+ * @param T $i
+ * @return ($i is null ? callable(T $i):T : bool)|bool
+ */
+function is_nth($n, $i = null)
+{
+    if (is_null($i)) {
+        return function ($i) use ($n) {
+            return modulo($i, $n) === 0;
+        };
+    }
+
+    return modulo($i, $n) === 0;
+}
+
+define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth', false);

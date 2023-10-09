@@ -141,11 +141,11 @@ $commonDescription = trim(
 Quite big cognitive load 🤯. Let's try to reorder it and make it more readable.
 ```php
 $descriptions = array_column($products, 'description');
-$descriptions = array_map('trim', $descriptions);
-$descriptions = array_filter($descriptions, 'strlen');
-$description = implode(', ', $descriptions);
-$description = substr($description, 0, 34);
-$commonDescription = trim($description, ', ');
+$trimmedDescriptions = array_map('trim', $descriptions);
+$nonEmptyDescriptions = array_filter($trimmedDescriptions, 'strlen');
+$descriptionString = implode(', ', $nonEmptyDescriptions);
+$shortDescription = substr($descriptionString, 0, 34);
+$commonDescription = trim($shortDescription, ', ');
 ```
 Now it's more readable, but we need to mess with states.
 
@@ -161,6 +161,19 @@ $commonDescription = pipe(
 )($products);
 ```
 This is precisely what we need. It's in a natural order. No intermediate states.
+
+One more example where we need to get user initials.
+```php
+$initials = pipe(
+    partial('explode', ' '),
+    map(pipe(take(1), partial_r(concat, '.'))),
+    join(' ')
+)('Slava Basko');
+
+// $initials = 'S. B.'
+```
+I know, maybe that line looks weired to you, but the idea of composing functions without having to stop at every step 
+to consider the control flow structures and what the parameters are going to be named is pretty powerful.
 
 #### What about some real-life example?
 No problem, this project has a doc auto-generation script.
