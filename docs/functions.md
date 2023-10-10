@@ -1262,6 +1262,32 @@ for ($i = 1; $i <= 20; $i++) {
 }
 ```
 
+### publish
+Publishes any private method.
+
+```php
+class Collection {
+
+     public function filterNumbers(array $collection) {
+         return select([$this, 'isInt'], $collection); // This will throw an exception
+     }
+
+     private function isInt($n) {
+         return is_int($n);
+     }
+
+}
+```
+The above will generate an error because `isInt` is a private method.
+
+This will work.
+```php
+public function filterNumbers(array $collection)
+{
+     return select(publish('isInt', $this), $collection);
+}
+```
+
 ### str_split
 Alias of `explode`.
 

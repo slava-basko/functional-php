@@ -124,3 +124,11 @@ class ClassWithMonadValue
         return strrev($value);
     }
 }
+
+class ClassWithPrivateMethod
+{
+    private function privateMethod()
+    {
+        return 'private';
+    }
+}

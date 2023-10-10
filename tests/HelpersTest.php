@@ -519,4 +519,12 @@ class HelpersTest extends BaseTest
             $checkStr
         );
     }
+
+    public function test_publish()
+    {
+        $privateMethodPublish = f\publish('privateMethod');
+        $object = new \ClassWithPrivateMethod();
+        $f = $privateMethodPublish($object);
+        $this->assertEquals('private', call_user_func($f));
+    }
 }

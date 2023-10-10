@@ -1296,7 +1296,7 @@ define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values', false);
  * @template T of int
  * @param T $n
  * @param T $i
- * @return ($i is null ? callable(T $i):T : bool)|bool
+ * @return ($i is null ? callable(T $i):T : bool)
  */
 function is_nth($n, $i = null)
 {
@@ -1310,3 +1310,52 @@ function is_nth($n, $i = null)
 }
 
 define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth', false);
+
+/**
+ * Publishes any private method.
+ *
+ * ```php
+ * class Collection {
+ *
+ *      public function filterNumbers(array $collection) {
+ *          return select([$this, 'isInt'], $collection); // This will throw an exception
+ *      }
+ *
+ *      private function isInt($n) {
+ *          return is_int($n);
+ *      }
+ *
+ * }
+ * ```
+ * The above will generate an error because `isInt` is a private method.
+ *
+ * This will work.
+ * ```php
+ * public function filterNumbers(array $collection)
+ * {
+ *      return select(publish('isInt', $this), $collection);
+ * }
+ * ```
+ *
+ * @param string $method
+ * @param object $context Used for both "newscope" and "newthis"
+ * @return ($context is null ? callable(object):callable : callable)
+ */
+function publish($method, $context = null)
+{
+    InvalidArgumentException::assertString($method, __FUNCTION__, 1);
+
+    if (is_null($context)) {
+        return partial(publish, $method);
+    }
+
+    $caller = function () use ($method) {
+        $args = func_get_args();
+
+        return call_user_func_array([$this, $method], $args);
+    };
+
+    return $caller->bindTo($context, $context);
+}
+
+define('Basko\Functional\publish', __NAMESPACE__ . '\\publish', false);
