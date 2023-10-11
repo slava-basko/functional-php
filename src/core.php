@@ -875,6 +875,51 @@ function on(callable $f, callable $g = null)
 define('Basko\Functional\on', __NAMESPACE__ . '\\on', false);
 
 /**
+ * Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
+ * Also known as the Y combinator.
+ *
+ * ```php
+ * function factorial($n) {
+ *      return ($n <= 1) ? 1 : $n * factorial($n - 1);
+ * }
+ *
+ * echo factorial(5); // 120, no problem here
+ *
+ * $factorial = function ($n) {
+ *      return ($n <= 1) ? 1 : $n * call_user_func(__FUNCTION__, $n - 1);
+ * };
+ *
+ * echo $factorial(5); // Exception will be thrown
+ * ```
+ *
+ * You can't call anonymous function recursively. But you can use `y` to make it possible.
+ * ```php
+ * $factorial = y(function ($fact) {
+ *      return function ($n) use ($fact) {
+ *          return ($n <= 1) ? 1 : $n * $fact($n - 1);
+ *      };
+ * });
+ *
+ * echo $factorial(5); // 120
+ * ```
+ *
+ * @param callable $f
+ * @return mixed
+ */
+function y(callable $f)
+{
+    $g = function ($fn) use ($f) {
+        return call_user_func($f, function () use ($fn) {
+            return call_user_func_array(call_user_func($fn, $fn), func_get_args());
+        });
+    };
+
+    return call_user_func($g, $g);
+}
+
+define('Basko\Functional\y', __NAMESPACE__ . '\\y', false);
+
+/**
  * Acts as the boolean `and` statement.
  *
  * ```php

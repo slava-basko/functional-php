@@ -398,6 +398,17 @@ class CoreTest extends BaseTest
         $this->assertTrue($containsInsensitive2('o', 'FOO'));
     }
 
+    public function test_y()
+    {
+        $factorial = f\y(function ($fact) {
+            return function ($n) use ($fact) {
+                return ($n <= 1) ? 1 : $n * $fact($n - 1);
+            };
+        });
+
+        $this->assertEquals(120, $factorial(5));
+    }
+
     public function test_both()
     {
         $this->assertTrue(f\both(f\T(), f\T()));
