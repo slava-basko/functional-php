@@ -332,6 +332,35 @@ $containsInsensitive = on(contains, 'strtolower');
 $containsInsensitive('o', 'FOO'); // true
 ```
 
+### y
+Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
+Also known as the Y combinator.
+
+```php
+function factorial($n) {
+     return ($n <= 1) ? 1 : $nfactorial($n - 1);
+}
+
+echo factorial(5); // 120, no problem here
+
+$factorial = function ($n) {
+     return ($n <= 1) ? 1 : $ncall_user_func(__FUNCTION__, $n - 1);
+};
+
+echo $factorial(5); // Exception will be thrown
+```
+
+You can't call anonymous function recursively. But you can use `y` to make it possible.
+```php
+$factorial = y(function ($fact) {
+     return function ($n) use ($fact) {
+         return ($n <= 1) ? 1 : $n$fact($n - 1);
+     };
+});
+
+echo $factorial(5); // 120
+```
+
 ### both
 Acts as the boolean `and` statement.
 
@@ -363,7 +392,7 @@ if at least one of the provided predicates is satisfied by those arguments.
 ```php
 $isClub = pipe(prop('suit'), eq('♣'));
 $isSpade = pipe(prop('suit'), eq('♠'));;
-$isBlackCard = f\any_pass([$isClub, $isSpade]);
+$isBlackCard = any_pass([$isClub, $isSpade]);
 
 $isBlackCard(['rank' => '10', 'suit' => '♣']); // true
 $isBlackCard(['rank' => 'Q', 'suit' => '♠']); // true
@@ -972,7 +1001,7 @@ mutable object. Only immutable objects are safe.
 $randAndSalt = function ($salt) {
      return rand(1, 100) . $salt;
 };
-$memoizedRandAndSalt = f\memoized($randAndSalt);
+$memoizedRandAndSalt = memoized($randAndSalt);
 $memoizedRandAndSalt('x'); // 42x
 $memoizedRandAndSalt('x'); // 42x
 ```
@@ -1449,8 +1478,8 @@ type_array_key('some_key'); // some_key
 Checks and coerces list values to `$type[]`.
 
 ```php
-type_list(f\type_int, [1, '2']); // [1, 2]
-type_list(f\type_int, [1, 2.0]); // [1, 2]
+type_list(type_int, [1, '2']); // [1, 2]
+type_list(type_int, [1, 2.0]); // [1, 2]
 type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
 ```
 
@@ -1476,7 +1505,7 @@ $parcelShape = type_shape([
      'products' => type_list(type_shape([
          'description' => type_string,
          'qty' => type_int,
-         'price' => type_union(f\type_int, f\type_float),
+         'price' => type_union(type_int, type_float),
      ]))
 ]);
 
@@ -1515,7 +1544,7 @@ $io(); // Content write into file at this moment.
 Read file contents.
 
 ```php
-$io = f\read_file('/path/to/file.txt');
+$io = read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```
 

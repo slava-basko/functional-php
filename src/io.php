@@ -84,7 +84,7 @@ define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file', false);
  * Read file contents.
  *
  * ```php
- * $io = f\read_file('/path/to/file.txt');
+ * $io = read_file('/path/to/file.txt');
  * $content = $io(); // Content read from file at this moment.
  * ```
  *

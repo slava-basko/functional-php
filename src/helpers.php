@@ -120,7 +120,7 @@ function value_to_key($value)
  * $randAndSalt = function ($salt) {
  *      return rand(1, 100) . $salt;
  * };
- * $memoizedRandAndSalt = f\memoized($randAndSalt);
+ * $memoizedRandAndSalt = memoized($randAndSalt);
  * $memoizedRandAndSalt('x'); // 42x
  * $memoizedRandAndSalt('x'); // 42x
  * ```

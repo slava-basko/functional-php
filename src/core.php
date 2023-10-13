@@ -997,7 +997,7 @@ define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass', false);
  * ```php
  * $isClub = pipe(prop('suit'), eq('♣'));
  * $isSpade = pipe(prop('suit'), eq('♠'));;
- * $isBlackCard = f\any_pass([$isClub, $isSpade]);
+ * $isBlackCard = any_pass([$isClub, $isSpade]);
  *
  * $isBlackCard(['rank' => '10', 'suit' => '♣']); // true
  * $isBlackCard(['rank' => 'Q', 'suit' => '♠']); // true

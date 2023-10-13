@@ -376,8 +376,8 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key', fa
  * Checks and coerces list values to `$type[]`.
  *
  * ```php
- * type_list(f\type_int, [1, '2']); // [1, 2]
- * type_list(f\type_int, [1, 2.0]); // [1, 2]
+ * type_list(type_int, [1, '2']); // [1, 2]
+ * type_list(type_int, [1, 2.0]); // [1, 2]
  * type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
  * ```
  *
@@ -465,7 +465,7 @@ define('Basko\Functional\type_map', __NAMESPACE__ . '\\type_map', false);
  *      'products' => type_list(type_shape([
  *          'description' => type_string,
  *          'qty' => type_int,
- *          'price' => type_union(f\type_int, f\type_float),
+ *          'price' => type_union(type_int, type_float),
  *      ]))
  * ]);
  *
