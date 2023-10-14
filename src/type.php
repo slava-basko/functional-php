@@ -419,7 +419,7 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list', false);
  * Checks and coerces array keys to `$keyType` and values to `$valueType`.
  *
  * ```php
- * type_map(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
+ * type_array(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
  * ```
  *
  * @param callable $keyType
@@ -428,13 +428,12 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list', false);
  * @return array|callable
  * @no-named-arguments
  */
-function type_map(callable $keyType, callable $valueType = null, $value = null)
+function type_array(callable $keyType, callable $valueType = null, $value = null)
 {
-
     if (is_null($valueType) && is_null($value)) {
-        return partial(type_map, $keyType);
+        return partial(type_array, $keyType);
     } elseif (is_null($value)) {
-        return partial(type_map, $keyType, $valueType);
+        return partial(type_array, $keyType, $valueType);
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 3);
@@ -448,7 +447,7 @@ function type_map(callable $keyType, callable $valueType = null, $value = null)
     return $result;
 }
 
-define('Basko\Functional\type_map', __NAMESPACE__ . '\\type_map', false);
+define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array', false);
 
 /**
  * Checks array keys presence and coerces values to according types.

@@ -337,13 +337,26 @@ class TypeTest extends BaseTest
         f\type_list(f\type_int, [1, 'two']);
     }
 
-    public function test_type_map()
+    public function test_type_array()
     {
-        $t = f\type_map(f\type_array_key);
+        $t = f\type_array(f\type_array_key);
         $t2 = $t(f\type_int);
 
         $this->assertEquals(['one' => 1], $t2(['one' => 1]));
         $this->assertEquals(['one' => 1], $t2(['one' => 1.0]));
+
+        $specificMap = [
+            'user1' => new \User([]),
+            'user2' => new \User([]),
+        ];
+        $this->assertEquals(
+            $specificMap,
+            f\type_array(
+                f\compose(f\str_starts_with('user'), f\type_array_key),
+                f\type_of(\User::class),
+                $specificMap
+            )
+        );
     }
 
     public function test_type_shape()

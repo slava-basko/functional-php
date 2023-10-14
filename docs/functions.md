@@ -1483,11 +1483,11 @@ type_list(type_int, [1, 2.0]); // [1, 2]
 type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
 ```
 
-### type_map
+### type_array
 Checks and coerces array keys to `$keyType` and values to `$valueType`.
 
 ```php
-type_map(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
+type_array(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
 ```
 
 ### type_shape
