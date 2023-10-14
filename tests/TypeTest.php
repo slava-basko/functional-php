@@ -352,7 +352,7 @@ class TypeTest extends BaseTest
         $this->assertEquals(
             $specificMap,
             f\type_array(
-                f\compose(f\str_starts_with('user'), f\type_array_key),
+                f\type_array_key,
                 f\type_of(\User::class),
                 $specificMap
             )
