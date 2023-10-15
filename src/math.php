@@ -50,6 +50,46 @@ function is_odd($n)
 define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
 
 /**
+ * Increments its argument.
+ *
+ * ```php
+ * inc(41); // 42
+ * ```
+ *
+ * @param numeric $n
+ * @return float|int
+ * @no-named-arguments
+ */
+function inc($n)
+{
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
+    return plus($n, 1);
+}
+
+define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
+
+/**
+ * Decrements its argument.
+ *
+ * ```php
+ * dec(43); // 42
+ * ```
+ *
+ * @param numeric $n
+ * @return float|int
+ * @no-named-arguments
+ */
+function dec($n)
+{
+    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
+
+    return minus($n, 1);
+}
+
+define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
+
+/**
  * Perform `$a + $b`.
  *
  * ```php
@@ -300,46 +340,6 @@ function average($list)
 }
 
 define('Basko\Functional\average', __NAMESPACE__ . '\\average');
-
-/**
- * Increments its argument.
- *
- * ```php
- * inc(41); // 42
- * ```
- *
- * @param numeric $n
- * @return float|int
- * @no-named-arguments
- */
-function inc($n)
-{
-    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
-
-    return plus($n, 1);
-}
-
-define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
-
-/**
- * Decrements its argument.
- *
- * ```php
- * dec(43); // 42
- * ```
- *
- * @param numeric $n
- * @return float|int
- * @no-named-arguments
- */
-function dec($n)
-{
-    InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
-
-    return minus($n, 1);
-}
-
-define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
 
 /**
  * Power its argument.

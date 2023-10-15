@@ -385,6 +385,15 @@ class TypeTest extends BaseTest
         );
     }
 
+    public function test_type_array_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Could not convert "string" to type "int"'
+        );
+        f\type_array(f\type_array_key, f\type_int, ['one' => 'abc']);
+    }
+
     public function test_type_shape()
     {
         $parcelShape = f\type_shape([
