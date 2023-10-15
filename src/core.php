@@ -18,12 +18,10 @@ use Traversable;
  * noop('some string'); // nothing happen
  * ```
  *
- * @return callable():void
+ * @return void
  */
 function noop()
 {
-    return function () {
-    };
 }
 
 define('Basko\Functional\noop', __NAMESPACE__ . '\\noop', false);

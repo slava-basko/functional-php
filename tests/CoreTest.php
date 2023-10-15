@@ -7,6 +7,14 @@ use Basko\Functional\Exception\InvalidArgumentException;
 
 class CoreTest extends BaseTest
 {
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function test_noop()
+    {
+        f\noop();
+    }
+
     public function test_identity()
     {
         $this->assertSame('value', f\identity('value'));
