@@ -38,7 +38,7 @@ NULL(); // null
 ```
 
 ### eq
-Run PHP comparison operator `==`.
+Runs PHP comparison operator `==`.
 
 ```php
 eq(1, 1); // true
@@ -47,7 +47,7 @@ eq(1, 2); // false
 ```
 
 ### identical
-Run PHP comparison operator `===`.
+Runs PHP comparison operator `===`.
 
 ```php
 identical(1, 1); // true
@@ -124,7 +124,7 @@ map(plus(1), [1, 2, 3]); // [2, 3, 4]
 `flat_map` works applying `$f` that returns a sequence for each element in a list,
 and flattening the results into the resulting array.
 
-`flat_map(...)` differs from `flatten(map(...))` because it only flattens one level of nesting,
+`flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
 whereas flatten will recursively flatten nested collections. Indexes will not preserve.
 
 ```php
@@ -177,6 +177,7 @@ not(1); // false
 
 ### complement
 Logical negation of the given function `$f`.
+
 ```php
 $notString = complement('is_string');
 $notString(1); // true
@@ -788,6 +789,20 @@ is_odd(5); // true
 is_odd(2); // false
 ```
 
+### inc
+Increments its argument.
+
+```php
+inc(41); // 42
+```
+
+### dec
+Decrements its argument.
+
+```php
+dec(43); // 42
+```
+
 ### plus
 Perform `$a + $b`.
 
@@ -856,20 +871,6 @@ Calculate average value.
 
 ```php
 average([1, 2, 3, 4, 5, 6, 7]); // 4
-```
-
-### inc
-Increments its argument.
-
-```php
-inc(41); // 42
-```
-
-### dec
-Decrements its argument.
-
-```php
-dec(43); // 42
 ```
 
 ### power
@@ -1295,8 +1296,8 @@ for ($i = 1; $i <= 20; $i++) {
 Publishes any private method.
 
 ```php
-class Collection {
-
+class Collection
+{
      public function filterNumbers(array $collection) {
          return select([$this, 'isInt'], $collection); // This will throw an exception
      }
@@ -1304,7 +1305,6 @@ class Collection {
      private function isInt($n) {
          return is_int($n);
      }
-
 }
 ```
 The above will generate an error because `isInt` is a private method.
@@ -1423,6 +1423,16 @@ type_string('hello'); // 'hello'
 type_string(123); // '123'
 ```
 
+### type_non_empty_string
+Checks and coerces value to `non-empty-string`.
+Object: method `__toString` will be called
+Array: all values will be concatenated with comma.
+
+```php
+type_non_empty_string('abc'); // 'abc'
+type_non_empty_string([]); // TypeException: Could not convert "array" to type "non-empty-string"
+```
+
 ### type_int
 Checks and coerces value to `int`.
 
@@ -1430,6 +1440,14 @@ Checks and coerces value to `int`.
 type_int('123'); // 123
 type_int('007'); // 7
 type_int('1.0'); // 1
+```
+
+### type_positive_int
+Checks and coerces value to `positive_int`.
+
+```php
+type_positive_int(2); // 2
+type_positive_int('2'); // 2
 ```
 
 ### type_float
@@ -1448,14 +1466,6 @@ $t = type_union(type_int, type_float);
 $t(1); // 1;
 $t(1.00); // 1
 $t('1'); // 1
-```
-
-### type_positive_int
-Checks and coerces value to `positive_int`.
-
-```php
-type_positive_int(2); // 2
-type_positive_int('2'); // 2
 ```
 
 ### type_array_key

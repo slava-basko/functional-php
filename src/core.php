@@ -97,7 +97,7 @@ function N()
 define('Basko\Functional\N', __NAMESPACE__ . '\\N');
 
 /**
- * Run PHP comparison operator `==`.
+ * Runs PHP comparison operator `==`.
  *
  * ```php
  * eq(1, 1); // true
@@ -124,7 +124,7 @@ function eq($a, $b = null)
 define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
 
 /**
- * Run PHP comparison operator `===`.
+ * Runs PHP comparison operator `===`.
  *
  * ```php
  * identical(1, 1); // true
@@ -343,7 +343,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
  * `flat_map` works applying `$f` that returns a sequence for each element in a list,
  * and flattening the results into the resulting array.
  *
- * `flat_map(...)` differs from `flatten(map(...))` because it only flattens one level of nesting,
+ * `flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
  * whereas flatten will recursively flatten nested collections. Indexes will not preserve.
  *
  * ```php
@@ -465,6 +465,7 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not');
 
 /**
  * Logical negation of the given function `$f`.
+ *
  * ```php
  * $notString = complement('is_string');
  * $notString(1); // true
