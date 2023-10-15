@@ -142,6 +142,32 @@ function type_string($value)
 define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
 
 /**
+ * Checks and coerces value to `non-empty-string`.
+ * Object: method `__toString` will be called
+ * Array: all values will be concatenated with comma.
+ *
+ * ```php
+ * type_non_empty_string('abc'); // 'abc'
+ * type_non_empty_string([]); // TypeException: Could not convert "array" to type "non-empty-string"
+ * ```
+ *
+ * @param mixed $value
+ * @return string
+ * @no-named-arguments
+ * @throws \Basko\Functional\Exception\TypeException
+ */
+function type_non_empty_string($value)
+{
+    if (type_string($value) && strlen($value) > 0) {
+        return $value;
+    }
+
+    throw TypeException::forValue($value, 'non-empty-string');
+}
+
+define('Basko\Functional\type_non_empty_string', __NAMESPACE__ . '\\type_non_empty_string');
+
+/**
  * Checks and coerces value to `int`.
  *
  * ```php
@@ -191,6 +217,30 @@ function type_int($value)
 }
 
 define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
+
+/**
+ * Checks and coerces value to `positive_int`.
+ *
+ * ```php
+ * type_positive_int(2); // 2
+ * type_positive_int('2'); // 2
+ * ```
+ *
+ * @param mixed $value
+ * @return int Positive int
+ * @no-named-arguments
+ * @throws \Basko\Functional\Exception\TypeException
+ */
+function type_positive_int($value)
+{
+    if (type_int($value) && $value > 0) {
+        return $value;
+    }
+
+    throw TypeException::forValue($value, 'positive_int');
+}
+
+define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_int');
 
 /**
  * Checks and coerces value to `float`.
@@ -312,30 +362,6 @@ function type_union($firsts, $second)
 }
 
 define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
-
-/**
- * Checks and coerces value to `positive_int`.
- *
- * ```php
- * type_positive_int(2); // 2
- * type_positive_int('2'); // 2
- * ```
- *
- * @param mixed $value
- * @return int Positive int
- * @no-named-arguments
- * @throws \Basko\Functional\Exception\TypeException
- */
-function type_positive_int($value)
-{
-    if (type_int($value) && $value > 0) {
-        return $value;
-    }
-
-    throw TypeException::forValue($value, 'positive_int');
-}
-
-define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_int');
 
 
 /**

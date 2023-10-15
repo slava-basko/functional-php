@@ -166,6 +166,20 @@ class TypeTest extends BaseTest
         f\type_string($value);
     }
 
+    public function test_type_non_empty_string()
+    {
+        $this->assertEquals('abc', f\type_non_empty_string('abc'));
+    }
+
+    public function test_type_non_empty_string_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Could not convert "array" to type "non-empty-string"'
+        );
+        f\type_non_empty_string([]);
+    }
+
 
     public function getBoolValid()
     {
