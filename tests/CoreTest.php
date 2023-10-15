@@ -423,8 +423,8 @@ class CoreTest extends BaseTest
         $this->assertNull($emptyCond(2));
 
         $typeOf = f\cond([
-            [f\is_instance_of(\User::class), f\always('user')],
-            [f\is_instance_of(\Value::class), f\always('value')],
+            [f\is_type_of(\User::class), f\always('user')],
+            [f\is_type_of(\Value::class), f\always('value')],
             [f\T, f\always('unknown')],
         ]);
         $this->assertEquals('user', $typeOf(new \User([])));

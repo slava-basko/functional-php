@@ -1116,7 +1116,7 @@ function lift_m(callable $f)
         $ofFunc = Identity::of;
 
         $extractedArgs = map(function ($possibleM) use (&$ofFunc) {
-            if (instance_of(Monad::class, $possibleM)) {
+            if (is_type_of(Monad::class, $possibleM)) {
                 $ofFunc = call(cond([
                     [eq(Maybe::class), always(Maybe::just)],
                     [eq(Optional::class), always(Optional::just)],
@@ -1132,7 +1132,7 @@ function lift_m(callable $f)
             return $possibleM;
         }, func_get_args());
 
-        $toM = if_else(is_instance_of(Monad::class), identity, $ofFunc);
+        $toM = if_else(is_type_of(Monad::class), identity, $ofFunc);
 
         return $toM(call_user_func_array($f, $extractedArgs));
     };

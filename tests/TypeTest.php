@@ -206,12 +206,12 @@ class TypeTest extends BaseTest
     }
 
 
-    public function test_instance_of()
+    public function test_is_type_of()
     {
-        $this->assertTrue(f\instance_of(\User::class, new \User([])));
-        $this->assertFalse(f\instance_of(\User::class, new \stdClass()));
-        $this->assertFalse(f\instance_of(\User::class, 'str'));
-        $this->assertFalse(f\instance_of(\User::class, null));
+        $this->assertTrue(f\is_type_of(\User::class, new \User([])));
+        $this->assertFalse(f\is_type_of(\User::class, new \stdClass()));
+        $this->assertFalse(f\is_type_of(\User::class, 'str'));
+        $this->assertFalse(f\is_type_of(\User::class, null));
     }
 
     public function test_type_of()
@@ -223,12 +223,15 @@ class TypeTest extends BaseTest
         $typeOfVal = f\type_of(\Value::class);
         $value = new \Value(null);
         $this->assertSame($value, $typeOfVal($value));
+    }
 
+    public function test_type_of_fail()
+    {
         $this->setExpectedException(
-            f\Exception\TypeException::class,
-            sprintf('Could not convert "null" to type "User"')
+            InvalidArgumentException::class,
+            'type_of() expects parameter 2 to be object, string given'
         );
-        $typeOfUser(null);
+        f\type_of(\User::class, 'str');
     }
 
     public function test_type_union()
@@ -328,6 +331,15 @@ class TypeTest extends BaseTest
         $this->assertEquals([$u1, $u2], f\type_list(f\type_of(\User::class), [$u1, $u2]));
     }
 
+    public function test_type_list_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'type_list() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\type_list(f\type_int, null);
+    }
+
     public function test_type_list_false()
     {
         $this->setExpectedException(
@@ -375,6 +387,15 @@ class TypeTest extends BaseTest
     }
 
     public function test_type_shape_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'type_shape() expects parameter 2 to be array or instance of ArrayAccess, NULL given'
+        );
+        f\type_shape([], null);
+    }
+
+    public function test_type_shape_fail2()
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,

@@ -6,82 +6,92 @@ use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
 
 /**
- * This function can't be automatically partialed because `$object` can be NULL and thant's OK.
+ * Validates that the value is instance of specific class.
  *
  * ```php
- * instance_of(stdClass::class, new stdClass()); // true
- * instance_of(User::class, new stdClass()); // false
+ * is_type_of(\User::class, new User()); // true
+ * is_type_of(\User::class, new SomeClass()); // false
  * ```
  *
- * @param string $instanceof
- * @param object $object
- * @return bool
+ * @template T of object
+ * @param class-string $class
+ * @param T $value
+ * @return ($value is null ? callable(T):bool : bool)
  * @no-named-arguments
  */
-function instance_of($instanceof, $object)
+function is_type_of($class, $value = null)
 {
-    InvalidArgumentException::assertClass($instanceof, __FUNCTION__, 1);
+    InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
-    return $object instanceof $instanceof;
+    $args = func_get_args();
+
+    if (count($args) < 2) {
+        return partial(is_type_of, $class);
+    }
+
+    return $value instanceof $class;
 }
 
-define('Basko\Functional\instance_of', __NAMESPACE__ . '\\instance_of', false);
+define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of', false);
+
+///**
+// * Curryied version of `instance_of`.
+// *
+// * ```php
+// * is_instance_of(stdClass::class)(new stdClass()); // true
+// * is_instance_of(User::class)(new stdClass()); // false
+// * ```
+// *
+// * @param mixed $instanceof
+// * @return callable
+// */
+//function is_instance_of($instanceof)
+//{
+//    InvalidArgumentException::assertClass($instanceof, __FUNCTION__, 1);
+//
+//    return
+//        /**
+//         * @param mixed $value
+//         * @return bool
+//         */
+//        function ($value) use ($instanceof) {
+//            return instance_of($instanceof, $value);
+//        };
+//}
+//
+//define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
 
 /**
- * Curryied version of `instance_of`.
+ * Checks that the value is instance of specific class.
  *
  * ```php
- * is_instance_of(stdClass::class)(new stdClass()); // true
- * is_instance_of(User::class)(new stdClass()); // false
+ * type_of(\User::class, new User()); // User
+ * type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
  * ```
  *
- * @param mixed $instanceof
- * @return callable
+ * @template T of object
+ * @param class-string $class
+ * @param T $value
+ * @return ($value is null ? callable(T):T : T)
+ * @throws \Basko\Functional\Exception\TypeException
  */
-function is_instance_of($instanceof)
+function type_of($class, $value = null)
 {
-    InvalidArgumentException::assertClass($instanceof, __FUNCTION__, 1);
+    InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
-    return
-        /**
-         * @param mixed $value
-         * @return bool
-         */
-        function ($value) use ($instanceof) {
-            return instance_of($instanceof, $value);
-        };
-}
+    $args = func_get_args();
 
-define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
+    if (count($args) < 2) {
+        return partial(type_of, $class);
+    }
 
-/**
- * Return a function that checks `$value instanceof SomeClass`.
- *
- * ```php
- * type_of(\User::class)(new User()); // User
- * type_of(\User::class)(new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
- * ```
- *
- * @param string $instanceof
- * @return callable
- */
-function type_of($instanceof)
-{
-    InvalidArgumentException::assertClass($instanceof, __FUNCTION__, 1);
+    InvalidArgumentException::assertObject($value, __FUNCTION__, 2);
 
-    return
-        /**
-         * @param mixed $value
-         * @return object
-         * @throws \Basko\Functional\Exception\TypeException
-         */
-        function ($value) use ($instanceof) {
-            if (instance_of($instanceof, $value)) {
-                return $value;
-            }
+    if (is_type_of($class, $value)) {
+        return $value;
+    }
 
-            throw TypeException::forValue($value, $instanceof);
-        };
+    throw TypeException::forValue($value, $class);
 }
 
 define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
@@ -390,7 +400,9 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key', fa
  */
 function type_list(callable $type, $value = null)
 {
-    if (is_null($value)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(type_list, $type);
     }
 
@@ -430,9 +442,11 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list', false);
  */
 function type_array(callable $keyType, callable $valueType = null, $value = null)
 {
-    if (is_null($valueType) && is_null($value)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(type_array, $keyType);
-    } elseif (is_null($value)) {
+    } elseif (count($args) === 2) {
         return partial(type_array, $keyType, $valueType);
     }
 
@@ -500,9 +514,13 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array', false);
  */
 function type_shape(array $shape, $value = null)
 {
-    if (is_null($value)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(type_shape, $shape);
     }
+
+    InvalidArgumentException::assertArrayAccess($value, __FUNCTION__, 2);
 
     $result = [];
 
