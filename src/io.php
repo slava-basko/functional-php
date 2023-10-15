@@ -3,8 +3,8 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
-use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\IO;
+use Exception;
 
 /**
  * Race conditions safe file write.
@@ -39,25 +39,25 @@ function write_file($chmod, $file = null, $content = null)
         $tmp = @tempnam($dir, 'wsw'); // @ to suppress notice for system temp dir fallback
 
         if ($tmp === false) {
-            throw new \Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 1);
+            throw new Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 1);
         }
 
         if (dirname($tmp) !== realpath($dir)) {
             unlink($tmp);
 
-            throw new \Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 2);
+            throw new Exception(sprintf('Could not create temporary file in directory "%s"', $dir), 2);
         }
 
         if (file_put_contents($tmp, $content) === false) {
             unlink($tmp);
 
-            throw new \Exception(sprintf('Could not write content to the file "%s"', $file), 3);
+            throw new Exception(sprintf('Could not write content to the file "%s"', $file), 3);
         }
 
         if (chmod($tmp, $chmod & ~umask()) === false) {
             unlink($tmp);
 
-            throw new \Exception(sprintf('Could not change chmod of the file "%s"', $file), 4);
+            throw new Exception(sprintf('Could not change chmod of the file "%s"', $file), 4);
         }
 
         // On windows try again if rename was not successful but target file is writable.
@@ -68,7 +68,7 @@ function write_file($chmod, $file = null, $content = null)
 
             unlink($tmp);
 
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Could not move file "%s" to location "%s": '
                 . 'either the source file is not readable, or the destination is not writable',
                 $tmp,
@@ -80,7 +80,7 @@ function write_file($chmod, $file = null, $content = null)
     });
 }
 
-define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file', false);
+define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file');
 
 /**
  * Read file contents.
@@ -99,13 +99,13 @@ function read_file($file)
 
     return IO::of(function () use ($file) {
         if (!file_exists($file)) {
-            throw new \Exception(sprintf('File "%s" does not exist', $file), 1);
+            throw new Exception(sprintf('File "%s" does not exist', $file), 1);
         }
 
         $handle = fopen($file, 'rb');
 
         if (!is_resource($handle)) {
-            throw new \Exception(sprintf('Can not open file "%s"', $file), 2);
+            throw new Exception(sprintf('Can not open file "%s"', $file), 2);
         }
 
         /**
@@ -123,7 +123,7 @@ function read_file($file)
 
                 flock($handle, LOCK_UN);
             } else {
-                throw new \Exception(sprintf('flock() failed on "%s"', $file), 3);
+                throw new Exception(sprintf('flock() failed on "%s"', $file), 3);
             }
 
             return $contents;

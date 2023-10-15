@@ -4,6 +4,7 @@ namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
+use Exception;
 
 /**
  * Validates that the value is instance of specific class.
@@ -32,7 +33,7 @@ function is_type_of($class, $value = null)
     return $value instanceof $class;
 }
 
-define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of', false);
+define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of');
 
 /**
  * Checks that the value is instance of specific class.
@@ -67,7 +68,7 @@ function type_of($class, $value = null)
     throw TypeException::forValue($value, $class);
 }
 
-define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of', false);
+define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of');
 
 /**
  * Checks and coerces value to `bool`.
@@ -104,7 +105,7 @@ function type_bool($value)
     throw TypeException::forValue($value, 'bool');
 }
 
-define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool', false);
+define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool');
 
 /**
  * Checks and coerces value to `string`.
@@ -138,7 +139,7 @@ function type_string($value)
     throw TypeException::forValue($value, 'string');
 }
 
-define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string', false);
+define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
 
 /**
  * Checks and coerces value to `int`.
@@ -189,7 +190,7 @@ function type_int($value)
     throw TypeException::forValue($value, 'int');
 }
 
-define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int', false);
+define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
 
 /**
  * Checks and coerces value to `float`.
@@ -231,7 +232,7 @@ function type_float($value)
     throw TypeException::forValue($value, 'float');
 }
 
-define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float', false);
+define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
 
 /**
  * Union type.
@@ -268,7 +269,7 @@ function type_union($firsts, $second)
                         return call_user_func($left, $value);
                     } catch (TypeException $typeException) {
                         $leftType = $typeException->getTarget();
-                    } catch (\Exception $exception) {
+                    } catch (Exception $exception) {
                         throw new TypeException(sprintf(
                             '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
                             $pfn
@@ -279,7 +280,7 @@ function type_union($firsts, $second)
                         return call_user_func($right, $value);
                     } catch (TypeException $typeException) {
                         $rightType = $typeException->getTarget();
-                    } catch (\Exception $exception) {
+                    } catch (Exception $exception) {
                         throw new TypeException(sprintf(
                             '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
                             $pfn
@@ -310,7 +311,7 @@ function type_union($firsts, $second)
     return $accumulatedType;
 }
 
-define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union', false);
+define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
 
 /**
  * Checks and coerces value to `positive_int`.
@@ -334,7 +335,7 @@ function type_positive_int($value)
     throw TypeException::forValue($value, 'positive_int');
 }
 
-define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_int', false);
+define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_int');
 
 
 /**
@@ -353,7 +354,7 @@ function type_array_key($value)
     return call_user_func(type_union(type_string, type_int), $value);
 }
 
-define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key', false);
+define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
 
 /**
  * Checks and coerces list values to `$type[]`.
@@ -398,7 +399,7 @@ function type_list(callable $type, $value = null)
     return $result;
 }
 
-define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list', false);
+define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
 
 /**
  * Checks and coerces array keys to `$keyType` and values to `$valueType`.
@@ -434,7 +435,7 @@ function type_array(callable $keyType, callable $valueType = null, $value = null
     return $result;
 }
 
-define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array', false);
+define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
 
 /**
  * Checks array keys presence and coerces values to according types.
@@ -507,7 +508,7 @@ function type_shape(array $shape, $value = null)
                     0,
                     $typeException
                 );
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 throw new TypeException(
                     'Exception on shape element \'' . $k . '\': ' . $exception->getMessage(),
                     0,
@@ -522,4 +523,4 @@ function type_shape(array $shape, $value = null)
     return $result;
 }
 
-define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape', false);
+define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape');

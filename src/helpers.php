@@ -3,12 +3,15 @@
 namespace Basko\Functional;
 
 use AppendIterator;
+use ArrayAccess;
 use ArrayIterator;
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Sequences\ExponentialSequence;
 use Basko\Functional\Sequences\LinearSequence;
+use ErrorException;
 use Exception;
 use InfiniteIterator;
+use Iterator;
 use LimitIterator;
 use Traversable;
 
@@ -90,7 +93,7 @@ function _value_to_ref($value, $key = null)
 /**
  * @internal
  */
-define('Basko\Functional\_value_to_ref', __NAMESPACE__ . '\\_value_to_ref', false);
+define('Basko\Functional\_value_to_ref', __NAMESPACE__ . '\\_value_to_ref');
 
 /**
  * Internal function.
@@ -145,7 +148,7 @@ function memoized(callable $f)
     };
 }
 
-define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize', false);
+define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize');
 
 /**
  * Returns arguments as a list.
@@ -167,7 +170,7 @@ function to_list($args)
     return func_get_args();
 }
 
-define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list', false);
+define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list');
 
 /**
  * Concatenates `$a` with `$b`.
@@ -196,7 +199,7 @@ function concat($a, $b = null)
     return $a . $b;
 }
 
-define('Basko\Functional\concat', __NAMESPACE__ . '\\concat', false);
+define('Basko\Functional\concat', __NAMESPACE__ . '\\concat');
 
 /**
  * Concatenates all given arguments.
@@ -215,7 +218,7 @@ function concat_all($a, $b)
     return fold(concat, '', func_get_args());
 }
 
-define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all', false);
+define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
 
 /**
  * Returns a string made by inserting the separator between each element and concatenating all the elements
@@ -248,7 +251,7 @@ function join($separator, $list = null)
     return implode($separator, $list);
 }
 
-define('Basko\Functional\join', __NAMESPACE__ . '\\join', false);
+define('Basko\Functional\join', __NAMESPACE__ . '\\join');
 
 /**
  * Performs an `if/else` condition over a value using functions as statements.
@@ -287,7 +290,7 @@ function if_else(callable $if, callable $then = null, callable $else = null)
     };
 }
 
-define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else', false);
+define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else');
 
 /**
  * Creates a function that can be used to repeat the execution of `$f`.
@@ -313,7 +316,7 @@ function repeat(callable $f)
     };
 }
 
-define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat', false);
+define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
 
 /**
  * Takes two functions, a tryer and a catcher. The returned function evaluates the tryer. If it does not throw,
@@ -356,7 +359,7 @@ function try_catch(callable $tryer, callable $catcher = null)
                 return false;
             }
 
-            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
         });
 
         if (PHP_VERSION_ID >= 70000) {
@@ -368,7 +371,7 @@ function try_catch(callable $tryer, callable $catcher = null)
         } else {
             try {
                 $result = call_user_func_array($tryer, $args);
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $result = call_user_func_array($catcher, [$exception]);
             }
         }
@@ -379,7 +382,7 @@ function try_catch(callable $tryer, callable $catcher = null)
     };
 }
 
-define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch', false);
+define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch');
 
 /**
  * Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
@@ -403,7 +406,7 @@ function invoker($methodName, array $arguments = [])
     };
 }
 
-define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker', false);
+define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker');
 
 /**
  * Count length of string or number of elements in the array.
@@ -432,7 +435,7 @@ function len($a)
     return count($a);
 }
 
-define('Basko\Functional\len', __NAMESPACE__ . '\\len', false);
+define('Basko\Functional\len', __NAMESPACE__ . '\\len');
 
 /**
  * Returns a function that when supplied an object returns the indicated property of that object, if it exists.
@@ -464,7 +467,7 @@ function prop($property, $object = null)
         return $object->{$property};
     }
 
-    if ($object instanceof \ArrayAccess) {
+    if ($object instanceof ArrayAccess) {
         return $object->offsetGet($property);
     }
 
@@ -475,7 +478,7 @@ function prop($property, $object = null)
     return null;
 }
 
-define('Basko\Functional\prop', __NAMESPACE__ . '\\prop', false);
+define('Basko\Functional\prop', __NAMESPACE__ . '\\prop');
 
 /**
  * Thunkified version of `prop` function, for more easily composition with `either` for example.
@@ -497,7 +500,7 @@ function prop_thunk($property, $object = null)
     return $prop_thunk($property, $object);
 }
 
-define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk', false);
+define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
 
 /**
  * Nested version of `prop` function.
@@ -529,7 +532,7 @@ function prop_path(array $path, $object = null)
     }, $object, $path);
 }
 
-define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
+define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
 
 /**
  * Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
@@ -558,7 +561,7 @@ function props(array $properties, $object = null)
     }, [], $properties);
 }
 
-define('Basko\Functional\props', __NAMESPACE__ . '\\props', false);
+define('Basko\Functional\props', __NAMESPACE__ . '\\props');
 
 /**
  * Creates a shallow clone of a list with an overwritten value at a specified index.
@@ -617,7 +620,7 @@ function assoc($key, $val = null, $list = null)
     }, $possibleCopy($list), $list);
 }
 
-define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc', false);
+define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
 
 /**
  * Nested version of `assoc` function.
@@ -662,7 +665,7 @@ function assoc_path(array $path, $val = null, $list = null)
     return assoc($property, $val, $list);
 }
 
-define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path', false);
+define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
 
 /**
  * Returns a function that invokes `$method` with arguments `$arguments` on the $object.
@@ -691,7 +694,7 @@ function to_fn($object, $methodName = null, array $arguments = null)
     };
 }
 
-define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn', false);
+define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn');
 
 /**
  * Takes two arguments, `$fst` and `$snd`, and returns `[$fst, $snd]`.
@@ -716,7 +719,7 @@ function pair($fst, $snd = null)
     return [$fst, $snd];
 }
 
-define('Basko\Functional\pair', __NAMESPACE__ . '\\pair', false);
+define('Basko\Functional\pair', __NAMESPACE__ . '\\pair');
 
 /**
  * @return \Closure|mixed|null
@@ -787,7 +790,7 @@ function either()
     return call_user_func_array('Basko\Functional\_either', array_merge([false], func_get_args()));
 }
 
-define('Basko\Functional\either', __NAMESPACE__ . '\\either', false);
+define('Basko\Functional\either', __NAMESPACE__ . '\\either');
 
 /**
  * The same as `either`, but returning the result of the first function
@@ -801,7 +804,7 @@ function either_strict()
     return call_user_func_array('Basko\Functional\_either', array_merge([true], func_get_args()));
 }
 
-define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict', false);
+define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict');
 
 /**
  * Quote given string.
@@ -821,7 +824,7 @@ function quote($value)
     return '"' . $value . '"';
 }
 
-define('Basko\Functional\quote', __NAMESPACE__ . '\\quote', false);
+define('Basko\Functional\quote', __NAMESPACE__ . '\\quote');
 
 /**
  * Same as `quote`, but with `addslashes` before.
@@ -836,7 +839,7 @@ function safe_quote($value)
     return quote(addslashes($value));
 }
 
-define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote', false);
+define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
 
 /**
  * Select the specified keys from the array.
@@ -875,7 +878,7 @@ function select_keys(array $keys, $object = null)
     return $aggregation;
 }
 
-define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys', false);
+define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys');
 
 /**
  * Returns an array with the specified keys omitted from the array.
@@ -907,7 +910,7 @@ function omit_keys(array $keys, $object = null)
     return array_diff_key($object, array_flip($keys));
 }
 
-define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
+define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
 
 /**
  * Applies provided function to specified keys.
@@ -946,7 +949,7 @@ function map_keys(callable $f, array $keys = null, $list = null)
     return $list;
 }
 
-define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys', false);
+define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
 
 /**
  * Applies provided function to N-th elements of an array.
@@ -984,7 +987,7 @@ function map_elements(callable $f, array $elementsNumbers = null, $list = null)
     return $list;
 }
 
-define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements', false);
+define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
 
 /**
  * Finds if a given array has all of the required keys set.
@@ -1011,12 +1014,12 @@ function find_missing_keys(array $keys, $array = null)
 
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
 
-    $array = $array instanceof \Traversable ? iterator_to_array($array) : $array;
+    $array = $array instanceof Traversable ? iterator_to_array($array) : $array;
 
     return array_keys(array_diff_key(array_flip($keys), $array));
 }
 
-define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys', false);
+define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
 
 /**
  * Creates copy of provided value. `clone` will be called for objects.
@@ -1048,7 +1051,7 @@ function cp($object)
     return $cond($object);
 }
 
-define('Basko\Functional\cp', __NAMESPACE__ . '\\cp', false);
+define('Basko\Functional\cp', __NAMESPACE__ . '\\cp');
 
 /**
  * Return random value from list.
@@ -1081,7 +1084,7 @@ function pick_random_value($list)
     return nth(call_user_func_array($fN, [1, count($list)]), $list);
 }
 
-define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_value', false);
+define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_value');
 
 /**
  * Creates an associative array using a `$keyProp` as the path to build its keys,
@@ -1116,7 +1119,7 @@ function combine($keyProp, $valueProp = null, $list = null)
     return $combineFunction($list);
 }
 
-define('Basko\Functional\combine', __NAMESPACE__ . '\\combine', false);
+define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
 
 /**
  * Returns an infinite, traversable sequence of constant values.
@@ -1136,7 +1139,7 @@ function sequence_constant($value)
     return new InfiniteIterator(new ArrayIterator([$value]));
 }
 
-define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constant', false);
+define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constant');
 
 /**
  * Returns an infinite, traversable sequence that linearly grows by given amount.
@@ -1152,7 +1155,7 @@ function sequence_linear($start, $amount)
     return new LinearSequence($start, $amount);
 }
 
-define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear', false);
+define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear');
 
 /**
  * Returns an infinite, traversable sequence that exponentially grows by given percentage.
@@ -1168,7 +1171,7 @@ function sequence_exponential($start, $percentage)
     return new ExponentialSequence($start, $percentage);
 }
 
-define('Basko\Functional\sequence_exponential', __NAMESPACE__ . '\\sequence_exponential', false);
+define('Basko\Functional\sequence_exponential', __NAMESPACE__ . '\\sequence_exponential');
 
 /**
  * Returns an infinite, traversable sequence of 0.
@@ -1181,7 +1184,7 @@ function no_delay()
     return sequence_constant(0);
 }
 
-define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay', false);
+define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
 
 /**
  * Retry a function until the number of retries are reached or the function does no longer throw an exception.
@@ -1199,7 +1202,7 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay', false);
  * @throws \Exception Any exception thrown by the callback
  * @no-named-arguments
  */
-function retry($retries, \Iterator $delaySequence = null, $f = null)
+function retry($retries, Iterator $delaySequence = null, $f = null)
 {
     $args = func_get_args();
 
@@ -1236,7 +1239,7 @@ function retry($retries, \Iterator $delaySequence = null, $f = null)
     }
 }
 
-define('Basko\Functional\retry', __NAMESPACE__ . '\\retry', false);
+define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
 
 /**
  * Creates instance of given class.
@@ -1255,7 +1258,7 @@ function construct($class)
     return new $class();
 }
 
-define('Basko\Functional\construct', __NAMESPACE__ . '\\construct', false);
+define('Basko\Functional\construct', __NAMESPACE__ . '\\construct');
 
 /**
  * Creates instance of given class with arguments passed to `__construct` method.
@@ -1282,7 +1285,7 @@ function construct_with_args($class, $constructArguments = null)
     return new $class($constructArguments);
 }
 
-define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with_args', false);
+define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with_args');
 
 /**
  * Swaps the values of keys `a` and `b`.
@@ -1318,7 +1321,7 @@ function flip_values($keyA, $keyB = null, $object = null)
     return assoc($keyB, $valueA, assoc($keyA, $valueB, $object));
 }
 
-define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values', false);
+define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values');
 
 /**
  * Function that helps you determine every Nth iteration of a loop.
@@ -1347,6 +1350,7 @@ function is_nth($n, $i = null)
     if (count($args) < 2) {
         return function ($i) use ($n) {
             InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);
+
             return modulo($i, $n) === 0;
         };
     }
@@ -1356,14 +1360,14 @@ function is_nth($n, $i = null)
     return modulo($i, $n) === 0;
 }
 
-define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth', false);
+define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth');
 
 /**
  * Publishes any private method.
  *
  * ```php
- * class Collection {
- *
+ * class Collection
+ * {
  *      public function filterNumbers(array $collection) {
  *          return select([$this, 'isInt'], $collection); // This will throw an exception
  *      }
@@ -1371,7 +1375,6 @@ define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth', false);
  *      private function isInt($n) {
  *          return is_int($n);
  *      }
- *
  * }
  * ```
  * The above will generate an error because `isInt` is a private method.
@@ -1409,4 +1412,4 @@ function publish($method, $context = null)
     return $caller->bindTo($context, $context);
 }
 
-define('Basko\Functional\publish', __NAMESPACE__ . '\\publish', false);
+define('Basko\Functional\publish', __NAMESPACE__ . '\\publish');

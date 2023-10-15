@@ -3,6 +3,7 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Traversable;
 
 /**
  * Check if number is even.
@@ -23,7 +24,7 @@ function is_even($n)
     return $n % 2 === 0;
 }
 
-define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even', false);
+define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
 
 /**
  * Check if number is odd.
@@ -46,7 +47,7 @@ function is_odd($n)
     return $odd($n);
 }
 
-define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd', false);
+define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
 
 /**
  * Perform `$a + $b`.
@@ -75,7 +76,7 @@ function plus($a, $b = null)
     return $a + $b;
 }
 
-define('Basko\Functional\plus', __NAMESPACE__ . '\\plus', false);
+define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
 
 /**
  * Perform `$a - $b`.
@@ -104,7 +105,7 @@ function minus($a, $b = null)
     return $a - $b;
 }
 
-define('Basko\Functional\minus', __NAMESPACE__ . '\\minus', false);
+define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
 
 /**
  * Perform `$a / $b`.
@@ -133,7 +134,7 @@ function div($a, $b = null)
     return $a / $b;
 }
 
-define('Basko\Functional\div', __NAMESPACE__ . '\\div', false);
+define('Basko\Functional\div', __NAMESPACE__ . '\\div');
 
 /**
  * Modulo of two numbers.
@@ -162,7 +163,7 @@ function modulo($a, $b = null)
     return $a % $b;
 }
 
-define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo', false);
+define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo');
 
 /**
  * Perform `$a * $b`.
@@ -191,7 +192,7 @@ function multiply($a, $b = null)
     return $a * $b;
 }
 
-define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply', false);
+define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply');
 
 /**
  * Fold list with `plus`.
@@ -211,7 +212,7 @@ function sum($list)
     return fold(plus, 0, $list);
 }
 
-define('Basko\Functional\sum', __NAMESPACE__ . '\\sum', false);
+define('Basko\Functional\sum', __NAMESPACE__ . '\\sum');
 
 /**
  * Fold list with `minus`.
@@ -228,12 +229,12 @@ function diff($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
 
     return fold(minus, array_shift($list), $list);
 }
 
-define('Basko\Functional\diff', __NAMESPACE__ . '\\diff', false);
+define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
 
 /**
  * Fold list with `div`.
@@ -250,12 +251,12 @@ function divide($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
 
     return fold(div, array_shift($list), $list);
 }
 
-define('Basko\Functional\divide', __NAMESPACE__ . '\\divide', false);
+define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
 
 /**
  * Fold list with `multiply`.
@@ -272,12 +273,12 @@ function product($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof \Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
 
     return fold(multiply, array_shift($list), $list);
 }
 
-define('Basko\Functional\product', __NAMESPACE__ . '\\product', false);
+define('Basko\Functional\product', __NAMESPACE__ . '\\product');
 
 /**
  * Calculate average value.
@@ -298,7 +299,7 @@ function average($list)
     return sum($list) / count($list);
 }
 
-define('Basko\Functional\average', __NAMESPACE__ . '\\average', false);
+define('Basko\Functional\average', __NAMESPACE__ . '\\average');
 
 /**
  * Increments its argument.
@@ -318,7 +319,7 @@ function inc($n)
     return plus($n, 1);
 }
 
-define('Basko\Functional\inc', __NAMESPACE__ . '\\inc', false);
+define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
 
 /**
  * Decrements its argument.
@@ -338,7 +339,7 @@ function dec($n)
     return minus($n, 1);
 }
 
-define('Basko\Functional\dec', __NAMESPACE__ . '\\dec', false);
+define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
 
 /**
  * Power its argument.
@@ -358,7 +359,7 @@ function power($n)
     return $n * $n;
 }
 
-define('Basko\Functional\power', __NAMESPACE__ . '\\power', false);
+define('Basko\Functional\power', __NAMESPACE__ . '\\power');
 
 /**
  * Calculate median.
@@ -392,4 +393,4 @@ function median($list)
     return $median;
 }
 
-define('Basko\Functional\median', __NAMESPACE__ . '\\median', false);
+define('Basko\Functional\median', __NAMESPACE__ . '\\median');

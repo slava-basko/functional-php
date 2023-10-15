@@ -37,7 +37,7 @@ function append($element, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\append', __NAMESPACE__ . '\\append', false);
+define('Basko\Functional\append', __NAMESPACE__ . '\\append');
 
 /**
  * Returns a new list with the given element at the front, followed by the contents of the list.
@@ -70,7 +70,7 @@ function prepend($element, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend', false);
+define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
 
 /**
  * Extract a property from a list of objects.
@@ -98,7 +98,7 @@ function pluck($property, $list = null)
     return map(prop($property), $list);
 }
 
-define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck', false);
+define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
 
 /**
  * Looks through each element in the list, returning the first one.
@@ -126,7 +126,7 @@ function head($list)
     return null;
 }
 
-define('Basko\Functional\head', __NAMESPACE__ . '\\head', false);
+define('Basko\Functional\head', __NAMESPACE__ . '\\head');
 
 /**
  * Looks through each element in the list, returning the first one that passes a truthy test (function). The
@@ -157,7 +157,7 @@ function head_by(callable $f, $list = null)
     return null;
 }
 
-define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by', false);
+define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
 
 /**
  * Returns all items from `$list` except first element (head). Preserves `$list` keys.
@@ -193,7 +193,7 @@ function tail($list)
     return $tail;
 }
 
-define('Basko\Functional\tail', __NAMESPACE__ . '\\tail', false);
+define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
 
 /**
  * @param callable $f
@@ -227,7 +227,7 @@ function tail_by(callable $f, $list = null)
     return $tail;
 }
 
-define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by', false);
+define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
 
 /**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
@@ -262,7 +262,7 @@ function select(callable $f, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\select', __NAMESPACE__ . '\\select', false);
+define('Basko\Functional\select', __NAMESPACE__ . '\\select');
 
 /**
  * Returns the elements in list without the elements that the test (function) passes.
@@ -297,7 +297,7 @@ function reject(callable $f, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\reject', __NAMESPACE__ . '\\reject', false);
+define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
 
 /**
  * Returns true if the list contains the given value. If the third parameter is
@@ -336,7 +336,7 @@ function contains($needle, $haystack = null)
     return false;
 }
 
-define('Basko\Functional\contains', __NAMESPACE__ . '\\contains', false);
+define('Basko\Functional\contains', __NAMESPACE__ . '\\contains');
 
 /**
  * Creates a slice of `$list` with `$count` elements taken from the beginning. If the list has less than `$count`,
@@ -375,7 +375,7 @@ function take($count, $list = null)
     );
 }
 
-define('Basko\Functional\take', __NAMESPACE__ . '\\take', false);
+define('Basko\Functional\take', __NAMESPACE__ . '\\take');
 
 /**
  * Creates a slice of `$list` with `$count` elements taken from the end. If the list has less than `$count`,
@@ -415,7 +415,7 @@ function take_r($count, $list = null)
     );
 }
 
-define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r', false);
+define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
 
 /**
  * Return N-th element of an array or string.
@@ -465,7 +465,7 @@ function nth($elementNumber, $list = null)
     return isset($list[$elementNumber]) ? $list[$elementNumber] : null;
 }
 
-define('Basko\Functional\nth', __NAMESPACE__ . '\\nth', false);
+define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
 
 /**
  * Groups a list by index returned by function.
@@ -520,7 +520,7 @@ function group(callable $f, $list = null)
     return $groups;
 }
 
-define('Basko\Functional\group', __NAMESPACE__ . '\\group', false);
+define('Basko\Functional\group', __NAMESPACE__ . '\\group');
 
 /**
  * Partitions a list by function predicate results. Returns an
@@ -574,7 +574,7 @@ function partition($functions, $list = null)
     return $partitions;
 }
 
-define('Basko\Functional\partition', __NAMESPACE__ . '\\partition', false);
+define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
 
 /**
  * Takes a nested combination of list and returns their contents as a single, flat list.
@@ -604,7 +604,7 @@ function flatten($list)
     return $result;
 }
 
-define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten', false);
+define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten');
 
 /**
  * Takes a nested combination of list and returns their contents as a single, flat list.
@@ -659,7 +659,7 @@ function flatten_with_keys($list)
     return $result;
 }
 
-define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_keys', false);
+define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_keys');
 
 /**
  * Insert a given value between each element of a collection.
@@ -695,7 +695,7 @@ function intersperse($separator, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse', false);
+define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 
 /**
  * Sorts a list with a user-defined function.
@@ -740,7 +740,7 @@ function sort(callable $f, $list = null)
     return $array;
 }
 
-define('Basko\Functional\sort', __NAMESPACE__ . '\\sort', false);
+define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
 
 /**
  * Makes a comparator function out of a function that reports whether the first
@@ -775,7 +775,7 @@ function comparator(callable $f)
     };
 }
 
-define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator', false);
+define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
 
 /**
  * Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
@@ -809,7 +809,7 @@ function ascend(callable $f, $a = null, $b = null)
     return $aa < $bb ? -1 : ($aa > $bb ? 1 : 0);
 }
 
-define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend', false);
+define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
 
 /**
  * Makes a descending comparator function out of a function that returns a value that can be compared with `<` and `>`.
@@ -843,7 +843,7 @@ function descend(callable $f, $a = null, $b = null)
     return $aa > $bb ? -1 : ($aa < $bb ? 1 : 0);
 }
 
-define('Basko\Functional\descend', __NAMESPACE__ . '\\descend', false);
+define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
 
 /**
  * Returns a new list containing only one copy of each element in the original list,
@@ -883,7 +883,7 @@ function uniq_by(callable $f, $list = null)
     return $aggregation;
 }
 
-define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by', false);
+define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by');
 
 /**
  * Returns a new list containing only one copy of each element in the original list.
@@ -904,4 +904,4 @@ function uniq($list)
     return uniq_by(identity, $list);
 }
 
-define('Basko\Functional\uniq', __NAMESPACE__ . '\\uniq', false);
+define('Basko\Functional\uniq', __NAMESPACE__ . '\\uniq');

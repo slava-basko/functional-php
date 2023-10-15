@@ -1,5 +1,7 @@
 <?php
 
+use Basko\Functional as f;
+
 if (!function_exists('get_debug_type')) {
     /**
      * @param $value
@@ -7,15 +9,15 @@ if (!function_exists('get_debug_type')) {
      */
     function get_debug_type($value)
     {
-        $gettype = \Basko\Functional\cond([
-            [\Basko\Functional\identical(null), \Basko\Functional\always('null')],
-            ['is_bool', \Basko\Functional\always('bool')],
-            ['is_string', \Basko\Functional\always('string')],
-            ['is_array', \Basko\Functional\always('array')],
-            ['is_int', \Basko\Functional\always('int')],
-            ['is_float', \Basko\Functional\always('float')],
-            [\Basko\Functional\is_type_of(__PHP_Incomplete_Class::class),
-                \Basko\Functional\always('__PHP_Incomplete_Class')],
+        $gettype = f\cond([
+            [f\identical(null), f\always('null')],
+            ['is_bool', f\always('bool')],
+            ['is_string', f\always('string')],
+            ['is_array', f\always('array')],
+            ['is_int', f\always('int')],
+            ['is_float', f\always('float')],
+            [f\is_type_of(__PHP_Incomplete_Class::class),
+                f\always('__PHP_Incomplete_Class')],
             ['is_object', function ($value) {
                 $class = get_class($value);
 
@@ -25,7 +27,7 @@ if (!function_exists('get_debug_type')) {
 
                 return (get_parent_class($class) ?: key(class_implements($class)) ?: 'class') . '@anonymous';
             }],
-            [\Basko\Functional\T, function ($value) {
+            [f\T, function ($value) {
                 if (null === $type = @get_resource_type($value)) {
                     return 'unknown';
                 }

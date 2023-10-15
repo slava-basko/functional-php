@@ -26,7 +26,7 @@ function partial(callable $f, $arg1)
     };
 }
 
-define('Basko\Functional\partial', __NAMESPACE__ . '\\partial', false);
+define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
 
 /**
  * Returns new partial function which will behave like `$f` with
@@ -52,7 +52,7 @@ function partial_r(callable $f, $arg1)
     };
 }
 
-define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r', false);
+define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r');
 
 /**
  * Returns new partial function which will behave like `$f` with
@@ -88,4 +88,4 @@ function partial_p(callable $f, array $args)
     };
 }
 
-define('Basko\Functional\partial_p', __NAMESPACE__ . '\\partial_p', false);
+define('Basko\Functional\partial_p', __NAMESPACE__ . '\\partial_p');
