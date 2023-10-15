@@ -34,33 +34,6 @@ function is_type_of($class, $value = null)
 
 define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of', false);
 
-///**
-// * Curryied version of `instance_of`.
-// *
-// * ```php
-// * is_instance_of(stdClass::class)(new stdClass()); // true
-// * is_instance_of(User::class)(new stdClass()); // false
-// * ```
-// *
-// * @param mixed $instanceof
-// * @return callable
-// */
-//function is_instance_of($instanceof)
-//{
-//    InvalidArgumentException::assertClass($instanceof, __FUNCTION__, 1);
-//
-//    return
-//        /**
-//         * @param mixed $value
-//         * @return bool
-//         */
-//        function ($value) use ($instanceof) {
-//            return instance_of($instanceof, $value);
-//        };
-//}
-//
-//define('Basko\Functional\is_instance_of', __NAMESPACE__ . '\\is_instance_of', false);
-
 /**
  * Checks that the value is instance of specific class.
  *

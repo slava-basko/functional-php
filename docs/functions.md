@@ -1384,28 +1384,20 @@ Alias of `str_pad`.
 str_pad_right('6', '0', '481'); // 481000
 ```
 
-### instance_of
-This function can't be automatically partialed because `$object` can be NULL and thant's OK.
+### is_type_of
+Validates that the value is instance of specific class.
 
 ```php
-instance_of(stdClass::class, new stdClass()); // true
-instance_of(User::class, new stdClass()); // false
-```
-
-### is_instance_of
-Curryied version of `instance_of`.
-
-```php
-is_instance_of(stdClass::class)(new stdClass()); // true
-is_instance_of(User::class)(new stdClass()); // false
+is_type_of(\User::class, new User()); // true
+is_type_of(\User::class, new SomeClass()); // false
 ```
 
 ### type_of
-Return a function that checks `$value instanceof SomeClass`.
+Checks that the value is instance of specific class.
 
 ```php
-type_of(\User::class)(new User()); // User
-type_of(\User::class)(new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
+type_of(\User::class, new User()); // User
+type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
 ```
 
 ### type_bool
