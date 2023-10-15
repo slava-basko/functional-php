@@ -33,6 +33,15 @@ class RetryTest extends BaseTest
         $this->setExpectedException(\InvalidArgumentException::class, $message);
     }
 
+    public function test_retry_fail()
+    {
+        $this->setExpectedException(
+            \InvalidArgumentException::class,
+            'retry() expects parameter 3 to be a valid callback, array, string, closure or functor, NULL given'
+        );
+        f\retry(2, f\no_delay(), null);
+    }
+
     public function testTriedOnceIfItSucceeds()
     {
         $this->retryer

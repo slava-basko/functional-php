@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use Basko\Functional as f;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 class CoreTest extends BaseTest
 {
@@ -28,6 +29,8 @@ class CoreTest extends BaseTest
         $equal_10 = f\eq(10);
         $this->assertTrue($equal_10(10));
         $this->assertTrue(f\eq(1, '1'));
+
+        $this->assertFalse(f\eq(1, null));
     }
 
     public function test_identical()
@@ -36,6 +39,7 @@ class CoreTest extends BaseTest
         $identicalToTwo = f\identical(2);
         $this->assertTrue($identicalToTwo(2));
         $this->assertFalse(f\identical(1, '1'));
+        $this->assertFalse(f\identical(1, null));
     }
 
     public function test_lt()
@@ -48,10 +52,12 @@ class CoreTest extends BaseTest
         $this->assertTrue(f\lt(2, 3));
         $this->assertTrue(f\lt('a', 'z'));
         $this->assertFalse(f\lt('z', 'a'));
+        $this->assertFalse(f\lt('z', null));
     }
 
     public function test_lte()
     {
+        $this->assertFalse(f\lte(2, null));
         $this->assertTrue(f\lte(2, 2));
         $this->assertTrue(f\lte(1, 2));
         $less_than_or_equal10 = f\lte(10);
@@ -60,6 +66,7 @@ class CoreTest extends BaseTest
 
     public function test_gt()
     {
+        $this->assertTrue(f\gt(2, null));
         $this->assertTrue(f\gt(2, 1));
         $greater_than_10 = f\gt(10);
         $this->assertTrue($greater_than_10(11));
@@ -67,6 +74,7 @@ class CoreTest extends BaseTest
 
     public function test_gte()
     {
+        $this->assertTrue(f\gte(2, null));
         $this->assertTrue(f\gte(2, 2));
         $this->assertTrue(f\gte(2, 1));
         $greater_than_or_equal_10 = f\gte(10);
@@ -106,6 +114,15 @@ class CoreTest extends BaseTest
         $this->assertEquals([10, 20, 30], f\map(f\multiply(10), [1, 2, 3]));
     }
 
+    public function test_map_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\map() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\map(f\plus(1), null);
+    }
+
     public function test_flat_map()
     {
         $numArray5 = [1, 2, 3, 4, 5];
@@ -138,6 +155,15 @@ class CoreTest extends BaseTest
         $this->assertEquals([2, 3, 4], f\flat_map(f\plus(1), [1, 2, 3]));
     }
 
+    public function test_flat_map_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\flat_map() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\flat_map(f\plus(1), null);
+    }
+
     public function test_each()
     {
         $calls = 0;
@@ -151,6 +177,15 @@ class CoreTest extends BaseTest
 
         $this->assertEquals([1, 2, 3], $each([1, 2, 3]));
         $this->assertEquals(3, $calls);
+    }
+
+    public function test_each_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\each() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\each(f\tap, null);
     }
 
     public function test_not()
@@ -206,6 +241,15 @@ class CoreTest extends BaseTest
         );
     }
 
+    public function test_fold_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\fold() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\fold(f\plus, 0, null);
+    }
+
     public function test_ford_r()
     {
         $this->assertEquals(2, f\fold_r(f\minus, 0, [1, 4, 5]));
@@ -225,6 +269,15 @@ class CoreTest extends BaseTest
 
         $foldRPlus0 = f\fold_r(f\plus, 0);
         $this->assertEquals(6, $foldRPlus0([2, 2, 2]));
+    }
+
+    public function test_fold_r_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\fold_r() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\fold_r(f\plus, 0, null);
     }
 
     public function testAlways()
@@ -421,6 +474,8 @@ class CoreTest extends BaseTest
         $this->assertTrue($between6And9(7));
         $this->assertTrue($between6And9(8));
         $this->assertFalse($between6And9(10));
+
+        $this->assertFalse(f\both(1, null));
     }
 
     public function test_all_pass()
@@ -431,6 +486,8 @@ class CoreTest extends BaseTest
 
         $this->assertFalse($isQueenOfSpades(['rank' => 'Q', 'suit' => '♣︎']));
         $this->assertTrue($isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']));
+
+        $this->assertFalse(f\all_pass([$isQueen, $isSpade], null));
     }
 
     public function test_any_pass()
@@ -442,6 +499,8 @@ class CoreTest extends BaseTest
         $this->assertTrue($isBlackCard(['rank' => '10', 'suit' => '♣']));
         $this->assertTrue($isBlackCard(['rank' => 'Q', 'suit' => '♠']));
         $this->assertFalse($isBlackCard(['rank' => 'Q', 'suit' => '♦']));
+
+        $this->assertFalse(f\any_pass([$isClub, $isSpade], null));
     }
 
     public function test_null()

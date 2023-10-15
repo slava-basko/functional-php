@@ -38,6 +38,15 @@ class ListTest extends BaseTest
         $this->assertEquals(['John', 'Mark'], f\pluck('first_name', static::getUsersObjects()));
     }
 
+    public function test_pluck_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\pluck() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\pluck('first_name', null);
+    }
+
     public function test_head_and_tail()
     {
         $this->assertNull(f\head([]));
@@ -71,6 +80,24 @@ class ListTest extends BaseTest
         }, $students));
     }
 
+    public function test_head_by_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\head_by() expects parameter 2 to be array or instance of Traversable, integer given'
+        );
+        f\head_by(f\T, 1);
+    }
+
+    public function test_tail_by_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\tail_by() expects parameter 2 to be array or instance of Traversable, integer given'
+        );
+        f\tail_by(f\T, 1);
+    }
+
     public function test_select()
     {
         $user1 = new \User([
@@ -88,6 +115,15 @@ class ListTest extends BaseTest
 
         $activeUsersSelector = f\select($fnFilter);
         $this->assertSame([$user1], $activeUsersSelector([$user1, $user2]));
+    }
+
+    public function test_select_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\select() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\select(f\T, null);
     }
 
     public function test_reject()
@@ -110,6 +146,15 @@ class ListTest extends BaseTest
 
         $inactiveUsersSelector = f\reject($fnFilter);
         $this->assertSame([1=>$user2], $inactiveUsersSelector([$user1, $user2]));
+    }
+
+    public function test_reject_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\reject() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\reject(f\T, null);
     }
 
     public function test_contains()
@@ -136,6 +181,15 @@ class ListTest extends BaseTest
         $this->assertTrue(f\contains('🙌', '🙌🎉✨🚀'));
     }
 
+    public function test_contains_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\contains() expects parameter 2 to be string or list, NULL given'
+        );
+        f\contains('foo', null);
+    }
+
     public function test_take()
     {
         $t = f\take(2);
@@ -149,6 +203,24 @@ class ListTest extends BaseTest
         $this->assertEquals('Slav', f\take(4, 'Slava'));
         $this->assertEquals('Slava', f\take(99, 'Slava'));
         $this->assertEquals('lava', f\take_r(4, 'Slava'));
+    }
+
+    public function test_take_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\take() expects parameter 2 to be string or list, NULL given'
+        );
+        f\take(2, null);
+    }
+
+    public function test_take_r_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\take_r() expects parameter 2 to be string or list, NULL given'
+        );
+        f\take_r(2, null);
     }
 
     public function test_nth()
@@ -167,6 +239,15 @@ class ListTest extends BaseTest
         $this->assertEquals(null, f\nth(-999, 'Slava'));
 
         $this->assertEquals(null, $nth(0, ['foo', 'bar', 'baz', 'qwe']));
+    }
+
+    public function test_nth_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\nth() expects parameter 2 to be string or list, NULL given'
+        );
+        f\nth(1, null);
     }
 
     public function test_group()
@@ -215,6 +296,15 @@ class ListTest extends BaseTest
                 ],
             ]
         ], $groupByTypeUser($users));
+    }
+
+    public function test_group_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\group() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\group(f\T, null);
     }
 
     public function test_partition()
@@ -266,6 +356,15 @@ class ListTest extends BaseTest
                 'score' => 2
             ],
         ], $losers);
+    }
+
+    public function test_partition_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\partition() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\partition([f\T, f\F], null);
     }
 
     public function test_flatten()
@@ -321,6 +420,15 @@ class ListTest extends BaseTest
         );
     }
 
+    public function test_intersperse_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\intersperse() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\intersperse('a', null);
+    }
+
     public function test_sort()
     {
         $list = ['cat', 'bear', 'aardvark'];
@@ -339,6 +447,15 @@ class ListTest extends BaseTest
         $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash_iterator));
     }
 
+    public function test_sort_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\sort() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\sort(f\T, null);
+    }
+
     public function test_append()
     {
         $arr = ['one', 'two'];
@@ -352,6 +469,15 @@ class ListTest extends BaseTest
         $this->assertEquals(['one', 'two', 'three'], $arr3);
     }
 
+    public function test_append_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\append() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\append('element', null);
+    }
+
     public function test_prepend()
     {
         $arr = ['one', 'two'];
@@ -363,6 +489,15 @@ class ListTest extends BaseTest
 
         $arr3 = f\prepend('three', new \ArrayIterator($arr));
         $this->assertEquals(['three', 'one', 'two'], $arr3);
+    }
+
+    public function test_prepend_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\prepend() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\prepend('element', null);
     }
 
     public function test_comparator()
@@ -452,6 +587,15 @@ class ListTest extends BaseTest
             [-1, -5, 2, 10],
             $uniq_by_abs([-1, -5, 2, 10, 1, 2])
         );
+    }
+
+    public function test_uniq_by_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\uniq_by() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\uniq_by(f\T, null);
     }
 
     public function test_uniq()

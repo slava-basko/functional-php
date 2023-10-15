@@ -185,7 +185,9 @@ function concat($a, $b = null)
 {
     InvalidArgumentException::assertString($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(concat, $a);
     }
 
@@ -232,7 +234,9 @@ function join($separator, $list = null)
 {
     InvalidArgumentException::assertString($separator, __FUNCTION__, 1);
 
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(join, $separator);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -263,9 +267,11 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join', false);
  */
 function if_else(callable $if, callable $then = null, callable $else = null)
 {
-    if (is_null($then) && is_null($else)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(if_else, $if);
-    } elseif (is_null($else)) {
+    } elseif (count($args) === 2) {
         return partial(if_else, $if, $then);
     }
 
@@ -328,9 +334,13 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat', false);
  */
 function try_catch(callable $tryer, callable $catcher = null)
 {
-    if (is_null($catcher)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(try_catch, $tryer);
     }
+
+    InvalidArgumentException::assertCallable($catcher, __FUNCTION__, 2);
 
     return function () use ($tryer, $catcher) {
         $args = func_get_args();
@@ -444,7 +454,9 @@ function prop($property, $object = null)
 {
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
-    if (is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(prop, $property);
     }
 
@@ -506,7 +518,9 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk', false);
  */
 function prop_path(array $path, $object = null)
 {
-    if (is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(prop_path, $path);
     }
 
@@ -531,7 +545,9 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path', false);
  */
 function props(array $properties, $object = null)
 {
-    if (is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(props, $properties);
     }
 
@@ -570,9 +586,11 @@ function assoc($key, $val = null, $list = null)
 {
     InvalidArgumentException::assertString($key, __FUNCTION__, 1);
 
-    if (is_null($val) && is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(assoc, $key);
-    } elseif (is_null($list)) {
+    } elseif (count($args) === 2) {
         return partial(assoc, $key, $val);
     }
 
@@ -616,9 +634,11 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc', false);
  */
 function assoc_path(array $path, $val = null, $list = null)
 {
-    if (is_null($val) && is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(assoc_path, $path);
-    } elseif (is_null($list)) {
+    } elseif (count($args) === 2) {
         return partial(assoc_path, $path, $val);
     }
 
@@ -687,7 +707,9 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn', false);
  */
 function pair($fst, $snd = null)
 {
-    if (is_null($snd)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(pair, $fst);
     }
 
@@ -830,7 +852,9 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote', false);
  */
 function select_keys(array $keys, $object = null)
 {
-    if (is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(select_keys, $keys);
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
@@ -867,7 +891,9 @@ define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys', false);
  */
 function omit_keys(array $keys, $object = null)
 {
-    if (is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(omit_keys, $keys);
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
@@ -898,9 +924,11 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys', false);
  */
 function map_keys(callable $f, array $keys = null, $list = null)
 {
-    if (is_null($keys) && is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(map_keys, $f);
-    } elseif (is_null($list)) {
+    } elseif (count($args) === 2) {
         return partial(map_keys, $f, $keys);
     }
 
@@ -932,9 +960,11 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys', false);
  */
 function map_elements(callable $f, array $elementsNumbers = null, $list = null)
 {
-    if (is_null($elementsNumbers) && is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(map_elements, $f);
-    } elseif (is_null($list)) {
+    } elseif (count($args) === 2) {
         return partial(map_elements, $f, $elementsNumbers);
     }
 
@@ -973,7 +1003,9 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements', false)
  */
 function find_missing_keys(array $keys, $array = null)
 {
-    if (is_null($array)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(find_missing_keys, $keys);
     }
 
@@ -1065,9 +1097,11 @@ function combine($keyProp, $valueProp = null, $list = null)
 {
     InvalidArgumentException::assertString($keyProp, __FUNCTION__, 1);
 
-    if (is_null($valueProp) && is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(combine, $keyProp);
-    } elseif (is_null($list)) {
+    } elseif (count($args) === 2) {
         return partial(combine, $keyProp, $valueProp);
     }
 
@@ -1167,9 +1201,11 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay', false);
  */
 function retry($retries, \Iterator $delaySequence = null, $f = null)
 {
-    if (is_null($delaySequence) && is_null($f)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(retry, $retries);
-    } elseif (is_null($f)) {
+    } elseif (count($args) === 2) {
         return partial(retry, $retries, $delaySequence);
     }
 
@@ -1235,7 +1271,9 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct', false);
  */
 function construct_with_args($class, $constructArguments = null)
 {
-    if (is_null($constructArguments)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(construct_with_args, $class);
     }
 
@@ -1263,9 +1301,11 @@ function flip_values($keyA, $keyB = null, $object = null)
 {
     InvalidArgumentException::assertString($keyA, __FUNCTION__, 1);
 
-    if (is_null($keyB) && is_null($object)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(flip_values, $keyA);
-    } elseif (is_null($object)) {
+    } elseif (count($args) === 2) {
         return partial(flip_values, $keyA, $keyB);
     }
 
@@ -1300,11 +1340,18 @@ define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values', false);
  */
 function is_nth($n, $i = null)
 {
-    if (is_null($i)) {
+    InvalidArgumentException::assertPositiveInteger($n, __FUNCTION__, 1);
+
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return function ($i) use ($n) {
+            InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);
             return modulo($i, $n) === 0;
         };
     }
+
+    InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);
 
     return modulo($i, $n) === 0;
 }
@@ -1345,9 +1392,13 @@ function publish($method, $context = null)
 {
     InvalidArgumentException::assertString($method, __FUNCTION__, 1);
 
-    if (is_null($context)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(publish, $method);
     }
+
+    InvalidArgumentException::assertObject($context, __FUNCTION__, 2);
 
     $caller = function () use ($method) {
         $args = func_get_args();

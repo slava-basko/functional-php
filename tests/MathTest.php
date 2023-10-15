@@ -27,6 +27,15 @@ class MathTest extends BaseTest
         $this->assertSame(12, $plus10(2));
     }
 
+    public function test_plus_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'plus() expects parameter 2 to be numeric, NULL given'
+        );
+        f\plus(2, null);
+    }
+
     public function test_minus()
     {
         $this->assertSame(1, f\minus(3, 2));
@@ -34,11 +43,29 @@ class MathTest extends BaseTest
         $this->assertSame(1, $minus10(11));
     }
 
+    public function test_minus_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'minus() expects parameter 2 to be numeric, NULL given'
+        );
+        f\minus(2, null);
+    }
+
     public function test_div()
     {
         $this->assertSame(2, f\div(4, 2));
         $div2 = f\div(2);
         $this->assertSame(2, $div2(4));
+    }
+
+    public function test_div_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'div() expects parameter 2 to be numeric, NULL given'
+        );
+        f\div(2, null);
     }
 
     public function test_modulo()
@@ -51,6 +78,15 @@ class MathTest extends BaseTest
         $this->assertEquals(-55 % -4, f\modulo(-55, -4)); // -3
     }
 
+    public function test_modulo_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'modulo() expects parameter 2 to be numeric, NULL given'
+        );
+        f\modulo(2, null);
+    }
+
     public function test_multiply()
     {
         $this->assertSame(8, f\multiply(4, 2));
@@ -58,7 +94,16 @@ class MathTest extends BaseTest
         $this->assertSame(8, $multiply2(4));
     }
 
-    public function test_sun()
+    public function test_multiply_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'multiply() expects parameter 2 to be numeric, NULL given'
+        );
+        f\multiply(2, null);
+    }
+
+    public function test_sum()
     {
         $this->assertEquals(6, f\sum(f\to_list(3, 2, 1)));
         $this->assertEquals(6, f\sum([3, 2, 1]));

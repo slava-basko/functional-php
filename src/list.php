@@ -19,7 +19,9 @@ use Traversable;
  */
 function append($element, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(append, $element);
     }
 
@@ -51,7 +53,9 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append', false);
  */
 function prepend($element, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(prepend, $element);
     }
 
@@ -84,7 +88,9 @@ function pluck($property, $list = null)
 {
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(pluck, $property);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -134,7 +140,9 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head', false);
  */
 function head_by(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(head_by, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -195,7 +203,9 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail', false);
  */
 function tail_by(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(tail_by, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -234,7 +244,9 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by', false);
  */
 function select(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(select, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -267,7 +279,9 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select', false);
  */
 function reject(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(reject, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -301,7 +315,9 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject', false);
  */
 function contains($needle, $haystack = null)
 {
-    if (is_null($haystack)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(contains, $needle);
     }
 
@@ -309,7 +325,7 @@ function contains($needle, $haystack = null)
         return '' === $needle || false !== strpos($haystack, $needle);
     }
 
-    InvalidArgumentException::assertList($haystack, __FUNCTION__, 2);
+    InvalidArgumentException::assertStringOrList($haystack, __FUNCTION__, 2);
 
     foreach ($haystack as $element) {
         if ($needle === $element) {
@@ -341,7 +357,9 @@ function take($count, $list = null)
 {
     InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
 
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(take, $count);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
@@ -378,7 +396,9 @@ function take_r($count, $list = null)
 {
     InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
 
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(take_r, $count);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
@@ -415,7 +435,11 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r', false);
  */
 function nth($elementNumber, $list = null)
 {
-    if (is_null($list)) {
+    InvalidArgumentException::assertInteger($elementNumber, __FUNCTION__, 1);
+
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(nth, $elementNumber);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
@@ -474,7 +498,9 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth', false);
  */
 function group(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(group, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -524,7 +550,9 @@ function partition($functions, $list = null)
 {
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
 
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(partition, $functions);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -648,7 +676,9 @@ define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_key
  */
 function intersperse($separator, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(intersperse, $separator);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -681,7 +711,9 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse', false);
  */
 function sort(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(sort, $f);
     }
 
@@ -763,9 +795,11 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator', false);
  */
 function ascend(callable $f, $a = null, $b = null)
 {
-    if (is_null($a) && is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(ascend, $f);
-    } elseif (is_null($b)) {
+    } elseif (count($args) === 2) {
         return partial(ascend, $f, $a);
     }
 
@@ -795,9 +829,11 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend', false);
  */
 function descend(callable $f, $a = null, $b = null)
 {
-    if (is_null($a) && is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(descend, $f);
-    } elseif (is_null($b)) {
+    } elseif (count($args) === 2) {
         return partial(descend, $f, $a);
     }
 
@@ -825,7 +861,9 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend', false);
  */
 function uniq_by(callable $f, $list = null)
 {
-    if (is_null($list)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(uniq_by, $f);
     }
 

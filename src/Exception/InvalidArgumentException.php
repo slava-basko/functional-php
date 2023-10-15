@@ -24,9 +24,10 @@ class InvalidArgumentException extends \InvalidArgumentException
         if (!is_array($callback) && !is_string($callback)) {
             throw new static(
                 \sprintf(
-                    '%s() expected parameter %d to be a valid callback, no array, string, closure or functor given',
+                    '%s() expects parameter %d to be a valid callback, array, string, closure or functor, %s given',
                     $callee,
-                    $parameterPosition
+                    $parameterPosition,
+                    self::getType($callback)
                 )
             );
         }
@@ -484,6 +485,27 @@ class InvalidArgumentException extends \InvalidArgumentException
             throw new static(
                 sprintf(
                     '%s() expects parameter %d to be valid class, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param mixed $value
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws static
+     */
+    public static function assertObject($value, $callee, $parameterPosition)
+    {
+        if (!is_object($value)) {
+            throw new static(
+                sprintf(
+                    '%s() expects parameter %d to be object, %s given',
                     $callee,
                     $parameterPosition,
                     self::getType($value)

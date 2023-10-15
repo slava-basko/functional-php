@@ -12,9 +12,27 @@ class StringTest extends BaseTest
         $this->assertEquals(['Hello', 'World'], $words('Hello World'));
     }
 
+    public function test_split_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_split() expects parameter 2 to be string, NULL given'
+        );
+        f\str_split(' ', null);
+    }
+
     public function test_str_split_on()
     {
         $this->assertEquals(['UA', '1234567890'], f\str_split_on(2, 'UA1234567890'));
+    }
+
+    public function test_str_split_on_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_split_on() expects parameter 2 to be string, NULL given'
+        );
+        f\str_split_on(2, null);
     }
 
     public function test_str_replace()
@@ -68,6 +86,15 @@ class StringTest extends BaseTest
         $this->assertFalse(f\str_starts_with('✨', $testEmoji)); // 0xe2 0x9c 0xa8
     }
 
+    public function test_str_starts_with_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_starts_with() expects parameter 2 to be string, NULL given'
+        );
+        f\str_starts_with('http://', null);
+    }
+
     public function test_str_ends_with() {
         $dotCom = f\str_ends_with('.com');
         $this->assertTrue($dotCom('http://gitbub.com'));
@@ -83,10 +110,28 @@ class StringTest extends BaseTest
         $this->assertFalse(f\str_ends_with('✨', $testEmoji)); // 0xe2 0x9c 0xa8
     }
 
+    public function test_str_ends_with_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_ends_with() expects parameter 2 to be string, NULL given'
+        );
+        f\str_ends_with('.com', null);
+    }
+
     public function test_str_test() {
         $numeric = f\str_test('/^[0-9.]+$/');
         $this->assertTrue($numeric('123.43'));
         $this->assertFalse($numeric('12a3.43'));
+    }
+
+    public function test_str_test_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_test() expects parameter 2 to be string, NULL given'
+        );
+        f\str_test('/[a-z]/', null);
     }
 
     public function test_str_pad_left()
@@ -96,10 +141,28 @@ class StringTest extends BaseTest
         $this->assertEquals('000481', $padZero('481'));
     }
 
+    public function test_str_pad_left_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_pad_left() expects parameter 3 to be string, NULL given'
+        );
+        f\str_pad_left(5, 'str', null);
+    }
+
     public function test_str_pad_right()
     {
         $pad6 = f\str_pad_right('6');
         $padZero = $pad6('0');
         $this->assertEquals('481000', $padZero('481'));
+    }
+
+    public function test_str_pad_right_fail()
+    {
+        $this->setExpectedException(
+            'Basko\Functional\Exception\InvalidArgumentException',
+            'str_pad_right() expects parameter 3 to be string, NULL given'
+        );
+        f\str_pad_right(5, 'str', null);
     }
 }

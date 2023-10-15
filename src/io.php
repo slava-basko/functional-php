@@ -23,9 +23,11 @@ function write_file($chmod, $file = null, $content = null)
 {
     InvalidArgumentException::assertInteger($chmod, __FUNCTION__, 1);
 
-    if (is_null($file) && is_null($content)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(write_file, $chmod);
-    } elseif (is_null($content)) {
+    } elseif (count($args) === 2) {
         return partial(write_file, $chmod, $file);
     }
 
@@ -93,7 +95,7 @@ define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file', false);
  */
 function read_file($file)
 {
-    InvalidArgumentException::assertString($file, __FUNCTION__, 1);
+    InvalidArgumentException::assertNotEmptyString($file, __FUNCTION__, 1);
 
     return IO::of(function () use ($file) {
         if (!file_exists($file)) {

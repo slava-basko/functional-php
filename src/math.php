@@ -64,7 +64,9 @@ function plus($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(plus, $a);
     }
 
@@ -91,7 +93,9 @@ function minus($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(flipped(minus), $a);
     }
 
@@ -118,7 +122,9 @@ function div($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(flipped(div), $a);
     }
 
@@ -145,7 +151,9 @@ function modulo($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(flipped(modulo), $a);
     }
 
@@ -172,7 +180,9 @@ function multiply($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    if (is_null($b)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(multiply, $a);
     }
 

@@ -26,6 +26,24 @@ class HelpersTest extends BaseTest
         $this->assertEquals('1|2|3', f\join('|', [1, 2, 3]));
     }
 
+    public function test_concat_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\concat() expects parameter 2 to be string, NULL given'
+        );
+        f\concat('bar', null);
+    }
+
+    public function test_join_fai()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\join() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\join('|', null);
+    }
+
     public function test_with_iterable()
     {
         $f = function () {
@@ -94,6 +112,15 @@ class HelpersTest extends BaseTest
         $this->assertSame('vvv', $valAndCatch());
     }
 
+    public function test_try_catch_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'try_catch() expects parameter 2 to be a valid callback, array, string, closure or functor, NULL given'
+        );
+        f\try_catch(f\F,  null);
+    }
+
     public function test_invoker()
     {
         $user1 = new \User([
@@ -136,6 +163,8 @@ class HelpersTest extends BaseTest
             'x' => 101,
         ]);
         $this->assertEquals(101, f\prop('x', $object));
+
+        $this->assertEquals(null, f\prop('x', null));
     }
 
     public function test_prop_path()
@@ -154,6 +183,8 @@ class HelpersTest extends BaseTest
         $this->assertEquals(2, f\prop_path(['b', 'c'], $data));
         $this->assertEquals(3, f\prop_path(['x', 'y', 'z'], $data));
         $this->assertEquals(null, f\prop_path(['x', 'r'], $data));
+
+        $this->assertEquals(null, f\prop_path(['x', 'y', 'z'], null));
     }
 
     public function test_props()
@@ -176,6 +207,8 @@ class HelpersTest extends BaseTest
         $object->age = 101;
         $object->first = 'Slava';
         $this->assertEquals('Slava Basko', $fullName($object));
+
+        $this->assertEquals([null, null], f\props(['x', 'y'], null));
     }
 
     public function test_to_fn()
@@ -230,6 +263,15 @@ class HelpersTest extends BaseTest
         );
     }
 
+    public function test_assoc_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\assoc() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\assoc('k', 42, null);
+    }
+
     public function test_assoc_path()
     {
         $data = ['foo' => 'foo', 'bar' => ['baz' => 41]];
@@ -253,6 +295,15 @@ class HelpersTest extends BaseTest
         $this->assertEquals(9, $c->b->a);
     }
 
+    public function test_assoc_path_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\assoc_path() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\assoc_path(['k'], 42, null);
+    }
+
     public function test_pair()
     {
         $fooPart = f\pair('foo');
@@ -266,6 +317,8 @@ class HelpersTest extends BaseTest
         ];
         $prdct = f\apply_to($product);
         $this->assertEquals([10, 2], f\pair($prdct(f\prop('value')), $prdct(f\prop('qty'))));
+
+        $this->assertEquals([1, null], f\pair(1, null));
     }
 
     public function test_either()
@@ -358,6 +411,15 @@ class HelpersTest extends BaseTest
         );
     }
 
+    public function test_select_keys_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\select_keys() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\select_keys(['bar', 'baz'], null);
+    }
+
     public function test_omit_keys()
     {
         $f = f\omit_keys(['baz']);
@@ -369,6 +431,15 @@ class HelpersTest extends BaseTest
             ['foo' => 1, 'bar' => 2],
             $f(new \ArrayIterator(['foo' => 1, 'bar' => 2, 'baz' => 3]))
         );
+    }
+
+    public function test_omit_keys_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\omit_keys() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\omit_keys(['bar', 'baz'], null);
     }
 
     public function test_find_missing_keys()
@@ -387,6 +458,15 @@ class HelpersTest extends BaseTest
             ['email'],
             $findUserMissingFields(['login' => 'admin'])
         );
+    }
+
+    public function test_find_missing_keys_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'find_missing_keys() expects parameter 2 to be array or instance of Traversable, NULL given'
+        );
+        f\find_missing_keys(['bar', 'baz'], null);
     }
 
     public function test_copy()
@@ -433,6 +513,15 @@ class HelpersTest extends BaseTest
         $this->assertEquals('John', f\prop('name', $obj));
     }
 
+    public function test_map_keys_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'map_keys() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\map_keys('strtoupper', ['bar'], null);
+    }
+
     public function test_map_elements()
     {
         $f = f\map_elements('strtoupper');
@@ -450,6 +539,15 @@ class HelpersTest extends BaseTest
         $this->assertEquals('CA', $obj[4]);
         $this->assertEquals($obj[4], f\map_elements('strtoupper', [4], $obj)[4]);
         $this->assertEquals('Vancouver', f\map_elements('ucfirst', [4], $obj)[3]);
+    }
+
+    public function test_map_elements_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'map_elements() expects parameter 3 to be array or instance of ArrayAccess, NULL given'
+        );
+        f\map_elements('strtoupper', ['bar'], null);
     }
 
     public function test_call()
@@ -495,13 +593,22 @@ class HelpersTest extends BaseTest
         $this->assertEquals('val1', $newData2->key2);
     }
 
-    public function test_flip_fail()
+    public function test_flip_values_fail()
     {
         $this->setExpectedException(
             f\Exception\InvalidArgumentException::class,
             'Basko\Functional\flip_values() expects parameter 1 to be string, NULL given'
         );
         f\flip_values(null, 'key', []);
+    }
+
+    public function test_flip_values_fail2()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'flip_values() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\flip_values('keyA', 'key', null);
     }
 
     public function test_is_nth()
@@ -520,11 +627,53 @@ class HelpersTest extends BaseTest
         );
     }
 
+    public function test_is_nth_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'is_nth() expects parameter 2 to be integer, NULL given'
+        );
+        f\is_nth(20, null);
+    }
+
     public function test_publish()
     {
         $privateMethodPublish = f\publish('privateMethod');
         $object = new \ClassWithPrivateMethod();
         $f = $privateMethodPublish($object);
         $this->assertEquals('private', call_user_func($f));
+    }
+
+    public function test_publish_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'publish() expects parameter 2 to be object, NULL given'
+        );
+        f\publish('privateMethod', null);
+    }
+
+    public function test_combine()
+    {
+        $this->assertEquals(
+            [
+                'Slava' => 'Basko'
+            ],
+            f\combine('name', 'last_name', [
+                [
+                    'name' => 'Slava',
+                    'last_name' => 'Basko'
+                ]
+            ])
+        );
+    }
+
+    public function test_combine_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\combine() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\combine('name', 'last_name', null);
     }
 }

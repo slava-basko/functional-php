@@ -20,7 +20,9 @@ function str_split($separator, $string = null)
 {
     InvalidArgumentException::assertNotEmptyString($separator, __FUNCTION__, 1);
 
-    if (is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(str_split, $separator);
     }
 
@@ -47,7 +49,9 @@ function str_split_on($num, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($num, __FUNCTION__, 1);
 
-    if (is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(str_split_on, $num);
     }
 
@@ -90,9 +94,11 @@ function str_replace($search, $replace = null, $subject = null)
 {
     InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
 
-    if (is_null($replace) && is_null($subject)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(str_replace, $search);
-    } elseif (is_null($subject)) {
+    } elseif (count($args) === 2) {
         return partial(str_replace, $search, $replace);
     }
 
@@ -119,7 +125,9 @@ function str_starts_with($token, $string = null)
 {
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
-    if (is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(str_starts_with, $token);
     }
 
@@ -146,7 +154,9 @@ function str_ends_with($token, $string = null)
 {
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
-    if (is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(str_ends_with, $token);
     }
 
@@ -175,7 +185,9 @@ function str_test($pattern, $string = null)
 {
     InvalidArgumentException::assertString($pattern, __FUNCTION__, 1);
 
-    if (is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) < 2) {
         return partial(str_test, $pattern);
     }
 
@@ -203,9 +215,11 @@ function str_pad_left($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    if (is_null($pad_string) && is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(str_pad_left, $length);
-    } elseif (is_null($string)) {
+    } elseif (count($args) === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_left, $length, $pad_string);
@@ -235,9 +249,11 @@ function str_pad_right($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    if (is_null($pad_string) && is_null($string)) {
+    $args = func_get_args();
+
+    if (count($args) === 1) {
         return partial(str_pad_right, $length);
-    } elseif (is_null($string)) {
+    } elseif (count($args) === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_right, $length, $pad_string);
