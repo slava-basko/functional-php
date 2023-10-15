@@ -322,7 +322,7 @@ function contains($needle, $haystack = null)
     }
 
     if (is_string($haystack)) {
-        return '' === $needle || false !== strpos($haystack, $needle);
+        return $needle === '' || false !== strpos($haystack, $needle);
     }
 
     InvalidArgumentException::assertStringOrList($haystack, __FUNCTION__, 2);

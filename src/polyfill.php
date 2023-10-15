@@ -30,7 +30,7 @@ if (!function_exists('get_debug_type')) {
                     return 'unknown';
                 }
 
-                if ('Unknown' === $type) {
+                if ($type === 'Unknown') {
                     $type = 'closed';
                 }
 

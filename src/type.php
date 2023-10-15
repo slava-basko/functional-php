@@ -93,11 +93,11 @@ function type_bool($value)
         return $value;
     }
 
-    if (0 === $value || '0' === $value) {
+    if ($value === 0 || $value === '0') {
         return false;
     }
 
-    if (1 === $value || '1' === $value) {
+    if ($value === 1 || $value === '1') {
         return true;
     }
 
@@ -181,7 +181,7 @@ function type_int($value)
         }
 
         // Exceptional case "000" -(trim)-> "", but we want to return 0
-        if ('' === $trimmed && '' !== $str) {
+        if ($trimmed === '' && $str !== '') {
             return 0;
         }
     }
@@ -216,7 +216,7 @@ function type_float($value)
 
     if (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
         $str = (string)$value;
-        if ('' !== $str) {
+        if ($str !== '') {
             if (ctype_digit($str)) {
                 return (float)$str;
             }
