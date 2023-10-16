@@ -33,4 +33,22 @@ class PolyfillTest extends BaseTest
 
         $this->assertSame('__PHP_Incomplete_Class', get_debug_type($var));
     }
+
+    /**
+     * @dataProvider provideValidDigits
+     */
+    public function test_valid_ctype_digit($text)
+    {
+        $this->assertTrue(ctype_digit($text));
+    }
+
+    public static function provideValidDigits()
+    {
+        return [
+            ['0'],
+            ['123'],
+            ['01234'],
+            ['934'],
+        ];
+    }
 }

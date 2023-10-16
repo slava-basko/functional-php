@@ -43,3 +43,40 @@ if (!function_exists('get_debug_type')) {
         return $gettype($value);
     }
 }
+
+if (!function_exists('ctype_digit')) {
+    function convert_int_to_char_before_ctype($int, $function)
+    {
+        if (!is_int($int)) {
+            return $int;
+        }
+
+        if ($int < -128 || $int > 255) {
+            return (string)$int;
+        }
+
+        if (PHP_VERSION_ID >= 80100) {
+            @trigger_error(
+                $function . '(): Argument of type int will be interpreted as string in the future',
+                E_USER_DEPRECATED
+            );
+        }
+
+        if ($int < 0) {
+            $int += 256;
+        }
+
+        return chr($int);
+    }
+
+    /**
+     * @param $text
+     * @return bool
+     */
+    function ctype_digit($text)
+    {
+        $text = convert_int_to_char_before_ctype($text, __FUNCTION__);
+
+        return is_string($text) && $text !== '' && !preg_match('/[^0-9]/', $text);
+    }
+}
