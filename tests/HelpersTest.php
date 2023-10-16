@@ -657,12 +657,17 @@ class HelpersTest extends BaseTest
     {
         $this->assertEquals(
             [
-                'Slava' => 'Basko'
+                'Slava' => 'Basko',
+                'John' => 'Doe'
             ],
             f\combine('name', 'last_name', [
                 [
                     'name' => 'Slava',
                     'last_name' => 'Basko'
+                ],
+                [
+                    'name' => 'John',
+                    'last_name' => 'Doe'
                 ]
             ])
         );

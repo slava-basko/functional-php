@@ -1088,7 +1088,24 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
 
 /**
  * Creates an associative array using a `$keyProp` as the path to build its keys,
- * and optionally `$valueProp` as path to get the values.
+ * and `$valueProp` as path to get the values.
+ *
+ * ```php
+ * combine('alpha2', 'name', [
+ *      [
+ *          'name' => 'Netherlands',
+ *          'alpha2' => 'NL',
+ *          'alpha3' => 'NLD',
+ *          'numeric' => '528',
+ *      ],
+ *      [
+ *          'name' => 'Ukraine',
+ *          'alpha2' => 'UA',
+ *          'alpha3' => 'UKR',
+ *          'numeric' => '804',
+ *      ],
+ * ]); // ['NL' => 'Netherlands', 'UA' => 'Ukraine']
+ * ```
  *
  * @param string $keyProp
  * @param string $valueProp
