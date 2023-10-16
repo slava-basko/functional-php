@@ -12,12 +12,12 @@ class ListTest extends BaseTest
         return [
             [
                 'first_name' => 'John',
-                'last_name' => 'Doe'
+                'last_name' => 'Doe',
             ],
             [
                 'first_name' => 'Mark',
-                'last_name' => 'Bower'
-            ]
+                'last_name' => 'Bower',
+            ],
         ];
     }
 
@@ -50,13 +50,17 @@ class ListTest extends BaseTest
     public function test_head_and_tail()
     {
         $this->assertNull(f\head([]));
-        $this->assertNull(f\head_by(function () {}, []));
-        $nullFirst = f\head_by(function () {});
+        $this->assertNull(f\head_by(function () {
+        }, []));
+        $nullFirst = f\head_by(function () {
+        });
         $this->assertNull($nullFirst([]));
 
         $this->assertEquals([], f\tail([]));
-        $this->assertEquals([], f\tail_by(function () {}, []));
-        $tailFirst = f\tail_by(function () {});
+        $this->assertEquals([], f\tail_by(function () {
+        }, []));
+        $tailFirst = f\tail_by(function () {
+        });
         $this->assertEquals([], $tailFirst([]));
 
         $students = [
@@ -73,11 +77,15 @@ class ListTest extends BaseTest
             1 => ['name' => 'mark', 'score' => 9],
             2 => ['name' => 'john', 'score' => 1],
         ], f\tail($students));
-        $this->assertEquals([
-            1 => ['name' => 'mark', 'score' => 9],
-        ], f\tail_by(function ($student) {
-            return $student['score'] >= 9;
-        }, $students));
+        $this->assertEquals(
+            [
+                1 => ['name' => 'mark', 'score' => 9],
+            ],
+            f\tail_by(
+                f\compose(f\gt(8), f\prop('score')),
+                $students
+            )
+        );
     }
 
     public function test_head_by_fail()
@@ -109,7 +117,7 @@ class ListTest extends BaseTest
             'active' => false,
         ]);
 
-        $fnFilter = function($user, $key, $collection) {
+        $fnFilter = function ($user, $key, $collection) {
             return $user->isActive();
         };
 
@@ -137,15 +145,15 @@ class ListTest extends BaseTest
             'active' => false,
         ]);
 
-        $fnFilter = function($user, $key, $collection) {
+        $fnFilter = function ($user, $key, $collection) {
             return $user->isActive();
         };
 
         $inactiveUsers = f\reject($fnFilter, [$user1, $user2]);
-        $this->assertSame([1=>$user2], $inactiveUsers);
+        $this->assertSame([1 => $user2], $inactiveUsers);
 
         $inactiveUsersSelector = f\reject($fnFilter);
-        $this->assertSame([1=>$user2], $inactiveUsersSelector([$user1, $user2]));
+        $this->assertSame([1 => $user2], $inactiveUsersSelector([$user1, $user2]));
     }
 
     public function test_reject_fail()
@@ -195,7 +203,7 @@ class ListTest extends BaseTest
         $t = f\take(2);
         $t2 = f\take_r(2);
         $this->assertEquals([1, 2], $t([1, 2, 3]));
-        $this->assertEquals([1=>2, 2=>3], $t2([1, 2, 3]));
+        $this->assertEquals([1 => 2, 2 => 3], $t2([1, 2, 3]));
         $this->assertEquals([1, 2], f\take(2, [1, 2, 3]));
         $this->assertEquals([1 => 2, 2 => 3], f\take_r(2, [1, 2, 3]));
         $this->assertEquals([1 => 'b', 2 => 'c'], f\take_r(2, ['a', 'b', 'c']));
@@ -255,19 +263,19 @@ class ListTest extends BaseTest
         $users = [
             [
                 'name' => 'john',
-                'type' => 'admin'
+                'type' => 'admin',
             ],
             [
                 'name' => 'mark',
-                'type' => 'user'
+                'type' => 'user',
             ],
             [
                 'name' => 'bill',
-                'type' => 'user'
+                'type' => 'user',
             ],
             [
                 'name' => 'jack',
-                'type' => 'anonymous'
+                'type' => 'anonymous',
             ],
         ];
 
@@ -276,25 +284,25 @@ class ListTest extends BaseTest
             'admin' => [
                 [
                     'name' => 'john',
-                    'type' => 'admin'
-                ]
+                    'type' => 'admin',
+                ],
             ],
             'user' => [
                 1 => [
                     'name' => 'mark',
-                    'type' => 'user'
+                    'type' => 'user',
                 ],
                 2 => [
                     'name' => 'bill',
-                    'type' => 'user'
+                    'type' => 'user',
                 ],
             ],
             'anonymous' => [
                 3 => [
                     'name' => 'jack',
-                    'type' => 'anonymous'
+                    'type' => 'anonymous',
                 ],
-            ]
+            ],
         ], $groupByTypeUser($users));
     }
 
@@ -312,48 +320,48 @@ class ListTest extends BaseTest
         $students = [
             1 => [
                 'name' => 'john',
-                'score' => 2
+                'score' => 2,
             ],
             2 => [
                 'name' => 'mark',
-                'score' => 8
+                'score' => 8,
             ],
             3 => [
                 'name' => 'bill',
-                'score' => 10
+                'score' => 10,
             ],
             4 => [
                 'name' => 'jack',
-                'score' => 10
+                'score' => 10,
             ],
         ];
 
         $f = f\partition([
             f\compose(f\gte(9), f\prop('score')),
-            f\compose(f\both(f\gt(6), f\lt(9)), f\prop('score'))
+            f\compose(f\both(f\gt(6), f\lt(9)), f\prop('score')),
         ]);
         list($best, $good_students, $losers) = $f($students);
 
         $this->assertEquals([
             3 => [
                 'name' => 'bill',
-                'score' => 10
+                'score' => 10,
             ],
             4 => [
                 'name' => 'jack',
-                'score' => 10
+                'score' => 10,
             ],
         ], $best);
         $this->assertEquals([
             2 => [
                 'name' => 'mark',
-                'score' => 8
+                'score' => 8,
             ],
         ], $good_students);
         $this->assertEquals([
             1 => [
                 'name' => 'john',
-                'score' => 2
+                'score' => 2,
             ],
         ], $losers);
     }
@@ -400,13 +408,13 @@ class ListTest extends BaseTest
                 'comments' => [
                     [
                         'author' => 'user1',
-                        'body' => 'comment body 1'
+                        'body' => 'comment body 1',
                     ],
                     [
                         'author' => 'user2',
-                        'body' => 'comment body 2'
-                    ]
-                ]
+                        'body' => 'comment body 2',
+                    ],
+                ],
             ])
         );
     }
@@ -437,6 +445,7 @@ class ListTest extends BaseTest
         $hash_iterator = new \ArrayIterator($hash);
         $sort_callback = function ($left, $right, $collection) {
             InvalidArgumentException::assertList($collection, __FUNCTION__, 3);
+
             return strcmp($left, $right);
         };
 

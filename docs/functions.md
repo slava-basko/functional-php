@@ -558,7 +558,16 @@ tail([
 ```
 
 ### tail_by
+Returns all items from `$list` except first element (head) if `$f` returns true. Preserves `$list` keys.
+Can be considered as `tail` + `select`.
 
+```php
+tail([
+     ['name' => 'jack', 'score' => 1],
+     ['name' => 'mark', 'score' => 9],
+     ['name' => 'john', 'score' => 1],
+]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
+```
 
 ### select
 Looks through each element in the list, returning an array of all the elements that pass a test (function).

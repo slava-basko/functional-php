@@ -196,6 +196,17 @@ function tail($list)
 define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
 
 /**
+ * Returns all items from `$list` except first element (head) if `$f` returns true. Preserves `$list` keys.
+ * Can be considered as `tail` + `select`.
+ *
+ * ```php
+ * tail_by(f\compose(gt(8), prop('score')), [
+ *      ['name' => 'jack', 'score' => 1],
+ *      ['name' => 'mark', 'score' => 9],
+ *      ['name' => 'john', 'score' => 1],
+ * ]); // [1 => ['name' => 'mark', 'score' => 9]]
+ * ```
+ *
  * @param callable $f
  * @param \Traversable|array $list
  * @return callable|array
