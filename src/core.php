@@ -713,7 +713,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  *      return $dividend / $divisor;
  * }
  *
- * $average = converge('div', ['array_sum', 'count']);
+ * $average = converge(div, ['array_sum', 'count']);
  * $average([1, 2, 3, 4]); // 2.5
  * ```
  *
@@ -723,7 +723,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  * @return callable(mixed):mixed
  * @no-named-arguments
  */
-function converge(callable $convergingFunction, $branchingFunctions = null)
+function converge(callable $convergingFunction, array $branchingFunctions = null)
 {
     $args = func_get_args();
 
@@ -1116,7 +1116,7 @@ function lift_m(callable $f)
 
         $extractedArgs = map(function ($possibleM) use (&$ofFunc) {
             if (is_type_of(Monad::class, $possibleM)) {
-                $ofFunc = call(cond([
+                $ofFunc = call_user_func(cond([
                     [eq(Maybe::class), always(Maybe::just)],
                     [eq(Optional::class), always(Optional::just)],
                     [eq(Either::class), always(Either::right)],
