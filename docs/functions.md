@@ -271,7 +271,7 @@ function div($dividend, $divisor) {
      return $dividend / $divisor;
 }
 
-$average = converge('div', ['array_sum', 'count']);
+$average = converge(div, ['array_sum', 'count']);
 $average([1, 2, 3, 4]); // 2.5
 ```
 
@@ -1234,7 +1234,24 @@ pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
 
 ### combine
 Creates an associative array using a `$keyProp` as the path to build its keys,
-and optionally `$valueProp` as path to get the values.
+and `$valueProp` as path to get the values.
+
+```php
+combine('alpha2', 'name', [
+     [
+         'name' => 'Netherlands',
+         'alpha2' => 'NL',
+         'alpha3' => 'NLD',
+         'numeric' => '528',
+     ],
+     [
+         'name' => 'Ukraine',
+         'alpha2' => 'UA',
+         'alpha3' => 'UKR',
+         'numeric' => '804',
+     ],
+]); // ['NL' => 'Netherlands', 'UA' => 'Ukraine']
+```
 
 ### sequence_constant
 Returns an infinite, traversable sequence of constant values.
