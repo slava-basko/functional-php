@@ -101,7 +101,7 @@ define('Basko\Functional\_value_to_ref', __NAMESPACE__ . '\\_value_to_ref');
  * @param mixed $value
  * @return string
  */
-function value_to_key($value)
+function _value_to_key($value)
 {
     return _value_to_ref($value);
 }
@@ -138,7 +138,7 @@ function memoized(callable $f)
         static $cache = [];
 
         $args = func_get_args();
-        $key = value_to_key(array_merge([$f], $args));
+        $key = _value_to_key(array_merge([$f], $args));
 
         if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
             $cache[$key] = call_user_func_array($f, $args);

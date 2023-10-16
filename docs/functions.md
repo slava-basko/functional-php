@@ -991,9 +991,6 @@ view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
 view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 ```
 
-### value_to_key
-Internal function.
-
 ### memoized
 Create memoized versions of `$f` function.
 
