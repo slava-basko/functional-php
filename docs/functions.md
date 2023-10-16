@@ -562,11 +562,11 @@ Returns all items from `$list` except first element (head) if `$f` returns true.
 Can be considered as `tail` + `select`.
 
 ```php
-tail([
+tail_by(f\compose(gt(8), prop('score')), [
      ['name' => 'jack', 'score' => 1],
      ['name' => 'mark', 'score' => 9],
      ['name' => 'john', 'score' => 1],
-]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
+]); // [1 => ['name' => 'mark', 'score' => 9]]
 ```
 
 ### select
