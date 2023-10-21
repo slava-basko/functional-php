@@ -1,7 +1,7 @@
-# Functional PHP
+# Functional PHP 🐘
 Collection of PHP functions that allows you to write code in a declarative way.
 
-## General
+## General ⚙️
 
 #### Name convention
 The `snake_case` is used to be closer to a PHP native functions.
@@ -23,7 +23,7 @@ This allows us to be more efficient in building new functions from old ones simp
 The last two points together make it easy to build functions as sequences of simpler functions,
 each of which transforms the data and passes it along to the next.
 
-## Docs
+## Docs 📚
 Here you can find available function.
 
 [Functions list](docs/functions.md)
@@ -31,7 +31,7 @@ Here you can find available function.
 Other useful things.
 * [Maybe](docs/maybe.md)
 * [Either](docs/either.md)
-* [Optional](docs/optional.md)
+* [Optional](docs/optional
 
 ## OOP 🤝 FP
 The purpose of this library is not to replace imperative and OOP. They can be combined, and I believe
@@ -175,7 +175,7 @@ $initials = pipe(
 I know, maybe that line looks weired to you, but the idea of composing functions without having to stop at every step 
 to consider the control flow structures and what the parameters are going to be named is pretty powerful.
 
-#### What about some real-life example?
+#### What about some real-life example? 🤔
 No problem, this project has a doc auto-generation script.
 Written in an entirely point-free manner.
 
@@ -183,5 +183,5 @@ Written in an entirely point-free manner.
 
 No variable were harmed during script development (c).
 
-## License
+## License ⚖️
 Use as you want. No liability or warranty from me. Can be considered as MIT.
