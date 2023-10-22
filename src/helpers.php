@@ -107,50 +107,6 @@ function _value_to_key($value)
 }
 
 /**
- * Create memoized versions of `$f` function.
- *
- * Note that memoization is safe for pure functions only. For a function to be
- * pure it should:
- *   1. Have no side effects
- *   2. Given the same arguments it should always return the same result
- *
- * Memoizing an impure function will lead to all kinds of hard to debug issues.
- *
- * In particular, the function to be memoized should never rely on a state of a
- * mutable object. Only immutable objects are safe.
- *
- * ```php
- * $randAndSalt = function ($salt) {
- *      return rand(1, 100) . $salt;
- * };
- * $memoizedRandAndSalt = memoized($randAndSalt);
- * $memoizedRandAndSalt('x'); // 42x
- * $memoizedRandAndSalt('x'); // 42x
- * ```
- *
- * @param callable $f
- * @return callable
- * @no-named-arguments
- */
-function memoized(callable $f)
-{
-    return function () use ($f) {
-        static $cache = [];
-
-        $args = func_get_args();
-        $key = _value_to_key(array_merge([$f], $args));
-
-        if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
-            $cache[$key] = call_user_func_array($f, $args);
-        }
-
-        return $cache[$key];
-    };
-}
-
-define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize');
-
-/**
  * Returns arguments as a list.
  *
  * ```php

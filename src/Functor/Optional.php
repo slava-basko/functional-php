@@ -90,7 +90,7 @@ class Optional extends Monad
     public function match(callable $just, callable $nothing)
     {
         if ($this->hasValue) {
-            call_user_func_array($just, [$this->value]);
+            call_user_func_array($just, [$this->extract()]);
         } else {
             call_user_func($nothing);
         }

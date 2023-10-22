@@ -306,143 +306,6 @@ function tail_recursion(callable $f)
 define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion');
 
 /**
- * Produces a new list of elements by mapping each element in list through a transformation function.
- * Function arguments will be `element`, `index`, `list`.
- *
- * ```php
- * map(plus(1), [1, 2, 3]); // [2, 3, 4]
- * ```
- *
- * @template T of \Traversable|array|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
- * @param T $list
- * @return ($list is null ? callable(T):array : array)
- * @no-named-arguments
- */
-function map(callable $f, $list = null)
-{
-    $args = func_get_args();
-
-    if (count($args) < 2) {
-        return partial(map, $f);
-    }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
-
-    $aggregation = [];
-
-    foreach ($list as $index => $element) {
-        $aggregation[$index] = call_user_func_array($f, [$element, $index, $list]);
-    }
-
-    return $aggregation;
-}
-
-define('Basko\Functional\map', __NAMESPACE__ . '\\map');
-
-/**
- * `flat_map` works applying `$f` that returns a sequence for each element in a list,
- * and flattening the results into the resulting array.
- *
- * `flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
- * whereas flatten will recursively flatten nested collections. Indexes will not preserve.
- *
- * ```php
- * $items = [
- *      [
- *          'id' => 1,
- *          'type' => 'train',
- *          'users' => [
- *              ['id' => 1, 'name' => 'Jimmy Page'],
- *              ['id' => 5, 'name' => 'Roy Harper'],
- *          ],
- *      ],
- *      [
- *          'id' => 421,
- *          'type' => 'hotel',
- *          'users' => [
- *              ['id' => 1, 'name' => 'Jimmy Page'],
- *              ['id' => 2, 'name' => 'Robert Plant'],
- *          ],
- *      ],
- * ];
- *
- * $result = flat_map(prop('users'), $items);
- *
- * //$result is [
- * //    ['id' => 1, 'name' => 'Jimmy Page'],
- * //    ['id' => 5, 'name' => 'Roy Harper'],
- * //    ['id' => 1, 'name' => 'Jimmy Page'],
- * //    ['id' => 2, 'name' => 'Robert Plant'],
- * //];
- * ```
- *
- * @template T of \Traversable|array|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
- * @param T $list
- * @return ($list is null ? callable(T):array : array)
- * @no-named-arguments
- */
-function flat_map(callable $f, $list = null)
-{
-    $args = func_get_args();
-
-    if (count($args) < 2) {
-        return partial(flat_map, $f);
-    }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
-
-    $flattened = [];
-
-    foreach ($list as $index => $element) {
-        $result = call_user_func_array($f, [$element, $index, $list]);
-
-        if (is_array($result) || $result instanceof Traversable) {
-            foreach ($result as $item) {
-                $flattened[] = $item;
-            }
-        } elseif ($result !== null) {
-            $flattened[] = $result;
-        }
-    }
-
-    return $flattened;
-}
-
-define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
-
-/**
- * Calls `$f` on each element in list. Returns origin `$list`.
- * Function arguments will be `element`, `index`, `list`.
- *
- * ```php
- * each(unary('print_r'), [1, 2, 3]); // Print: 123
- * ```
- *
- * @template T of \Traversable|array|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
- * @param T $list
- * @return callable(T):T|T
- * @no-named-arguments
- */
-function each(callable $f, $list = null)
-{
-    $args = func_get_args();
-
-    if (count($args) < 2) {
-        return partial(each, $f);
-    }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
-
-    foreach ($list as $index => $element) {
-        call_user_func_array($f, [$element, $index, $list]);
-    }
-
-    return $list;
-}
-
-define('Basko\Functional\each', __NAMESPACE__ . '\\each');
-
-/**
  * Returns the `!` of its argument.
  *
  * ```php
@@ -526,96 +389,6 @@ function tap(callable $f, $value = null)
 }
 
 define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
-
-/**
- * Applies a function to each element in the list and reduces it to a single value.
- *
- * ```php
- * fold(concat, '4', [5, 1]); // 451
- *
- * function sc($a, $b)
- * {
- *      return "($a+$b)";
- * }
- *
- * fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
- * ```
- *
- * @template Ta
- * @template Tl of \Traversable|array
- * @param callable(Ta $accumulator, mixed $value, mixed $index, Tl $list):mixed $f
- * @param Ta|null $accumulator
- * @param Tl|null $list
- * @return callable|Ta
- * @no-named-arguments
- */
-function fold(callable $f, $accumulator = null, $list = null)
-{
-    $args = func_get_args();
-
-    if (count($args) === 1) {
-        return partial(fold, $f);
-    } elseif (count($args) === 2) {
-        return partial(fold, $f, $accumulator);
-    }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
-
-    foreach ($list as $index => $value) {
-        $accumulator = call_user_func_array($f, [$accumulator, $value, $index, $list]);
-    }
-
-    return $accumulator;
-}
-
-define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
-
-/**
- * The same as `fold` but accumulator on the right.
- *
- * ```php
- * fold_r(concat, '4', [5, 1]); // 514
- *
- * function sc($a, $b)
- * {
- *      return "($a+$b)";
- * }
- *
- * fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
- * ```
- *
- * @template Ta
- * @template Tl of \Traversable|array
- * @param callable(mixed $value, Ta $accumulator, mixed $index, Tl $list):mixed $f
- * @param Ta|null $accumulator
- * @param Tl|null $list
- * @return callable|Ta
- * @no-named-arguments
- */
-function fold_r(callable $f, $accumulator = null, $list = null)
-{
-    $args = func_get_args();
-
-    if (count($args) === 1) {
-        return partial(fold_r, $f);
-    } elseif (count($args) === 2) {
-        return partial(fold_r, $f, $accumulator);
-    }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
-
-    $data = [];
-    foreach ($list as $index => $value) {
-        $data[] = [$index, $value];
-    }
-
-    for ($i = count($data) - 1; $i >= 0; $i--) {
-        list($index, $value) = $data[$i];
-        $accumulator = call_user_func_array($f, [$value, $accumulator, $index, $list]);
-    }
-
-    return $accumulator;
-}
-
-define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
 
 /**
  * Wrap value within a function, which will return it, without any modifications. Kinda constant function.
@@ -1140,92 +913,45 @@ function lift_m(callable $f)
 define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
 
 /**
- * Internal function for `zip` and `zip_with`.
+ * Create memoized versions of `$f` function.
  *
- * @return array
- */
-function _zip()
-{
-    $arrays = func_get_args();
-    $functionName = array_shift($arrays);
-    $callback = array_shift($arrays);
-
-    foreach ($arrays as $position => $arr) {
-        InvalidArgumentException::assertList($arr, $functionName, $position + 1);
-    }
-
-    $resultKeys = [];
-    foreach ($arrays as $arg) {
-        foreach ($arg as $index => $value) {
-            $resultKeys[] = $index;
-        }
-    }
-
-    $resultKeys = array_unique($resultKeys);
-
-    $result = [];
-
-    foreach ($resultKeys as $key) {
-        $zipped = [];
-
-        foreach ($arrays as $arg) {
-            $zipped[] = isset($arg[$key]) ? $arg[$key] : null;
-        }
-
-        $result[$key] = call_user_func($callback, $zipped);
-    }
-
-    return $result;
-}
-
-/**
- * Zips two or more sequences.
+ * Note that memoization is safe for pure functions only. For a function to be
+ * pure it should:
+ *   1. Have no side effects
+ *   2. Given the same arguments it should always return the same result
  *
- * Note: This function is not curried because of no fixed arity.
+ * Memoizing an impure function will lead to all kinds of hard to debug issues.
+ *
+ * In particular, the function to be memoized should never rely on a state of a
+ * mutable object. Only immutable objects are safe.
  *
  * ```php
- * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
- * ```
- *
- * @param \Traversable|array $sequence1
- * @param \Traversable|array $sequence2
- * @return array
- * @no-named-arguments
- */
-function zip($sequence1, $sequence2)
-{
-    return call_user_func_array('Basko\Functional\_zip', array_merge([__FUNCTION__, identity], func_get_args()));
-}
-
-define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
-
-/**
- * Zips two or more sequences with given function `$f`.
- *
- * Note: `$f` signature is `callable(array $arg):mixed`.
- * As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
- * But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
- *
- * ```php
- * zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
+ * $randAndSalt = function ($salt) {
+ *      return rand(1, 100) . $salt;
+ * };
+ * $memoizedRandAndSalt = memoized($randAndSalt);
+ * $memoizedRandAndSalt('x'); // 42x
+ * $memoizedRandAndSalt('x'); // 42x
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $sequence1
- * @param \Traversable|array $sequence2
- * @return array|callable(...\Traversable|array):array
+ * @return callable
  * @no-named-arguments
  */
-function zip_with(callable $f, $sequence1 = null, $sequence2 = null)
+function memoized(callable $f)
 {
-    $args = func_get_args();
-    $f = array_shift($args);
+    return function () use ($f) {
+        static $cache = [];
 
-    if (empty($args)) {
-        return partial(zip_with, $f);
-    }
+        $args = func_get_args();
+        $key = _value_to_key(array_merge([$f], $args));
 
-    return call_user_func_array('Basko\Functional\_zip', array_merge([__FUNCTION__, $f], $args));
+        if (!isset($cache[$key]) || !array_key_exists($key, $cache)) {
+            $cache[$key] = call_user_func_array($f, $args);
+        }
+
+        return $cache[$key];
+    };
 }
 
-define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with');
+define('Basko\Functional\memoize', __NAMESPACE__ . '\\memoize');

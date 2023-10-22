@@ -71,7 +71,7 @@ class Maybe extends Monad
     public function match(callable $just, callable $nothing)
     {
         if (!is_null($this->value)) {
-            call_user_func_array($just, [$this->value]);
+            call_user_func_array($just, [$this->extract()]);
         } else {
             call_user_func($nothing);
         }

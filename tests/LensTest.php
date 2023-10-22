@@ -57,7 +57,7 @@ class LensTest extends BaseTest
         $this->assertEquals(122, f\view($lens, $data));
     }
 
-    public function test_lens_path()
+    public function test_lens_prop_path()
     {
         $data = [
             'a' => 1,
@@ -71,7 +71,7 @@ class LensTest extends BaseTest
             ],
         ];
 
-        $lens = f\lens_path(['x', 'y', 'z']);
+        $lens = f\lens_prop_path(['x', 'y', 'z']);
         $this->assertEquals(3, f\view($lens, $data));
         $this->assertEquals(4, f\view($lens, f\set($lens, 4, $data)));
         $this->assertEquals(6, f\view($lens, f\over($lens, f\multiply(2), $data)));
