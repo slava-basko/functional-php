@@ -31,7 +31,7 @@ Here you can find available function.
 Other useful things.
 * [Maybe](docs/maybe.md)
 * [Either](docs/either.md)
-* [Optional](docs/optional
+* [Optional](docs/optional.md)
 
 ## OOP 🤝 FP
 The purpose of this library is not to replace imperative and OOP. They can be combined, and I believe
@@ -114,7 +114,7 @@ So, here are the basic steps:
 2. Strip whitespace from the beginning and end of each value.
 3. Remove empty elements.
 4. Join elements with commas.
-5. Cut generated descriptions up to 34 characters.
+5. Cut generated description up to 34 characters.
 6. Trim the comma at the end if present.
 
 The imperative way could be:
