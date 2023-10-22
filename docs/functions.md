@@ -112,59 +112,6 @@ $fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
 $fact(10); // 3628800
 ```
 
-### map
-Produces a new list of elements by mapping each element in list through a transformation function.
-Function arguments will be `element`, `index`, `list`.
-
-```php
-map(plus(1), [1, 2, 3]); // [2, 3, 4]
-```
-
-### flat_map
-`flat_map` works applying `$f` that returns a sequence for each element in a list,
-and flattening the results into the resulting array.
-
-`flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
-whereas flatten will recursively flatten nested collections. Indexes will not preserve.
-
-```php
-$items = [
-     [
-         'id' => 1,
-         'type' => 'train',
-         'users' => [
-             ['id' => 1, 'name' => 'Jimmy Page'],
-             ['id' => 5, 'name' => 'Roy Harper'],
-         ],
-     ],
-     [
-         'id' => 421,
-         'type' => 'hotel',
-         'users' => [
-             ['id' => 1, 'name' => 'Jimmy Page'],
-             ['id' => 2, 'name' => 'Robert Plant'],
-         ],
-     ],
-];
-
-$result = flat_map(prop('users'), $items);
-
-//$result is [
-//    ['id' => 1, 'name' => 'Jimmy Page'],
-//    ['id' => 5, 'name' => 'Roy Harper'],
-//    ['id' => 1, 'name' => 'Jimmy Page'],
-//    ['id' => 2, 'name' => 'Robert Plant'],
-//];
-```
-
-### each
-Calls `$f` on each element in list. Returns origin `$list`.
-Function arguments will be `element`, `index`, `list`.
-
-```php
-each(unary('print_r'), [1, 2, 3]); // Print: 123
-```
-
 ### not
 Returns the `!` of its argument.
 
@@ -203,34 +150,6 @@ pipe(
      tap('var_dump'),
      concat('Basko ')
 )('avalS'); //string(5) "Slava"
-```
-
-### fold
-Applies a function to each element in the list and reduces it to a single value.
-
-```php
-fold(concat, '4', [5, 1]); // 451
-
-function sc($a, $b)
-{
-     return "($a+$b)";
-}
-
-fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
-```
-
-### fold_r
-The same as `fold` but accumulator on the right.
-
-```php
-fold_r(concat, '4', [5, 1]); // 514
-
-function sc($a, $b)
-{
-     return "($a+$b)";
-}
-
-fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
 ```
 
 ### always
@@ -412,24 +331,26 @@ Lift a function so that it accepts `Monad` as parameters. Lifted function return
 
 Note, that you cannot use curry on a lifted function.
 
-### zip
-Zips two or more sequences.
+### memoized
+Create memoized versions of `$f` function.
 
-Note: This function is not curried because of no fixed arity.
+Note that memoization is safe for pure functions only. For a function to be
+pure it should:
+  1. Have no side effects
+  2. Given the same arguments it should always return the same result
 
-```php
-zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
-```
+Memoizing an impure function will lead to all kinds of hard to debug issues.
 
-### zip_with
-Zips two or more sequences with given function `$f`.
-
-Note: `$f` signature is `callable(array $arg):mixed`.
-As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
-But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
+In particular, the function to be memoized should never rely on a state of a
+mutable object. Only immutable objects are safe.
 
 ```php
-zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
+$randAndSalt = function ($salt) {
+     return rand(1, 100) . $salt;
+};
+$memoizedRandAndSalt = memoized($randAndSalt);
+$memoizedRandAndSalt('x'); // 42x
+$memoizedRandAndSalt('x'); // 42x
 ```
 
 ### count_args
@@ -507,6 +428,87 @@ $f = static function ($a = '', $b = '', $c = '') {
      return $a . $b . $c;
 };
 binary($f)(['one', 'two', 'three]); // onetwo
+```
+
+### map
+Produces a new list of elements by mapping each element in list through a transformation function.
+Function arguments will be `element`, `index`, `list`.
+
+```php
+map(plus(1), [1, 2, 3]); // [2, 3, 4]
+```
+
+### flat_map
+`flat_map` works applying `$f` that returns a sequence for each element in a list,
+and flattening the results into the resulting array.
+
+`flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
+whereas flatten will recursively flatten nested collections. Indexes will not preserve.
+
+```php
+$items = [
+     [
+         'id' => 1,
+         'type' => 'train',
+         'users' => [
+             ['id' => 1, 'name' => 'Jimmy Page'],
+             ['id' => 5, 'name' => 'Roy Harper'],
+         ],
+     ],
+     [
+         'id' => 421,
+         'type' => 'hotel',
+         'users' => [
+             ['id' => 1, 'name' => 'Jimmy Page'],
+             ['id' => 2, 'name' => 'Robert Plant'],
+         ],
+     ],
+];
+
+$result = flat_map(prop('users'), $items);
+
+//$result is [
+//    ['id' => 1, 'name' => 'Jimmy Page'],
+//    ['id' => 5, 'name' => 'Roy Harper'],
+//    ['id' => 1, 'name' => 'Jimmy Page'],
+//    ['id' => 2, 'name' => 'Robert Plant'],
+//];
+```
+
+### each
+Calls `$f` on each element in list. Returns origin `$list`.
+Function arguments will be `element`, `index`, `list`.
+
+```php
+each(unary('print_r'), [1, 2, 3]); // Print: 123
+```
+
+### fold
+Applies a function to each element in the list and reduces it to a single value.
+
+```php
+fold(concat, '4', [5, 1]); // 451
+
+function sc($a, $b)
+{
+     return "($a+$b)";
+}
+
+fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
+```
+
+### fold_r
+The same as `fold` but accumulator on the right.
+
+```php
+fold_r(concat, '4', [5, 1]); // 514
+
+function sc($a, $b)
+{
+     return "($a+$b)";
+}
+
+fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
 ```
 
 ### append
@@ -782,6 +784,26 @@ uniq([1, 1, 2, 1]); // [1, 2]
 uniq([1, '1']); // [1, '1']
 ```
 
+### zip
+Zips two or more sequences.
+
+Note: This function is not curried because of no fixed arity.
+
+```php
+zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
+```
+
+### zip_with
+Zips two or more sequences with given function `$f`.
+
+Note: `$f` signature is `callable(array $arg):mixed`.
+As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
+But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
+
+```php
+zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
+```
+
 ### is_even
 Check if number is even.
 
@@ -975,7 +997,7 @@ set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
 over($xLens, dec, ['x' => 1, 'y' => 2]); // ['x' => 0, 'y' => 2]
 ```
 
-### lens_path
+### lens_prop_path
 Returns a lens whose focus is the specified path.
 
 ```php
@@ -985,32 +1007,10 @@ $data = [
          'c' => 2
      ],
 ];
-$lens = lens_path(['b', 'c']);
+$lens = lens_prop_path(['b', 'c']);
 view($lens, $data); // 2
 view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
 view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
-```
-
-### memoized
-Create memoized versions of `$f` function.
-
-Note that memoization is safe for pure functions only. For a function to be
-pure it should:
-  1. Have no side effects
-  2. Given the same arguments it should always return the same result
-
-Memoizing an impure function will lead to all kinds of hard to debug issues.
-
-In particular, the function to be memoized should never rely on a state of a
-mutable object. Only immutable objects are safe.
-
-```php
-$randAndSalt = function ($salt) {
-     return rand(1, 100) . $salt;
-};
-$memoizedRandAndSalt = memoized($randAndSalt);
-$memoizedRandAndSalt('x'); // 42x
-$memoizedRandAndSalt('x'); // 42x
 ```
 
 ### to_list
