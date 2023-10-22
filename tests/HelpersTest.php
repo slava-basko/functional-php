@@ -118,7 +118,7 @@ class HelpersTest extends BaseTest
             f\Exception\InvalidArgumentException::class,
             'try_catch() expects parameter 2 to be a valid callback, array, string, closure or functor, NULL given'
         );
-        f\try_catch(f\F,  null);
+        f\try_catch(f\F, null);
     }
 
     public function test_invoker()
@@ -137,6 +137,16 @@ class HelpersTest extends BaseTest
 
         $activeUsers = array_filter([$user1, $user2], f\invoker('isActive'));
         $this->assertSame([$user1], $activeUsers);
+    }
+
+    public function test_invoker_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Function created byBasko\Functional\invoker() expects parameter 1 to be object, integer given'
+        );
+        $f = f\invoker('isActive');
+        call_user_func($f, 1);
     }
 
     public function test_len()
@@ -658,17 +668,17 @@ class HelpersTest extends BaseTest
         $this->assertEquals(
             [
                 'Slava' => 'Basko',
-                'John' => 'Doe'
+                'John' => 'Doe',
             ],
             f\combine('name', 'last_name', [
                 [
                     'name' => 'Slava',
-                    'last_name' => 'Basko'
+                    'last_name' => 'Basko',
                 ],
                 [
                     'name' => 'John',
-                    'last_name' => 'Doe'
-                ]
+                    'last_name' => 'Doe',
+                ],
             ])
         );
     }

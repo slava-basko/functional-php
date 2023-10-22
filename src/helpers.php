@@ -356,8 +356,11 @@ function invoker($methodName, array $arguments = [])
 {
     InvalidArgumentException::assertMethodName($methodName, __FUNCTION__, 1);
 
-    //todo: curry?
-    return static function ($object) use ($methodName, $arguments) {
+    $pfn = 'Function created by' . __FUNCTION__;
+
+    return static function ($object) use ($methodName, $arguments, $pfn) {
+        InvalidArgumentException::assertObject($object, $pfn, 1);
+
         return call_user_func_array([$object, $methodName], $arguments);
     };
 }
@@ -638,15 +641,13 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
  */
 function to_fn($object, $methodName = null, array $arguments = null)
 {
-    //todo: curry?
     $args = func_get_args();
     array_shift($args);
     array_shift($args);
     $arguments = flatten($args);
-    $invoker = invoker($methodName, $arguments);
 
-    return function () use ($object, $invoker) {
-        return $invoker($object);
+    return function () use ($object, $methodName, $arguments) {
+        return call_user_func_array([$object, $methodName], $arguments);
     };
 }
 

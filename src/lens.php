@@ -154,7 +154,7 @@ define('Basko\Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
  * view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
  * ```
  *
- * @param array $path TODO: should a string with be dot notation?
+ * @param array $path
  * @return callable
  * @no-named-arguments
  */
