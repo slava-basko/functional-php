@@ -610,7 +610,7 @@ function cond(array $conditions)
 
         $cond = if_else($if, $then, cond(tail($conditions)));
 
-        return $cond($value);
+        return call_user_func($cond, $value);
     };
 }
 
