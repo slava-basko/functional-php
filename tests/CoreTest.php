@@ -53,7 +53,7 @@ class CoreTest extends BaseTest
     public function test_lt()
     {
         $this->assertTrue(f\lt(1, 2));
-        $less_than_10 = f\partial_r(f\lt, 10);
+        $less_than_10 = f\partial_r(f\lt, [10]);
         $this->assertTrue($less_than_10(9));
         $this->assertFalse(f\lt(2, 1));
         $this->assertFalse(f\lt(2, 2));
@@ -76,7 +76,7 @@ class CoreTest extends BaseTest
     {
         $this->assertTrue(f\gt(2, null));
         $this->assertTrue(f\gt(2, 1));
-        $greater_than_10 = f\partial_r(f\gt, 10);
+        $greater_than_10 = f\partial_r(f\gt, [10]);
         $this->assertTrue($greater_than_10(11));
     }
 
@@ -337,7 +337,7 @@ class CoreTest extends BaseTest
             f\select(f\unary('strlen')),
             f\join(', '),
             f\take(34),
-            f\partial_r('trim', ', ')
+            f\partial_r('trim', [', '])
         );
         $this->assertEquals('CD Player, Abba Volume 1, Kim Wild', $pipe($products));
 
@@ -405,9 +405,9 @@ class CoreTest extends BaseTest
 
         $stage = f\cond([
             [f\eq(0), $unborn],
-            [f\partial_r(f\gte, 12), $secondary],
-            [f\partial_r(f\gte, 5), $primary],
-            [f\partial_r(f\gte, 4), $preschool],
+            [f\partial_r(f\gte, [12]), $secondary],
+            [f\partial_r(f\gte, [5]), $primary],
+            [f\partial_r(f\gte, [4]), $preschool],
         ]);
 
         $this->assertEquals('At 0 you unborn', $stage(0));
@@ -417,7 +417,7 @@ class CoreTest extends BaseTest
 
         $cond = f\cond([
             [f\eq(0), f\always('water freezes')],
-            [f\partial_r(f\gte, 100), f\always('water boils')],
+            [f\partial_r(f\gte, [100]), f\always('water boils')],
             [f\T, function ($t) {
                 return "nothing special happens at $t °C";
             }],
@@ -478,8 +478,8 @@ class CoreTest extends BaseTest
 
         $this->assertFalse(f\both(f\F(), f\T()));
 
-        $gt6 = f\partial_r(f\gt, 6);
-        $lt9 = f\partial_r(f\lt, 9);
+        $gt6 = f\partial_r(f\gt, [6]);
+        $lt9 = f\partial_r(f\lt, [9]);
         $between6And9 = f\both($gt6, $lt9);
         $this->assertTrue($between6And9(7));
         $this->assertTrue($between6And9(8));

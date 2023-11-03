@@ -507,7 +507,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
 function converge(callable $convergingFunction, array $branchingFunctions = null)
 {
     if (\func_num_args() < 2) {
-        return partial(converge, $convergingFunction);
+        return partial(converge, [$convergingFunction]);
     }
 
     InvalidArgumentException::assertListOfCallables($branchingFunctions, __FUNCTION__, 2);

@@ -42,5 +42,5 @@ f\pipe(
         f\ary(f\concat_all, 6),
         [1 => '### ', 3 => PHP_EOL, 5 => PHP_EOL, 6 => PHP_EOL]
     )))),
-    f\partial('file_put_contents', dirname(__DIR__) . '/docs/functions.md')
+    f\partial('file_put_contents', [dirname(__DIR__) . '/docs/functions.md'])
 )(get_defined_functions());

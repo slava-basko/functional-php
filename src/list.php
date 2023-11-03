@@ -22,7 +22,7 @@ use Traversable;
 function map(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(map, $f);
+        return partial(map, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -83,7 +83,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
 function flat_map(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(flat_map, $f);
+        return partial(flat_map, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -123,7 +123,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
 function each(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(each, $f);
+        return partial(each, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -161,9 +161,9 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
 function fold(callable $f, $accumulator = null, $list = null)
 {
     if (\func_num_args() === 1) {
-        return partial(fold, $f);
+        return partial(fold, [$f]);
     } elseif (\func_num_args() === 2) {
-        return partial(fold, $f, $accumulator);
+        return partial(fold, [$f, $accumulator]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
@@ -201,9 +201,9 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
 function fold_r(callable $f, $accumulator = null, $list = null)
 {
     if (\func_num_args() === 1) {
-        return partial(fold_r, $f);
+        return partial(fold_r, [$f]);
     } elseif (\func_num_args() === 2) {
-        return partial(fold_r, $f, $accumulator);
+        return partial(fold_r, [$f, $accumulator]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
@@ -237,7 +237,7 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
 function append($element, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(append, $element);
+        return partial(append, [$element]);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -269,7 +269,7 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append');
 function prepend($element, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(prepend, $element);
+        return partial(prepend, [$element]);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -302,7 +302,7 @@ function pluck($property, $list = null)
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(pluck, $property);
+        return partial(pluck, [$property]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -352,7 +352,7 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head');
 function head_by(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(head_by, $f);
+        return partial(head_by, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -424,7 +424,7 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
 function tail_by(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(tail_by, $f);
+        return partial(tail_by, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -463,7 +463,7 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
 function select(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(select, $f);
+        return partial(select, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -496,7 +496,7 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select');
 function reject(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(reject, $f);
+        return partial(reject, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -530,7 +530,7 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
 function contains($needle, $haystack = null)
 {
     if (\func_num_args() < 2) {
-        return partial(contains, $needle);
+        return partial(contains, [$needle]);
     }
 
     if (\is_string($haystack)) {
@@ -570,7 +570,7 @@ function take($count, $list = null)
     InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(take, $count);
+        return partial(take, [$count]);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
@@ -607,7 +607,7 @@ function take_r($count, $list = null)
     InvalidArgumentException::assertInteger($count, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(take_r, $count);
+        return partial(take_r, [$count]);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
@@ -646,7 +646,7 @@ function nth($elementNumber, $list = null)
     InvalidArgumentException::assertInteger($elementNumber, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(nth, $elementNumber);
+        return partial(nth, [$elementNumber]);
     }
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
@@ -705,7 +705,7 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
 function group(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(group, $f);
+        return partial(group, [$f]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -755,7 +755,7 @@ function partition(array $functions, $list = null)
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(partition, $functions);
+        return partial(partition, [$functions]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -879,7 +879,7 @@ define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_key
 function intersperse($separator, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(intersperse, $separator);
+        return partial(intersperse, [$separator]);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -912,7 +912,7 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 function sort(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(sort, $f);
+        return partial(sort, [$f]);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -994,9 +994,9 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
 function ascend(callable $f, $a = null, $b = null)
 {
     if (\func_num_args() === 1) {
-        return partial(ascend, $f);
+        return partial(ascend, [$f]);
     } elseif (\func_num_args() === 2) {
-        return partial(ascend, $f, $a);
+        return partial(ascend, [$f, $a]);
     }
 
     $aa = \call_user_func_array($f, [$a]);
@@ -1026,9 +1026,9 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
 function descend(callable $f, $a = null, $b = null)
 {
     if (\func_num_args() === 1) {
-        return partial(descend, $f);
+        return partial(descend, [$f]);
     } elseif (\func_num_args() === 2) {
-        return partial(descend, $f, $a);
+        return partial(descend, [$f, $a]);
     }
 
     $aa = \call_user_func_array($f, [$a]);
@@ -1056,7 +1056,7 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
 function uniq_by(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(uniq_by, $f);
+        return partial(uniq_by, [$f]);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -1181,7 +1181,7 @@ function zip_with(callable $f, $sequence1 = null, $sequence2 = null)
     $f = \array_shift($args);
 
     if (empty($args)) {
-        return partial(zip_with, $f);
+        return partial(zip_with, [$f]);
     }
 
     return \call_user_func_array('Basko\Functional\_zip', \array_merge([__FUNCTION__, $f], $args));

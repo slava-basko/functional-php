@@ -35,14 +35,14 @@ define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
  * ```
  *
  * @param numeric $n
- * @return mixed
+ * @return bool
  * @no-named-arguments
  */
 function is_odd($n)
 {
     InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
 
-    return !is_even($n);
+    return $n % 2 !== 0;
 }
 
 define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
@@ -62,7 +62,7 @@ function inc($n)
 {
     InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
 
-    return plus($n, 1);
+    return $n + 1;
 }
 
 define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
@@ -82,7 +82,7 @@ function dec($n)
 {
     InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
 
-    return minus($n, 1);
+    return $n - 1;
 }
 
 define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
@@ -104,7 +104,13 @@ function plus($a, $b = null)
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(plus, $a);
+        $pfn = __FUNCTION__;
+
+        return function ($b) use ($a, $pfn) {
+            InvalidArgumentException::assertNumeric($b, $pfn, 2);
+
+            return $a + $b;
+        };
     }
 
     InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
@@ -131,7 +137,13 @@ function minus($a, $b = null)
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(flipped(minus), $a);
+        $pfn = __FUNCTION__;
+
+        return function ($b) use ($a, $pfn) {
+            InvalidArgumentException::assertNumeric($b, $pfn, 2);
+
+            return $a - $b;
+        };
     }
 
     InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
@@ -158,7 +170,13 @@ function div($a, $b = null)
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(flipped(div), $a);
+        $pfn = __FUNCTION__;
+
+        return function ($b) use ($a, $pfn) {
+            InvalidArgumentException::assertNumeric($b, $pfn, 2);
+
+            return $a / $b;
+        };
     }
 
     InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
@@ -185,7 +203,13 @@ function modulo($a, $b = null)
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(flipped(modulo), $a);
+        $pfn = __FUNCTION__;
+
+        return function ($b) use ($a, $pfn) {
+            InvalidArgumentException::assertNumeric($b, $pfn, 2);
+
+            return $a % $b;
+        };
     }
 
     InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);
@@ -212,7 +236,13 @@ function multiply($a, $b = null)
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(multiply, $a);
+        $pfn = __FUNCTION__;
+
+        return function ($b) use ($a, $pfn) {
+            InvalidArgumentException::assertNumeric($b, $pfn, 2);
+
+            return $a * $b;
+        };
     }
 
     InvalidArgumentException::assertNumeric($b, __FUNCTION__, 2);

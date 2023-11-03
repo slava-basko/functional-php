@@ -216,7 +216,7 @@ Returns a new function that behaves like a match operator. Encapsulates `if/else
 ```php
 $cond = cond([
      [eq(0), always('water freezes')],
-     [gte(100), always('water boils')],
+     [partial_r(gte, 100), always('water boils')],
      [T, function ($t) {
          return "nothing special happens at $t °C";
      }],
@@ -924,7 +924,7 @@ Returns new function which will behave like `$f` with
 predefined left arguments passed to partial.
 
 ```php
-$implode_coma = partial('implode', ',');
+$implode_coma = partial('implode', [',']);
 $implode_coma([1, 2]); // 1,2
 ```
 
@@ -933,7 +933,7 @@ Returns new partial function which will behave like `$f` with
 predefined right arguments passed to rpartial.
 
 ```php
-$implode12 = partial_r('implode', [1, 2]);
+$implode12 = partial_r('implode', [[1, 2]]);
 $implode12(','); // 1,2
 ```
 
