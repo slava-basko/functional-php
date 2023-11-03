@@ -4,8 +4,6 @@ namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 use Exception;
-use ReflectionFunction;
-use ReflectionMethod;
 
 /**
  * Return number of function arguments.
@@ -22,14 +20,14 @@ use ReflectionMethod;
  */
 function count_args(callable $f, $only_required = false)
 {
-    if (is_string($f) && strpos($f, '::', 1) !== false) {
-        $reflection = new ReflectionMethod($f);
-    } elseif (is_array($f) && count($f) === 2) {
-        $reflection = new ReflectionMethod($f[0], $f[1]);
-    } elseif (is_object($f) && method_exists($f, '__invoke')) {
-        $reflection = new ReflectionMethod($f, '__invoke');
+    if (\is_string($f) && \strpos($f, '::', 1) !== false) {
+        $reflection = new \ReflectionMethod($f);
+    } elseif (\is_array($f) && \count($f) === 2) {
+        $reflection = new \ReflectionMethod($f[0], $f[1]);
+    } elseif (\is_object($f) && \method_exists($f, '__invoke')) {
+        $reflection = new \ReflectionMethod($f, '__invoke');
     } else {
-        $reflection = new ReflectionFunction($f);
+        $reflection = new \ReflectionFunction($f);
     }
 
     return $only_required ? $reflection->getNumberOfRequiredParameters() : $reflection->getNumberOfParameters();
@@ -53,14 +51,14 @@ function curry_n($count, callable $f)
 {
     $accumulator = function (array $arguments) use ($count, $f, &$accumulator) {
         return function () use ($count, $f, $arguments, $accumulator) {
-            $newArguments = func_get_args();
+            $newArguments = \func_get_args();
             if (!$newArguments) {
                 $newArguments = [1];
             }
-            $arguments = array_merge($arguments, $newArguments);
+            $arguments = \array_merge($arguments, $newArguments);
 
-            if ($count <= count($arguments)) {
-                return call_user_func_array($f, $arguments);
+            if ($count <= \count($arguments)) {
+                return \call_user_func_array($f, $arguments);
             }
 
             return $accumulator($arguments);
@@ -160,11 +158,11 @@ function ary(callable $f, $count)
     InvalidArgumentException::assertNonZeroInteger($count, __FUNCTION__, 2);
 
     return function () use ($f, $count) {
-        $args = func_get_args();
+        $args = \func_get_args();
         if ($count > 0) {
-            return call_user_func_array($f, take($count, $args));
+            return \call_user_func_array($f, take($count, $args));
         } elseif ($count < 0) {
-            return call_user_func_array($f, take_r(-$count, $args));
+            return \call_user_func_array($f, take_r(-$count, $args));
         }
 
         throw new Exception('Invalid `use ($count)`');

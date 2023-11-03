@@ -28,7 +28,7 @@ function lens(callable $getter, callable $setter)
         // apply functor function (Constant, Identity)
         return function ($list) use ($getter, $setter, $func) {
             // apply list (array, object)
-            return call_user_func($func, $getter($list))
+            return \call_user_func($func, $getter($list))
                 ->map(
                     function ($replacement) use ($setter, $list) {
                         // apply setter to list item

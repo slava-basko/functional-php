@@ -64,7 +64,7 @@ class Either extends Monad
         }
 
         try {
-            return static::right(call_user_func($f, $this->value));
+            return static::right(\call_user_func($f, $this->value));
         } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }
@@ -82,7 +82,7 @@ class Either extends Monad
         }
 
         try {
-            $result = call_user_func($f, $this->value);
+            $result = \call_user_func($f, $this->value);
         } catch (Exception $exception) {
             $result = static::left($exception->getMessage());
         }
@@ -100,9 +100,9 @@ class Either extends Monad
     public function match(callable $right, callable $left)
     {
         if ($this->validValue) {
-            call_user_func_array($right, [$this->extract()]);
+            \call_user_func_array($right, [$this->extract()]);
         } else {
-            call_user_func_array($left, [$this->extract()]);
+            \call_user_func_array($left, [$this->extract()]);
         }
     }
 

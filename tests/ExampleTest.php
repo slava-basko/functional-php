@@ -52,7 +52,8 @@ class ExampleTest extends BaseTest
 
     public function test_filter()
     {
-        $valueGreaterThen35 = f\compose(f\gt(35), f\prop('value'));
+        $gt35 = f\partial_r(f\gt, 35);
+        $valueGreaterThen35 = f\compose($gt35, f\prop('value'));
 
         $this->assertEquals([
             2 => [

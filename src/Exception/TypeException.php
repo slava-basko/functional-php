@@ -28,7 +28,7 @@ class TypeException extends Exception
      */
     public static function forValue($value, $target)
     {
-        $exception = new static(sprintf('Could not convert "%s" to type "%s"', get_debug_type($value), $target));
+        $exception = new static(\sprintf('Could not convert "%s" to type "%s"', \get_debug_type($value), $target));
         $exception->target = $target;
 
         return $exception;
@@ -53,11 +53,11 @@ class TypeException extends Exception
     {
         if (!$value instanceof $type) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s(): Return value must be of type %s, %s returned',
                     $callee,
                     $type,
-                    is_object($value) ? get_class($value) : get_debug_type($value)
+                    \is_object($value) ? \get_class($value) : \get_debug_type($value)
                 )
             );
         }

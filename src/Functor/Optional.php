@@ -58,7 +58,7 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return static::just(call_user_func_array($f, [$this->value]));
+            return static::just(\call_user_func_array($f, [$this->value]));
         }
 
         return $this::nothing();
@@ -72,7 +72,7 @@ class Optional extends Monad
     public function flatMap(callable $f)
     {
         if ($this->hasValue) {
-            $result = call_user_func($f, $this->value);
+            $result = \call_user_func($f, $this->value);
         } else {
             $result = $this::nothing();
         }
@@ -90,9 +90,9 @@ class Optional extends Monad
     public function match(callable $just, callable $nothing)
     {
         if ($this->hasValue) {
-            call_user_func_array($just, [$this->extract()]);
+            \call_user_func_array($just, [$this->extract()]);
         } else {
-            call_user_func($nothing);
+            \call_user_func($nothing);
         }
     }
 
@@ -104,17 +104,17 @@ class Optional extends Monad
      */
     public static function fromProp($key, $data, callable $f = null)
     {
-        if (is_array($data) && array_key_exists($key, $data)) {
-            return static::just(is_callable($f) ? call_user_func_array($f, [$data[$key]]) : $data[$key]);
+        if (\is_array($data) && \array_key_exists($key, $data)) {
+            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data[$key]]) : $data[$key]);
         }
 
-        if (is_object($data) && property_exists($data, $key)) {
-            return static::just(is_callable($f) ? call_user_func_array($f, [$data->{$key}]) : $data->{$key});
+        if (\is_object($data) && property_exists($data, $key)) {
+            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data->{$key}]) : $data->{$key});
         }
 
         if ($data instanceof \ArrayAccess && $data->offsetExists($key)) {
             return static::just(
-                is_callable($f) ? call_user_func_array($f, [$data->offsetGet($key)]) : $data->offsetGet($key)
+                \is_callable($f) ? \call_user_func_array($f, [$data->offsetGet($key)]) : $data->offsetGet($key)
             );
         }
 

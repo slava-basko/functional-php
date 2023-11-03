@@ -17,11 +17,11 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertCallable($callback, $callee, $parameterPosition)
     {
-        if (is_callable($callback)) {
+        if (\is_callable($callback)) {
             return;
         }
 
-        if (!is_array($callback) && !is_string($callback)) {
+        if (!\is_array($callback) && !\is_string($callback)) {
             throw new static(
                 \sprintf(
                     '%s() expects parameter %d to be a valid callback, array, string, closure or functor, %s given',
@@ -32,19 +32,19 @@ class InvalidArgumentException extends \InvalidArgumentException
             );
         }
 
-        $type = gettype($callback);
+        $type = \gettype($callback);
         switch ($type) {
             case 'array':
                 $type = 'method';
-                $callback = array_values($callback);
+                $callback = \array_values($callback);
 
                 $sep = '::';
-                if (is_object($callback[0])) {
-                    $callback[0] = get_class($callback[0]);
+                if (\is_object($callback[0])) {
+                    $callback[0] = \get_class($callback[0]);
                     $sep = '->';
                 }
 
-                $callback = implode($sep, $callback);
+                $callback = \implode($sep, $callback);
                 break;
 
             default:
@@ -53,7 +53,7 @@ class InvalidArgumentException extends \InvalidArgumentException
         }
 
         throw new static(
-            sprintf(
+            \sprintf(
                 "%s() expects parameter %d to be a valid callback, %s '%s' not found or invalid %s name",
                 $callee,
                 $parameterPosition,
@@ -79,7 +79,7 @@ class InvalidArgumentException extends \InvalidArgumentException
             } catch (InvalidArgumentException $invalidArgumentException) {
                 if ($parameterPosition === static::ALL) {
                     throw new static(
-                        sprintf(
+                        \sprintf(
                             '%s() expects all parameters to be "callable"',
                             $callee
                         ),
@@ -88,7 +88,7 @@ class InvalidArgumentException extends \InvalidArgumentException
                     );
                 } else {
                     throw new static(
-                        sprintf(
+                        \sprintf(
                             '%s() expects parameter %d to be "callable[]"',
                             $callee,
                             $parameterPosition
@@ -134,9 +134,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertMethodName($methodName, $callee, $parameterPosition)
     {
-        if (!is_string($methodName)) {
+        if (!\is_string($methodName)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be string, %s given',
                     $callee,
                     $parameterPosition,
@@ -156,13 +156,13 @@ class InvalidArgumentException extends \InvalidArgumentException
     public static function assertPropertyName($propertyName, $callee, $parameterPosition)
     {
         if (
-            !is_string($propertyName) &&
-            !is_int($propertyName) &&
-            !is_float($propertyName) &&
-            !is_null($propertyName)
+            !\is_string($propertyName) &&
+            !\is_int($propertyName) &&
+            !\is_float($propertyName) &&
+            !\is_null($propertyName)
         ) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be a valid property name or array index, %s given',
                     $callee,
                     $parameterPosition,
@@ -186,7 +186,7 @@ class InvalidArgumentException extends \InvalidArgumentException
             $type = $type === 'integer' ? 'negative integer' : $type;
 
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be positive integer, %s given',
                     $callee,
                     $parameterPosition,
@@ -206,16 +206,16 @@ class InvalidArgumentException extends \InvalidArgumentException
     {
         $keyTypes = ['NULL', 'string', 'integer', 'double', 'boolean'];
 
-        $keyType = gettype($key);
+        $keyType = \gettype($key);
 
-        if (!in_array($keyType, $keyTypes, true)) {
+        if (!\in_array($keyType, $keyTypes, true)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s(): callback returned invalid array key of type "%s". Expected %4$s or %3$s',
                     $callee,
                     $keyType,
-                    array_pop($keyTypes),
-                    implode(', ', $keyTypes)
+                    \array_pop($keyTypes),
+                    \implode(', ', $keyTypes)
                 )
             );
         }
@@ -230,9 +230,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertBoolean($value, $callee, $parameterPosition)
     {
-        if (!is_bool($value)) {
+        if (!\is_bool($value)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be boolean, %s given',
                     $callee,
                     $parameterPosition,
@@ -251,9 +251,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertInteger($value, $callee, $parameterPosition)
     {
-        if (!is_int($value)) {
+        if (!\is_int($value)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be integer, %s given',
                     $callee,
                     $parameterPosition,
@@ -272,9 +272,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertNumeric($value, $callee, $parameterPosition)
     {
-        if (!is_numeric($value)) {
+        if (!\is_numeric($value)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be numeric, %s given',
                     $callee,
                     $parameterPosition,
@@ -294,9 +294,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertIntegerGreaterThanOrEqual($value, $limit, $callee, $parameterPosition)
     {
-        if (!is_int($value) || $value < $limit) {
+        if (!\is_int($value) || $value < $limit) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be an integer greater than or equal to %d',
                     $callee,
                     $parameterPosition,
@@ -316,9 +316,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertIntegerLessThanOrEqual($value, $limit, $callee, $parameterPosition)
     {
-        if (!is_int($value) || $value > $limit) {
+        if (!\is_int($value) || $value > $limit) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be an integer less than or equal to %d',
                     $callee,
                     $parameterPosition,
@@ -338,9 +338,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     private static function assertListAlike($list, $className, $callee, $parameterPosition)
     {
-        if (!is_array($list) && !$list instanceof $className && !is_object($list)) {
+        if (!\is_array($list) && !$list instanceof $className && !\is_object($list)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be array or instance of %s, %s given',
                     $callee,
                     $parameterPosition,
@@ -359,8 +359,8 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertNonZeroInteger($value, $callee, $position)
     {
-        if (!is_int($value) || $value == 0) {
-            throw new static(sprintf('%s expected parameter %d to be non-zero', $callee, $position));
+        if (!\is_int($value) || $value == 0) {
+            throw new static(\sprintf('%s expected parameter %d to be non-zero', $callee, $position));
         }
     }
 
@@ -373,8 +373,8 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertPair($pair, $callee, $position)
     {
-        if (!(is_array($pair) || $pair instanceof ArrayAccess) || !isset($pair[0], $pair[1])) {
-            throw new static(sprintf(
+        if (!(\is_array($pair) || $pair instanceof ArrayAccess) || !isset($pair[0], $pair[1])) {
+            throw new static(\sprintf(
                 '%s() expects parameter %d to be a pair (array with two elements)',
                 $callee,
                 $position
@@ -392,12 +392,12 @@ class InvalidArgumentException extends \InvalidArgumentException
     public static function assertString($value, $callee, $parameterPosition)
     {
         if (
-            !is_string($value)
-            && !is_numeric($value)
-            && !(is_object($value) && method_exists($value, '__toString'))
+            !\is_string($value)
+            && !\is_numeric($value)
+            && !(\is_object($value) && \method_exists($value, '__toString'))
         ) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be string, %s given',
                     $callee,
                     $parameterPosition,
@@ -420,7 +420,7 @@ class InvalidArgumentException extends \InvalidArgumentException
 
         if ($value == '') {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be non-empty-string, empty %s given',
                     $callee,
                     $parameterPosition,
@@ -439,9 +439,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertType($value, $type, $callee, $parameterPosition)
     {
-        if (!class_exists($value) || !is_a($value, $type, true)) {
+        if (!\class_exists($value) || !\is_a($value, $type, true)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be %s, %s (%s) given',
                     $callee,
                     $parameterPosition,
@@ -463,7 +463,7 @@ class InvalidArgumentException extends \InvalidArgumentException
     {
         if (!static::isString($value) && !static::isListAlike($value, \Traversable::class)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be string or list, %s given',
                     $callee,
                     $parameterPosition,
@@ -481,9 +481,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertClass($value, $callee, $parameterPosition)
     {
-        if (!class_exists($value)) {
+        if (!\class_exists($value)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be valid class, %s given',
                     $callee,
                     $parameterPosition,
@@ -502,9 +502,9 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertObject($value, $callee, $parameterPosition)
     {
-        if (!is_object($value)) {
+        if (!\is_object($value)) {
             throw new static(
-                sprintf(
+                \sprintf(
                     '%s() expects parameter %d to be object, %s given',
                     $callee,
                     $parameterPosition,
@@ -520,8 +520,8 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     private static function isString($value)
     {
-        return is_string($value) || is_numeric($value)
-            || (is_object($value) && method_exists($value, '__toString'));
+        return \is_string($value) || \is_numeric($value)
+            || (\is_object($value) && \method_exists($value, '__toString'));
     }
 
     /**
@@ -531,7 +531,7 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     private static function isListAlike($list, $className)
     {
-        return is_array($list) || ($list instanceof $className);
+        return \is_array($list) || ($list instanceof $className);
     }
 
     /**
@@ -540,6 +540,6 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     private static function getType($value)
     {
-        return is_object($value) ? get_class($value) : gettype($value);
+        return \is_object($value) ? \get_class($value) : \gettype($value);
     }
 }

@@ -4,7 +4,6 @@ namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
-use Exception;
 
 /**
  * Validates that the value is instance of specific class.
@@ -24,10 +23,10 @@ function is_type_of($class, $value = null)
 {
     InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
-        return partial(is_type_of, $class);
+    if (\func_num_args() < 2) {
+        return function ($value) use ($class) {
+            return $value instanceof $class;
+        };
     }
 
     return $value instanceof $class;
@@ -53,10 +52,17 @@ function type_of($class, $value = null)
 {
     InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
-    $args = func_get_args();
+    if (\func_num_args() < 2) {
+        $pfn = __FUNCTION__;
+        return function ($value) use ($class, $pfn) {
+            InvalidArgumentException::assertObject($value, $pfn, 2);
 
-    if (count($args) < 2) {
-        return partial(type_of, $class);
+            if (is_type_of($class, $value)) {
+                return $value;
+            }
+
+            throw TypeException::forValue($value, $class);
+        };
     }
 
     InvalidArgumentException::assertObject($value, __FUNCTION__, 2);
@@ -90,7 +96,7 @@ define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of');
  */
 function type_bool($value)
 {
-    if (is_bool($value)) {
+    if (\is_bool($value)) {
         return $value;
     }
 
@@ -124,16 +130,16 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool');
  */
 function type_string($value)
 {
-    if (is_string($value)) {
+    if (\is_string($value)) {
         return $value;
     }
 
-    if (is_int($value) || (is_object($value) && method_exists($value, '__toString'))) {
+    if (\is_int($value) || (\is_object($value) && \method_exists($value, '__toString'))) {
         return (string)$value;
     }
 
-    if (is_array($value)) {
-        return implode(', ', map(type_string, $value));
+    if (\is_array($value)) {
+        return \implode(', ', map(type_string, $value));
     }
 
     throw TypeException::forValue($value, 'string');
@@ -158,7 +164,7 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
  */
 function type_non_empty_string($value)
 {
-    if (type_string($value) && strlen($value) > 0) {
+    if (type_string($value) && \strlen($value) > 0) {
         return $value;
     }
 
@@ -183,25 +189,25 @@ define('Basko\Functional\type_non_empty_string', __NAMESPACE__ . '\\type_non_emp
  */
 function type_int($value)
 {
-    if (is_int($value)) {
+    if (\is_int($value)) {
         return $value;
     }
 
-    if (is_float($value)) {
+    if (\is_float($value)) {
         $integerValue = (int)$value;
         if (((float)$integerValue) === $value) {
             return $integerValue;
         }
     }
 
-    if (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
+    if (\is_string($value) || (\is_object($value) && \method_exists($value, '__toString'))) {
         $str = (string)$value;
         $int = (int)$str;
         if ($str === (string)$int) {
             return $int;
         }
 
-        $trimmed = ltrim($str, '0');
+        $trimmed = \ltrim($str, '0');
         $int = (int)$trimmed;
         if ($trimmed === (string)$int) {
             return $int;
@@ -257,22 +263,22 @@ define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_in
  */
 function type_float($value)
 {
-    if (is_float($value)) {
+    if (\is_float($value)) {
         return $value;
     }
 
-    if (is_int($value)) {
+    if (\is_int($value)) {
         return $value;
     }
 
-    if (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
+    if (\is_string($value) || (\is_object($value) && \method_exists($value, '__toString'))) {
         $str = (string)$value;
         if ($str !== '') {
             if (ctype_digit($str)) {
                 return (float)$str;
             }
 
-            if (1 === preg_match("/^[+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)$/", $str)) {
+            if (1 === \preg_match("/^[+-]?(\d+([.]\d*)?([eE][+-]?\d+)?|[.]\d+([eE][+-]?\d+)?)$/", $str)) {
                 return (float)$str;
             }
         }
@@ -316,41 +322,41 @@ function type_union($firsts, $second)
                  */
                 function ($value) use ($left, $right, $pfn) {
                     try {
-                        return call_user_func($left, $value);
+                        return \call_user_func($left, $value);
                     } catch (TypeException $typeException) {
                         $leftType = $typeException->getTarget();
-                    } catch (Exception $exception) {
-                        throw new TypeException(sprintf(
+                    } catch (\Exception $exception) {
+                        throw new TypeException(\sprintf(
                             '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
                             $pfn
                         ), 0, $exception);
                     }
 
                     try {
-                        return call_user_func($right, $value);
+                        return \call_user_func($right, $value);
                     } catch (TypeException $typeException) {
                         $rightType = $typeException->getTarget();
-                    } catch (Exception $exception) {
-                        throw new TypeException(sprintf(
+                    } catch (\Exception $exception) {
+                        throw new TypeException(\sprintf(
                             '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
                             $pfn
                         ), 0, $exception);
                     }
 
-                    if (!is_string($leftType) || !is_string($rightType)) {
-                        throw new TypeException(sprintf(
+                    if (!\is_string($leftType) || !\is_string($rightType)) {
+                        throw new TypeException(\sprintf(
                             'One of type in %s() fail and TypeException::forValue() never called',
                             $pfn
                         ));
                     }
 
-                    throw TypeException::forValue($value, sprintf('%s|%s', $leftType, $rightType));
+                    throw TypeException::forValue($value, \sprintf('%s|%s', $leftType, $rightType));
                 };
         };
 
-    $types = func_get_args();
-    $firsts = array_shift($types);
-    $second = array_shift($types);
+    $types = \func_get_args();
+    $firsts = \array_shift($types);
+    $second = \array_shift($types);
 
     $accumulatedType = $u($firsts, $second);
 
@@ -377,7 +383,7 @@ define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
  */
 function type_array_key($value)
 {
-    return call_user_func(type_union(type_string, type_int), $value);
+    return \call_user_func(type_union(type_string, type_int), $value);
 }
 
 define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
@@ -400,10 +406,27 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
  */
 function type_list(callable $type, $value = null)
 {
-    $args = func_get_args();
+    if (\func_num_args() < 2) {
+        $pfn = __FUNCTION__;
+        return function ($value) use ($type, $pfn) {
+            InvalidArgumentException::assertList($value, $pfn, 2);
 
-    if (count($args) < 2) {
-        return partial(type_list, $type);
+            $result = [];
+
+            foreach ($value as $k => $v) {
+                try {
+                    $result[] = \call_user_func($type, $v);
+                } catch (TypeException $typeException) {
+                    throw new TypeException(
+                        'List element \'' . $k . '\': ' . $typeException->getMessage(),
+                        0,
+                        $typeException
+                    );
+                }
+            }
+
+            return $result;
+        };
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 2);
@@ -412,7 +435,7 @@ function type_list(callable $type, $value = null)
 
     foreach ($value as $k => $v) {
         try {
-            $result[] = call_user_func($type, $v);
+            $result[] = \call_user_func($type, $v);
         } catch (TypeException $typeException) {
             throw new TypeException(
                 'List element \'' . $k . '\': ' . $typeException->getMessage(),
@@ -442,11 +465,9 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  */
 function type_array(callable $keyType, callable $valueType = null, $value = null)
 {
-    $args = func_get_args();
-
-    if (count($args) === 1) {
+    if (\func_num_args() === 1) {
         return partial(type_array, $keyType);
-    } elseif (count($args) === 2) {
+    } elseif (\func_num_args() === 2) {
         return partial(type_array, $keyType, $valueType);
     }
 
@@ -455,7 +476,7 @@ function type_array(callable $keyType, callable $valueType = null, $value = null
     $result = [];
 
     foreach ($value as $k => $v) {
-        $result[call_user_func($keyType, $k)] = call_user_func($valueType, $v);
+        $result[\call_user_func($keyType, $k)] = \call_user_func($valueType, $v);
     }
 
     return $result;
@@ -514,9 +535,7 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
  */
 function type_shape(array $shape, $value = null)
 {
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(type_shape, $shape);
     }
 
@@ -525,16 +544,16 @@ function type_shape(array $shape, $value = null)
     $result = [];
 
     foreach ($shape as $k => $type) {
-        if (array_key_exists($k, $value)) {
+        if (\array_key_exists($k, $value)) {
             try {
-                $result[$k] = call_user_func($type, $value[$k]);
+                $result[$k] = \call_user_func($type, $value[$k]);
             } catch (TypeException $typeException) {
                 throw new TypeException(
                     'Shape element \'' . $k . '\': ' . $typeException->getMessage(),
                     0,
                     $typeException
                 );
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 throw new TypeException(
                     'Exception on shape element \'' . $k . '\': ' . $exception->getMessage(),
                     0,
@@ -542,7 +561,7 @@ function type_shape(array $shape, $value = null)
                 );
             }
         } else {
-            throw new TypeException('Shape element \'' . $k . '\': not exist in ' . var_export($value, true));
+            throw new TypeException('Shape element \'' . $k . '\': not exist in ' . \var_export($value, true));
         }
     }
 

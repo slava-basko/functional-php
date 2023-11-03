@@ -41,7 +41,7 @@ class IO extends Monad
      */
     public function flatMap(callable $f)
     {
-        $result = call_user_func($f, $this->__invoke());
+        $result = \call_user_func($f, $this->__invoke());
 
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
@@ -55,6 +55,6 @@ class IO extends Monad
      */
     public function __invoke()
     {
-        return call_user_func_array($this->value, func_get_args());
+        return \call_user_func_array($this->value, \func_get_args());
     }
 }

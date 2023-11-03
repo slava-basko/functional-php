@@ -20,15 +20,13 @@ function str_split($separator, $string = null)
 {
     InvalidArgumentException::assertNotEmptyString($separator, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(str_split, $separator);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    return explode($separator, $string);
+    return \explode($separator, $string);
 }
 
 define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
@@ -49,19 +47,17 @@ function str_split_on($num, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($num, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(str_split_on, $num);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    $length = strlen($string);
+    $length = \strlen($string);
     $output = [];
 
-    $output[0] = substr($string, 0, $num);
-    $output[1] = substr($string, $num, $length);
+    $output[0] = \substr($string, 0, $num);
+    $output[1] = \substr($string, $num, $length);
 
     return $output;
 }
@@ -94,11 +90,9 @@ function str_replace($search, $replace = null, $subject = null)
 {
     InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) === 1) {
+    if (\func_num_args() === 1) {
         return partial(str_replace, $search);
-    } elseif (count($args) === 2) {
+    } elseif (\func_num_args() === 2) {
         return partial(str_replace, $search, $replace);
     }
 
@@ -125,15 +119,13 @@ function str_starts_with($token, $string = null)
 {
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(str_starts_with, $token);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    return strlen($token) <= strlen($string) && substr($string, 0, strlen($token)) === $token;
+    return \strlen($token) <= \strlen($string) && \substr($string, 0, \strlen($token)) === $token;
 }
 
 define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
@@ -154,15 +146,13 @@ function str_ends_with($token, $string = null)
 {
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(str_ends_with, $token);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    return strlen($token) <= strlen($string) && substr($string, -strlen($token)) === $token;
+    return \strlen($token) <= \strlen($string) && \substr($string, -\strlen($token)) === $token;
 }
 
 define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
@@ -185,15 +175,13 @@ function str_test($pattern, $string = null)
 {
     InvalidArgumentException::assertString($pattern, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(str_test, $pattern);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    return 1 === preg_match($pattern, $string);
+    return 1 === \preg_match($pattern, $string);
 }
 
 define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
@@ -215,11 +203,9 @@ function str_pad_left($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) === 1) {
+    if (\func_num_args() === 1) {
         return partial(str_pad_left, $length);
-    } elseif (count($args) === 2) {
+    } elseif (\func_num_args() === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_left, $length, $pad_string);
@@ -227,7 +213,7 @@ function str_pad_left($length, $pad_string = null, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    return str_pad($string, $length, $pad_string, STR_PAD_LEFT);
+    return \str_pad($string, $length, $pad_string, STR_PAD_LEFT);
 }
 
 define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
@@ -249,11 +235,9 @@ function str_pad_right($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) === 1) {
+    if (\func_num_args() === 1) {
         return partial(str_pad_right, $length);
-    } elseif (count($args) === 2) {
+    } elseif (\func_num_args() === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_right, $length, $pad_string);
@@ -261,7 +245,7 @@ function str_pad_right($length, $pad_string = null, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    return str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
+    return \str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
 }
 
 define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');

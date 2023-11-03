@@ -19,10 +19,10 @@ namespace Basko\Functional;
  */
 function partial(callable $f, $arg1)
 {
-    $args = array_slice(func_get_args(), 1);
+    $args = \array_slice(\func_get_args(), 1);
 
     return function () use ($f, $args) {
-        return call_user_func_array($f, array_merge($args, func_get_args()));
+        return \call_user_func_array($f, \array_merge($args, \func_get_args()));
     };
 }
 
@@ -45,10 +45,10 @@ define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
  */
 function partial_r(callable $f, $arg1)
 {
-    $args = array_slice(func_get_args(), 1);
+    $args = \array_slice(\func_get_args(), 1);
 
     return function () use ($f, $args) {
-        return call_user_func_array($f, array_merge(func_get_args(), $args));
+        return \call_user_func_array($f, \array_merge(\func_get_args(), $args));
     };
 }
 
@@ -74,17 +74,17 @@ define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r');
 function partial_p(callable $f, array $args)
 {
     return function () use ($f, $args) {
-        $_args = func_get_args();
+        $_args = \func_get_args();
         $position = 1;
         do {
-            if (!isset($args[$position]) && !array_key_exists($position, $args)) {
-                $args[$position] = array_shift($_args);
+            if (!isset($args[$position]) && !\array_key_exists($position, $args)) {
+                $args[$position] = \array_shift($_args);
             }
             ++$position;
         } while ($_args);
-        ksort($args);
+        \ksort($args);
 
-        return call_user_func_array($f, $args);
+        return \call_user_func_array($f, $args);
     };
 }
 

@@ -42,9 +42,7 @@ function is_odd($n)
 {
     InvalidArgumentException::assertNumeric($n, __FUNCTION__, 1);
 
-    $odd = complement(is_even);
-
-    return $odd($n);
+    return !is_even($n);
 }
 
 define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
@@ -105,9 +103,7 @@ function plus($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(plus, $a);
     }
 
@@ -134,9 +130,7 @@ function minus($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(flipped(minus), $a);
     }
 
@@ -163,9 +157,7 @@ function div($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(flipped(div), $a);
     }
 
@@ -192,9 +184,7 @@ function modulo($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(flipped(modulo), $a);
     }
 
@@ -221,9 +211,7 @@ function multiply($a, $b = null)
 {
     InvalidArgumentException::assertNumeric($a, __FUNCTION__, 1);
 
-    $args = func_get_args();
-
-    if (count($args) < 2) {
+    if (\func_num_args() < 2) {
         return partial(multiply, $a);
     }
 
@@ -269,9 +257,9 @@ function diff($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
 
-    return fold(minus, array_shift($list), $list);
+    return fold(minus, \array_shift($list), $list);
 }
 
 define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
@@ -291,9 +279,9 @@ function divide($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
 
-    return fold(div, array_shift($list), $list);
+    return fold(div, \array_shift($list), $list);
 }
 
 define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
@@ -313,9 +301,9 @@ function product($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? iterator_to_array($list) : $list;
+    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
 
-    return fold(multiply, array_shift($list), $list);
+    return fold(multiply, \array_shift($list), $list);
 }
 
 define('Basko\Functional\product', __NAMESPACE__ . '\\product');
@@ -336,7 +324,7 @@ function average($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    return sum($list) / count($list);
+    return sum($list) / len($list);
 }
 
 define('Basko\Functional\average', __NAMESPACE__ . '\\average');
@@ -379,8 +367,8 @@ function median($list)
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
     \sort($list);
-    $count = count($list);
-    $middleValue = (int)floor(($count - 1) / 2); // find the middle value, or the lowest middle value
+    $count = \count($list);
+    $middleValue = (int)\floor(($count - 1) / 2); // find the middle value, or the lowest middle value
 
     if ($count % 2) { // odd number, middle is the median
         $median = $list[$middleValue];

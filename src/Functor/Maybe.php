@@ -38,11 +38,11 @@ class Maybe extends Monad
      */
     public function map(callable $f)
     {
-        if (is_null($this->value)) {
+        if (\is_null($this->value)) {
             return $this::nothing();
         }
 
-        return static::just(call_user_func($f, $this->value));
+        return static::just(\call_user_func($f, $this->value));
     }
 
     /**
@@ -52,11 +52,11 @@ class Maybe extends Monad
      */
     public function flatMap(callable $f)
     {
-        if (is_null($this->value)) {
+        if (\is_null($this->value)) {
             return $this::nothing();
         }
 
-        $result = call_user_func($f, $this->value);
+        $result = \call_user_func($f, $this->value);
 
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
@@ -70,10 +70,10 @@ class Maybe extends Monad
      */
     public function match(callable $just, callable $nothing)
     {
-        if (!is_null($this->value)) {
-            call_user_func_array($just, [$this->extract()]);
+        if (!\is_null($this->value)) {
+            \call_user_func_array($just, [$this->extract()]);
         } else {
-            call_user_func($nothing);
+            \call_user_func($nothing);
         }
     }
 
@@ -84,7 +84,7 @@ class Maybe extends Monad
      */
     public function isJust()
     {
-        return is_null($this->value) === false;
+        return \is_null($this->value) === false;
     }
 
     /**
@@ -94,6 +94,6 @@ class Maybe extends Monad
      */
     public function isNothing()
     {
-        return is_null($this->value) === true;
+        return \is_null($this->value) === true;
     }
 }

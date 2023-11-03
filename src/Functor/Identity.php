@@ -17,7 +17,7 @@ class Identity extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(call_user_func($f, $this->value));
+        return static::of(\call_user_func($f, $this->value));
     }
 
     /**
@@ -27,7 +27,7 @@ class Identity extends Monad
      */
     public function flatMap(callable $f)
     {
-        $result = call_user_func($f, $this->value);
+        $result = \call_user_func($f, $this->value);
 
         TypeException::assertReturnType($result, static::class, __METHOD__);
 

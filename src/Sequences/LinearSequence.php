@@ -32,9 +32,9 @@ class LinearSequence implements \Iterator
         }
 
         if (!\is_int($amount)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 'LinearSequence expects $amount argument to be integer, %s given',
-                gettype($amount)
+                \gettype($amount)
             ));
         }
 

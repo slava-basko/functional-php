@@ -19,16 +19,16 @@ if (!function_exists('get_debug_type')) {
             [f\is_type_of(__PHP_Incomplete_Class::class),
                 f\always('__PHP_Incomplete_Class')],
             ['is_object', function ($value) {
-                $class = get_class($value);
+                $class = \get_class($value);
 
-                if (false === strpos($class, '@')) {
+                if (false === \strpos($class, '@')) {
                     return $class;
                 }
 
-                return (get_parent_class($class) ?: key(class_implements($class)) ?: 'class') . '@anonymous';
+                return (\get_parent_class($class) ?: \key(\class_implements($class)) ?: 'class') . '@anonymous';
             }],
             [f\T, function ($value) {
-                if (null === $type = @get_resource_type($value)) {
+                if (null === $type = @\get_resource_type($value)) {
                     return 'unknown';
                 }
 
@@ -47,7 +47,7 @@ if (!function_exists('get_debug_type')) {
 if (!function_exists('ctype_digit')) {
     function convert_int_to_char_before_ctype($int, $function)
     {
-        if (!is_int($int)) {
+        if (!\is_int($int)) {
             return $int;
         }
 
@@ -56,7 +56,7 @@ if (!function_exists('ctype_digit')) {
         }
 
         if (PHP_VERSION_ID >= 80100) {
-            @trigger_error(
+            @\trigger_error(
                 $function . '(): Argument of type int will be interpreted as string in the future',
                 E_USER_DEPRECATED
             );
@@ -66,7 +66,7 @@ if (!function_exists('ctype_digit')) {
             $int += 256;
         }
 
-        return chr($int);
+        return \chr($int);
     }
 
     /**
@@ -77,6 +77,6 @@ if (!function_exists('ctype_digit')) {
     {
         $text = convert_int_to_char_before_ctype($text, __FUNCTION__);
 
-        return is_string($text) && $text !== '' && !preg_match('/[^0-9]/', $text);
+        return \is_string($text) && $text !== '' && !\preg_match('/[^0-9]/', $text);
     }
 }
