@@ -469,9 +469,9 @@ function prop_thunk($property, $object = null)
 {
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
-    $prop_thunk = _thunkify_n(prop, 2);
+    $propThunk = _thunkify_n(prop, 2);
 
-    return $prop_thunk($property, $object);
+    return $propThunk($property, $object);
 }
 
 define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
@@ -623,13 +623,13 @@ function assoc_path(array $path, $val = null, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
-    $path_len = \count($path);
-    if ($path_len == 0) {
+    $pathLen = \count($path);
+    if ($pathLen == 0) {
         return $list;
     }
 
     $property = head($path);
-    if ($path_len > 1) {
+    if ($pathLen > 1) {
         $next = prop($property, $list);
 
         if (\is_object($next) || \is_array($next)) {

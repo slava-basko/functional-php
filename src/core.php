@@ -26,7 +26,7 @@ function noop()
 define('Basko\Functional\noop', __NAMESPACE__ . '\\noop');
 
 /**
- * Does nothing, return the parameter supplied to it.
+ * Return the parameter supplied to it.
  *
  * ```php
  * identity(1); // 1
@@ -83,7 +83,7 @@ define('Basko\Functional\F', __NAMESPACE__ . '\\F');
  * Always return `null`.
  *
  * ```php
- * NULL(); // null
+ * N(); // null
  * ```
  *
  * @return null
