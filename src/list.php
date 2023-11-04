@@ -3,7 +3,6 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
-use Traversable;
 
 /**
  * Produces a new list of elements by mapping each element in list through a transformation function.
@@ -306,7 +305,13 @@ function pluck($property, $list = null)
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    return map(prop($property), $list);
+    $aggregation = [];
+
+    foreach ($list as $element) {
+        $aggregation[] = prop($property, $element);
+    }
+
+    return $aggregation;
 }
 
 define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
@@ -354,8 +359,8 @@ function head_by(callable $f, $list = null)
     if (\func_num_args() < 2) {
         return partial(head_by, [$f]);
     }
-    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     foreach ($list as $index => $element) {
         if (\call_user_func_array($f, [$element, $index, $list])) {
@@ -465,6 +470,7 @@ function select(callable $f, $list = null)
     if (\func_num_args() < 2) {
         return partial(select, [$f]);
     }
+
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
@@ -498,6 +504,7 @@ function reject(callable $f, $list = null)
     if (\func_num_args() < 2) {
         return partial(reject, [$f]);
     }
+
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
@@ -533,11 +540,11 @@ function contains($needle, $haystack = null)
         return partial(contains, [$needle]);
     }
 
+    InvalidArgumentException::assertStringOrList($haystack, __FUNCTION__, 2);
+
     if (\is_string($haystack)) {
         return $needle === '' || false !== \strpos($haystack, $needle);
     }
-
-    InvalidArgumentException::assertStringOrList($haystack, __FUNCTION__, 2);
 
     foreach ($haystack as $element) {
         if ($needle === $element) {
@@ -572,12 +579,14 @@ function take($count, $list = null)
     if (\func_num_args() < 2) {
         return partial(take, [$count]);
     }
+
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
     if (\is_string($list)) {
         return \substr($list, 0, $count);
     }
 
+    // TODO: foreach?
     return \array_slice(
         \is_array($list) ? $list : \iterator_to_array($list),
         0,
@@ -609,12 +618,14 @@ function take_r($count, $list = null)
     if (\func_num_args() < 2) {
         return partial(take_r, [$count]);
     }
+
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
     if (\is_string($list)) {
         return \substr($list, -$count);
     }
 
+    // TODO: foreach?
     return \array_slice(
         \is_array($list) ? $list : \iterator_to_array($list),
         0 - $count,
@@ -628,6 +639,7 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
 /**
  * Return N-th element of an array or string.
  * First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
+ * Consider `$elementNumber` as a position but not index.
  *
  * ```php
  * nth(1, ['foo', 'bar', 'baz', 'qwe']); // 'foo'
@@ -648,20 +660,23 @@ function nth($elementNumber, $list = null)
     if (\func_num_args() < 2) {
         return partial(nth, [$elementNumber]);
     }
+
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
 
-    if ($list instanceof Traversable) {
+    if ($list instanceof \Traversable) {
         $list = \array_values(\iterator_to_array($list));
     }
 
+    $len = len($list);
+
     if ($elementNumber < 0) {
-        $elementNumber = len($list) - \abs($elementNumber);
+        $elementNumber = $len - \abs($elementNumber);
     } else {
         $elementNumber = $elementNumber - 1;
     }
 
     if (\is_array($list)) {
-        for ($i = 1; $i <= len($list); ++$i) {
+        for ($i = 1; $i <= $len; ++$i) {
             if ($i == $elementNumber) {
                 return $list[$elementNumber];
             }
@@ -674,7 +689,7 @@ function nth($elementNumber, $list = null)
 define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
 
 /**
- * Groups a list by index returned by function.
+ * Groups a list by index returned by `$f` function.
  *
  * ```php
  * group(prop('type'), [
@@ -707,6 +722,7 @@ function group(callable $f, $list = null)
     if (\func_num_args() < 2) {
         return partial(group, [$f]);
     }
+
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $groups = [];
@@ -738,8 +754,8 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  * ```php
  * list($best, $good_students, $others) = partition(
  *      [
- *          compose(gte(9), prop('score')),
- *          compose(both(gt(6), lt(9)), prop('score'))
+ *          compose(partial_r(gte, [9]), prop('score')),
+ *          compose(both(partial_r(gte, [6]), partial_r(lt, [9])), prop('score'))
  *      ],
  *      $students
  * );
@@ -796,7 +812,7 @@ function flatten($list)
 
     $result = [];
     foreach ($list as $value) {
-        if (\is_array($value) || $value instanceof Traversable) {
+        if (\is_array($value) || $value instanceof \Traversable) {
             $result = \array_merge($result, flatten($value));
         } else {
             $result[] = $value;
@@ -851,7 +867,7 @@ function flatten_with_keys($list)
 
     $result = [];
     foreach ($list as $key => $value) {
-        if (\is_array($value) || $value instanceof Traversable) {
+        if (\is_array($value) || $value instanceof \Traversable) {
             $result = \array_merge($result, flatten_with_keys($value, $prefix . $key . '.'));
         } else {
             $result[$prefix . $key] = $value;
@@ -917,7 +933,7 @@ function sort(callable $f, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    if ($list instanceof Traversable) {
+    if ($list instanceof \Traversable) {
         $array = \iterator_to_array($list);
     } else {
         $array = $list;

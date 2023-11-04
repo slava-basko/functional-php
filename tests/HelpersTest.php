@@ -11,7 +11,6 @@ class HelpersTest extends BaseTest
     {
         $this->assertEquals([1, 2, 3], f\to_list(1, 2, 3));
         $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava,Basko'));
-        $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava,Basko,Slava'));
         $this->assertEquals(['Slava', 'Basko'], f\to_list('Slava, Basko'));
     }
 
@@ -338,9 +337,6 @@ class HelpersTest extends BaseTest
         $this->assertTrue($f(101));
         $this->assertTrue($f(8));
 
-        $this->assertTrue(f\either($gt10, f\is_even, 101));
-        $this->assertTrue(f\either($gt10, f\is_even, 8));
-
         $tn = f\either(f\prop('tracking_number'), f\prop('internal_tracking_number'), f\prop('carrier_tracking_number'));
         $this->assertEquals('AB123', $tn([
             'tracking_number' => 'AB123',
@@ -356,19 +352,6 @@ class HelpersTest extends BaseTest
             'internal_tracking_number' => '',
             'carrier_tracking_number' => 'EF789',
         ]));
-        $this->assertEquals(
-            'CD456',
-            f\either(
-                f\prop('tracking_number'),
-                f\prop('internal_tracking_number'),
-                f\prop('carrier_tracking_number'),
-                [
-                    'tracking_number' => '',
-                    'internal_tracking_number' => 'CD456',
-                    'carrier_tracking_number' => 'EF789',
-                ]
-            )
-        );
 
         $data1 = [
             'tracking_number' => '',
@@ -386,8 +369,15 @@ class HelpersTest extends BaseTest
             f\prop_thunk('tracking_number', $data1),
             f\prop_thunk('tracking_number', $data2)
         )));
+    }
 
-        $this->assertNull(f\either());
+    public function test_either_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'either() expects "callable ...$functions"'
+        );
+        f\either();
     }
 
     public function test_either_strict()
@@ -409,25 +399,25 @@ class HelpersTest extends BaseTest
         $this->assertEquals(['"foo"', '"bar"'], f\map(f\quote, ['foo', 'bar']));
     }
 
-    public function test_select_keys()
+    public function test_only_keys()
     {
         $this->assertEquals(
             ['bar' => 2, 'baz' => 3],
-            f\select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3])
+            f\only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3])
         );
         $this->assertEquals(
             ['bar' => 2, 'baz' => 3],
-            f\select_keys(['bar', 'baz'], new \ArrayIterator(['foo' => 1, 'bar' => 2, 'baz' => 3]))
+            f\only_keys(['bar', 'baz'], new \ArrayIterator(['foo' => 1, 'bar' => 2, 'baz' => 3]))
         );
     }
 
-    public function test_select_keys_fail()
+    public function test_only_keys_fail()
     {
         $this->setExpectedException(
             f\Exception\InvalidArgumentException::class,
-            'Basko\Functional\select_keys() expects parameter 2 to be array or instance of Traversable, NULL given'
+            'Basko\Functional\only_keys() expects parameter 2 to be array or instance of Traversable, NULL given'
         );
-        f\select_keys(['bar', 'baz'], null);
+        f\only_keys(['bar', 'baz'], null);
     }
 
     public function test_omit_keys()

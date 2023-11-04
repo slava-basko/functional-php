@@ -73,6 +73,16 @@ class InvalidArgumentException extends \InvalidArgumentException
      */
     public static function assertListOfCallables($listOfCallables, $callee, $parameterPosition)
     {
+        if (empty($listOfCallables)) {
+            throw new static(
+                \sprintf(
+                    '%s() expects "callable ...$functions"',
+                    $callee
+                ),
+                0
+            );
+        }
+
         foreach ($listOfCallables as $index => $possiblyCallable) {
             try {
                 InvalidArgumentException::assertCallable($possiblyCallable, __FUNCTION__, $index);

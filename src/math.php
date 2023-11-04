@@ -3,7 +3,6 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
-use Traversable;
 
 /**
  * Check if number is even.
@@ -287,7 +286,7 @@ function diff($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
     return fold(minus, \array_shift($list), $list);
 }
@@ -309,7 +308,7 @@ function divide($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
     return fold(div, \array_shift($list), $list);
 }
@@ -331,7 +330,7 @@ function product($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    $list = $list instanceof Traversable ? \iterator_to_array($list) : $list;
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
     return fold(multiply, \array_shift($list), $list);
 }

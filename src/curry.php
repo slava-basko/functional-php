@@ -3,7 +3,6 @@
 namespace Basko\Functional;
 
 use Basko\Functional\Exception\InvalidArgumentException;
-use Exception;
 
 /**
  * Return number of function arguments.
@@ -99,7 +98,7 @@ function curry(callable $f, $required = false)
 define('Basko\Functional\curry', __NAMESPACE__ . '\\curry');
 
 /**
- * Creates a thunk out of a function. A thunk delays a calculation until its result is needed,
+ * Creates a thunk out of a function. A thunk delays calculation until its result is needed,
  * providing lazy evaluation of arguments.
  *
  * ```php
@@ -160,12 +159,12 @@ function ary(callable $f, $count)
     return function () use ($f, $count) {
         $args = \func_get_args();
         if ($count > 0) {
-            return \call_user_func_array($f, take($count, $args));
+            return \call_user_func_array($f, \array_slice($args, 0, $count));
         } elseif ($count < 0) {
-            return \call_user_func_array($f, take_r(-$count, $args));
+            return \call_user_func_array($f, \array_slice($args, $count));
         }
 
-        throw new Exception('Invalid `use ($count)`');
+        throw new \Exception('Invalid `use ($count)`');
     };
 }
 

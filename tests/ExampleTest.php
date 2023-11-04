@@ -119,7 +119,7 @@ class ExampleTest extends BaseTest
             'name' => 'John',
         ];
 
-        $m_obj = array_merge($obj, f\map(f\ary('strtoupper', 1), f\select_keys(['shipper_country', 'consignee_country'], $obj)));
+        $m_obj = array_merge($obj, f\map(f\ary('strtoupper', 1), f\only_keys(['shipper_country', 'consignee_country'], $obj)));
         $this->assertEquals('NL', f\prop('shipper_country', $m_obj));
         $this->assertEquals('CA', f\prop('consignee_country', $m_obj));
         $this->assertEquals('John', f\prop('name', $m_obj));
@@ -128,7 +128,7 @@ class ExampleTest extends BaseTest
             'array_merge',
             [
                 f\always($obj),
-                f\pipe(f\select_keys(['shipper_country', 'consignee_country']), f\map(f\ary('strtoupper', 1))),
+                f\pipe(f\only_keys(['shipper_country', 'consignee_country']), f\map(f\ary('strtoupper', 1))),
             ]
         );
         $m2_obj = $toUpperSomeFields($obj);

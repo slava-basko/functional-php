@@ -2,14 +2,9 @@
 
 namespace Basko\Functional;
 
-use ArrayIterator;
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Sequences\ExponentialSequence;
 use Basko\Functional\Sequences\LinearSequence;
-use Exception;
-use InfiniteIterator;
-use Iterator;
-use Traversable;
 
 /**
  * Internal function.
@@ -71,12 +66,12 @@ function _value_to_ref($value, $key = null)
     $type = \gettype($value);
     if ($type === 'array') {
         $ref = '[' . \implode(':', map(_value_to_ref, $value)) . ']';
-    } elseif ($value instanceof Traversable) {
+    } elseif ($value instanceof \Traversable) {
         $ref = _object_to_ref($value) . '[' . \implode(':', map(_value_to_ref, $value)) . ']';
     } elseif ($type === 'object') {
         $ref = _object_to_ref($value);
     } elseif ($type === 'resource') {
-        throw new InvalidArgumentException(
+        throw new \InvalidArgumentException(
             'Resource type cannot be used as part of a memoization key. Please pass a custom key instead'
         );
     } else {
@@ -116,7 +111,7 @@ function _value_to_key($value)
 function to_list($args)
 {
     if (\is_string($args)) {
-        return \array_unique(\array_filter(\array_map('trim', \explode(',', $args)), 'strlen'));
+        return \array_filter(\array_map('trim', \explode(',', $args)), 'strlen');
     }
 
     return \func_get_args();
@@ -195,10 +190,11 @@ function join($separator, $list = null)
 
     if (\func_num_args() < 2) {
         $pfn = __FUNCTION__;
+
         return function ($list) use ($separator, $pfn) {
             InvalidArgumentException::assertList($list, $pfn, 2);
 
-            if ($list instanceof Traversable) {
+            if ($list instanceof \Traversable) {
                 $list = \iterator_to_array($list);
             }
 
@@ -207,7 +203,7 @@ function join($separator, $list = null)
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    if ($list instanceof Traversable) {
+    if ($list instanceof \Traversable) {
         $list = \iterator_to_array($list);
     }
 
@@ -330,7 +326,7 @@ function try_catch(callable $tryer, callable $catcher = null)
         } else {
             try {
                 $result = \call_user_func_array($tryer, $args);
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $result = \call_user_func_array($catcher, [$exception]);
             }
         }
@@ -390,7 +386,7 @@ function len($a)
         return \strlen($a);
     }
 
-    if ($a instanceof Traversable) {
+    if ($a instanceof \Traversable) {
         $a = \iterator_to_array($a);
     }
 
@@ -497,15 +493,19 @@ function prop_path(array $path, $object = null)
 {
     if (\func_num_args() < 2) {
         return function ($object) use ($path) {
-            return fold(function ($object, $property) {
-                return prop($property, $object);
-            }, $object, $path);
+            foreach ($path as $pathItem) {
+                $object = prop($pathItem, $object);
+            }
+
+            return $object;
         };
     }
 
-    return fold(function ($object, $property) {
-        return prop($property, $object);
-    }, $object, $path);
+    foreach ($path as $pathItem) {
+        $object = prop($pathItem, $object);
+    }
+
+    return $object;
 }
 
 define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
@@ -526,19 +526,23 @@ function props(array $properties, $object = null)
 {
     if (\func_num_args() < 2) {
         return function ($object) use ($properties) {
-            return fold(function ($accumulator, $property) use ($object) {
-                $accumulator[] = prop($property, $object);
+            $accumulator = [];
 
-                return $accumulator;
-            }, [], $properties);
+            foreach ($properties as $property) {
+                $accumulator[] = prop($property, $object);
+            }
+
+            return $accumulator;
         };
     }
 
-    return fold(function ($accumulator, $property) use ($object) {
-        $accumulator[] = prop($property, $object);
+    $accumulator = [];
 
-        return $accumulator;
-    }, [], $properties);
+    foreach ($properties as $property) {
+        $accumulator[] = prop($property, $object);
+    }
+
+    return $accumulator;
 }
 
 define('Basko\Functional\props', __NAMESPACE__ . '\\props');
@@ -577,25 +581,18 @@ function assoc($key, $val = null, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
-    $possibleCopy = if_else(unary('is_object'), cp, identity);
+    if (\is_object($list)) {
+        $newList = cp($list);
+        $newList->{$key} = \is_callable($val) ? $val($newList) : $val;
 
-    return fold(function ($accumulator, $entry, $index) use ($key, $val) {
-        if (\is_object($accumulator)) {
-            if ($key == $index) {
-                $accumulator->{$index} = $entry;
-            }
+        return $newList;
+    }
 
-            $accumulator->{$key} = \is_callable($val) ? $val($accumulator) : $val;
-        } elseif (\is_array($accumulator)) {
-            if ($key == $index) {
-                $accumulator[$index] = $entry;
-            }
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
-            $accumulator[$key] = \is_callable($val) ? $val($accumulator) : $val;
-        }
+    $list[$key] = \is_callable($val) ? $val($list) : $val;
 
-        return $accumulator;
-    }, $possibleCopy($list), $list);
+    return $list;
 }
 
 define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
@@ -685,7 +682,9 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn');
 function pair($fst, $snd = null)
 {
     if (\func_num_args() < 2) {
-        return partial(pair, [$fst]);
+        return function ($snd) use ($fst) {
+            return [$fst, $snd];
+        };
     }
 
     return [$fst, $snd];
@@ -694,52 +693,34 @@ function pair($fst, $snd = null)
 define('Basko\Functional\pair', __NAMESPACE__ . '\\pair');
 
 /**
- * @return \Closure|mixed|null
+ * @return callable
  */
 function _either()
 {
     $arguments = \func_get_args();
     $strict = (bool)\array_shift($arguments);
-    $allFunctions = $functions = $arguments;
-    $arg = \array_pop($functions);
-    if (\is_callable($arg)) {
-        InvalidArgumentException::assertListOfCallables(
-            $allFunctions,
-            __FUNCTION__,
-            InvalidArgumentException::ALL
-        );
-
-        return function () use ($allFunctions, $strict) {
-            $args = \func_get_args();
-            foreach ($allFunctions as $function) {
-                $res = \call_user_func_array($function, $args);
-                if ($strict && !\is_null($res)) {
-                    return $res;
-                } elseif ($res) {
-                    return $res;
-                }
-            }
-
-            return null;
-        };
-    }
+    $callee = \array_shift($arguments);
+    $functions = $arguments;
 
     InvalidArgumentException::assertListOfCallables(
         $functions,
-        __FUNCTION__,
+        $callee,
         InvalidArgumentException::ALL
     );
 
-    foreach ($functions as $function) {
-        $res = \call_user_func_array($function, [$arg]);
-        if ($strict && !\is_null($res)) {
-            return $res;
-        } elseif ($res) {
-            return $res;
+    return function () use ($strict, $functions) {
+        $args = \func_get_args();
+        foreach ($functions as $function) {
+            $res = \call_user_func_array($function, $args);
+            if ($strict && !\is_null($res)) {
+                return $res;
+            } elseif ($res) {
+                return $res;
+            }
         }
-    }
 
-    return null;
+        return null;
+    };
 }
 
 /**
@@ -747,7 +728,6 @@ function _either()
  * if it is truth-y and the result of the next function otherwise.
  *
  * ```php
- * either(gt(10), is_even, 101); // true
  * $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
  * $value([
  *      'prop2' => 'some value'
@@ -759,7 +739,7 @@ function _either()
  */
 function either()
 {
-    return \call_user_func_array('Basko\Functional\_either', \array_merge([false], \func_get_args()));
+    return \call_user_func_array('Basko\Functional\_either', \array_merge([false, __FUNCTION__], \func_get_args()));
 }
 
 define('Basko\Functional\either', __NAMESPACE__ . '\\either');
@@ -773,7 +753,7 @@ define('Basko\Functional\either', __NAMESPACE__ . '\\either');
  */
 function either_strict()
 {
-    return \call_user_func_array('Basko\Functional\_either', \array_merge([true], \func_get_args()));
+    return \call_user_func_array('Basko\Functional\_either', \array_merge([true, __FUNCTION__], \func_get_args()));
 }
 
 define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict');
@@ -814,25 +794,25 @@ function safe_quote($value)
 define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
 
 /**
- * Select the specified keys from the array.
+ * Returns an array only with the specified keys.
  *
  * ```php
- * select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
+ * only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
  * ```
  *
  * @param array $keys
- * @param Traversable|array|object $object
+ * @param \Traversable|array|object $object
  * @return callable|array
  * @no-named-arguments
  */
-function select_keys(array $keys, $object = null)
+function only_keys(array $keys, $object = null)
 {
     if (\func_num_args() < 2) {
-        return partial(select_keys, [$keys]);
+        return partial(only_keys, [$keys]);
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
-    if ($object instanceof Traversable) {
+    if ($object instanceof \Traversable) {
         $object = \iterator_to_array($object);
     }
 
@@ -848,17 +828,17 @@ function select_keys(array $keys, $object = null)
     return $aggregation;
 }
 
-define('Basko\Functional\select_keys', __NAMESPACE__ . '\\select_keys');
+define('Basko\Functional\only_keys', __NAMESPACE__ . '\\only_keys');
 
 /**
- * Returns an array with the specified keys omitted from the array.
+ * Drops specified keys.
  *
  * ```php
  * omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
  * ```
  *
  * @param array $keys
- * @param Traversable|array|object $object
+ * @param \Traversable|array|object $object
  * @return callable|array
  * @no-named-arguments
  */
@@ -869,7 +849,7 @@ function omit_keys(array $keys, $object = null)
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
-    if ($object instanceof Traversable) {
+    if ($object instanceof \Traversable) {
         $object = \iterator_to_array($object);
     } elseif (\is_object($object)) {
         $object = \get_object_vars($object);
@@ -921,6 +901,10 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  * Applies provided function to N-th elements of an array.
  * First element is first, but not zero (similar to `nth` function).
  *
+ * ```php
+ * map_elements('strtoupper', [1], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
+ * ```
+ *
  * @param callable $f
  * @param array $elementsNumbers
  * @param array|\ArrayAccess $list
@@ -963,22 +947,22 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
  * ); // ['email']
  * ```
  *
- * @param array $keys
+ * @param array $required
  * @param \Traversable|array|null $array
  * @return callable|int[]|string[]
  * @no-named-arguments
  */
-function find_missing_keys(array $keys, $array = null)
+function find_missing_keys(array $required, $array = null)
 {
     if (\func_num_args() < 2) {
-        return partial(find_missing_keys, [$keys]);
+        return partial(find_missing_keys, [$required]);
     }
 
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
 
-    $array = $array instanceof Traversable ? \iterator_to_array($array) : $array;
+    $array = $array instanceof \Traversable ? \iterator_to_array($array) : $array;
 
-    return \array_keys(\array_diff_key(\array_flip($keys), $array));
+    return \array_keys(\array_diff_key(\array_flip($required), $array));
 }
 
 define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_keys');
@@ -1030,7 +1014,7 @@ function pick_random_value($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
-    if ($list instanceof Traversable) {
+    if ($list instanceof \Traversable) {
         $list = \iterator_to_array($list);
     }
 
@@ -1113,7 +1097,7 @@ function sequence_constant($value)
         );
     }
 
-    return new InfiniteIterator(new ArrayIterator([$value]));
+    return new \InfiniteIterator(new \ArrayIterator([$value]));
 }
 
 define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constant');
@@ -1179,7 +1163,7 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
  * @throws \Exception Any exception thrown by the callback
  * @no-named-arguments
  */
-function retry($retries, Iterator $delaySequence = null, $f = null)
+function retry($retries, \Iterator $delaySequence = null, $f = null)
 {
     if (\func_num_args() === 1) {
         return partial(retry, [$retries]);
@@ -1200,7 +1184,7 @@ function retry($retries, Iterator $delaySequence = null, $f = null)
     foreach ($delays as $delay) {
         try {
             return \call_user_func_array($f, [$retry, $delay]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if ($retry === $retries - 1) {
                 throw $e;
             }

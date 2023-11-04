@@ -246,7 +246,7 @@ class ListTest extends BaseTest
         $this->assertEquals(null, f\nth(999, 'Slava'));
         $this->assertEquals(null, f\nth(-999, 'Slava'));
 
-        $this->assertEquals(null, $nth(0, ['foo', 'bar', 'baz', 'qwe']));
+        $this->assertEquals(null, f\nth(0, ['foo', 'bar', 'baz', 'qwe']));
     }
 
     public function test_nth_fail()
