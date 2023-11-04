@@ -7,7 +7,7 @@ noop('some string'); // nothing happen
 ```
 
 ### identity
-Does nothing, return the parameter supplied to it.
+Return the parameter supplied to it.
 
 ```php
 identity(1); // 1
@@ -34,7 +34,7 @@ F(); // false
 Always return `null`.
 
 ```php
-NULL(); // null
+N(); // null
 ```
 
 ### eq
@@ -287,7 +287,7 @@ Acts as the boolean `and` statement.
 ```php
 both(T(), T()); // true
 both(F(), T()); // false
-$between6And9 = both(gt(6), lt(9));
+$between6And9 = both(partial_r(gt, [6]), partial_r(lt, [9]));
 $between6And9(7); // true
 $between6And9(10); // false
 ```
@@ -382,7 +382,7 @@ $addEleven(4); // 15
 ```
 
 ### thunkify
-Creates a thunk out of a function. A thunk delays a calculation until its result is needed,
+Creates a thunk out of a function. A thunk delays calculation until its result is needed,
 providing lazy evaluation of arguments.
 
 ```php
@@ -619,6 +619,7 @@ take_r(4, 'Slava'); // 'lava'
 ### nth
 Return N-th element of an array or string.
 First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
+Consider `$elementNumber` as a position but not index.
 
 ```php
 nth(1, ['foo', 'bar', 'baz', 'qwe']); // 'foo'
@@ -628,7 +629,7 @@ nth(-2, 'Slava'); // 'v'
 ```
 
 ### group
-Groups a list by index returned by function.
+Groups a list by index returned by `$f` function.
 
 ```php
 group(prop('type'), [
@@ -663,8 +664,8 @@ original array.
 ```php
 list($best, $good_students, $others) = partition(
      [
-         compose(gte(9), prop('score')),
-         compose(both(gt(6), lt(9)), prop('score'))
+         compose(partial_r(gte, [9]), prop('score')),
+         compose(both(partial_r(gte, [6]), partial_r(lt, [9])), prop('score'))
      ],
      $students
 );
@@ -1165,7 +1166,6 @@ A function wrapping calls to the functions in an `||` operation, returning the r
 if it is truth-y and the result of the next function otherwise.
 
 ```php
-either(gt(10), is_even, 101); // true
 $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
 $value([
      'prop2' => 'some value'
@@ -1187,15 +1187,15 @@ map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
 ### safe_quote
 Same as `quote`, but with `addslashes` before.
 
-### select_keys
-Select the specified keys from the array.
+### only_keys
+Returns an array only with the specified keys.
 
 ```php
-select_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
+only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
 ```
 
 ### omit_keys
-Returns an array with the specified keys omitted from the array.
+Drops specified keys.
 
 ```php
 omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
@@ -1211,6 +1211,10 @@ map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' =
 ### map_elements
 Applies provided function to N-th elements of an array.
 First element is first, but not zero (similar to `nth` function).
+
+```php
+map_elements('strtoupper', [1], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
+```
 
 ### find_missing_keys
 Finds if a given array has all of the required keys set.
