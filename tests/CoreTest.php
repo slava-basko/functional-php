@@ -437,6 +437,14 @@ class CoreTest extends BaseTest
         ]);
         $this->assertEquals('user', $typeOf(new \User([])));
         $this->assertEquals('value', $typeOf(new \Value(null)));
+
+        $helloLang = f\cond([
+            [f\any_pass([f\contains('Welcome'), f\contains('Hello')]), f\always('en')],
+            [f\any_pass([f\contains('Bienvenue'), f\contains('Bonjour')]), f\always('fr')],
+        ]);
+
+        $this->assertEquals('en', $helloLang('Welcome'));
+        $this->assertEquals('fr', $helloLang('Bienvenue'));
     }
 
     public function test_flipped()

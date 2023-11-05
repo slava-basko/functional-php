@@ -616,11 +616,11 @@ function cond(array $conditions)
             return null;
         }
 
-        list($if, $then) = head($conditions);
+        list($if, $then) = \array_shift($conditions);
 
-        $cond = if_else($if, $then, cond(tail($conditions)));
-
-        return \call_user_func($cond, $value);
+        return \call_user_func($if, $value)
+            ? \call_user_func($then, $value)
+            : \call_user_func(cond($conditions), $value);
     };
 }
 
@@ -884,6 +884,7 @@ function ap($flist, $list = null)
 
     if (\func_num_args() < 2) {
         $pfn = __FUNCTION__;
+
         return function ($list) use ($flist, $pfn) {
             InvalidArgumentException::assertList($list, $pfn, 2);
 
