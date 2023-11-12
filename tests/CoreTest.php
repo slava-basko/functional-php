@@ -511,7 +511,7 @@ class CoreTest extends BaseTest
     public function test_any_pass()
     {
         $isClub = f\pipe(f\prop('suit'), f\eq('♣'));
-        $isSpade = f\pipe(f\prop('suit'), f\eq('♠'));;
+        $isSpade = f\pipe(f\prop('suit'), f\eq('♠'));
         $isBlackCard = f\any_pass([$isClub, $isSpade]);
 
         $this->assertTrue($isBlackCard(['rank' => '10', 'suit' => '♣']));

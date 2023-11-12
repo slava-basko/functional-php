@@ -216,7 +216,7 @@ Returns a new function that behaves like a match operator. Encapsulates `if/else
 ```php
 $cond = cond([
      [eq(0), always('water freezes')],
-     [partial_r(gte, 100), always('water boils')],
+     [partial_r(gte, [100]), always('water boils')],
      [T, function ($t) {
          return "nothing special happens at $t °C";
      }],
@@ -311,7 +311,7 @@ if at least one of the provided predicates is satisfied by those arguments.
 
 ```php
 $isClub = pipe(prop('suit'), eq('♣'));
-$isSpade = pipe(prop('suit'), eq('♠'));;
+$isSpade = pipe(prop('suit'), eq('♠'));
 $isBlackCard = any_pass([$isClub, $isSpade]);
 
 $isBlackCard(['rank' => '10', 'suit' => '♣']); // true

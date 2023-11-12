@@ -593,7 +593,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
  * ```php
  * $cond = cond([
  *      [eq(0), always('water freezes')],
- *      [partial_r(gte, 100), always('water boils')],
+ *      [partial_r(gte, [100]), always('water boils')],
  *      [T, function ($t) {
  *          return "nothing special happens at $t °C";
  *      }],
@@ -824,7 +824,7 @@ define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass');
  *
  * ```php
  * $isClub = pipe(prop('suit'), eq('♣'));
- * $isSpade = pipe(prop('suit'), eq('♠'));;
+ * $isSpade = pipe(prop('suit'), eq('♠'));
  * $isBlackCard = any_pass([$isClub, $isSpade]);
  *
  * $isBlackCard(['rank' => '10', 'suit' => '♣']); // true
