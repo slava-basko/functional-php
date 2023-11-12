@@ -102,7 +102,7 @@ class FunctorTest extends BaseTest
     {
         $half = function ($x) {
             f\Exception\InvalidArgumentException::assertInteger($x, __FUNCTION__, 1);
-            $f = f\if_else(f\is_even, f\pipe(f\partial_r(f\div, [2]), f\Functor\Maybe::just), f\Functor\Maybe::nothing);
+            $f = f\if_else(f\is_even, f\pipe(f\partial_r(f\div, 2), f\Functor\Maybe::just), f\Functor\Maybe::nothing);
 
             return $f($x);
         };
@@ -133,12 +133,12 @@ class FunctorTest extends BaseTest
 
         $this->assertEquals(
             f\Functor\Maybe::just(4),
-            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, [2]))
+            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 2))
         );
 
         $this->assertEquals(
             f\Functor\Maybe::nothing(),
-            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, [0]))
+            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 0))
         );
     }
 
@@ -411,7 +411,7 @@ class FunctorTest extends BaseTest
         $m = f\Functor\IO::of('file_get_contents')
             ->map('ucfirst')
             ->map(f\take(4))
-            ->map(f\partial_r(f\concat, ['ik']));
+            ->map(f\partial_r(f\concat, 'ik'));
 
         $this->assertEquals('Slavik', $m(__DIR__ . '/name.txt'));
     }

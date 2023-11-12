@@ -230,9 +230,9 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join');
 function if_else(callable $if, callable $then = null, callable $else = null)
 {
     if (\func_num_args() === 1) {
-        return partial(if_else, [$if]);
+        return partial(if_else, $if);
     } elseif (\func_num_args() === 2) {
-        return partial(if_else, [$if, $then]);
+        return partial(if_else, $if, $then);
     }
 
     InvalidArgumentException::assertCallable($then, __FUNCTION__, 2);
@@ -295,7 +295,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
 function try_catch(callable $tryer, callable $catcher = null)
 {
     if (\func_num_args() < 2) {
-        return partial(try_catch, [$tryer]);
+        return partial(try_catch, $tryer);
     }
 
     InvalidArgumentException::assertCallable($catcher, __FUNCTION__, 2);
@@ -574,9 +574,9 @@ function assoc($key, $val = null, $list = null)
     InvalidArgumentException::assertString($key, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(assoc, [$key]);
+        return partial(assoc, $key);
     } elseif (\func_num_args() === 2) {
-        return partial(assoc, [$key, $val]);
+        return partial(assoc, $key, $val);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
@@ -613,9 +613,9 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
 function assoc_path(array $path, $val = null, $list = null)
 {
     if (\func_num_args() === 1) {
-        return partial(assoc_path, [$path]);
+        return partial(assoc_path, $path);
     } elseif (\func_num_args() === 2) {
-        return partial(assoc_path, [$path, $val]);
+        return partial(assoc_path, $path, $val);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
@@ -808,7 +808,7 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
 function only_keys(array $keys, $object = null)
 {
     if (\func_num_args() < 2) {
-        return partial(only_keys, [$keys]);
+        return partial(only_keys, $keys);
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
@@ -845,7 +845,7 @@ define('Basko\Functional\only_keys', __NAMESPACE__ . '\\only_keys');
 function omit_keys(array $keys, $object = null)
 {
     if (\func_num_args() < 2) {
-        return partial(omit_keys, [$keys]);
+        return partial(omit_keys, $keys);
     }
     InvalidArgumentException::assertList($object, __FUNCTION__, 2);
 
@@ -876,9 +876,9 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
 function map_keys(callable $f, array $keys = null, $list = null)
 {
     if (\func_num_args() === 1) {
-        return partial(map_keys, [$f]);
+        return partial(map_keys, $f);
     } elseif (\func_num_args() === 2) {
-        return partial(map_keys, [$f, $keys]);
+        return partial(map_keys, $f, $keys);
     }
 
     InvalidArgumentException::assertList($keys, __FUNCTION__, 2);
@@ -914,9 +914,9 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
 function map_elements(callable $f, array $elementsNumbers = null, $list = null)
 {
     if (\func_num_args() === 1) {
-        return partial(map_elements, [$f]);
+        return partial(map_elements, $f);
     } elseif (\func_num_args() === 2) {
-        return partial(map_elements, [$f, $elementsNumbers]);
+        return partial(map_elements, $f, $elementsNumbers);
     }
 
     InvalidArgumentException::assertList($elementsNumbers, __FUNCTION__, 2);
@@ -955,7 +955,7 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
 function find_missing_keys(array $required, $array = null)
 {
     if (\func_num_args() < 2) {
-        return partial(find_missing_keys, [$required]);
+        return partial(find_missing_keys, $required);
     }
 
     InvalidArgumentException::assertList($array, __FUNCTION__, 2);
@@ -1064,9 +1064,9 @@ function combine($keyProp, $valueProp = null, $list = null)
     InvalidArgumentException::assertString($keyProp, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(combine, [$keyProp]);
+        return partial(combine, $keyProp);
     } elseif (\func_num_args() === 2) {
-        return partial(combine, [$keyProp, $valueProp]);
+        return partial(combine, $keyProp, $valueProp);
     }
 
     InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
@@ -1166,9 +1166,9 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
 function retry($retries, \Iterator $delaySequence = null, $f = null)
 {
     if (\func_num_args() === 1) {
-        return partial(retry, [$retries]);
+        return partial(retry, $retries);
     } elseif (\func_num_args() === 2) {
-        return partial(retry, [$retries, $delaySequence]);
+        return partial(retry, $retries, $delaySequence);
     }
 
     InvalidArgumentException::assertIntegerGreaterThanOrEqual($retries, 1, __FUNCTION__, 1);
@@ -1234,7 +1234,7 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct');
 function construct_with_args($class, $constructArguments = null)
 {
     if (\func_num_args() < 2) {
-        return partial(construct_with_args, [$class]);
+        return partial(construct_with_args, $class);
     }
 
     InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
@@ -1262,9 +1262,9 @@ function flip_values($keyA, $keyB = null, $object = null)
     InvalidArgumentException::assertString($keyA, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(flip_values, [$keyA]);
+        return partial(flip_values, $keyA);
     } elseif (\func_num_args() === 2) {
-        return partial(flip_values, [$keyA, $keyB]);
+        return partial(flip_values, $keyA, $keyB);
     }
 
     InvalidArgumentException::assertString($keyB, __FUNCTION__, 2);
@@ -1349,7 +1349,7 @@ function publish($method, $context = null)
     InvalidArgumentException::assertString($method, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(publish, [$method]);
+        return partial(publish, $method);
     }
 
     InvalidArgumentException::assertObject($context, __FUNCTION__, 2);

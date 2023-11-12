@@ -23,9 +23,9 @@ function write_file($chmod, $file = null, $content = null)
     InvalidArgumentException::assertInteger($chmod, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(write_file, [$chmod]);
+        return partial(write_file, $chmod);
     } elseif (\func_num_args() === 2) {
-        return partial(write_file, [$chmod, $file]);
+        return partial(write_file, $chmod, $file);
     }
 
     InvalidArgumentException::assertString($file, __FUNCTION__, 2);

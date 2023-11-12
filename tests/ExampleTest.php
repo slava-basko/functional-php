@@ -52,7 +52,7 @@ class ExampleTest extends BaseTest
 
     public function test_filter()
     {
-        $gt35 = f\partial_r(f\gt, [35]);
+        $gt35 = f\partial_r(f\gt, 35);
         $valueGreaterThen35 = f\compose($gt35, f\prop('value'));
 
         $this->assertEquals([
@@ -105,7 +105,7 @@ class ExampleTest extends BaseTest
             'consignee_country' => 'US',
             'pickup_hub_id' => 5,
         ];
-        $getProp = f\either(f\partial_r(f\prop, [$obj]), f\partial_r(f\prop, [$oldObj]));
+        $getProp = f\either(f\partial_r(f\prop, $obj), f\partial_r(f\prop, $oldObj));
 
         $this->assertEquals('NL', $getProp('shipper_country'));
         $this->assertEquals('US', $getProp('consignee_country'));
@@ -334,7 +334,7 @@ class ExampleTest extends BaseTest
 JSON;
 
         $getRestrictedItems = f\pipe(
-            f\partial_r('json_decode', [true]),
+            f\partial_r('json_decode', true),
             f\prop('products'),
             f\select(f\pipe(f\prop('restricted'), f\identical(true))),
             f\pluck('title'),

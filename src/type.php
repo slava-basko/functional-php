@@ -466,9 +466,9 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
 function type_array(callable $keyType, callable $valueType = null, $value = null)
 {
     if (\func_num_args() === 1) {
-        return partial(type_array, [$keyType]);
+        return partial(type_array, $keyType);
     } elseif (\func_num_args() === 2) {
-        return partial(type_array, [$keyType, $valueType]);
+        return partial(type_array, $keyType, $valueType);
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 3);
@@ -536,7 +536,7 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
 function type_shape(array $shape, $value = null)
 {
     if (\func_num_args() < 2) {
-        return partial(type_shape, [$shape]);
+        return partial(type_shape, $shape);
     }
 
     InvalidArgumentException::assertArrayAccess($value, __FUNCTION__, 2);

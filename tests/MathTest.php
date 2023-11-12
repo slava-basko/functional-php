@@ -39,7 +39,7 @@ class MathTest extends BaseTest
     public function test_minus()
     {
         $this->assertSame(1, f\minus(3, 2));
-        $minus10 = f\partial_r(f\minus, [10]);
+        $minus10 = f\partial_r(f\minus, 10);
         $this->assertSame(1, $minus10(11));
     }
 
@@ -55,7 +55,7 @@ class MathTest extends BaseTest
     public function test_div()
     {
         $this->assertSame(2, f\div(4, 2));
-        $div2 = f\partial_r(f\div, [2]);
+        $div2 = f\partial_r(f\div, 2);
         $this->assertSame(2, $div2(4));
     }
 

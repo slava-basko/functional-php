@@ -21,7 +21,7 @@ function str_split($separator, $string = null)
     InvalidArgumentException::assertNotEmptyString($separator, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(str_split, [$separator]);
+        return partial(str_split, $separator);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
@@ -48,7 +48,7 @@ function str_split_on($num, $string = null)
     InvalidArgumentException::assertPositiveInteger($num, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(str_split_on, [$num]);
+        return partial(str_split_on, $num);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
@@ -91,9 +91,9 @@ function str_replace($search, $replace = null, $subject = null)
     InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(str_replace, [$search]);
+        return partial(str_replace, $search);
     } elseif (\func_num_args() === 2) {
-        return partial(str_replace, [$search, $replace]);
+        return partial(str_replace, $search, $replace);
     }
 
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
@@ -120,7 +120,7 @@ function str_starts_with($token, $string = null)
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(str_starts_with, [$token]);
+        return partial(str_starts_with, $token);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
@@ -147,7 +147,7 @@ function str_ends_with($token, $string = null)
     InvalidArgumentException::assertString($token, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(str_ends_with, [$token]);
+        return partial(str_ends_with, $token);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
@@ -176,7 +176,7 @@ function str_test($pattern, $string = null)
     InvalidArgumentException::assertString($pattern, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(str_test, [$pattern]);
+        return partial(str_test, $pattern);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
@@ -204,11 +204,11 @@ function str_pad_left($length, $pad_string = null, $string = null)
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(str_pad_left, [$length]);
+        return partial(str_pad_left, $length);
     } elseif (\func_num_args() === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
-        return partial(str_pad_left, [$length, $pad_string]);
+        return partial(str_pad_left, $length, $pad_string);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
@@ -236,11 +236,11 @@ function str_pad_right($length, $pad_string = null, $string = null)
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
     if (\func_num_args() === 1) {
-        return partial(str_pad_right, [$length]);
+        return partial(str_pad_right, $length);
     } elseif (\func_num_args() === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
-        return partial(str_pad_right, [$length, $pad_string]);
+        return partial(str_pad_right, $length, $pad_string);
     }
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);

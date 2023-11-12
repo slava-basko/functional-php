@@ -507,7 +507,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
 function converge(callable $convergingFunction, array $branchingFunctions = null)
 {
     if (\func_num_args() < 2) {
-        return partial(converge, [$convergingFunction]);
+        return partial(converge, $convergingFunction);
     }
 
     InvalidArgumentException::assertListOfCallables($branchingFunctions, __FUNCTION__, 2);
@@ -593,7 +593,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
  * ```php
  * $cond = cond([
  *      [eq(0), always('water freezes')],
- *      [partial_r(gte, [100]), always('water boils')],
+ *      [partial_r(gte, 100), always('water boils')],
  *      [T, function ($t) {
  *          return "nothing special happens at $t °C";
  *      }],
@@ -737,7 +737,7 @@ define('Basko\Functional\y', __NAMESPACE__ . '\\y');
  * ```php
  * both(T(), T()); // true
  * both(F(), T()); // false
- * $between6And9 = both(partial_r(gt, [6]), partial_r(lt, [9]));
+ * $between6And9 = both(partial_r(gt, 6), partial_r(lt, 9));
  * $between6And9(7); // true
  * $between6And9(10); // false
  * ```

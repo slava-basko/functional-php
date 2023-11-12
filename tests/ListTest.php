@@ -82,7 +82,7 @@ class ListTest extends BaseTest
                 1 => ['name' => 'mark', 'score' => 9],
             ],
             f\tail_by(
-                f\compose(f\partial_r(f\gt, [8]), f\prop('score')),
+                f\compose(f\partial_r(f\gt, 8), f\prop('score')),
                 $students
             )
         );
@@ -336,9 +336,9 @@ class ListTest extends BaseTest
             ],
         ];
 
-        $gt6 = f\partial_r(f\gt, [6]);
-        $lt9 = f\partial_r(f\lt, [9]);
-        $gte9 = f\partial_r(f\gte, [9]);
+        $gt6 = f\partial_r(f\gt, 6);
+        $lt9 = f\partial_r(f\lt, 9);
+        $gte9 = f\partial_r(f\gte, 9);
         $f = f\partition([
             f\compose($gte9, f\prop('score')),
             f\compose(f\both($gt6, $lt9), f\prop('score')),

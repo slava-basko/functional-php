@@ -332,7 +332,7 @@ class HelpersTest extends BaseTest
 
     public function test_either()
     {
-        $gt10 = f\partial_r(f\gt, [10]);
+        $gt10 = f\partial_r(f\gt, 10);
         $f = f\either($gt10, f\is_even);
         $this->assertTrue($f(101));
         $this->assertTrue($f(8));

@@ -7,17 +7,20 @@ namespace Basko\Functional;
  * predefined left arguments passed to partial.
  *
  * ```php
- * $implode_coma = partial('implode', [',']);
+ * $implode_coma = partial('implode', ',');
  * $implode_coma([1, 2]); // 1,2
  * ```
  *
  * @param callable $f
- * @param array $args
+ * @param mixed $arg1
+ * @param mixed ...
  * @return callable(mixed):mixed
  * @no-named-arguments
  */
-function partial(callable $f, array $args)
+function partial(callable $f, $arg1)
 {
+    $args = \array_slice(\func_get_args(), 1);
+
     return function () use ($f, $args) {
         return \call_user_func_array($f, \array_merge($args, \func_get_args()));
     };
@@ -30,17 +33,20 @@ define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
  * predefined right arguments passed to rpartial.
  *
  * ```php
- * $implode12 = partial_r('implode', [[1, 2]]);
+ * $implode12 = partial_r('implode', [1, 2]);
  * $implode12(','); // 1,2
  * ```
  *
  * @param callable $f
- * @param array $args
+ * @param mixed $arg1
+ * @param mixed ...
  * @return callable(mixed):mixed
  * @no-named-arguments
  */
-function partial_r(callable $f, array $args)
+function partial_r(callable $f, $arg1)
 {
+    $args = \array_slice(\func_get_args(), 1);
+
     return function () use ($f, $args) {
         return \call_user_func_array($f, \array_merge(\func_get_args(), $args));
     };
