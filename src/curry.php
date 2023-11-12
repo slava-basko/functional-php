@@ -74,13 +74,15 @@ define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n');
  * want to curry optional parameters or not.
  *
  * ```php
- * $add = function($a, $b, $c) {
+ * function add($a, $b, $c) {
  *      return $a + $b + $c;
  * };
- * $curryiedAdd = curry($add);
- * $addTen = $curryiedAdd(10);
- * $addEleven = $addTen(1);
- * $addEleven(4); // 15
+ *
+ * $curryiedAdd = curry('add');
+ * $curryiedAdd(1, 2, 3); // 6
+ * $curryiedAdd(1)(2)(3); // 6
+ * $curryiedAdd(1)(2, 3); // 6
+ * $curryiedAdd(1, 2)(3); // 6
  * ```
  *
  * @param callable $f The function to curry
