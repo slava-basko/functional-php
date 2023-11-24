@@ -411,3 +411,35 @@ function median($list)
 }
 
 define('Basko\Functional\median', __NAMESPACE__ . '\\median');
+
+/**
+ * Restricts a value to be within a range.
+ *
+ * ```php
+ * clamp(1, 10, -5); // 1
+ * clamp(1, 10, 15); // 10
+ * clamp(1, 10, 4); // 4
+ * clamp('2023-01-01', '2023-11-22', '2012-11-22'); // 2023-01-01
+ * clamp('2023-01-01', '2023-11-22', '2023-04-22'); // 2023-04-22
+ *
+ * // Example:
+ * $pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']); // Safely use $pagePortion in your SQL query.
+ * ```
+ *
+ * @param numeric $min
+ * @param numeric $max
+ * @param numeric $value
+ * @return callable|numeric
+ */
+function clamp($min, $max = null, $value = null)
+{
+    if (\func_num_args() === 1) {
+        return partial(clamp, $min);
+    } elseif (\func_num_args() === 2) {
+        return partial(clamp, $min, $max);
+    }
+
+    return $value < $min ? $min : ($value > $max ? $max : $value);
+}
+
+define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');

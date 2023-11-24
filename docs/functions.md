@@ -242,6 +242,15 @@ $flippedMergeStrings = flipped($mergeStrings);
 $flippedMergeStrings('two', 'one'); // 'onetwo'
 ```
 
+### flip
+Returns function which accepts two arguments in the reversed order.
+
+```php
+$gt9 = flip(gt)(9);
+$gt9(10); // true
+$gt9(7); // false
+```
+
 ### on
 Takes a binary function `$f`, and unary function `$g`, and two values. Applies `$g` to each value,
 then applies the result of each to `$f`.
@@ -920,6 +929,20 @@ Calculate median.
 ```php
 median([2, 9, 7]); // 7
 median([7, 2, 10, 9]); // 8
+```
+
+### clamp
+Restricts a value to be within a range.
+
+```php
+clamp(1, 10, -5); // 1
+clamp(1, 10, 15); // 10
+clamp(1, 10, 4); // 4
+clamp('2023-01-01', '2023-11-22', '2012-11-22'); // 2023-01-01
+clamp('2023-01-01', '2023-11-22', '2023-04-22'); // 2023-04-22
+
+// Example:
+$pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']); // Safely use $pagePortion in your SQL query.
 ```
 
 ### partial

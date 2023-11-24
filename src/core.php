@@ -655,6 +655,36 @@ function flipped(callable $f)
 define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped');
 
 /**
+ * Returns function which accepts two arguments in the reversed order.
+ *
+ * ```php
+ * $gt9 = flip(gt)(9);
+ * $gt9(10); // true
+ * $gt9(7); // false
+ * ```
+ *
+ * @template Ta
+ * @template Tb
+ * @param callable(Ta, Tb):mixed $f
+ * @return callable(Tb, Ta):mixed
+ * @no-named-arguments
+ */
+function flip(callable $f)
+{
+    return function ($a, $b = null) use ($f) {
+        if (\func_num_args() < 2) {
+            return function ($b) use ($f, $a) {
+                return \call_user_func($f, $b, $a);
+            };
+        }
+
+        return \call_user_func($f, $b, $a);
+    };
+}
+
+define('Basko\Functional\flip', __NAMESPACE__ . '\\flip');
+
+/**
  * Takes a binary function `$f`, and unary function `$g`, and two values. Applies `$g` to each value,
  * then applies the result of each to `$f`.
  * Also known as the P combinator.

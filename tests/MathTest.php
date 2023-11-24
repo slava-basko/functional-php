@@ -148,4 +148,15 @@ class MathTest extends BaseTest
         $this->assertEquals(7, f\median([2, 9, 7]));
         $this->assertEquals(8, f\median([7, 2, 10, 9]));
     }
+
+    public function test_clamp()
+    {
+        $min1 = f\clamp(1);
+        $between1and10 = $min1(10);
+
+        $this->assertEquals(1, $between1and10(-5));
+        $this->assertEquals(10, f\clamp(1, 10, 15));
+        $this->assertEquals(4, f\clamp(1, 10, 4));
+        $this->assertEquals('2023-01-01', f\clamp('2023-01-01', '2023-11-22', '2012-11-22'));
+    }
 }

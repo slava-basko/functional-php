@@ -457,6 +457,15 @@ class CoreTest extends BaseTest
         $this->assertSame($mergeStrings('one', 'two'), $flippedMergeStrings('two', 'one'));
     }
 
+    public function test_flip()
+    {
+        $revGt = f\flip(f\gt);
+        $gt9 = $revGt(9);
+
+        $this->assertTrue($revGt(9, 10));
+        $this->assertTrue($gt9(10));
+    }
+
     public function test_on()
     {
         $containsInsensitive = f\on(f\contains, 'strtolower');
