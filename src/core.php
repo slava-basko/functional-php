@@ -767,7 +767,7 @@ define('Basko\Functional\y', __NAMESPACE__ . '\\y');
  * ```php
  * both(T(), T()); // true
  * both(F(), T()); // false
- * $between6And9 = both(partial_r(gt, 6), partial_r(lt, 9));
+ * $between6And9 = both(flip(gt)(6), flip(lt)(9));
  * $between6And9(7); // true
  * $between6And9(10); // false
  * ```
