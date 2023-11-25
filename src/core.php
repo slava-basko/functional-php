@@ -902,7 +902,7 @@ define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass');
  * ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
  * ```
  *
- * @template T of \Traversable|array
+ * @template T of iterable
  * @param callable[] $flist
  * @param T|null $list
  * @return ($list is null ? callable(T $list):mixed : array)

@@ -12,7 +12,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * map(plus(1), [1, 2, 3]); // [2, 3, 4]
  * ```
  *
- * @template T of \Traversable|array|null
+ * @template T of iterable|null
  * @param callable(mixed $element, mixed $index, T $list):mixed $f
  * @param T $list
  * @return ($list is null ? callable(T):array : array)
@@ -73,7 +73,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
  * //];
  * ```
  *
- * @template T of \Traversable|array|null
+ * @template T of iterable|null
  * @param callable(mixed $element, mixed $index, T $list):mixed $f
  * @param T $list
  * @return ($list is null ? callable(T):array : array)
@@ -113,7 +113,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
  * ```
  *
- * @template T of \Traversable|array|null
+ * @template T of iterable|null
  * @param callable(mixed $element, mixed $index, T $list):mixed $f
  * @param T $list
  * @return callable(T):T|T
@@ -150,7 +150,7 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
  * ```
  *
  * @template Ta
- * @template Tl of \Traversable|array
+ * @template Tl of iterable
  * @param callable(Ta $accumulator, mixed $value, mixed $index, Tl $list):mixed $f
  * @param Ta|null $accumulator
  * @param Tl|null $list
@@ -190,7 +190,7 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
  * ```
  *
  * @template Ta
- * @template Tl of \Traversable|array
+ * @template Tl of iterable
  * @param callable(mixed $value, Ta $accumulator, mixed $index, Tl $list):mixed $f
  * @param Ta|null $accumulator
  * @param Tl|null $list
@@ -229,7 +229,7 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
  * ```
  *
  * @param mixed $element
- * @param \Traversable|array|null $list
+ * @param iterable|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -261,7 +261,7 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append');
  * ```
  *
  * @param mixed $element
- * @param \Traversable|array|null $list
+ * @param iterable|null $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -292,7 +292,7 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
  * ```
  *
  * @param string $property
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -327,7 +327,7 @@ define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
  * ]); // ['name' => 'jack', 'score' => 1]
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
@@ -350,7 +350,7 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head');
  * arguments will be `element`, `index`, `list`
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|mixed
  * @no-named-arguments
  */
@@ -384,7 +384,7 @@ define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
  * ]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array
  * @no-named-arguments
  */
@@ -422,7 +422,7 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -461,7 +461,7 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -495,7 +495,7 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -530,7 +530,7 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
  * ```
  *
  * @param mixed $needle
- * @param string|\Traversable|array $haystack
+ * @param string|iterable $haystack
  * @return callable|bool
  * @no-named-arguments
  */
@@ -567,7 +567,7 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains');
  * take(4, 'Slava'); // 'Slav'
  * ```
  *
- * @param \Traversable|array|string $list
+ * @param iterable|string $list
  * @param int $count
  * @return callable|array|string
  * @no-named-arguments
@@ -606,7 +606,7 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take');
  * take_r(4, 'Slava'); // 'lava'
  * ```
  *
- * @param \Traversable|array|string $list
+ * @param iterable|string $list
  * @param int $count
  * @return callable|array|string
  * @no-named-arguments
@@ -649,7 +649,7 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
  * ```
  *
  * @param int $elementNumber
- * @param \Traversable|array|string $list
+ * @param iterable|string $list
  * @return callable|mixed
  * @no-named-arguments
  */
@@ -713,7 +713,7 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -762,7 +762,7 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  * ```
  *
  * @param callable[] $functions
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -802,7 +802,7 @@ define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
  * flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array
  * @no-named-arguments
  */
@@ -854,7 +854,7 @@ define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten');
  * //  ]
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array
  * @no-named-arguments
  */
@@ -888,7 +888,7 @@ define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_key
  * ```
  *
  * @param mixed $separator
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return callable|array
  * @no-named-arguments
  */
@@ -921,7 +921,7 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -1065,7 +1065,7 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -1101,7 +1101,7 @@ define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by');
  * uniq([1, '1']); // [1, '1']
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return array|callable
  * @no-named-arguments
  */
@@ -1162,8 +1162,8 @@ function _zip()
  * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
  * ```
  *
- * @param \Traversable|array $sequence1
- * @param \Traversable|array $sequence2
+ * @param iterable $sequence1
+ * @param iterable $sequence2
  * @return array
  * @no-named-arguments
  */
@@ -1186,9 +1186,9 @@ define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
  * ```
  *
  * @param callable $f
- * @param \Traversable|array $sequence1
- * @param \Traversable|array $sequence2
- * @return array|callable(...\Traversable|array):array
+ * @param iterable $sequence1
+ * @param iterable $sequence2
+ * @return array|callable(...\able|array):array
  * @no-named-arguments
  */
 function zip_with(callable $f, $sequence1 = null, $sequence2 = null)

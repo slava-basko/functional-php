@@ -180,7 +180,7 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
  * ```
  *
  * @param string $separator
- * @param array|\Traversable $list
+ * @param iterable $list
  * @return string|callable
  * @no-named-arguments
  */
@@ -374,7 +374,7 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker');
  * len(['a', 'b']); // 2
  * ```
  *
- * @param string|\Traversable|array $a
+ * @param string|iterable $a
  * @return int
  * @no-named-arguments
  */
@@ -384,6 +384,10 @@ function len($a)
 
     if (\is_string($a)) {
         return \strlen($a);
+    }
+
+    if ($a instanceof \Countable) {
+        return $a->count();
     }
 
     if ($a instanceof \Traversable) {
@@ -458,7 +462,7 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop');
  * ```
  *
  * @param string $property
- * @param \Traversable|array|null $object
+ * @param iterable|null $object
  * @return callable
  */
 function prop_thunk($property, $object = null)
@@ -485,7 +489,7 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
  * ```
  *
  * @param array $path
- * @param \Traversable|array|null $object
+ * @param iterable|null $object
  * @return mixed
  * @no-named-arguments
  */
@@ -518,7 +522,7 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
  * ```
  *
  * @param array $properties
- * @param array|object $object
+ * @param iterable|object $object
  * @return callable(mixed):mixed|array
  * @no-named-arguments
  */
@@ -565,7 +569,7 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props');
  *
  * @param string $key
  * @param mixed|callable $val
- * @param \Traversable|array|object|null $list
+ * @param iterable|object|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -606,7 +610,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
  *
  * @param array $path
  * @param mixed|callable $val
- * @param \Traversable|array|object|null $list
+ * @param iterable|object|null $list
  * @return mixed
  * @no-named-arguments
  */
@@ -801,7 +805,7 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
  * ```
  *
  * @param array $keys
- * @param \Traversable|array|object $object
+ * @param iterable|object $object
  * @return callable|array
  * @no-named-arguments
  */
@@ -838,8 +842,8 @@ define('Basko\Functional\only_keys', __NAMESPACE__ . '\\only_keys');
  * ```
  *
  * @param array $keys
- * @param \Traversable|array|object $object
- * @return callable|array
+ * @param iterable|object $object
+ * @return callable|iterable
  * @no-named-arguments
  */
 function omit_keys(array $keys, $object = null)
@@ -869,8 +873,8 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
  *
  * @param callable $f
  * @param array $keys
- * @param \Traversable|array|null $list
- * @return callable|\Traversable|array
+ * @param iterable|null $list
+ * @return callable|iterable
  * @no-named-arguments
  */
 function map_keys(callable $f, array $keys = null, $list = null)
@@ -907,8 +911,8 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  *
  * @param callable $f
  * @param array $elementsNumbers
- * @param array|\ArrayAccess $list
- * @return callable|array|\ArrayAccess
+ * @param iterable $list
+ * @return callable|iterable
  * @no-named-arguments
  */
 function map_elements(callable $f, array $elementsNumbers = null, $list = null)
@@ -948,8 +952,8 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
  * ```
  *
  * @param array $required
- * @param \Traversable|array|null $array
- * @return callable|int[]|string[]
+ * @param iterable|null $array
+ * @return callable|iterable
  * @no-named-arguments
  */
 function find_missing_keys(array $required, $array = null)
@@ -1006,7 +1010,7 @@ define('Basko\Functional\cp', __NAMESPACE__ . '\\cp');
  * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
  * ```
  *
- * @param \Traversable|array $list
+ * @param iterable $list
  * @return mixed
  * @no-named-arguments
  */
@@ -1055,7 +1059,7 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
  *
  * @param string $keyProp
  * @param string $valueProp
- * @param \Traversable|array|null $list
+ * @param iterable|null $list
  * @return array|callable
  * @no-named-arguments
  */
