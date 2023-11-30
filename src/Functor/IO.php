@@ -5,7 +5,10 @@ namespace Basko\Functional\Functor;
 use Basko\Functional as f;
 use Basko\Functional\Exception\TypeException;
 
-class IO extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class IO extends Monad
 {
     const of = "Basko\Functional\Functor\IO::of";
 
@@ -18,11 +21,11 @@ class IO extends Monad
      */
     public static function of(callable $f)
     {
-        if ($f instanceof static) {
+        if ($f instanceof IO) {
             return $f;
         }
 
-        return new static($f);
+        return new IO($f);
     }
 
     /**
@@ -31,7 +34,7 @@ class IO extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(f\compose($f, $this->value));
+        return IO::of(f\compose($f, $this->value));
     }
 
     /**
@@ -43,7 +46,7 @@ class IO extends Monad
     {
         $result = \call_user_func($f, $this->__invoke());
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, IO::class, __METHOD__);
 
         return $result;
     }

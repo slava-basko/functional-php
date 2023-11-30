@@ -433,9 +433,10 @@ define('Basko\Functional\median', __NAMESPACE__ . '\\median');
  */
 function clamp($min, $max = null, $value = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(clamp, $min);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(clamp, $min, $max);
     }
 

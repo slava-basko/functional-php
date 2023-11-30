@@ -4,7 +4,10 @@ namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
 
-class Optional extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class Optional extends Monad
 {
     const of = "Basko\Functional\Functor\Optional::of";
 
@@ -24,11 +27,11 @@ class Optional extends Monad
      */
     public static function of($hasValue, $value)
     {
-        if ($value instanceof static) {
+        if ($value instanceof Optional) {
             return $value;
         }
 
-        $m = new static($value);
+        $m = new Optional($value);
         $m->hasValue = $hasValue;
 
         return $m;
@@ -40,7 +43,7 @@ class Optional extends Monad
      */
     public static function just($value)
     {
-        return static::of(true, $value);
+        return Optional::of(true, $value);
     }
 
     /**
@@ -48,7 +51,7 @@ class Optional extends Monad
      */
     public static function nothing()
     {
-        return static::of(false, null);
+        return Optional::of(false, null);
     }
 
     /**
@@ -58,10 +61,10 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return static::just(\call_user_func_array($f, [$this->value]));
+            return Optional::just(\call_user_func_array($f, [$this->value]));
         }
 
-        return $this::nothing();
+        return Optional::nothing();
     }
 
     /**
@@ -74,10 +77,10 @@ class Optional extends Monad
         if ($this->hasValue) {
             $result = \call_user_func($f, $this->value);
         } else {
-            $result = $this::nothing();
+            $result = Optional::nothing();
         }
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Optional::class, __METHOD__);
 
         return $result;
     }
@@ -105,19 +108,19 @@ class Optional extends Monad
     public static function fromProp($key, $data, callable $f = null)
     {
         if (\is_array($data) && \array_key_exists($key, $data)) {
-            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data[$key]]) : $data[$key]);
+            return Optional::just(\is_callable($f) ? \call_user_func_array($f, [$data[$key]]) : $data[$key]);
         }
 
         if (\is_object($data) && property_exists($data, $key)) {
-            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data->{$key}]) : $data->{$key});
+            return Optional::just(\is_callable($f) ? \call_user_func_array($f, [$data->{$key}]) : $data->{$key});
         }
 
         if ($data instanceof \ArrayAccess && $data->offsetExists($key)) {
-            return static::just(
+            return Optional::just(
                 \is_callable($f) ? \call_user_func_array($f, [$data->offsetGet($key)]) : $data->offsetGet($key)
             );
         }
 
-        return static::nothing();
+        return Optional::nothing();
     }
 }

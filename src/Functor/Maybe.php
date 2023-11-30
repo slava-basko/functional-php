@@ -5,7 +5,10 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\TypeException;
 use Basko\Functional\Functor\Traits\OfTrait;
 
-class Maybe extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class Maybe extends Monad
 {
     use OfTrait;
 
@@ -21,7 +24,7 @@ class Maybe extends Monad
      */
     public static function just($value)
     {
-        return static::of($value);
+        return Maybe::of($value);
     }
 
     /**
@@ -29,7 +32,7 @@ class Maybe extends Monad
      */
     public static function nothing()
     {
-        return static::of(null);
+        return Maybe::of(null);
     }
 
     /**
@@ -42,7 +45,7 @@ class Maybe extends Monad
             return $this::nothing();
         }
 
-        return static::just(\call_user_func($f, $this->value));
+        return Maybe::just(\call_user_func($f, $this->value));
     }
 
     /**
@@ -58,7 +61,7 @@ class Maybe extends Monad
 
         $result = \call_user_func($f, $this->value);
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Maybe::class, __METHOD__);
 
         return $result;
     }

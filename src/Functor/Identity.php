@@ -5,7 +5,10 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\TypeException;
 use Basko\Functional\Functor\Traits\OfTrait;
 
-class Identity extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class Identity extends Monad
 {
     use OfTrait;
 
@@ -17,7 +20,7 @@ class Identity extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(\call_user_func($f, $this->value));
+        return Identity::of(\call_user_func($f, $this->value));
     }
 
     /**
@@ -29,7 +32,7 @@ class Identity extends Monad
     {
         $result = \call_user_func($f, $this->value);
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Identity::class, __METHOD__);
 
         return $result;
     }

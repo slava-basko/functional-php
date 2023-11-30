@@ -2,27 +2,38 @@
 
 namespace Basko\Functional\Functor;
 
+/**
+ * @template T
+ */
 abstract class Monad
 {
     /**
-     * @var mixed
+     * @var T
      */
     protected $value;
 
     /**
-     * @param mixed $value
+     * @param T $value
      */
     protected function __construct($value)
     {
         $this->value = $value;
     }
 
+    /**
+     * @param callable(T):mixed $f
+     * @return static
+     */
     abstract public function map(callable $f);
 
+    /**
+     * @param callable(T):static $f
+     * @return static
+     */
     abstract public function flatMap(callable $f);
 
     /**
-     * @return mixed
+     * @return T
      */
     public function extract()
     {

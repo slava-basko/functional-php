@@ -4,7 +4,10 @@ namespace Basko\Functional\Functor;
 
 use Basko\Functional\Functor\Traits\OfTrait;
 
-class Constant extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class Constant extends Monad
 {
     use OfTrait;
 

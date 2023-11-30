@@ -229,9 +229,10 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join');
  */
 function if_else(callable $if, callable $then = null, callable $else = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(if_else, $if);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(if_else, $if, $then);
     }
 
@@ -577,9 +578,10 @@ function assoc($key, $val = null, $list = null)
 {
     InvalidArgumentException::assertString($key, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(assoc, $key);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(assoc, $key, $val);
     }
 
@@ -616,9 +618,10 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
  */
 function assoc_path(array $path, $val = null, $list = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(assoc_path, $path);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(assoc_path, $path, $val);
     }
 
@@ -879,9 +882,10 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
  */
 function map_keys(callable $f, array $keys = null, $list = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(map_keys, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(map_keys, $f, $keys);
     }
 
@@ -917,9 +921,10 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  */
 function map_elements(callable $f, array $elementsNumbers = null, $list = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(map_elements, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(map_elements, $f, $elementsNumbers);
     }
 
@@ -1067,9 +1072,10 @@ function combine($keyProp, $valueProp = null, $list = null)
 {
     InvalidArgumentException::assertString($keyProp, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(combine, $keyProp);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(combine, $keyProp, $valueProp);
     }
 
@@ -1169,9 +1175,10 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
  */
 function retry($retries, \Iterator $delaySequence = null, $f = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(retry, $retries);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(retry, $retries, $delaySequence);
     }
 
@@ -1265,9 +1272,10 @@ function flip_values($keyA, $keyB = null, $object = null)
 {
     InvalidArgumentException::assertString($keyA, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(flip_values, $keyA);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(flip_values, $keyA, $keyB);
     }
 

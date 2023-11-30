@@ -4,7 +4,7 @@ namespace Basko\Functional\Exception;
 
 use ArrayAccess;
 
-class InvalidArgumentException extends \InvalidArgumentException
+final class InvalidArgumentException extends \InvalidArgumentException
 {
     const ALL = 99;
 

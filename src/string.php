@@ -90,9 +90,10 @@ function str_replace($search, $replace = null, $subject = null)
 {
     InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(str_replace, $search);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(str_replace, $search, $replace);
     }
 
@@ -203,9 +204,10 @@ function str_pad_left($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(str_pad_left, $length);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_left, $length, $pad_string);
@@ -235,9 +237,10 @@ function str_pad_right($length, $pad_string = null, $string = null)
 {
     InvalidArgumentException::assertPositiveInteger($length, __FUNCTION__, 1);
 
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(str_pad_right, $length);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
 
         return partial(str_pad_right, $length, $pad_string);

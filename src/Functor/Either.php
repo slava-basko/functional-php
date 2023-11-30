@@ -5,7 +5,10 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\TypeException;
 use Exception;
 
-class Either extends Monad
+/**
+ * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ */
+final class Either extends Monad
 {
     const of = "Basko\Functional\Functor\Either::of";
 
@@ -25,11 +28,11 @@ class Either extends Monad
      */
     public static function of($validValue, $value)
     {
-        if ($value instanceof static) {
+        if ($value instanceof Either) {
             return $value;
         }
 
-        $m = new static($value);
+        $m = new Either($value);
         $m->validValue = $validValue;
 
         return $m;
@@ -43,7 +46,7 @@ class Either extends Monad
      */
     public static function right($value)
     {
-        return static::of(true, $value);
+        return Either::of(true, $value);
     }
 
     /**
@@ -54,9 +57,13 @@ class Either extends Monad
      */
     public static function left($value)
     {
-        return static::of(false, $value);
+        return Either::of(false, $value);
     }
 
+    /**
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Either
+     */
     public function map(callable $f)
     {
         if (!$this->validValue) {
@@ -64,15 +71,15 @@ class Either extends Monad
         }
 
         try {
-            return static::right(\call_user_func($f, $this->value));
+            return Either::right(\call_user_func($f, $this->value));
         } catch (Exception $exception) {
-            return static::left($exception->getMessage());
+            return Either::left($exception->getMessage());
         }
     }
 
     /**
-     * @param callable(mixed):\Basko\Functional\Functor\Either $f
-     * @return \Basko\Functional\Functor\Either
+     * @param callable(mixed):static $f
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function flatMap(callable $f)
@@ -84,10 +91,10 @@ class Either extends Monad
         try {
             $result = \call_user_func($f, $this->value);
         } catch (Exception $exception) {
-            $result = static::left($exception->getMessage());
+            $result = Either::left($exception->getMessage());
         }
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Either::class, __METHOD__);
 
         return $result;
     }

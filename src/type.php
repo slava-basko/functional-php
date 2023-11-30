@@ -139,7 +139,7 @@ function type_string($value)
     }
 
     if (\is_array($value)) {
-        return \implode(', ', map(type_string, $value));
+        return \implode(', ', \array_map(type_string, $value));
     }
 
     throw TypeException::forValue($value, 'string');
@@ -465,9 +465,10 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  */
 function type_array(callable $keyType, callable $valueType = null, $value = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(type_array, $keyType);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(type_array, $keyType, $valueType);
     }
 

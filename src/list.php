@@ -159,9 +159,10 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
  */
 function fold(callable $f, $accumulator = null, $list = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(fold, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(fold, $f, $accumulator);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
@@ -199,9 +200,10 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
  */
 function fold_r(callable $f, $accumulator = null, $list = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(fold_r, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(fold_r, $f, $accumulator);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
@@ -1009,9 +1011,10 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
  */
 function ascend(callable $f, $a = null, $b = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(ascend, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(ascend, $f, $a);
     }
 
@@ -1041,9 +1044,10 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
  */
 function descend(callable $f, $a = null, $b = null)
 {
-    if (\func_num_args() === 1) {
+    $n = \func_num_args();
+    if ($n === 1) {
         return partial(descend, $f);
-    } elseif (\func_num_args() === 2) {
+    } elseif ($n === 2) {
         return partial(descend, $f, $a);
     }
 
