@@ -400,7 +400,7 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
  * $constA(); // 'a'
  * ```
  *
- * @template T
+ * @template T of mixed
  * @param T $value
  * @return callable():T
  * @no-named-arguments

@@ -21,7 +21,19 @@ use Basko\Functional\Exception\InvalidArgumentException;
 function map(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(map, $f);
+        $pfn = __FUNCTION__;
+
+        return function ($list) use ($f, $pfn) {
+            InvalidArgumentException::assertList($list, $pfn, 2);
+
+            $aggregation = [];
+
+            foreach ($list as $index => $element) {
+                $aggregation[$index] = \call_user_func_array($f, [$element, $index, $list]);
+            }
+
+            return $aggregation;
+        };
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -122,7 +134,17 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
 function each(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        return partial(each, $f);
+        $pfn = __FUNCTION__;
+
+        return function ($list) use ($f, $pfn) {
+            InvalidArgumentException::assertList($list, $pfn, 2);
+
+            foreach ($list as $index => $element) {
+                \call_user_func_array($f, [$element, $index, $list]);
+            }
+
+            return $list;
+        };
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
@@ -303,7 +325,19 @@ function pluck($property, $list = null)
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return partial(pluck, $property);
+        $pfn = __FUNCTION__;
+
+        return function ($list) use ($property, $pfn) {
+            InvalidArgumentException::assertList($list, $pfn, 2);
+
+            $aggregation = [];
+
+            foreach ($list as $element) {
+                $aggregation[] = prop($property, $element);
+            }
+
+            return $aggregation;
+        };
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 

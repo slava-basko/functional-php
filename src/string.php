@@ -82,11 +82,11 @@ define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
  *
  * @param array|string $search
  * @param array|string $replace
- * @param array|string $subject
+ * @param array|string $string
  * @return array|string|string[]|callable
  * @no-named-arguments
  */
-function str_replace($search, $replace = null, $subject = null)
+function str_replace($search, $replace = null, $string = null)
 {
     InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
 
@@ -99,7 +99,7 @@ function str_replace($search, $replace = null, $subject = null)
 
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
 
-    return \str_replace($search, $replace, $subject);
+    return \str_replace($search, $replace, $string);
 }
 
 define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
