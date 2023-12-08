@@ -444,3 +444,68 @@ function clamp($min, $max = null, $value = null)
 }
 
 define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');
+
+/**
+ * Cartesian product of sets.
+ * X = {1, 2}
+ * Y = {a, b}
+ * Z = {A, B, C}
+ * X × Y × Z = { (1, a, A), (2, a, A), (1, b, A), (2, b, A)
+ *               (1, a, B), (2, a, B), (1, b, B), (2, b, B)
+ *               (1, a, C), (2, a, C), (1, b, C), (2, b, C) }
+ *
+ * Note: This function is not curried because of no fixed arity.
+ *
+ * ```php
+ * $ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
+ * $suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
+ *
+ * $cards = pipe(cartesian_product, map(join('')))($ranks, [' of '], $suits);
+ * // [
+ * //    '1 of Hearts',
+ * //    '1 of Diamonds',
+ * //    ...
+ * //    'Ace of Clubs',
+ * //    'Ace of Spades',
+ * // ];
+ * ```
+ *
+ * @param iterable $list1
+ * @param iterable $list2
+ * @return array
+ */
+function cartesian_product($list1, $list2)
+{
+    $lists = \func_get_args();
+
+    $setsCount = \count($lists);
+    $size = $setsCount > 0 ? 1 : 0;
+
+    foreach ($lists as $k => &$list) {
+        InvalidArgumentException::assertList($list, __FUNCTION__, $k + 1);
+
+        $list = \is_array($list) ? $list : \iterator_to_array($list);
+        $size = $size * \count($list);
+    }
+
+    $result = [];
+
+    for ($i = 0; $i < $size; $i++) {
+        $result[$i] = [];
+        for ($j = 0; $j < $setsCount; $j++) {
+            $result[$i][] = \current($lists[$j]);
+        }
+
+        for ($j = ($setsCount - 1); $j >= 0; $j--) {
+            if (\next($lists[$j])) {
+                break;
+            } elseif (isset($lists[$j])) {
+                \reset($lists[$j]);
+            }
+        }
+    }
+
+    return $result;
+}
+
+define('Basko\Functional\cartesian_product', __NAMESPACE__ . '\\cartesian_product');

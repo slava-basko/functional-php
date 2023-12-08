@@ -1200,12 +1200,12 @@ function _zip()
  * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
  * ```
  *
- * @param iterable $sequence1
- * @param iterable $sequence2
+ * @param iterable $list1
+ * @param iterable $list2
  * @return array
  * @no-named-arguments
  */
-function zip($sequence1, $sequence2)
+function zip($list1, $list2)
 {
     return \call_user_func_array('Basko\Functional\_zip', \array_merge([__FUNCTION__, identity], \func_get_args()));
 }
@@ -1242,3 +1242,38 @@ function zip_with(callable $f, $sequence1 = null, $sequence2 = null)
 }
 
 define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with');
+
+/**
+ * Returns all possible permutations.
+ *
+ * ```php
+ * permute(['a', 'b']); // [['a', 'b'], ['b', 'a']]
+ * ```
+ *
+ * @param iterable $list
+ * @return array
+ * @no-named-arguments
+ */
+function permute($list)
+{
+    $list = \is_array($list) ? $list : \iterator_to_array($list);
+    $result = [];
+
+    if (\count($list) <= 1) {
+        $result[] = $list;
+    } else {
+        foreach (permute(\array_slice($list, 1)) as $permutation) {
+            foreach (\range(0, \count($list) - 1) as $i) {
+                $result[] = \array_merge(
+                    \array_slice($permutation, 0, $i),
+                    [$list[0]],
+                    \array_slice($permutation, $i)
+                );
+            }
+        }
+    }
+
+    return $result;
+}
+
+define('Basko\Functional\permute', __NAMESPACE__ . '\\permute');

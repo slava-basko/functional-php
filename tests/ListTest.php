@@ -625,4 +625,21 @@ class ListTest extends BaseTest
             f\uniq([[42], [42]])
         );
     }
+
+    public function testPermute()
+    {
+        $this->assertEquals(
+            [
+                ['a', 'b'],
+                ['b', 'a'],
+            ],
+            f\permute(['a', 'b'])
+        );
+
+        $permuteResultAsString = f\pipe(f\permute, f\map(f\join('')), f\join(','));
+        $this->assertEquals(
+            'abc,bac,bca,acb,cab,cba',
+            $permuteResultAsString(['a', 'b', 'c'])
+        );
+    }
 }

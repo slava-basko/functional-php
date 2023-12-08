@@ -159,4 +159,26 @@ class MathTest extends BaseTest
         $this->assertEquals(4, f\clamp(1, 10, 4));
         $this->assertEquals('2023-01-01', f\clamp('2023-01-01', '2023-11-22', '2012-11-22'));
     }
+
+    public function testCartesianProduct()
+    {
+        $this->assertEquals(
+            [
+                [1, 'Hearts'],
+                [1, 'Diamonds'],
+                [2, 'Hearts'],
+                [2, 'Diamonds'],
+            ],
+            f\cartesian_product([1, 2], new \ArrayIterator(['Hearts', 'Diamonds']))
+        );
+    }
+
+    public function testCartesianProductFail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'cartesian_product() expects parameter 1 to be array or instance of Traversable, NULL given'
+        );
+        f\cartesian_product(null, ['Hearts', 'Diamonds']);
+    }
 }
