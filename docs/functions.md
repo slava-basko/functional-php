@@ -816,6 +816,13 @@ But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
 zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
 ```
 
+### permute
+Returns all possible permutations.
+
+```php
+permute(['a', 'b']); // [['a', 'b'], ['b', 'a']]
+```
+
 ### is_even
 Check if number is even.
 
@@ -943,6 +950,31 @@ clamp('2023-01-01', '2023-11-22', '2023-04-22'); // 2023-04-22
 
 // Example:
 $pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']); // Safely use $pagePortion in your SQL query.
+```
+
+### cartesian_product
+Cartesian product of sets.
+X = {1, 2}
+Y = {a, b}
+Z = {A, B, C}
+X × Y × Z = { (1, a, A), (2, a, A), (1, b, A), (2, b, A)
+              (1, a, B), (2, a, B), (1, b, B), (2, b, B)
+              (1, a, C), (2, a, C), (1, b, C), (2, b, C) }
+
+Note: This function is not curried because of no fixed arity.
+
+```php
+$ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
+$suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
+
+$cards = pipe(cartesian_product, map(join('')))($ranks, [' of '], $suits);
+// [
+//    '1 of Hearts',
+//    '1 of Diamonds',
+//    ...
+//    'Ace of Clubs',
+//    'Ace of Spades',
+// ];
 ```
 
 ### partial
