@@ -16,7 +16,9 @@
     "ext-json": "*"
   },
   "autoload": {
-    "psr-4": { "Basko\\Functional\\": "src" },
+    "psr-4": {
+      "Basko\\Functional\\": "src"
+    },
     "files": [
       "src/core.php",
       "src/curry.php",
@@ -33,7 +35,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/"
+      "Basko\\FunctionalTest\\": "tests"
     }
   }
 }

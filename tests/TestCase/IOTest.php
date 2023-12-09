@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 
@@ -94,7 +94,7 @@ class IOTest extends BaseTest
     public function testReadFile()
     {
         $io = f\try_catch(
-            f\compose(f\Functor\Either::right, f\read_file(__DIR__ . '/name.txt')->map('ucfirst')),
+            f\compose(f\Functor\Either::right, f\read_file(__DIR__ . '/../name.txt')->map('ucfirst')),
             f\N
         );
 

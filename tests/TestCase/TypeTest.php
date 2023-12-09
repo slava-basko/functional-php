@@ -1,9 +1,11 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\FunctionalTest\Helpers\User;
+use Basko\FunctionalTest\Helpers\Value;
 
 class TypeTest extends BaseTest
 {
@@ -20,7 +22,7 @@ class TypeTest extends BaseTest
         yield [7, '007'];
         yield [0, '000'];
         yield [1, 1.0];
-        yield [12, new \Value(12)];
+        yield [12, new Value(12)];
     }
 
     public function getIntInvalid()
@@ -38,7 +40,7 @@ class TypeTest extends BaseTest
         yield ['-9223372036854775809'];
         yield ['0xFF'];
         yield [''];
-        yield [new \Value('Slava Basko')];
+        yield [new Value('Slava Basko')];
     }
 
     /**
@@ -222,20 +224,20 @@ class TypeTest extends BaseTest
 
     public function test_is_type_of()
     {
-        $this->assertTrue(f\is_type_of(\User::class, new \User([])));
-        $this->assertFalse(f\is_type_of(\User::class, new \stdClass()));
-        $this->assertFalse(f\is_type_of(\User::class, 'str'));
-        $this->assertFalse(f\is_type_of(\User::class, null));
+        $this->assertTrue(f\is_type_of(User::class, new User([])));
+        $this->assertFalse(f\is_type_of(User::class, new \stdClass()));
+        $this->assertFalse(f\is_type_of(User::class, 'str'));
+        $this->assertFalse(f\is_type_of(User::class, null));
     }
 
     public function test_type_of()
     {
-        $typeOfUser = f\type_of(\User::class);
-        $user = new \User([]);
+        $typeOfUser = f\type_of(User::class);
+        $user = new User([]);
         $this->assertSame($user, $typeOfUser($user));
 
-        $typeOfVal = f\type_of(\Value::class);
-        $value = new \Value(null);
+        $typeOfVal = f\type_of(Value::class);
+        $value = new Value(null);
         $this->assertSame($value, $typeOfVal($value));
     }
 
@@ -245,7 +247,7 @@ class TypeTest extends BaseTest
             InvalidArgumentException::class,
             'type_of() expects parameter 2 to be object, string given'
         );
-        f\type_of(\User::class, 'str');
+        f\type_of(User::class, 'str');
     }
 
     public function test_type_union()
@@ -340,9 +342,9 @@ class TypeTest extends BaseTest
         $this->assertEquals([1, 2], $intList([1, '2']));
         $this->assertEquals([1, 2], $intList([1, 2.0]));
 
-        $u1 = new \User([]);
-        $u2 = new \User([]);
-        $this->assertEquals([$u1, $u2], f\type_list(f\type_of(\User::class), [$u1, $u2]));
+        $u1 = new User([]);
+        $u2 = new User([]);
+        $this->assertEquals([$u1, $u2], f\type_list(f\type_of(User::class), [$u1, $u2]));
     }
 
     public function test_type_list_fail()
@@ -372,14 +374,14 @@ class TypeTest extends BaseTest
         $this->assertEquals(['one' => 1], $t2(['one' => 1.0]));
 
         $specificMap = [
-            'user1' => new \User([]),
-            'user2' => new \User([]),
+            'user1' => new User([]),
+            'user2' => new User([]),
         ];
         $this->assertEquals(
             $specificMap,
             f\type_array(
                 f\type_array_key,
-                f\type_of(\User::class),
+                f\type_of(User::class),
                 $specificMap
             )
         );

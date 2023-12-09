@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional as f;
+use Basko\FunctionalTest\Helpers\User;
 
 class CurryTest extends BaseTest
 {
@@ -25,13 +26,13 @@ class CurryTest extends BaseTest
 
         $this->assertEquals(2, f\count_args('array_map', true));
 
-        $user = new \User([
+        $user = new User([
             'first_name' => 'Slava',
             'last_name' => 'Basko'
         ]);
         $this->assertEquals(1, f\count_args($user));
         $this->assertEquals(1, f\count_args([$user, 'getFullName']));
-        $this->assertEquals(1, f\count_args('\User::getAddress'));
+        $this->assertEquals(1, f\count_args('\Basko\FunctionalTest\Helpers\User::getAddress'));
     }
 
     public function test_curry_n()

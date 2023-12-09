@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

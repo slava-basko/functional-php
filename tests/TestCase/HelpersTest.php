@@ -1,8 +1,12 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
+use Basko\FunctionalTest\Helpers\ClassWithPrivateMethod;
+use Basko\FunctionalTest\Helpers\Repeated;
+use Basko\FunctionalTest\Helpers\User;
+use Basko\FunctionalTest\Helpers\Value;
 use Traversable;
 
 class HelpersTest extends BaseTest
@@ -78,7 +82,7 @@ class HelpersTest extends BaseTest
         } else {
             $mockMethod = 'createMock';
         }
-        $rep = $this->{$mockMethod}(\Repeated::class);
+        $rep = $this->{$mockMethod}(Repeated::class);
         $rep->expects($this->exactly(5))->method('someMethod');
 
         $repeatedSomeMethod = f\repeat([$rep, 'someMethod']);
@@ -122,11 +126,11 @@ class HelpersTest extends BaseTest
 
     public function test_invoker()
     {
-        $user1 = new \User([
+        $user1 = new User([
             'id' => 1,
             'active' => true,
         ]);
-        $user2 = new \User([
+        $user2 = new User([
             'id' => 2,
             'active' => false,
         ]);
@@ -222,7 +226,7 @@ class HelpersTest extends BaseTest
 
     public function test_to_fn()
     {
-        $v = new \Value('val');
+        $v = new Value('val');
 
         $inv = f\to_fn($v, 'concatWith', ['ue']);
         $this->assertEquals('value', $inv());
@@ -241,7 +245,7 @@ class HelpersTest extends BaseTest
         $this->assertEquals($initial, $memoizedRandAndSalt('x'));
         $this->assertEquals($initial, $memoizedRandAndSalt('x'));
 
-        $user = new \User([]);
+        $user = new User([]);
         $memoizedIsActive = f\memoized([$user, 'isActive']);
         self::assertFalse($memoizedIsActive());
     }
@@ -639,7 +643,7 @@ class HelpersTest extends BaseTest
     public function test_publish()
     {
         $privateMethodPublish = f\publish('privateMethod');
-        $object = new \ClassWithPrivateMethod();
+        $object = new ClassWithPrivateMethod();
         $f = $privateMethodPublish($object);
         $this->assertEquals('private', call_user_func($f));
     }

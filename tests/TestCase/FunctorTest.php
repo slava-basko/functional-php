@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Optional;
 use Basko\FunctionalTest\Functor\MaybeString;
 use Basko\FunctionalTest\Functor\MaybeUser;
+use Basko\FunctionalTest\Helpers\User;
 
 class FunctorTest extends BaseTest
 {
@@ -72,7 +73,7 @@ class FunctorTest extends BaseTest
 
         $this->assertInstanceOf(
             MaybeUser::class,
-            MaybeUser::just(new \User([]))
+            MaybeUser::just(new User([]))
         );
     }
 
@@ -89,7 +90,7 @@ class FunctorTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\InvalidArgumentException::class,
-            'MaybeUser() expects parameter 1 to be User, integer (1) given'
+            'MaybeUser() expects parameter 1 to be Basko\FunctionalTest\Helpers\User, integer (1) given'
         );
         MaybeUser::just(1);
     }
@@ -446,7 +447,7 @@ class FunctorTest extends BaseTest
             ->map(f\take(4))
             ->map(f\partial_r(f\concat, 'ik'));
 
-        $this->assertEquals('Slavik', $m(__DIR__ . '/name.txt'));
+        $this->assertEquals('Slavik', $m(__DIR__ . '/../name.txt'));
     }
 
     public function test_io_falsy()

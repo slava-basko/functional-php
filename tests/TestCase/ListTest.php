@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional as f;
+use Basko\FunctionalTest\Helpers\User;
 
 class ListTest extends BaseTest
 {
@@ -24,7 +25,7 @@ class ListTest extends BaseTest
     private function getUsersObjects()
     {
         return array_map(function ($data) {
-            return new \User($data);
+            return new User($data);
         }, static::getUsersData());
     }
 
@@ -108,11 +109,11 @@ class ListTest extends BaseTest
 
     public function test_select()
     {
-        $user1 = new \User([
+        $user1 = new User([
             'id' => 1,
             'active' => true,
         ]);
-        $user2 = new \User([
+        $user2 = new User([
             'id' => 2,
             'active' => false,
         ]);
@@ -136,11 +137,11 @@ class ListTest extends BaseTest
 
     public function test_reject()
     {
-        $user1 = new \User([
+        $user1 = new User([
             'id' => 1,
             'active' => true,
         ]);
-        $user2 = new \User([
+        $user2 = new User([
             'id' => 2,
             'active' => false,
         ]);

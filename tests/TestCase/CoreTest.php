@@ -1,9 +1,11 @@
 <?php
 
-namespace Tests\Functional;
+namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\FunctionalTest\Helpers\User;
+use Basko\FunctionalTest\Helpers\Value;
 
 class CoreTest extends BaseTest
 {
@@ -431,12 +433,12 @@ class CoreTest extends BaseTest
         $this->assertNull($emptyCond(2));
 
         $typeOf = f\cond([
-            [f\is_type_of(\User::class), f\always('user')],
-            [f\is_type_of(\Value::class), f\always('value')],
+            [f\is_type_of(User::class), f\always('user')],
+            [f\is_type_of(Value::class), f\always('value')],
             [f\T, f\always('unknown')],
         ]);
-        $this->assertEquals('user', $typeOf(new \User([])));
-        $this->assertEquals('value', $typeOf(new \Value(null)));
+        $this->assertEquals('user', $typeOf(new User([])));
+        $this->assertEquals('value', $typeOf(new Value(null)));
 
         $helloLang = f\cond([
             [f\any_pass([f\contains('Welcome'), f\contains('Hello')]), f\always('en')],
