@@ -2,20 +2,29 @@
 
 namespace Basko\Functional\Functor;
 
-use Basko\Functional\Functor\Traits\OfTrait;
-
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
-final class Constant extends Monad
+class Constant extends Monad
 {
-    use OfTrait;
-
     const of = "Basko\Functional\Functor\Constant::of";
 
     /**
+     * @param mixed $value
+     * @return static
+     */
+    public static function of($value)
+    {
+        if ($value instanceof static) {
+            return $value;
+        }
+
+        return new static($value);
+    }
+
+    /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\Constant
+     * @return static
      */
     public function map(callable $f)
     {
@@ -24,7 +33,7 @@ final class Constant extends Monad
 
     /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\Constant
+     * @return static
      */
     public function flatMap(callable $f)
     {

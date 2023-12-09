@@ -2,6 +2,8 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Exception\InvalidArgumentException;
+
 /**
  * @template T
  */
@@ -17,6 +19,24 @@ abstract class Monad
      */
     protected function __construct($value)
     {
+        if ($this instanceof Type) {
+            $vType = \gettype($value);
+            $mType = $this::type();
+            if ($vType === 'object') {
+                InvalidArgumentException::assertType(\get_class($value), $mType, static::class, 1);
+            } elseif ($mType !== $vType) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        '%s() expects parameter %d to be %s, %s (%s) given',
+                        static::class,
+                        1,
+                        $mType,
+                        $vType,
+                        $value
+                    )
+                );
+            }
+        }
         $this->value = $value;
     }
 

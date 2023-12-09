@@ -5,6 +5,8 @@ namespace Tests\Functional;
 use Basko\Functional as f;
 use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Optional;
+use Basko\FunctionalTest\Functor\MaybeString;
+use Basko\FunctionalTest\Functor\MaybeUser;
 
 class FunctorTest extends BaseTest
 {
@@ -59,6 +61,37 @@ class FunctorTest extends BaseTest
         $m2 = f\Functor\Maybe::nothing();
         $this->assertTrue($m2->isNothing());
         $this->assertFalse($m2->isJust());
+    }
+
+    public function test_maybe_typed()
+    {
+        $this->assertInstanceOf(
+            MaybeString::class,
+            MaybeString::just('str')
+        );
+
+        $this->assertInstanceOf(
+            MaybeUser::class,
+            MaybeUser::just(new \User([]))
+        );
+    }
+
+    public function test_maybe_typed_scalar_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'MaybeString() expects parameter 1 to be string, integer (1) given'
+        );
+        MaybeString::just(1);
+    }
+
+    public function test_maybe_typed_falsy()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'MaybeUser() expects parameter 1 to be User, integer (1) given'
+        );
+        MaybeUser::just(1);
     }
 
     public function test_maybe_chain()

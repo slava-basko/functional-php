@@ -8,7 +8,7 @@ use Basko\Functional\Exception\TypeException;
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
-final class IO extends Monad
+class IO extends Monad
 {
     const of = "Basko\Functional\Functor\IO::of";
 
@@ -17,36 +17,36 @@ final class IO extends Monad
      * IMPORTANT: throw Exception in `$f` to clearly show error path.
      *
      * @param callable $f
-     * @return \Basko\Functional\Functor\IO
+     * @return static
      */
     public static function of(callable $f)
     {
-        if ($f instanceof IO) {
+        if ($f instanceof static) {
             return $f;
         }
 
-        return new IO($f);
+        return new static($f);
     }
 
     /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\IO
+     * @return static
      */
     public function map(callable $f)
     {
-        return IO::of(f\compose($f, $this->value));
+        return static::of(f\compose($f, $this->value));
     }
 
     /**
-     * @param callable(mixed):\Basko\Functional\Functor\IO $f
-     * @return \Basko\Functional\Functor\IO
+     * @param callable(mixed):static $f
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function flatMap(callable $f)
     {
         $result = \call_user_func($f, $this->__invoke());
 
-        TypeException::assertReturnType($result, IO::class, __METHOD__);
+        TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
     }

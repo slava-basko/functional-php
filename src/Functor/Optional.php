@@ -7,7 +7,7 @@ use Basko\Functional\Exception\TypeException;
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
-final class Optional extends Monad
+class Optional extends Monad
 {
     const of = "Basko\Functional\Functor\Optional::of";
 
@@ -23,15 +23,15 @@ final class Optional extends Monad
     /**
      * @param bool $hasValue
      * @param mixed $value
-     * @return \Basko\Functional\Functor\Optional
+     * @return static
      */
     public static function of($hasValue, $value)
     {
-        if ($value instanceof Optional) {
+        if ($value instanceof static) {
             return $value;
         }
 
-        $m = new Optional($value);
+        $m = new static($value);
         $m->hasValue = $hasValue;
 
         return $m;
@@ -39,37 +39,37 @@ final class Optional extends Monad
 
     /**
      * @param mixed $value
-     * @return \Basko\Functional\Functor\Optional
+     * @return static
      */
     public static function just($value)
     {
-        return Optional::of(true, $value);
+        return static::of(true, $value);
     }
 
     /**
-     * @return \Basko\Functional\Functor\Optional
+     * @return static
      */
     public static function nothing()
     {
-        return Optional::of(false, null);
+        return static::of(false, null);
     }
 
     /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\Optional
+     * @return static
      */
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return Optional::just(\call_user_func_array($f, [$this->value]));
+            return static::just(\call_user_func_array($f, [$this->value]));
         }
 
-        return Optional::nothing();
+        return static::nothing();
     }
 
     /**
-     * @param callable(mixed):\Basko\Functional\Functor\Optional $f
-     * @return \Basko\Functional\Functor\Optional
+     * @param callable(mixed):static $f
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function flatMap(callable $f)
@@ -77,10 +77,10 @@ final class Optional extends Monad
         if ($this->hasValue) {
             $result = \call_user_func($f, $this->value);
         } else {
-            $result = Optional::nothing();
+            $result = static::nothing();
         }
 
-        TypeException::assertReturnType($result, Optional::class, __METHOD__);
+        TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
     }
@@ -103,24 +103,24 @@ final class Optional extends Monad
      * @param string|int $key
      * @param array|\ArrayAccess|object $data
      * @param callable|null $f
-     * @return \Basko\Functional\Functor\Optional
+     * @return static
      */
     public static function fromProp($key, $data, callable $f = null)
     {
         if (\is_array($data) && \array_key_exists($key, $data)) {
-            return Optional::just(\is_callable($f) ? \call_user_func_array($f, [$data[$key]]) : $data[$key]);
+            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data[$key]]) : $data[$key]);
         }
 
         if (\is_object($data) && property_exists($data, $key)) {
-            return Optional::just(\is_callable($f) ? \call_user_func_array($f, [$data->{$key}]) : $data->{$key});
+            return static::just(\is_callable($f) ? \call_user_func_array($f, [$data->{$key}]) : $data->{$key});
         }
 
         if ($data instanceof \ArrayAccess && $data->offsetExists($key)) {
-            return Optional::just(
+            return static::just(
                 \is_callable($f) ? \call_user_func_array($f, [$data->offsetGet($key)]) : $data->offsetGet($key)
             );
         }
 
-        return Optional::nothing();
+        return static::nothing();
     }
 }

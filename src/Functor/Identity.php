@@ -3,36 +3,46 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
-use Basko\Functional\Functor\Traits\OfTrait;
 
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
-final class Identity extends Monad
+class Identity extends Monad
 {
-    use OfTrait;
-
     const of = "Basko\Functional\Functor\Identity::of";
 
     /**
-     * @param callable $f
-     * @return \Basko\Functional\Functor\Identity
+     * @param mixed $value
+     * @return static
      */
-    public function map(callable $f)
+    public static function of($value)
     {
-        return Identity::of(\call_user_func($f, $this->value));
+        if ($value instanceof static) {
+            return $value;
+        }
+
+        return new static($value);
     }
 
     /**
-     * @param callable(mixed):\Basko\Functional\Functor\Identity $f
-     * @return \Basko\Functional\Functor\Identity
+     * @param callable $f
+     * @return static
+     */
+    public function map(callable $f)
+    {
+        return static::of(\call_user_func($f, $this->value));
+    }
+
+    /**
+     * @param callable(mixed):static $f
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function flatMap(callable $f)
     {
         $result = \call_user_func($f, $this->value);
 
-        TypeException::assertReturnType($result, Identity::class, __METHOD__);
+        TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
     }

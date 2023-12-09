@@ -1,0 +1,15 @@
+<?php
+
+namespace Basko\FunctionalTest\Functor;
+
+
+use Basko\Functional\Functor\Maybe;
+use Basko\Functional\Functor\Type;
+
+class MaybeUser extends Maybe implements Type
+{
+    public static function type()
+    {
+        return \User::class;
+    }
+}

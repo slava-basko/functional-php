@@ -3,15 +3,12 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
-use Basko\Functional\Functor\Traits\OfTrait;
 
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
-final class Maybe extends Monad
+class Maybe extends Monad
 {
-    use OfTrait;
-
     const of = "Basko\Functional\Functor\Maybe::of";
 
     const just = "Basko\Functional\Functor\Maybe::just";
@@ -20,24 +17,37 @@ final class Maybe extends Monad
 
     /**
      * @param mixed $value
-     * @return \Basko\Functional\Functor\Maybe
+     * @return static
      */
-    public static function just($value)
+    public static function of($value)
     {
-        return Maybe::of($value);
+        if ($value instanceof static) {
+            return $value;
+        }
+
+        return new static($value);
     }
 
     /**
-     * @return \Basko\Functional\Functor\Maybe
+     * @param mixed $value
+     * @return static
+     */
+    public static function just($value)
+    {
+        return static::of($value);
+    }
+
+    /**
+     * @return static
      */
     public static function nothing()
     {
-        return Maybe::of(null);
+        return static::of(null);
     }
 
     /**
      * @param callable $f
-     * @return \Basko\Functional\Functor\Maybe
+     * @return static
      */
     public function map(callable $f)
     {
@@ -45,12 +55,12 @@ final class Maybe extends Monad
             return $this::nothing();
         }
 
-        return Maybe::just(\call_user_func($f, $this->value));
+        return static::just(\call_user_func($f, $this->value));
     }
 
     /**
-     * @param callable(mixed):\Basko\Functional\Functor\Maybe $f
-     * @return \Basko\Functional\Functor\Maybe
+     * @param callable(mixed):static $f
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function flatMap(callable $f)
@@ -61,7 +71,7 @@ final class Maybe extends Monad
 
         $result = \call_user_func($f, $this->value);
 
-        TypeException::assertReturnType($result, Maybe::class, __METHOD__);
+        TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
     }
