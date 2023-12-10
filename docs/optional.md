@@ -2,7 +2,7 @@
 
 Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
 The `NULL` in the context of `Maybe` is just `nothing`, no value. But in the context of `Optional` the `NULL` is a 
-valida value, operation will be performed.
+valid value, operation will be performed.
 
 Let's take CRUD operation as an example. Does a `null` value of `$description` mean "remove the description",
 or "skip setting the description"?

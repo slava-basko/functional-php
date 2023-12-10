@@ -1,15 +1,17 @@
 # Maybe
 
-`Maybe` is a container for a value that could present or not (it's like a Schrödinger's box with the cat inside). 
-You don't know it until you look inside. You open it — you see a value.
+Usually we're thinking like that: "I have a $value, and I need to pass it to someFunction()".
+This container force us to swap our thoughts to: "I have a $value, and I need apply someFunction() to it".
+This allows us to encapsulate some logic inside container, like `is_null` checks.
 
-You can consider this container as `is_null` check if you want
 ```php
 if(!is_null($value)) {
     // do something with $value
 }
 ```
-`Maybe` helps you avoid code duplication like above.
+
+`Maybe` helps you avoid code duplication like above. `Maybe` is a container for a value that could present 
+or not (it's like a Schrödinger's box with the cat inside).
 
 Let's imagine that you need took `$article` from repository, take only 22 characters from title, and make it caps.
 ```php
