@@ -303,6 +303,7 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
  * @param callable $firsts
  * @param callable $second
  * @return callable
+ * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
 function type_union($firsts, $second)
@@ -380,6 +381,7 @@ define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
  *
  * @param mixed $value
  * @return string|int
+ * @throws \Basko\Functional\Exception\TypeException
  */
 function type_array_key($value)
 {
@@ -461,6 +463,7 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  * @param callable|null $valueType
  * @param mixed $value
  * @return array|callable
+ * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
 function type_array(callable $keyType, callable $valueType = null, $value = null)
