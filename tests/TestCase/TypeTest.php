@@ -360,7 +360,7 @@ class TypeTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'List element \'1\': Could not convert "string" to type "int"'
+            'List element \'1\' -> Could not convert "string" to type "int"'
         );
         f\type_list(f\type_int, [1, 'two']);
     }
@@ -507,7 +507,7 @@ class TypeTest extends BaseTest
 
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Shape element \'products\': List element \'0\': Shape element \'qty\': Could not convert "string" to type "int"'
+            'Shape element \'products\' -> List element \'0\' -> Shape element \'qty\' -> Could not convert "string" to type "int"'
         );
         $parcelShape($parcel);
     }

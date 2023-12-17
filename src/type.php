@@ -420,7 +420,7 @@ function type_list(callable $type, $value = null)
                     $result[] = \call_user_func($type, $v);
                 } catch (TypeException $typeException) {
                     throw new TypeException(
-                        'List element \'' . $k . '\': ' . $typeException->getMessage(),
+                        'List element \'' . $k . '\' -> ' . $typeException->getMessage(),
                         0,
                         $typeException
                     );
@@ -440,7 +440,7 @@ function type_list(callable $type, $value = null)
             $result[] = \call_user_func($type, $v);
         } catch (TypeException $typeException) {
             throw new TypeException(
-                'List element \'' . $k . '\': ' . $typeException->getMessage(),
+                'List element \'' . $k . '\' -> ' . $typeException->getMessage(),
                 0,
                 $typeException
             );
@@ -553,7 +553,7 @@ function type_shape(array $shape, $value = null)
                 $result[$k] = \call_user_func($type, $value[$k]);
             } catch (TypeException $typeException) {
                 throw new TypeException(
-                    'Shape element \'' . $k . '\': ' . $typeException->getMessage(),
+                    'Shape element \'' . $k . '\' -> ' . $typeException->getMessage(),
                     0,
                     $typeException
                 );
