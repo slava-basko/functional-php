@@ -164,12 +164,12 @@ class MathTest extends BaseTest
     {
         $this->assertEquals(
             [
-                [1, 'Hearts'],
-                [1, 'Diamonds'],
                 [2, 'Hearts'],
                 [2, 'Diamonds'],
+                [3, 'Hearts'],
+                [3, 'Diamonds'],
             ],
-            f\cartesian_product([1, 2], new \ArrayIterator(['Hearts', 'Diamonds']))
+            f\cartesian_product([2, 3], new \ArrayIterator(['Hearts', 'Diamonds']))
         );
     }
 

@@ -457,13 +457,13 @@ define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');
  * Note: This function is not curried because of no fixed arity.
  *
  * ```php
- * $ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
+ * $ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
  * $suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
  *
  * $cards = pipe(cartesian_product, map(join('')))($ranks, [' of '], $suits);
  * // [
- * //    '1 of Hearts',
- * //    '1 of Diamonds',
+ * //    '2 of Hearts',
+ * //    '2 of Diamonds',
  * //    ...
  * //    'Ace of Clubs',
  * //    'Ace of Spades',
