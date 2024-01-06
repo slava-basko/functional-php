@@ -3,6 +3,7 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
+use Basko\Functional as f;
 
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
@@ -85,6 +86,29 @@ class Optional extends Monad
         return $result;
     }
 
+    public function transform($m)
+    {
+        $this->assertTransform($m);
+
+        if ($m == Maybe::class) {
+            return $this->isJust()
+                ? Maybe::just($this->extract())
+                : Maybe::nothing();
+        } elseif ($m == Either::class) {
+            return $this->isJust()
+                ? Either::right($this->extract())
+                : Either::left('Nothing');
+        } elseif ($m == Constant::class) {
+            return Constant::of($this->extract());
+        } elseif ($m == Identity::class) {
+            return Identity::of($this->extract());
+        } elseif ($m == IO::class) {
+            return IO::of(f\always($this->extract()));
+        }
+
+        $this->cantTransformException($m);
+    }
+
     /**
      * @param callable $just
      * @param callable $nothing
@@ -122,5 +146,25 @@ class Optional extends Monad
         }
 
         return static::nothing();
+    }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isJust()
+    {
+        return $this->hasValue === true;
+    }
+
+    /**
+     * Syntax sugar for more convenience when using in procedural style.
+     *
+     * @return bool
+     */
+    public function isNothing()
+    {
+        return $this->hasValue === false;
     }
 }

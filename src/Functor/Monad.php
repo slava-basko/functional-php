@@ -3,6 +3,7 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\Functional as f;
 
 /**
  * @template T
@@ -62,5 +63,47 @@ abstract class Monad
         }
 
         return $this->value;
+    }
+
+    /**
+     * Transforms monad to another monad
+     *
+     * @template M of \Basko\Functional\Functor\Monad
+     * @param class-string<M> $m
+     * @return M
+     */
+    abstract public function transform($m);
+
+    /**
+     * @param class-string $m
+     * @return void
+     */
+    protected function assertTransform($m)
+    {
+        InvalidArgumentException::assertClass($m, static::class, 1);
+
+        $classes = \class_parents($m);
+        $possibleMonadClass = \end($classes);
+
+        if ($possibleMonadClass != Monad::class) {
+            throw new InvalidArgumentException(
+                \sprintf(
+                    'Monad::transform() expects parameter %d to be class-string<Monad>, %s (%s) given',
+                    1,
+                    \gettype($m),
+                    \var_export($m, true)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param class-string $m
+     * @return mixed
+     */
+    protected function cantTransformException($m)
+    {
+        $thisClass = \get_class($this);
+        throw new \LogicException("Cannot transform $thisClass monad to $m monad");
     }
 }

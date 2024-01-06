@@ -4,6 +4,7 @@ namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
 use Exception;
+use Basko\Functional as f;
 
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
@@ -97,6 +98,29 @@ class Either extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    public function transform($m)
+    {
+        $this->assertTransform($m);
+
+        if ($m == Maybe::class) {
+            return $this->isRight()
+                ? Maybe::just($this->extract())
+                : Maybe::nothing();
+        } elseif ($m == Optional::class) {
+            return $this->isRight()
+                ? Optional::just($this->extract())
+                : Optional::nothing();
+        } elseif ($m == Constant::class) {
+            return Constant::of($this->extract());
+        } elseif ($m == Identity::class) {
+            return Identity::of($this->extract());
+        } elseif ($m == IO::class) {
+            return IO::of(f\always($this->extract()));
+        }
+
+        $this->cantTransformException($m);
     }
 
     /**

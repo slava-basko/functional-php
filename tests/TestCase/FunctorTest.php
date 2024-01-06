@@ -473,4 +473,171 @@ class FunctorTest extends BaseTest
         f\Functor\IO::of(f\always(3))->flatMap(f\multiply(2));
     }
 
+    public function test_transform_identity()
+    {
+        $m = f\Functor\Identity::of(1);
+
+        $m2 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Constant::class, $m2);
+        $this->assertEquals(1, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Either::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m2);
+        $this->assertEquals(2, $m2());
+    }
+
+    public function test_transform_constant()
+    {
+        $m = f\Functor\Constant::of(1);
+
+        $m2 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Identity::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Either::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m2);
+        $this->assertEquals(2, $m2());
+    }
+
+    public function test_transform_either()
+    {
+        $m = f\Functor\Either::right(1);
+        $m2 = f\Functor\Either::left('error');
+
+        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
+        $this->assertEquals(1, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Maybe::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m4);
+        $this->assertEquals(null, $m4->extract());
+
+        $m3 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Optional::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Optional::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Optional::class, $m4);
+        $this->assertEquals(null, $m4->extract());
+
+        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m3);
+        $this->assertEquals(2, $m3());
+    }
+
+    public function test_transform_maybe()
+    {
+        $m = f\Functor\Maybe::just(1);
+        $m2 = f\Functor\Maybe::nothing();
+
+        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
+        $this->assertEquals(1, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Either::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Either::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Either::class, $m4);
+        $this->assertEquals('Nothing', $m4->extract());
+
+        $m3 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Optional::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Optional::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Optional::class, $m4);
+        $this->assertEquals(null, $m4->extract());
+
+        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m3);
+        $this->assertEquals(2, $m3());
+    }
+
+    public function test_transform_optional()
+    {
+        $m = f\Functor\Optional::just(1);
+        $m2 = f\Functor\Optional::nothing();
+
+        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
+        $this->assertEquals(1, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+
+        $m3 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Either::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Either::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Either::class, $m4);
+        $this->assertEquals('Nothing', $m4->extract());
+
+        $m3 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m3);
+        $this->assertEquals(2, $m3->extract());
+        $m4 = $m2->transform(f\Functor\Maybe::class)->map(function () {
+            $this->fail('test_transform_either test failed');
+        });
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m4);
+        $this->assertEquals(null, $m4->extract());
+
+        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m3);
+        $this->assertEquals(2, $m3());
+    }
+
+    public function test_transform_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Monad::transform() expects parameter 1 to be class-string<Monad>'
+        );
+        f\Functor\Identity::of(1)->transform(User::class);
+    }
+
 }

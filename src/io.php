@@ -133,3 +133,76 @@ function read_file($file)
         }
     });
 }
+
+/**
+ * @param $url
+ * @param array $postData
+ * @param array $params
+ * @return \Basko\Functional\Functor\IO
+ */
+function read_url($url, array $postData = [], array $params = [])
+{
+    InvalidArgumentException::assertNotEmptyString($url, __FUNCTION__, 1);
+
+    return IO::of(function () use ($url, $postData, $params) {
+        $ch = \curl_init($url);
+
+        if ($postData) {
+            \curl_setopt($ch, \CURLOPT_POST, true);
+            \curl_setopt($ch, \CURLOPT_POSTFIELDS, $postData);
+        }
+
+        foreach ($params as $param => $value) {
+            $param = \strtoupper($param);
+            if (!str_starts_with('CURLOPT_', $param)) {
+                $param = 'CURLOPT_' . $param;
+            }
+
+            if (\defined($param)) {
+                \curl_setopt($ch, \constant($param), $value);
+            }
+        }
+
+        \curl_setopt($ch, \CURLOPT_RETURNTRANSFER, 1);
+        \curl_setopt($ch, \CURLOPT_HEADER, 1);
+
+        $result = \curl_exec($ch);
+        $httpCode = (int)\curl_getinfo($ch, \CURLINFO_HTTP_CODE);
+        $headerSize = (int)\curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
+
+        $lastError = '';
+        if ($lastErrorNumber = \curl_errno($ch)) {
+            $lastError = \curl_error($ch);
+        }
+
+        $errorBody = '';
+        $headers = [];
+        if ($lastErrorNumber) {
+            if (in_array($lastErrorNumber, [\CURLE_OPERATION_TIMEOUTED, \CURLE_OPERATION_TIMEDOUT])) {
+                $errorBody = 'TIMEOUT';
+            } else {
+                $errorBody = $lastError;
+            }
+        } else {
+            $headerText = \trim(\str_replace("\r", '', \substr($result, 0, $headerSize)));
+
+            foreach (\explode("\n", $headerText) as $i => $line) {
+                if ($i === 0) {
+                    $headers['http_code'] = \trim($line);
+                } else {
+                    list ($key, $value) = \explode(': ', $line);
+                    $headers[\trim($key)] = \trim($value);
+                }
+            }
+
+            $result = (string)substr($result, $headerSize);
+            if (!preg_match('/^2\d\d$/D', (string)$httpCode)) {
+                $errorBody = $result ?: 'HTTP CODE ' . $httpCode;
+            }
+        }
+
+        \curl_close($ch);
+
+        return [$httpCode, $headers, \strlen($errorBody) ? $errorBody : $result];
+    });
+}
