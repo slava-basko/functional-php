@@ -29,9 +29,12 @@ Here you can find available function.
 [Functions list](docs/functions.md)
 
 Other useful things.
-* [Maybe](docs/maybe.md)
-* [Either](docs/either.md)
-* [Optional](docs/optional.md)
+* Identity / aka simple container
+* Constant / container that holds value unchanged
+* [Maybe / container that holds `value` or `Nothing`](docs/maybe.md)
+* [Either / container that holds two values, `Left` aka error and `Right` aka success](docs/either.md)
+* [Optional / container that holds `value` including NULL or `Nothing`](docs/optional.md)
+* IO / container that holds impure function that returns value
 
 ## OOP 🤝 FP
 The purpose of this library is not to replace imperative and OOP. They can be combined, and I believe
@@ -181,7 +184,7 @@ Written in an entirely point-free manner.
 
 [Show me your doc_generator.php](internal/doc_generator.php)
 
-No variable were harmed during script development (c).
+No variable were harmed during script development.
 
 ## License ⚖️
 Use as you want. No liability or warranty from me. Can be considered as MIT.

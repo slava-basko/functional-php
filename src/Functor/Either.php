@@ -126,7 +126,7 @@ class Either extends Monad
     /**
      * @param callable $right
      * @param callable $left
-     * @return void
+     * @return \Basko\Functional\Functor\Either
      */
     public function match(callable $right, callable $left)
     {
@@ -135,6 +135,8 @@ class Either extends Monad
         } else {
             \call_user_func_array($left, [$this->extract()]);
         }
+
+        return $this;
     }
 
     /**
@@ -155,5 +157,14 @@ class Either extends Monad
     public function isLeft()
     {
         return $this->validValue === false;
+    }
+
+    public function __toString()
+    {
+        if ($this->isRight()) {
+            return 'Right(' . \var_export($this->value, true) . ')';
+        }
+
+        return 'Left(' . \var_export($this->value, true) . ')';
     }
 }

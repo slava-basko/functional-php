@@ -11,6 +11,24 @@ use Basko\FunctionalTest\Helpers\User;
 
 class FunctorTest extends BaseTest
 {
+    public function test_string_representation()
+    {
+        $this->assertEquals('Identity(1)', (string)f\Functor\Identity::of(1));
+        $this->assertEquals('Constant(1)', (string)f\Functor\Constant::of(1));
+
+        $this->assertEquals('Just(1)', (string)f\Functor\Maybe::just(1));
+        $this->assertEquals('Nothing', (string)f\Functor\Maybe::nothing());
+
+        $this->assertEquals('Just(1)', (string)f\Functor\Optional::just(1));
+        $this->assertEquals('Just(NULL)', (string)f\Functor\Optional::just(null));
+        $this->assertEquals('Nothing', (string)f\Functor\Optional::nothing());
+
+        $this->assertEquals("IO('file_get_contents')", (string)f\Functor\IO::of('file_get_contents'));
+
+        $this->assertEquals('Right(1)', (string)f\Functor\Either::right(1));
+        $this->assertEquals("Left('error')", (string)f\Functor\Either::left('error'));
+    }
+
     public function test_identity()
     {
         $this->assertEquals(f\Functor\Identity::of('FOO'), f\Functor\Identity::of('foo')->map('strtoupper'));

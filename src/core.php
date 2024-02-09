@@ -528,11 +528,7 @@ function converge(callable $convergingFunction, array $branchingFunctions = null
 define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
 
 /**
- * Calls function `$f` with provided argument(s).
- *
- * ```php
- * call('strtoupper', 'slava'); // SLAVA
- * ```
+ * Alias for `call_user_func`.
  *
  * @param callable $f
  * @param mixed $args
@@ -541,18 +537,37 @@ define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
  */
 function call(callable $f, $args = null)
 {
-    $args = \func_get_args();
+    $arguments = \func_get_args();
 
-    if (count($args) < 2) {
-        return function () use ($f) {
-            return \call_user_func_array($f, flatten(\func_get_args()));
-        };
+    if (count($arguments) < 2) {
+        return partial(call, $f);
     }
 
-    return \call_user_func_array(head($args), flatten(tail($args)));
+    \array_shift($arguments);
+
+    return \call_user_func_array($f, $arguments);
 }
 
 define('Basko\Functional\call', __NAMESPACE__ . '\\call');
+
+/**
+ * Alias for `call_user_func_array`.
+ *
+ * @param callable $f
+ * @param mixed $args
+ * @return ($args is null ? callable(...$args):mixed : mixed)
+ * @no-named-arguments
+ */
+function call_array(callable $f, array $args = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(call_array, $f);
+    }
+
+    return \call_user_func_array($f, $args);
+}
+
+define('Basko\Functional\call_array', __NAMESPACE__ . '\\call_array');
 
 /**
  * Create a function that will pass arguments to a given function.
@@ -944,8 +959,6 @@ define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
 /**
  * Lift a function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
  *
- * Note, that you cannot use curry on a lifted function.
- *
  * @template T of mixed
  * @template Tm of Monad
  * @param callable(T):mixed $f
@@ -954,7 +967,7 @@ define('Basko\Functional\ap', __NAMESPACE__ . '\\ap');
  */
 function lift_m(callable $f)
 {
-    return function () use ($f) {
+    return curry_n(count_args($f), function () use ($f) {
         $ofFunc = Identity::of;
 
         $extractedArgs = map(function ($possibleM) use (&$ofFunc) {
@@ -977,7 +990,7 @@ function lift_m(callable $f)
         $toM = if_else(is_type_of(Monad::class), identity, $ofFunc);
 
         return $toM(\call_user_func_array($f, $extractedArgs));
-    };
+    });
 }
 
 define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');

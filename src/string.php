@@ -252,3 +252,63 @@ function str_pad_right($length, $pad_string = null, $string = null)
 }
 
 define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');
+
+/**
+ * Checks if any of the strings in an array `$needles` present in `$haystack` string.
+ *
+ * ```php
+ * str_contains_any(['a', 'b', 'c'], 'abc'); // true
+ * str_contains_any(['a', 'b', 'c'], 'a'); // true
+ * str_contains_any(['a', 'b', 'c'], ''); // false
+ * str_contains_any(['a', 'b', 'c'], 'defg'); // false
+ * ```
+ *
+ * @param array $needles
+ * @param string $haystack
+ * @return ($haystack is null ? callable(string $haystack):bool : bool)
+ */
+function str_contains_any(array $needles, $haystack = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(str_contains_any, $needles);
+    }
+
+    InvalidArgumentException::assertString($haystack, __FUNCTION__, 2);
+
+    return array_reduce($needles, function ($a, $n) use ($haystack) {
+        return $a || contains($n, $haystack);
+    }, false);
+}
+
+define('Basko\Functional\str_contains_any', __NAMESPACE__ . '\\str_contains_any');
+
+/**
+ * Checks if all of the strings in an array `$needles` present in `$haystack` string.
+ * Note: Will return true if `$needles` is an empty array.
+ *
+ * ```php
+ * str_contains_all(['a', 'b', 'c'], 'abc'); // true
+ * str_contains_all(['a', 'b', 'c'], 'cba'); // true
+ * str_contains_all(['a', 'b', 'c'], 'a'); // false
+ * str_contains_all(['a', 'b', 'c'], ''); // false
+ * str_contains_all([], 'abc'); // true
+ * ```
+ *
+ * @param array $needles
+ * @param string $haystack
+ * @return ($haystack is null ? callable(string $haystack):bool : bool)
+ */
+function str_contains_all(array $needles, $haystack = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(str_contains_all, $needles);
+    }
+
+    InvalidArgumentException::assertString($haystack, __FUNCTION__, 2);
+
+    return array_reduce($needles, function ($a, $n) use ($haystack) {
+        return $a && contains($n, $haystack);
+    }, true);
+}
+
+define('Basko\Functional\str_contains_all', __NAMESPACE__ . '\\str_contains_all');

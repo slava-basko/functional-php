@@ -375,25 +375,12 @@ JSON;
 
     public function test_zip_example()
     {
-        $pricesFromSalesTeam = [
-            'Banana' => 1,
-            'Apple' => 2,
-            'Orange' => 3,
-        ];
-
-        $stockDataFromWarehouse = [
-            'Banana' => 10,
-            'Apple' => 15,
-            'Orange' => 3,
-        ];
+        $pricesFromSalesTeam = ['Banana' => 1, 'Apple' => 2, 'Orange' => 3];
+        $stockDataFromWarehouse = ['Banana' => 10, 'Apple' => 15, 'Orange' => 3];
 
         $this->assertEquals(
-            [
-                'Banana' => 10,
-                'Apple' => 30,
-                'Orange' => 9,
-            ],
-            f\zip_with(f\call(f\multiply), $pricesFromSalesTeam, $stockDataFromWarehouse)
+            ['Banana' => 10, 'Apple' => 30, 'Orange' => 9],
+            f\zip_with(f\call_array(f\multiply), $pricesFromSalesTeam, $stockDataFromWarehouse)
         );
     }
 }

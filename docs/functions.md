@@ -195,11 +195,10 @@ $average([1, 2, 3, 4]); // 2.5
 ```
 
 ### call
-Calls function `$f` with provided argument(s).
+Alias for `call_user_func`.
 
-```php
-call('strtoupper', 'slava'); // SLAVA
-```
+### call_array
+Alias for `call_user_func_array`.
 
 ### apply_to
 Create a function that will pass arguments to a given function.
@@ -337,8 +336,6 @@ ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
 
 ### lift_m
 Lift a function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
-
-Note, that you cannot use curry on a lifted function.
 
 ### memoized
 Create memoized versions of `$f` function.
@@ -1466,6 +1463,28 @@ Alias of `str_pad`.
 
 ```php
 str_pad_right('6', '0', '481'); // 481000
+```
+
+### str_contains_any
+Checks if any of the strings in an array `$needles` present in `$haystack` string.
+
+```php
+str_contains_any(['a', 'b', 'c'], 'abc'); // true
+str_contains_any(['a', 'b', 'c'], 'a'); // true
+str_contains_any(['a', 'b', 'c'], ''); // false
+str_contains_any(['a', 'b', 'c'], 'defg'); // false
+```
+
+### str_contains_all
+Checks if all of the strings in an array `$needles` present in `$haystack` string.
+Note: Will return true if `$needles` is an empty array.
+
+```php
+str_contains_all(['a', 'b', 'c'], 'abc'); // true
+str_contains_all(['a', 'b', 'c'], 'cba'); // true
+str_contains_all(['a', 'b', 'c'], 'a'); // false
+str_contains_all(['a', 'b', 'c'], ''); // false
+str_contains_all([], 'abc'); // true
 ```
 
 ### is_type_of

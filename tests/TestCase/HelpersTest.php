@@ -554,24 +554,6 @@ class HelpersTest extends BaseTest
         f\map_elements('strtoupper', ['bar'], null);
     }
 
-    public function test_call()
-    {
-        $func = function ($one, $two, $three) {
-            $this->assertEquals(1, $one);
-            $this->assertEquals(2, $two);
-            $this->assertEquals(3, $three);
-
-            return true;
-        };
-
-        $this->assertTrue(f\call($func, 1, 2, 3));
-        $this->assertTrue(f\call($func, [1, 2, 3]));
-
-        $fP = f\call($func);
-        $this->assertTrue($fP(1, 2, 3));
-        $this->assertTrue($fP([1, 2, 3]));
-    }
-
     public function test_flip_values()
     {
         $data = [

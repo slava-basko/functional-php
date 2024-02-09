@@ -103,7 +103,7 @@ class Maybe extends Monad
     /**
      * @param callable $just
      * @param callable $nothing
-     * @return void
+     * @return \Basko\Functional\Functor\Maybe
      */
     public function match(callable $just, callable $nothing)
     {
@@ -112,6 +112,8 @@ class Maybe extends Monad
         } else {
             \call_user_func($nothing);
         }
+
+        return $this;
     }
 
     /**
@@ -132,5 +134,10 @@ class Maybe extends Monad
     public function isNothing()
     {
         return \is_null($this->value) === true;
+    }
+
+    public function __toString()
+    {
+        return $this->isJust() ? 'Just(' . \var_export($this->value, true) . ')' : 'Nothing';
     }
 }

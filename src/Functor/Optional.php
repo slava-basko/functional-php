@@ -112,7 +112,7 @@ class Optional extends Monad
     /**
      * @param callable $just
      * @param callable $nothing
-     * @return void
+     * @return \Basko\Functional\Functor\Optional
      */
     public function match(callable $just, callable $nothing)
     {
@@ -121,6 +121,8 @@ class Optional extends Monad
         } else {
             \call_user_func($nothing);
         }
+
+        return $this;
     }
 
     /**
@@ -166,5 +168,10 @@ class Optional extends Monad
     public function isNothing()
     {
         return $this->hasValue === false;
+    }
+
+    public function __toString()
+    {
+        return $this->isJust() ? 'Just(' . \var_export($this->value, true) . ')' : 'Nothing';
     }
 }

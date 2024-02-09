@@ -80,3 +80,13 @@ if (!function_exists('ctype_digit')) {
         return \is_string($text) && $text !== '' && !\preg_match('/[^0-9]/', $text);
     }
 }
+
+if (!function_exists('array_is_list')) {
+    function array_is_list(array $arr)
+    {
+        if ($arr === []) {
+            return true;
+        }
+        return array_keys($arr) === range(0, count($arr) - 1);
+    }
+}

@@ -371,10 +371,72 @@ class CoreTest extends BaseTest
         $this->assertEquals('2-1', $scoreboardInfo());
     }
 
-    public function test_apply()
+    public function test_call()
     {
         $f = f\call('strtoupper');
         $this->assertEquals('SLAVA', $f('slava'));
+
+        $func = function ($one, $two, $three) {
+            $this->assertEquals(1, $one);
+            $this->assertEquals(2, $two);
+            $this->assertEquals(3, $three);
+
+            return true;
+        };
+
+        $this->assertTrue(f\call($func, 1, 2, 3));
+
+        $fP = f\call($func);
+        $this->assertTrue($fP(1, 2, 3));
+
+        $user = [
+            'name' => 'Slav',
+            'last_name' => 'Basko',
+        ];
+        $arrFn = function ($user) {
+            $user['name'] .= 'a';
+
+            return $user;
+        };
+        $this->assertEquals(
+            ['name' => 'Slava', 'last_name' => 'Basko'],
+            f\call($arrFn, $user)
+        );
+    }
+
+    public function test_call_vs_call_array()
+    {
+        $hash = function () {
+            $str = '';
+            $args = \func_get_args();
+
+            foreach ($args as $arg) {
+                $str .= \serialize($arg);
+            }
+
+            if (empty($str)) {
+                throw new \Exception('Empty hash');
+            }
+            return $str;
+        };
+
+        $aIntAndBInt = function ($a, $b) use ($hash) {
+            $this->assertEquals(1, $a);
+            $this->assertEquals(2, $b);
+            return $hash($a, $b);
+        };
+        $aArrayAndBNull = function ($a, $b = null) use ($hash) {
+            $this->assertEquals([1, 2], $a);
+            $this->assertNull($b);
+            return $hash($a, $b);
+        };
+
+        $this->assertEquals(\call_user_func($aIntAndBInt, 1, 2), f\call($aIntAndBInt, 1, 2));
+        $this->assertEquals(\call_user_func($aArrayAndBNull, [1, 2]), f\call($aArrayAndBNull, [1, 2]));
+
+        // array functions
+        $this->assertEquals(\call_user_func_array($aIntAndBInt, [1, 2]), f\call_array($aIntAndBInt, [1, 2]));
+        $this->assertEquals(\call_user_func_array($aArrayAndBNull, [[1, 2]]), f\call_array($aArrayAndBNull, [[1, 2]]));
     }
 
     public function test_apply_to()

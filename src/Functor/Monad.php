@@ -3,7 +3,6 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\InvalidArgumentException;
-use Basko\Functional as f;
 
 /**
  * @template T
@@ -105,5 +104,25 @@ abstract class Monad
     {
         $thisClass = \get_class($this);
         throw new \LogicException("Cannot transform $thisClass monad to $m monad");
+    }
+
+    /**
+     * @return string
+     */
+    protected function getClass()
+    {
+        $classParts = \explode('\\', static::class);
+
+        return (string)\end($classParts);
+    }
+
+    /**
+     * String representation of monad
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getClass() . '(' . \var_export($this->value, true) . ')';
     }
 }

@@ -3,6 +3,7 @@
 namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 class StringTest extends BaseTest
 {
@@ -164,5 +165,46 @@ class StringTest extends BaseTest
             'str_pad_right() expects parameter 3 to be string, NULL given'
         );
         f\str_pad_right(5, 'str', null);
+    }
+
+    public function test_str_contains_any()
+    {
+        $containsAny = f\str_contains_any(['a', 'b', 'c']);
+        $this->assertTrue($containsAny('abc'));
+        $this->assertTrue($containsAny('a'));
+        $this->assertTrue($containsAny('b'));
+        $this->assertTrue($containsAny('c'));
+        $this->assertFalse($containsAny(''));
+        $this->assertFalse($containsAny('defg'));
+    }
+
+    public function test_str_contains_any_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_contains_any() expects parameter 2 to be string, NULL given'
+        );
+        f\str_contains_any(['a', 'b', 'c'], null);
+    }
+
+    public function test_str_contains_all()
+    {
+        $containsAll = f\str_contains_all(['a', 'b', 'c']);
+        $this->assertTrue($containsAll('abc'));
+        $this->assertTrue($containsAll('cba'));
+        $this->assertFalse($containsAll('a'));
+        $this->assertFalse($containsAll('b'));
+        $this->assertFalse($containsAll('c'));
+        $this->assertFalse($containsAll(''));
+        $this->assertFalse($containsAll('defg'));
+    }
+
+    public function test_str_contains_all_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_contains_all() expects parameter 2 to be string, NULL given'
+        );
+        f\str_contains_all(['a', 'b', 'c'], null);
     }
 }
