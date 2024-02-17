@@ -57,7 +57,8 @@ class IO extends Monad
 
         if ($m == Maybe::class) {
             try {
-                return Maybe::just(\call_user_func($this));
+                $value = \call_user_func($this);
+                return $value === null ? Maybe::nothing() : Maybe::just($value);
             } catch (\Exception $e) {
                 return Maybe::nothing();
             }
@@ -77,6 +78,8 @@ class IO extends Monad
             return Constant::of(\call_user_func($this));
         } elseif ($m == Identity::class) {
             return Identity::of(\call_user_func($this));
+        } elseif ($m == Writer::class) {
+            return Writer::of([], \call_user_func($this));
         }
 
         $this->cantTransformException($m);

@@ -323,6 +323,9 @@ class CoreTest extends BaseTest
 
         $composed2 = f\map(f\compose(f\plus(1), f\power));
         $this->assertEquals([2, 5, 10], $composed2($data));
+
+        $composed3 = f\map(f\compose(f\power, f\plus(1)));
+        $this->assertEquals([4, 9, 16], $composed3($data));
     }
 
     public function test_pipe()

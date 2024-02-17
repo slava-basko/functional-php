@@ -604,6 +604,50 @@ function assoc($key, $val = null, $list = null)
 define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
 
 /**
+ * Same as `assoc`, but it allows to specify element by its number rather than named key.
+ *
+ * ```php
+ * assoc_element(1, 999, [10, 20, 30]); // [999, 20, 30]
+ * assoc_element(-1, 999, [10, 20, 30]); // [10, 20, 999]
+ * ```
+ *
+ * @param integer $key
+ * @param mixed|callable $val
+ * @param iterable $list
+ * @return mixed
+ * @no-named-arguments
+ */
+function assoc_element($key, $val = null, $list = null)
+{
+    InvalidArgumentException::assertInteger($key, __FUNCTION__, 1);
+
+    $n = \func_num_args();
+    if ($n === 1) {
+        return partial(assoc_element, $key);
+    } elseif ($n === 2) {
+        return partial(assoc_element, $key, $val);
+    }
+
+    if (\is_object($list)) {
+        throw new InvalidArgumentException(
+            \sprintf('%s() expects parameter 3 to be array or Iterator', __FUNCTION__)
+        );
+    }
+
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
+
+    if ($key < 0) {
+        $key = \count($list) - \abs($key);
+    } else {
+        $key = $key - 1;
+    }
+
+    return assoc($key, $val, $list);
+}
+
+define('Basko\Functional\assoc_element', __NAMESPACE__ . '\\assoc_element');
+
+/**
  * Nested version of `assoc` function.
  *
  * ```php

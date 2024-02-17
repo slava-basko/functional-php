@@ -317,6 +317,31 @@ class HelpersTest extends BaseTest
         f\assoc_path(['k'], 42, null);
     }
 
+    public function test_assoc_element()
+    {
+        $this->assertEquals([999, 20, 30], f\assoc_element(1, 999, [10, 20, 30]));
+        $this->assertEquals([10, 999, 30], f\assoc_element(2, 999, [10, 20, 30]));
+        $this->assertEquals([10, 20, 999], f\assoc_element(-1, 999, [10, 20, 30]));
+    }
+
+    public function test_assoc_element_fail_object()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'assoc_element() expects parameter 3 to be array or Iterator'
+        );
+        f\assoc_element(1, 42, new \stdClass());
+    }
+
+    public function test_assoc_element_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'assoc_element() expects parameter 1 to be integer, string given'
+        );
+        f\assoc_element('1', 42, []);
+    }
+
     public function test_pair()
     {
         $fooPart = f\pair('foo');

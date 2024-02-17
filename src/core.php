@@ -417,6 +417,7 @@ define('Basko\Functional\always', __NAMESPACE__ . '\\always');
 /**
  * Returns new function which applies each given function to the result of another from right to left.
  * `compose(f, g, h)` is the same as `f(g(h(x)))`.
+ * Note: Lenses don't compose backwards https://www.reddit.com/r/haskell/comments/23x3f3/lenses_dont_compose_backwards/
  *
  * ```php
  * $powerPlus1 = compose(plus(1), power);

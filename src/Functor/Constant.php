@@ -2,8 +2,6 @@
 
 namespace Basko\Functional\Functor;
 
-use Basko\Functional as f;
-
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
  */
@@ -46,16 +44,22 @@ class Constant extends Monad
     {
         $this->assertTransform($m);
 
+        $value = $this->extract();
+
         if ($m == Maybe::class) {
-            return Maybe::just($this->extract());
+            return $value === null ? Maybe::nothing() : Maybe::just($value);
         } elseif ($m == Either::class) {
-            return Either::right($this->extract());
+            return Either::right($value);
         } elseif ($m == Optional::class) {
-            return Optional::just($this->extract());
+            return Optional::just($value);
         } elseif ($m == Identity::class) {
-            return Identity::of($this->extract());
+            return Identity::of($value);
         } elseif ($m == IO::class) {
-            return IO::of(f\always($this->extract()));
+            return IO::of(function () use ($value) {
+                return $value;
+            });
+        } elseif ($m == Writer::class) {
+            return Writer::of([], $value);
         }
 
         $this->cantTransformException($m);

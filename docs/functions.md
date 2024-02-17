@@ -164,6 +164,7 @@ $constA(); // 'a'
 ### compose
 Returns new function which applies each given function to the result of another from right to left.
 `compose(f, g, h)` is the same as `f(g(h(x)))`.
+Note: Lenses don't compose backwards https://www.reddit.com/r/haskell/comments/23x3f3/lenses_dont_compose_backwards/
 
 ```php
 $powerPlus1 = compose(plus(1), power);
@@ -1068,6 +1069,15 @@ view($lens, set($lens, 4, $data)); // ['a' => 1, 'b' => ['c' => 4]]
 view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 ```
 
+### lens_element
+Returns a lens whose focus is the specified `nth` element.
+
+```php
+view(lens_element(1), [10, 20, 30]); // 10
+view(lens_element(-1), [10, 20, 30]); // 30
+set(lens_element(1), 99, [10, 20, 30]); // [99, 20, 30]
+```
+
 ### to_list
 Returns arguments as a list.
 
@@ -1192,6 +1202,14 @@ assoc(
          'last_name' => 'Basko'
      ]
 ); // ['first_name' => 'Slava', 'last_name' => 'Basko', 'full_name' => 'Slava Basko']
+```
+
+### assoc_element
+Same as `assoc`, but it allows to specify element by its number rather than named key.
+
+```php
+assoc_element(1, 999, [10, 20, 30]); // [999, 20, 30]
+assoc_element(-1, 999, [10, 20, 30]); // [10, 20, 999]
 ```
 
 ### assoc_path
@@ -1652,4 +1670,3 @@ Read file contents.
 $io = read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```
-

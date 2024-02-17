@@ -164,3 +164,24 @@ function lens_prop_path(array $path)
 }
 
 define('Basko\Functional\lens_prop_path', __NAMESPACE__ . '\\lens_prop_path');
+
+/**
+ * Returns a lens whose focus is the specified `nth` element.
+ *
+ * ```php
+ * view(lens_element(1), [10, 20, 30]); // 10
+ * view(lens_element(-1), [10, 20, 30]); // 30
+ * set(lens_element(1), 99, [10, 20, 30]); // [99, 20, 30]
+ * ```
+ *
+ * @param $n
+ * @return callable
+ */
+function lens_element($n)
+{
+    InvalidArgumentException::assertInteger($n, __FUNCTION__, 1);
+
+    return lens(nth($n), assoc_element($n));
+}
+
+define('Basko\Functional\lens_element', __NAMESPACE__ . '\\lens_element');

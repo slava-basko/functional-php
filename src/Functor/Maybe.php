@@ -3,7 +3,6 @@
 namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
-use Basko\Functional as f;
 
 /**
  * @template-extends \Basko\Functional\Functor\Monad<mixed>
@@ -81,20 +80,26 @@ class Maybe extends Monad
     {
         $this->assertTransform($m);
 
+        $value = $this->extract();
+
         if ($m == Either::class) {
             return $this->isJust()
-                ? Either::right($this->extract())
+                ? Either::right($value)
                 : Either::left('Nothing');
         } elseif ($m == Optional::class) {
             return $this->isJust()
-                ? Optional::just($this->extract())
+                ? Optional::just($value)
                 : Optional::nothing();
         } elseif ($m == Constant::class) {
-            return Constant::of($this->extract());
+            return Constant::of($value);
         } elseif ($m == Identity::class) {
-            return Identity::of($this->extract());
+            return Identity::of($value);
         } elseif ($m == IO::class) {
-            return IO::of(f\always($this->extract()));
+            return IO::of(function () use ($value) {
+                return $value;
+            });
+        } elseif ($m == Writer::class) {
+            return Writer::of([], $value);
         }
 
         $this->cantTransformException($m);
@@ -108,7 +113,7 @@ class Maybe extends Monad
     public function match(callable $just, callable $nothing)
     {
         if (!\is_null($this->value)) {
-            \call_user_func_array($just, [$this->extract()]);
+            \call_user_func($just, $this->extract());
         } else {
             \call_user_func($nothing);
         }

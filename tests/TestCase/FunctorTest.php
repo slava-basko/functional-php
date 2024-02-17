@@ -5,6 +5,7 @@ namespace Basko\FunctionalTest\TestCase;
 use Basko\Functional as f;
 use Basko\Functional\Functor\Either;
 use Basko\Functional\Functor\Optional;
+use Basko\FunctionalTest\Functor\LogWriter;
 use Basko\FunctionalTest\Functor\MaybeString;
 use Basko\FunctionalTest\Functor\MaybeUser;
 use Basko\FunctionalTest\Helpers\User;
@@ -27,6 +28,11 @@ class FunctorTest extends BaseTest
 
         $this->assertEquals('Right(1)', (string)f\Functor\Either::right(1));
         $this->assertEquals("Left('error')", (string)f\Functor\Either::left('error'));
+
+        $this->assertEquals(
+            'Writer(aggregation:array(0=>1,1=>2,2=>3,),value:1)',
+            \str_replace([' ', "\n"], '', (string)f\Functor\Writer::of([1, 2, 3], 1))
+        );
     }
 
     public function test_identity()
@@ -647,6 +653,13 @@ class FunctorTest extends BaseTest
         $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
         $this->assertInstanceOf(f\Functor\IO::class, $m3);
         $this->assertEquals(2, $m3());
+
+        $plus1 = function ($x) {
+            return f\Functor\Writer::of([__FUNCTION__ . ' executed'], $x + 1);
+        };
+        $m3 = $m->transform(f\Functor\Writer::class)->map($plus1);
+        $this->assertInstanceOf(f\Functor\Writer::class, $m3);
+        $this->assertEquals(2, $m3->extract());
     }
 
     public function test_transform_fail()
@@ -656,6 +669,93 @@ class FunctorTest extends BaseTest
             'Monad::transform() expects parameter 1 to be class-string<Monad>'
         );
         f\Functor\Identity::of(1)->transform(User::class);
+    }
+
+    public function test_writer()
+    {
+        $plus1 = function ($a) {
+            return f\Functor\Writer::of(['plus1 executed'], $a + 1);
+        };
+
+        $plus2 = function ($a) {
+            return f\Functor\Writer::of(['plus2 executed'], $a + 2);
+        };
+
+        f\Functor\Writer::of([], 1)
+            ->flatMap($plus1)
+            ->flatMap($plus2)
+            ->match(
+                function ($aggregation) {
+                    $this->assertEquals(['plus1 executed', 'plus2 executed'], $aggregation);
+                },
+                function ($value) {
+                    $this->assertEquals(4, $value);
+                }
+            );
+    }
+
+    public function test_custom_writer()
+    {
+        $plus1 = function ($a) {
+            return LogWriter::of('plus1 executed', $a + 1);
+        };
+
+        $plus2 = function ($a) {
+            return LogWriter::of('plus2 executed', $a + 2);
+        };
+
+        LogWriter::of('', 1)
+            ->flatMap($plus1)
+            ->flatMap($plus2)
+            ->match(
+                function ($aggregation) {
+                    $this->assertEquals(\sprintf(
+                        "[%s]plus1 executed\n[%s]plus2 executed\n",
+                        LogWriter::TIME,
+                        LogWriter::TIME
+                    ), $aggregation);
+                },
+                function ($value) {
+                    $this->assertEquals(4, $value);
+                }
+            );
+    }
+
+    public function test_writer_fail()
+    {
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Argument 1 passed to Basko\Functional\Functor\Writer::of must be of the type string, array, int, float or bool, NULL given'
+        );
+        f\Functor\Writer::of(null, 1);
+    }
+
+    public function test_transform_writer()
+    {
+        $m = f\Functor\Writer::of([], 1);
+        $mNull = f\Functor\Writer::of([], null);
+
+        $m2 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Constant::class, $m2);
+        $this->assertEquals(1, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Either::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+        $m2 = $mNull->transform(f\Functor\Maybe::class)->map(f\plus(1));
+        $this->assertTrue($m2->isNothing());
+
+        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
+        $this->assertEquals(2, $m2->extract());
+
+        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
+        $this->assertInstanceOf(f\Functor\IO::class, $m2);
+        $this->assertEquals(2, $m2());
     }
 
 }
