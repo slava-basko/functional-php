@@ -85,6 +85,11 @@ class Writer extends Monad
         throw new \LogicException('Unsupported aggregation type');
     }
 
+    /**
+     * @template M as object
+     * @param class-string<M> $m
+     * @return M
+     */
     public function transform($m)
     {
         $this->assertTransform($m);
@@ -105,15 +110,17 @@ class Writer extends Monad
             return IO::of(function () use ($value) {
                 return $value;
             });
+        } elseif ($m == EitherWriter::class) {
+            return EitherWriter::right($value);
         }
 
         $this->cantTransformException($m);
     }
 
-    public function match(callable $aggregation, callable $value)
+    public function match(callable $value, callable $aggregation)
     {
-        \call_user_func($aggregation, $this->aggregation);
         \call_user_func($value, $this->extract());
+        \call_user_func($aggregation, $this->aggregation);
 
         return $this;
     }

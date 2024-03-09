@@ -47,6 +47,11 @@ class Identity extends Monad
         return $result;
     }
 
+    /**
+     * @template M as object
+     * @param class-string<M> $m
+     * @return M
+     */
     public function transform($m)
     {
         $this->assertTransform($m);
@@ -67,6 +72,8 @@ class Identity extends Monad
             });
         } elseif ($m == Writer::class) {
             return Writer::of([], $value);
+        } elseif ($m == EitherWriter::class) {
+            return EitherWriter::right($value);
         }
 
         $this->cantTransformException($m);

@@ -51,6 +51,11 @@ class IO extends Monad
         return $result;
     }
 
+    /**
+     * @template M as object
+     * @param class-string<M> $m
+     * @return M
+     */
     public function transform($m)
     {
         $this->assertTransform($m);
@@ -80,6 +85,12 @@ class IO extends Monad
             return Identity::of(\call_user_func($this));
         } elseif ($m == Writer::class) {
             return Writer::of([], \call_user_func($this));
+        } elseif ($m == EitherWriter::class) {
+            try {
+                return EitherWriter::right(\call_user_func($this));
+            } catch (\Exception $e) {
+                return EitherWriter::left($e);
+            }
         }
 
         $this->cantTransformException($m);

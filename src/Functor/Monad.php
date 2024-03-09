@@ -67,7 +67,7 @@ abstract class Monad
     /**
      * Transforms monad to another monad
      *
-     * @template M of \Basko\Functional\Functor\Monad
+     * @template M as object
      * @param class-string<M> $m
      * @return M
      */
