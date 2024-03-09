@@ -685,11 +685,11 @@ class FunctorTest extends BaseTest
             ->flatMap($plus1)
             ->flatMap($plus2)
             ->match(
-                function ($aggregation) {
-                    $this->assertEquals(['plus1 executed', 'plus2 executed'], $aggregation);
-                },
                 function ($value) {
                     $this->assertEquals(4, $value);
+                },
+                function ($aggregation) {
+                    $this->assertEquals(['plus1 executed', 'plus2 executed'], $aggregation);
                 }
             );
     }
@@ -708,15 +708,15 @@ class FunctorTest extends BaseTest
             ->flatMap($plus1)
             ->flatMap($plus2)
             ->match(
+                function ($value) {
+                    $this->assertEquals(4, $value);
+                },
                 function ($aggregation) {
                     $this->assertEquals(\sprintf(
                         "[%s]plus1 executed\n[%s]plus2 executed\n",
                         LogWriter::TIME,
                         LogWriter::TIME
                     ), $aggregation);
-                },
-                function ($value) {
-                    $this->assertEquals(4, $value);
                 }
             );
     }
