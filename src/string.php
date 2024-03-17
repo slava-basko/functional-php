@@ -275,7 +275,7 @@ function str_contains_any(array $needles, $haystack = null)
 
     InvalidArgumentException::assertString($haystack, __FUNCTION__, 2);
 
-    return array_reduce($needles, function ($a, $n) use ($haystack) {
+    return \array_reduce($needles, function ($a, $n) use ($haystack) {
         return $a || contains($n, $haystack);
     }, false);
 }
@@ -306,7 +306,7 @@ function str_contains_all(array $needles, $haystack = null)
 
     InvalidArgumentException::assertString($haystack, __FUNCTION__, 2);
 
-    return array_reduce($needles, function ($a, $n) use ($haystack) {
+    return \array_reduce($needles, function ($a, $n) use ($haystack) {
         return $a && contains($n, $haystack);
     }, true);
 }

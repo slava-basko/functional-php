@@ -456,7 +456,7 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  * Checks and coerces array keys to `$keyType` and values to `$valueType`.
  *
  * ```php
- * type_array(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
+ * type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
  * ```
  *
  * @param callable $keyType

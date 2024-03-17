@@ -370,7 +370,7 @@ class TypeTest extends BaseTest
         $t = f\type_array(f\type_array_key);
         $t2 = $t(f\type_int);
 
-        $this->assertEquals(['one' => 1], $t2(['one' => 1]));
+        $this->assertEquals(['one' => 1], $t2(['one' => '1']));
         $this->assertEquals(['one' => 1], $t2(['one' => 1.0]));
 
         $specificMap = [
