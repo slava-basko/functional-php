@@ -779,6 +779,64 @@ function group(callable $f, $list = null)
 define('Basko\Functional\group', __NAMESPACE__ . '\\group');
 
 /**
+ * Groups a list by index returned by `$f` function and concatenates values of `$concat` key.
+ *
+ * ```php
+ * group_concat(prop('type'), 'name', [
+ *      [
+ *          'name' => 'john',
+ *          'type' => 'admin'
+ *      ],
+ *      [
+ *          'name' => 'mark',
+ *          'type' => 'user'
+ *      ],
+ *      [
+ *          'name' => 'bill',
+ *          'type' => 'user'
+ *      ],
+ *      [
+ *          'name' => 'jack',
+ *          'type' => 'anonymous'
+ *      ],
+ * ]); // ['admin' => ['john'], 'user' => ['mark', 'bill'], 'anonymous' => ['jack']]
+ * ```
+ *
+ * @param callable $f
+ * @param string $concat
+ * @param iterable $list
+ * @return callable|array
+ * @no-named-arguments
+ */
+function group_concat(callable $f, $concat = null, $list = null)
+{
+    $n = \func_num_args();
+    if ($n === 1) {
+        return partial(group_concat, $f);
+    } elseif ($n === 2) {
+        return partial(group_concat, $f, $concat);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 3);
+
+    $result = [];
+
+    foreach ($list as $index => $element) {
+        $groupKey = \call_user_func_array($f, [$element, $index, $list]);
+
+        if (!isset($result[$groupKey])) {
+            $result[$groupKey] = $element;
+            $result[$groupKey][$concat] = [];
+        }
+        $result[$groupKey][$concat][] = prop($concat, $element);
+    }
+
+    return \array_values($result);
+}
+
+define('Basko\Functional\group_concat', __NAMESPACE__ . '\\group_concat');
+
+/**
  * Partitions a list by function predicate results. Returns an
  * array of partition arrays, one for each predicate, and one for
  * elements which don't pass any predicate. Elements are placed in the

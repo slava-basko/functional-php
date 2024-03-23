@@ -316,6 +316,54 @@ class ListTest extends BaseTest
         f\group(f\T, null);
     }
 
+    public function test_group_concat()
+    {
+        $users = [
+            [
+                'name' => 'john',
+                'type' => 'admin',
+            ],
+            [
+                'name' => 'mark',
+                'type' => 'user',
+            ],
+            [
+                'name' => 'bill',
+                'type' => 'user',
+            ],
+            [
+                'name' => 'jack',
+                'type' => 'anonymous',
+            ],
+        ];
+
+        $groupByTypeUser = f\group_concat(f\prop('type'));
+        $groupByTypeAndConcatUser = $groupByTypeUser('name');
+        $this->assertEquals([
+            [
+                'name' => ['john'],
+                'type' => 'admin',
+            ],
+            [
+                'name' => ['mark', 'bill'],
+                'type' => 'user',
+            ],
+            [
+                'name' => ['jack'],
+                'type' => 'anonymous',
+            ],
+        ], $groupByTypeAndConcatUser($users));
+    }
+
+    public function test_group_concat_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'group_concat() expects parameter 3 to be array or instance of Traversable, NULL given'
+        );
+        f\group_concat(f\T, f\T, null);
+    }
+
     public function test_partition()
     {
         $students = [
