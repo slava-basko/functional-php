@@ -1236,6 +1236,7 @@ pair('foo', 'bar'); // ['foo', 'bar']
 ### either
 A function wrapping calls to the functions in an `||` operation, returning the result of the first function
 if it is truth-y and the result of the next function otherwise.
+Note: Will return result of the last function if all fail.
 
 ```php
 $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
@@ -1247,6 +1248,7 @@ $value([
 ### either_strict
 The same as `either`, but returning the result of the first function
 if it is not NULL and the result of the next function otherwise.
+Note: Will return NULL if all fail.
 
 ### quote
 Quote given string.
@@ -1610,7 +1612,7 @@ type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $enti
 Checks and coerces array keys to `$keyType` and values to `$valueType`.
 
 ```php
-type_array(type_array_key, type_int, ['one' => 1, 'two' => 2]); // ['one' => 1, 'two' => 2]
+type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
 ```
 
 ### type_shape
@@ -1653,6 +1655,20 @@ $parcelShape([
      ],
      'additional' => 'some additional element value that should not present in result'
 ]); // checked and coerced array will be returned and `additional` will be removed
+```
+
+### type_optional
+Makes sense to use in `type_shape`.
+```php
+$typeUser = type_shape([
+     'name' => type_string,
+     'lastName' => type_string,
+     'location' => type_optional(type_string),
+]);
+
+$typeUser(['name' => 'Slava', 'lastName' => 'Basko']); // ['name' => 'Slava', 'lastName' => 'Basko']
+$typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']); // ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+$typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}]); // TypeException
 ```
 
 ### write_file

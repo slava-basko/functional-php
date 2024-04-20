@@ -455,7 +455,7 @@ class TypeTest extends BaseTest
                 'description' => f\type_string,
                 'qty' => f\type_positive_int,
                 'price' => f\type_union(f\type_int, f\type_float),
-            ]))
+            ])),
         ]);
 
         $parcel = [
@@ -477,7 +477,7 @@ class TypeTest extends BaseTest
                     'price' => 50,
                 ],
             ],
-            'additional' => 'some additional element value tha should not present in result'
+            'additional' => 'some additional element value tha should not present in result',
         ];
 
         $comparableParcel = $parcel;
@@ -492,7 +492,7 @@ class TypeTest extends BaseTest
                 'description' => f\type_string,
                 'qty' => f\type_positive_int,
                 'price' => f\type_union(f\type_int, f\type_float),
-            ]))
+            ])),
         ]);
 
         $parcel = [
@@ -501,8 +501,8 @@ class TypeTest extends BaseTest
                     'description' => 'product 1',
                     'qty' => 'aaa',
                     'price' => 50,
-                ]
-            ]
+                ],
+            ],
         ];
 
         $this->setExpectedException(
@@ -510,5 +510,27 @@ class TypeTest extends BaseTest
             'Shape element \'products\' -> List element \'0\' -> Shape element \'qty\' -> Could not convert "string" to type "int"'
         );
         $parcelShape($parcel);
+    }
+
+    public function test_type_optional()
+    {
+        $basicUser = ['name' => 'Slava', 'lastName' => 'Basko'];
+        $userWithLocation = \array_merge($basicUser, ['location' => 'Vancouver']);
+        $userWithInvalidLocation = \array_merge($basicUser, ['location' => function() {}]);
+
+        $typeUser = f\type_shape([
+            'name' => f\type_string,
+            'lastName' => f\type_string,
+            'location' => f\type_optional(f\type_string),
+        ]);
+
+        $this->assertEquals($basicUser, $typeUser($basicUser));
+        $this->assertEquals($userWithLocation, $typeUser($userWithLocation));
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Shape element \'location\' -> Could not convert "Closure" to type "string"'
+        );
+        $typeUser($userWithInvalidLocation);
     }
 }

@@ -398,6 +398,14 @@ class HelpersTest extends BaseTest
             f\prop_thunk('tracking_number', $data1),
             f\prop_thunk('tracking_number', $data2)
         )));
+
+        $emptyTest = [
+            'some_prop' => 'some_value',
+        ];
+        $this->assertEquals([], call_user_func(f\either(
+            f\prop('non_existent_prop'),
+            f\always([])
+        ), $emptyTest));
     }
 
     public function test_either_fail()

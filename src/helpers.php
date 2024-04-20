@@ -770,13 +770,14 @@ function _either()
             }
         }
 
-        return null;
+        return $strict ? null : $res;
     };
 }
 
 /**
  * A function wrapping calls to the functions in an `||` operation, returning the result of the first function
  * if it is truth-y and the result of the next function otherwise.
+ * Note: Will return result of the last function if all fail.
  *
  * ```php
  * $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
@@ -798,6 +799,7 @@ define('Basko\Functional\either', __NAMESPACE__ . '\\either');
 /**
  * The same as `either`, but returning the result of the first function
  * if it is not NULL and the result of the next function otherwise.
+ * Note: Will return NULL if all fail.
  *
  * @return callable|mixed
  * @no-named-arguments

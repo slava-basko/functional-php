@@ -565,6 +565,10 @@ function type_shape(array $shape, $value = null)
                 );
             }
         } else {
+            $optionalValue = \call_user_func($type, null);
+            if ($optionalValue === '__basko_functional_type_optional') {
+                continue;
+            }
             throw new TypeException('Shape element \'' . $k . '\': not exist in ' . \var_export($value, true));
         }
     }
@@ -573,3 +577,35 @@ function type_shape(array $shape, $value = null)
 }
 
 define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape');
+
+/**
+ * Makes sense to use in `type_shape`.
+ * ```php
+ * $typeUser = type_shape([
+ *      'name' => type_string,
+ *      'lastName' => type_string,
+ *      'location' => type_optional(type_string),
+ * ]);
+ *
+ * $typeUser(['name' => 'Slava', 'lastName' => 'Basko']); // ['name' => 'Slava', 'lastName' => 'Basko']
+ * $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']); // ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+ * $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}]); // TypeException
+ * ```
+ *
+ * @param callable $type
+ * @param mixed $value
+ * @return callable|mixed|string
+ */
+function type_optional(callable $type, $value = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(type_optional, $type);
+    }
+
+    if ($value === null) {
+        return '__basko_functional_type_optional';
+    }
+
+    return \call_user_func($type, $value);
+}
+define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');
