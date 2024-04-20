@@ -587,8 +587,12 @@ define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape');
  *      'location' => type_optional(type_string),
  * ]);
  *
- * $typeUser(['name' => 'Slava', 'lastName' => 'Basko']); // ['name' => 'Slava', 'lastName' => 'Basko']
- * $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']); // ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+ * $typeUser(['name' => 'Slava', 'lastName' => 'Basko']);
+ * // ['name' => 'Slava', 'lastName' => 'Basko']
+ *
+ * $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']);
+ * // ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+ *
  * $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}]); // TypeException
  * ```
  *

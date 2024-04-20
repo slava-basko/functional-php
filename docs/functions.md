@@ -1666,8 +1666,12 @@ $typeUser = type_shape([
      'location' => type_optional(type_string),
 ]);
 
-$typeUser(['name' => 'Slava', 'lastName' => 'Basko']); // ['name' => 'Slava', 'lastName' => 'Basko']
-$typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']); // ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+$typeUser(['name' => 'Slava', 'lastName' => 'Basko']);
+// ['name' => 'Slava', 'lastName' => 'Basko']
+
+$typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']);
+// ['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver']
+
 $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}]); // TypeException
 ```
 
@@ -1686,3 +1690,7 @@ Read file contents.
 $io = read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```
+
+### read_url
+
+
