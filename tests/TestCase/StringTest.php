@@ -49,6 +49,14 @@ class StringTest extends BaseTest
         $this->assertEquals('abcdef', $f2($string));
     }
 
+    public function test_str_replace_first()
+    {
+        $this->assertEquals(
+            '123def abcdef abcdef',
+            f\str_replace_first('abc', '123', 'abcdef abcdef abcdef')
+        );
+    }
+
     public function test_str_starts_with() {
         $http = f\str_starts_with('http://');
         $this->assertTrue($http('http://gitbub.com'));

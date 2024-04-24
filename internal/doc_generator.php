@@ -35,6 +35,7 @@ f\pipe(
         f\identity,
         f\partial_p('explode', [1 => "@", 3 => 2]),
         f\prop(0),
+        f\str_replace_first('* ```', '* ```php'),
         f\str_replace([' * ', '/**', ' *'], ''),
         'trim'
     )),

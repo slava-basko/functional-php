@@ -105,6 +105,42 @@ function str_replace($search, $replace = null, $string = null)
 define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
 
 /**
+ * The same as `str_replace` but replace only first occurrence.
+ *
+ * ```
+ * str_replace_first('abc', '123', 'abcdef abcdef abcdef'); // "23def abcdef abcdef
+ * ```
+ *
+ * @param array|string $search
+ * @param array|string $replace
+ * @param array|string $string
+ * @return array|callable|mixed|string|string[]
+ * @no-named-arguments
+ */
+function str_replace_first($search, $replace = null, $string = null)
+{
+    InvalidArgumentException::assertStringOrList($search, __FUNCTION__, 1);
+
+    $n = \func_num_args();
+    if ($n === 1) {
+        return partial(str_replace_first, $search);
+    } elseif ($n === 2) {
+        return partial(str_replace_first, $search, $replace);
+    }
+
+    InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
+
+    $pos = \strpos($string, $search);
+    if ($pos !== false) {
+        return \substr_replace($string, $replace, $pos, \strlen($search));
+    }
+
+    return $string;
+}
+
+define('Basko\Functional\str_replace_first', __NAMESPACE__ . '\\str_replace_first');
+
+/**
  * Checks if `$string` starts with `$token`.
  *
  * ```
