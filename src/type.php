@@ -8,7 +8,7 @@ use Basko\Functional\Exception\TypeException;
 /**
  * Validates that the value is instance of specific class.
  *
- * ```php
+ * ```
  * is_type_of(\User::class, new User()); // true
  * is_type_of(\User::class, new SomeClass()); // false
  * ```
@@ -37,7 +37,7 @@ define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of');
 /**
  * Checks that the value is instance of specific class.
  *
- * ```php
+ * ```
  * type_of(\User::class, new User()); // User
  * type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
  * ```
@@ -79,7 +79,7 @@ define('Basko\Functional\type_of', __NAMESPACE__ . '\\type_of');
 /**
  * Checks and coerces value to `bool`.
  *
- * ```php
+ * ```
  * type_bool(true); // true
  * type_bool(1); // true
  * type_bool('1'); // true
@@ -118,7 +118,7 @@ define('Basko\Functional\type_bool', __NAMESPACE__ . '\\type_bool');
  * Object: method `__toString` will be called
  * Array: all values will be concatenated with comma.
  *
- * ```php
+ * ```
  * type_string('hello'); // 'hello'
  * type_string(123); // '123'
  * ```
@@ -152,7 +152,7 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
  * Object: method `__toString` will be called
  * Array: all values will be concatenated with comma.
  *
- * ```php
+ * ```
  * type_non_empty_string('abc'); // 'abc'
  * type_non_empty_string([]); // TypeException: Could not convert "array" to type "non-empty-string"
  * ```
@@ -176,7 +176,7 @@ define('Basko\Functional\type_non_empty_string', __NAMESPACE__ . '\\type_non_emp
 /**
  * Checks and coerces value to `int`.
  *
- * ```php
+ * ```
  * type_int('123'); // 123
  * type_int('007'); // 7
  * type_int('1.0'); // 1
@@ -227,7 +227,7 @@ define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
 /**
  * Checks and coerces value to `positive_int`.
  *
- * ```php
+ * ```
  * type_positive_int(2); // 2
  * type_positive_int('2'); // 2
  * ```
@@ -251,7 +251,7 @@ define('Basko\Functional\type_positive_int', __NAMESPACE__ . '\\type_positive_in
 /**
  * Checks and coerces value to `float`.
  *
- * ```php
+ * ```
  * type_float(123); // 123.0
  * type_float('123'); // 123.0
  * ```
@@ -293,7 +293,7 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
 /**
  * Union type.
  *
- * ```php
+ * ```
  * $t = type_union(type_int, type_float);
  * $t(1); // 1;
  * $t(1.00); // 1
@@ -374,7 +374,7 @@ define('Basko\Functional\type_union', __NAMESPACE__ . '\\type_union');
 /**
  * Checks and coerces value to valid array key that can either be an `int` or a `string`.
  *
- * ```php
+ * ```
  * type_array_key(1); // 1
  * type_array_key('some_key'); // some_key
  * ```
@@ -393,7 +393,7 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
 /**
  * Checks and coerces list values to `$type[]`.
  *
- * ```php
+ * ```
  * type_list(type_int, [1, '2']); // [1, 2]
  * type_list(type_int, [1, 2.0]); // [1, 2]
  * type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
@@ -455,7 +455,7 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
 /**
  * Checks and coerces array keys to `$keyType` and values to `$valueType`.
  *
- * ```php
+ * ```
  * type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
  * ```
  *
@@ -492,7 +492,7 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
  * Checks array keys presence and coerces values to according types.
  * All `key => value` pair that not described will be removed.
  *
- * ```php
+ * ```
  * $parcelShape = type_shape([
  *      'description' => type_string,
  *      'value' => type_union(type_int, type_float),
@@ -580,7 +580,7 @@ define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape');
 
 /**
  * Makes sense to use in `type_shape`.
- * ```php
+ * ```
  * $typeUser = type_shape([
  *      'name' => type_string,
  *      'lastName' => type_string,
@@ -612,4 +612,5 @@ function type_optional(callable $type, $value = null)
 
     return \call_user_func($type, $value);
 }
+
 define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');

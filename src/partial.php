@@ -6,7 +6,7 @@ namespace Basko\Functional;
  * Returns new function which will behave like `$f` with
  * predefined left arguments passed to partial.
  *
- * ```php
+ * ```
  * $implode_coma = partial('implode', ',');
  * $implode_coma([1, 2]); // 1,2
  * ```
@@ -32,7 +32,7 @@ define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
  * Returns new partial function which will behave like `$f` with
  * predefined right arguments passed to rpartial.
  *
- * ```php
+ * ```
  * $implode12 = partial_r('implode', [1, 2]);
  * $implode12(','); // 1,2
  * ```
@@ -58,7 +58,7 @@ define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r');
  * Returns new partial function which will behave like `$f` with
  * predefined positional arguments passed to ppartial.
  *
- * ```php
+ * ```
  * $sub_abcdef_from = partial_p('substr', [
  *      1 => 'abcdef',
  *      3 => 2

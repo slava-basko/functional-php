@@ -1,7 +1,7 @@
 ### noop
 Function that do nothing.
 
-```php
+```
 noop(); // nothing happen
 noop('some string'); // nothing happen
 ```
@@ -9,7 +9,7 @@ noop('some string'); // nothing happen
 ### identity
 Return the parameter supplied to it.
 
-```php
+```
 identity(1); // 1
 
 $obj = new \stdClass;
@@ -19,28 +19,28 @@ identity($obj) === $obj; // true
 ### T
 Always return `true`.
 
-```php
+```
 T(); // true
 ```
 
 ### F
 Always return `false`.
 
-```php
+```
 F(); // false
 ```
 
 ### N
 Always return `null`.
 
-```php
+```
 N(); // null
 ```
 
 ### eq
 Runs PHP comparison operator `==`.
 
-```php
+```
 eq(1, 1); // true
 eq(1, '1'); // true
 eq(1, 2); // false
@@ -49,7 +49,7 @@ eq(1, 2); // false
 ### identical
 Runs PHP comparison operator `===`.
 
-```php
+```
 identical(1, 1); // true
 identical(1, '1'); // false
 ```
@@ -57,7 +57,7 @@ identical(1, '1'); // false
 ### lt
 Returns true if the first argument is less than the second; false otherwise.
 
-```php
+```
 lt(2, 1); // false
 lt(2, 2); // false
 lt(2, 3); // true
@@ -68,7 +68,7 @@ lt('z', 'a'); // false
 ### lte
 Returns true if the first argument is less than or equal to the second; false otherwise.
 
-```php
+```
 lte(2, 1); // false
 lte(2, 2); // true
 lte(2, 3); // true
@@ -79,7 +79,7 @@ lte('z', 'a'); // false
 ### gt
 Returns true if the first argument is greater than the second; false otherwise.
 
-```php
+```
 gt(2, 1); // true
 gt(2, 2); // false
 gt(2, 3); // false
@@ -90,7 +90,7 @@ gt('z', 'a'); // true
 ### gte
 Returns true if the first argument is greater than or equal to the second; false otherwise.
 
-```php
+```
 gte(2, 1); // true
 gte(2, 2); // true
 gte(2, 3); // false
@@ -101,7 +101,7 @@ gte('z', 'a'); // true
 ### tail_recursion
 Decorates given function with tail recursion optimization using trampoline.
 
-```php
+```
 $fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
      if ($n == 0) {
          return $acc;
@@ -115,7 +115,7 @@ $fact(10); // 3628800
 ### not
 Returns the `!` of its argument.
 
-```php
+```
 not(true); // false
 not(false); // true
 not(0); // true
@@ -125,7 +125,7 @@ not(1); // false
 ### complement
 Logical negation of the given function `$f`.
 
-```php
+```
 $notString = complement('is_string');
 $notString(1); // true
 ```
@@ -133,7 +133,7 @@ $notString(1); // true
 ### tap
 Call the given function with the given value, then return the value.
 
-```php
+```
 $input = new \stdClass();
 $input->property = 'foo';
 tap(function ($o) {
@@ -144,7 +144,7 @@ $input->property; // 'foo'
 
 Also, this function useful as a debug in the `pipe`.
 
-```php
+```
 pipe(
      'strrev',
      tap('var_dump'),
@@ -155,7 +155,7 @@ pipe(
 ### always
 Wrap value within a function, which will return it, without any modifications. Kinda constant function.
 
-```php
+```
 $constA = always('a');
 $constA(); // 'a'
 $constA(); // 'a'
@@ -166,7 +166,7 @@ Returns new function which applies each given function to the result of another 
 `compose(f, g, h)` is the same as `f(g(h(x)))`.
 Note: Lenses don't compose backwards https://www.reddit.com/r/haskell/comments/23x3f3/lenses_dont_compose_backwards/
 
-```php
+```
 $powerPlus1 = compose(plus(1), power);
 $powerPlus1(3); // 10
 ```
@@ -175,7 +175,7 @@ $powerPlus1(3); // 10
 Performs left to right function composition.
 `pipe(f, g, h)` is the same as `h(g(f(x)))`.
 
-```php
+```
 $plus1AndPower = pipe(plus(1), power);
 $plus1AndPower(3); // 16
 ```
@@ -186,7 +186,7 @@ Accepts a converging function and a list of branching functions and returns a ne
 The results of each branching function are passed as arguments
 to the converging function to produce the return value.
 
-```php
+```
 function div($dividend, $divisor) {
      return $dividend / $divisor;
 }
@@ -204,7 +204,7 @@ Alias for `call_user_func_array`.
 ### apply_to
 Create a function that will pass arguments to a given function.
 
-```php
+```
 $fiveAndThree = apply_to([5, 3]);
 $fiveAndThree(sum); // 8
 ```
@@ -213,7 +213,7 @@ $fiveAndThree(sum); // 8
 Performs an operation checking for the given conditions.
 Returns a new function that behaves like a match operator. Encapsulates `if/elseif,elseif, ...` logic.
 
-```php
+```
 $cond = cond([
      [eq(0), always('water freezes')],
      [partial_r(gte, 100), always('water boils')],
@@ -234,7 +234,7 @@ Note, that you cannot use curry on a flipped function.
 `curry` uses reflection to get the number of function arguments,
 but this is not possible on the function returned from flip. Instead, use `curry_n` on flipped functions.
 
-```php
+```
 $mergeStrings = function ($head, $tail) {
      return $head . $tail;
 };
@@ -245,7 +245,7 @@ $flippedMergeStrings('two', 'one'); // 'onetwo'
 ### flip
 Returns function which accepts two arguments in the reversed order.
 
-```php
+```
 $gt9 = flip(gt)(9);
 $gt9(10); // true
 $gt9(7); // false
@@ -256,7 +256,7 @@ Takes a binary function `$f`, and unary function `$g`, and two values. Applies `
 then applies the result of each to `$f`.
 Also known as the P combinator.
 
-```php
+```
 $containsInsensitive = on(contains, 'strtolower');
 $containsInsensitive('o', 'FOO'); // true
 ```
@@ -265,7 +265,7 @@ $containsInsensitive('o', 'FOO'); // true
 Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
 Also known as the Y combinator.
 
-```php
+```
 function factorial($n) {
      return ($n <= 1) ? 1 : $nfactorial($n - 1);
 }
@@ -280,7 +280,7 @@ echo $factorial(5); // Exception will be thrown
 ```
 
 You can't call anonymous function recursively. But you can use `y` to make it possible.
-```php
+```
 $factorial = y(function ($fact) {
      return function ($n) use ($fact) {
          return ($n <= 1) ? 1 : $n$fact($n - 1);
@@ -293,7 +293,7 @@ echo $factorial(5); // 120
 ### both
 Acts as the boolean `and` statement.
 
-```php
+```
 both(T(), T()); // true
 both(F(), T()); // false
 $between6And9 = both(flip(gt)(6), flip(lt)(9));
@@ -305,7 +305,7 @@ $between6And9(10); // false
 Takes a list of predicates and returns a predicate that returns true for a given list of arguments
 if every one of the provided predicates is satisfied by those arguments.
 
-```php
+```
 $isQueen = pipe(prop('rank'), eq('Q'));
 $isSpade = pipe(prop('suit'), eq('♠︎'));
 $isQueenOfSpades = all_pass([$isQueen, $isSpade]);
@@ -318,7 +318,7 @@ $isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']); // true
 Takes a list of predicates and returns a predicate that returns true for a given list of arguments
 if at least one of the provided predicates is satisfied by those arguments.
 
-```php
+```
 $isClub = pipe(prop('suit'), eq('♣'));
 $isSpade = pipe(prop('suit'), eq('♠'));
 $isBlackCard = any_pass([$isClub, $isSpade]);
@@ -331,7 +331,7 @@ $isBlackCard(['rank' => 'Q', 'suit' => '♦']); // false
 ### ap
 Applies a list of functions to a list of values.
 
-```php
+```
 ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
 ```
 
@@ -351,7 +351,7 @@ Memoizing an impure function will lead to all kinds of hard to debug issues.
 In particular, the function to be memoized should never rely on a state of a
 mutable object. Only immutable objects are safe.
 
-```php
+```
 $randAndSalt = function ($salt) {
      return rand(1, 100) . $salt;
 };
@@ -363,7 +363,7 @@ $memoizedRandAndSalt('x'); // 42x
 ### count_args
 Return number of function arguments.
 
-```php
+```
 count_args('explode'); // 3
 ```
 
@@ -378,7 +378,7 @@ you give a higher number, arguments will simply be ignored.
 Return a curried version of the given function. You can decide if you also
 want to curry optional parameters or not.
 
-```php
+```
 function add($a, $b, $c) {
      return $a + $b + $c;
 };
@@ -394,7 +394,7 @@ $curryiedAdd(1, 2)(3); // 6
 Creates a thunk out of a function. A thunk delays calculation until its result is needed,
 providing lazy evaluation of arguments.
 
-```php
+```
 $add = function($a, $b) {
      return $a + $b;
 };
@@ -408,7 +408,7 @@ $eleven(); // 11
 Return function `$f` that will be called only with `abs($count)` arguments,
 taken either from the left or right depending on the sign.
 
-```php
+```
 $f = static function ($a = 0, $b = 0, $c = 0) {
      return $a + $b + $c;
 };
@@ -421,7 +421,7 @@ ary($f, -1)([5, 6]); // 6
 Wraps a function of any arity (including nullary) in a function that accepts exactly 1 parameter.
 Any extraneous parameters will not be passed to the supplied function.
 
-```php
+```
 $f = static function ($a = '', $b = '', $c = '') {
      return $a . $b . $c;
 };
@@ -432,7 +432,7 @@ unary($f)(['one', 'two', 'three]); // one
 Wraps a function of any arity (including nullary) in a function that accepts exactly 2 parameters.
 Any extraneous parameters will not be passed to the supplied function.
 
-```php
+```
 $f = static function ($a = '', $b = '', $c = '') {
      return $a . $b . $c;
 };
@@ -443,7 +443,7 @@ binary($f)(['one', 'two', 'three]); // onetwo
 Produces a new list of elements by mapping each element in list through a transformation function.
 Function arguments will be `element`, `index`, `list`.
 
-```php
+```
 map(plus(1), [1, 2, 3]); // [2, 3, 4]
 ```
 
@@ -454,7 +454,7 @@ and flattening the results into the resulting array.
 `flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
 whereas flatten will recursively flatten nested collections. Indexes will not preserve.
 
-```php
+```
 $items = [
      [
          'id' => 1,
@@ -488,14 +488,14 @@ $result = flat_map(prop('users'), $items);
 Calls `$f` on each element in list. Returns origin `$list`.
 Function arguments will be `element`, `index`, `list`.
 
-```php
+```
 each(unary('print_r'), [1, 2, 3]); // Print: 123
 ```
 
 ### fold
 Applies a function to each element in the list and reduces it to a single value.
 
-```php
+```
 fold(concat, '4', [5, 1]); // 451
 
 function sc($a, $b)
@@ -509,7 +509,7 @@ fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+
 ### fold_r
 The same as `fold` but accumulator on the right.
 
-```php
+```
 fold_r(concat, '4', [5, 1]); // 514
 
 function sc($a, $b)
@@ -523,28 +523,28 @@ fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0
 ### append
 Returns a new list containing the contents of the given list, followed by the given element.
 
-```php
+```
 append('three', ['one', 'two']); // ['one', 'two', 'three']
 ```
 
 ### prepend
 Returns a new list with the given element at the front, followed by the contents of the list.
 
-```php
+```
 prepend('three', ['one', 'two']); // ['three', 'one', 'two']
 ```
 
 ### pluck
 Extract a property from a list of objects.
 
-```php
+```
 pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
 ```
 
 ### head
 Looks through each element in the list, returning the first one.
 
-```php
+```
 head([
      ['name' => 'jack', 'score' => 1],
      ['name' => 'mark', 'score' => 9],
@@ -560,7 +560,7 @@ arguments will be `element`, `index`, `list`
 ### tail
 Returns all items from `$list` except first element (head). Preserves `$list` keys.
 
-```php
+```
 tail([
      ['name' => 'jack', 'score' => 1],
      ['name' => 'mark', 'score' => 9],
@@ -572,7 +572,7 @@ tail([
 Returns all items from `$list` except first element (head) if `$f` returns true. Preserves `$list` keys.
 Can be considered as `tail` + `select`.
 
-```php
+```
 tail_by(f\compose(gt(8), prop('score')), [
      ['name' => 'jack', 'score' => 1],
      ['name' => 'mark', 'score' => 9],
@@ -584,7 +584,7 @@ tail_by(f\compose(gt(8), prop('score')), [
 Looks through each element in the list, returning an array of all the elements that pass a test (function).
 Opposite is `reject()`. Function arguments will be `element`, `index`, `list`.
 
-```php
+```
 $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
 ```
 
@@ -592,7 +592,7 @@ $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
 Returns the elements in list without the elements that the test (function) passes.
 The opposite of `select()`. Function arguments will be `element`, `index`, `list`.
 
-```php
+```
 $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
 ```
 
@@ -600,7 +600,7 @@ $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
 Returns true if the list contains the given value. If the third parameter is
 true values will be compared in strict mode.
 
-```php
+```
 contains('foo', ['foo', 'bar']); // true
 contains('foo', 'foo and bar'); // true
 ```
@@ -610,7 +610,7 @@ Creates a slice of `$list` with `$count` elements taken from the beginning. If t
 the whole list will be returned as an array.
 For strings its works like `substr`.
 
-```php
+```
 take(2, [1, 2, 3]); // [0 => 1, 1 => 2]
 take(4, 'Slava'); // 'Slav'
 ```
@@ -620,7 +620,7 @@ Creates a slice of `$list` with `$count` elements taken from the end. If the lis
 the whole list will be returned as an array.
 For strings its works like `substr`.
 
-```php
+```
 take_r(2, [1, 2, 3]); // [1 => 2, 2 => 3]
 take_r(4, 'Slava'); // 'lava'
 ```
@@ -630,7 +630,7 @@ Return N-th element of an array or string.
 First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
 Consider `$elementNumber` as a position but not index.
 
-```php
+```
 nth(1, ['foo', 'bar', 'baz', 'qwe']); // 'foo'
 nth(-1, ['foo', 'bar', 'baz', 'qwe']); // 'qwe'
 nth(1, 'Slava'); // 'S'
@@ -640,7 +640,7 @@ nth(-2, 'Slava'); // 'v'
 ### group
 Groups a list by index returned by `$f` function.
 
-```php
+```
 group(prop('type'), [
      [
          'name' => 'john',
@@ -670,7 +670,7 @@ partition for the first predicate they pass.
 Elements are not re-ordered and have the same index they had in the
 original array.
 
-```php
+```
 list($best, $good_students, $others) = partition(
      [
          compose(partial_r(gte, 9), prop('score')),
@@ -683,7 +683,7 @@ list($best, $good_students, $others) = partition(
 ### flatten
 Takes a nested combination of list and returns their contents as a single, flat list.
 
-```php
+```
 flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
 ```
@@ -692,7 +692,7 @@ flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
 Takes a nested combination of list and returns their contents as a single, flat list.
 Keys concatenated by `.` and element index.
 
-```php
+```
 flatten_with_keys([
  'title' => 'Some title',
  'body' => 'content',
@@ -722,14 +722,14 @@ flatten_with_keys([
 Insert a given value between each element of a collection.
 Indexes are not preserved.
 
-```php
+```
 intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
 ```
 
 ### sort
 Sorts a list with a user-defined function.
 
-```php
+```
 sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
 ```
 
@@ -737,7 +737,7 @@ sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 
 Makes a comparator function out of a function that reports whether the first
 element is less than the second.
 
-```php
+```
 $ar = [1, 1, 2, 3, 5, 8];
 usort($ar, comparator(function ($a, $b) {
      return $a < $b;
@@ -758,7 +758,7 @@ sort(
 ### ascend
 Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
 
-```php
+```
 sort(ascend(prop('age')), [
      ['name' => 'Emma', 'age' => 70],
      ['name' => 'Peter', 'age' => 78],
@@ -769,7 +769,7 @@ sort(ascend(prop('age')), [
 ### descend
 Makes a descending comparator function out of a function that returns a value that can be compared with `<` and `>`.
 
-```php
+```
 sort(descend(prop('age')), [
      ['name' => 'Emma', 'age' => 70],
      ['name' => 'Peter', 'age' => 78],
@@ -782,14 +782,14 @@ Returns a new list containing only one copy of each element in the original list
 based upon the value returned by applying the supplied function to each list element.
 Prefers the first item if the supplied function produces the same value on two items.
 
-```php
+```
 uniq_by('abs', [-1, -5, 2, 10, 1, 2]); // [-1, -5, 2, 10]
 ```
 
 ### uniq
 Returns a new list containing only one copy of each element in the original list.
 
-```php
+```
 uniq([1, 1, 2, 1]); // [1, 2]
 uniq([1, '1']); // [1, '1']
 ```
@@ -799,7 +799,7 @@ Zips two or more sequences.
 
 Note: This function is not curried because of no fixed arity.
 
-```php
+```
 zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
 ```
 
@@ -810,21 +810,21 @@ Note: `$f` signature is `callable(array $arg):mixed`.
 As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
 But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
 
-```php
+```
 zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
 ```
 
 ### permute
 Returns all possible permutations.
 
-```php
+```
 permute(['a', 'b']); // [['a', 'b'], ['b', 'a']]
 ```
 
 ### is_even
 Check if number is even.
 
-```php
+```
 is_even(4); // true
 is_even(3); // false
 ```
@@ -832,7 +832,7 @@ is_even(3); // false
 ### is_odd
 Check if number is odd.
 
-```php
+```
 is_odd(5); // true
 is_odd(2); // false
 ```
@@ -840,98 +840,98 @@ is_odd(2); // false
 ### inc
 Increments its argument.
 
-```php
+```
 inc(41); // 42
 ```
 
 ### dec
 Decrements its argument.
 
-```php
+```
 dec(43); // 42
 ```
 
 ### plus
 Perform `$a + $b`.
 
-```php
+```
 plus(4, 2); // 6
 ```
 
 ### minus
 Perform `$a - $b`.
 
-```php
+```
 minus(4, 2); // 2
 ```
 
 ### div
 Perform `$a / $b`.
 
-```php
+```
 div(4, 2); // 2
 ```
 
 ### modulo
 Modulo of two numbers.
 
-```php
+```
 modulo(1089, 37)); // 16
 ```
 
 ### multiply
 Perform `$a$b`.
 
-```php
+```
 multiply(4, 2); // 8
 ```
 
 ### sum
 Fold list with `plus`.
 
-```php
+```
 sum([3, 2, 1]); // 6
 ```
 
 ### diff
 Fold list with `minus`.
 
-```php
+```
 diff([10, 2, 1]); // 7
 ```
 
 ### divide
 Fold list with `div`.
 
-```php
+```
 divide([20, 2, 2]); // 5
 ```
 
 ### product
 Fold list with `multiply`.
 
-```php
+```
 product([4, 2, 2]); // 16
 ```
 
 ### average
 Calculate average value.
 
-```php
+```
 average([1, 2, 3, 4, 5, 6, 7]); // 4
 ```
 
 ### power
 Power its argument.
 
-```php
+```
 power(4); // 16
 ```
 
 ### median
 Calculate median.
 
-```php
+```
 median([2, 9, 7]); // 7
 median([7, 2, 10, 9]); // 8
 ```
@@ -939,7 +939,7 @@ median([7, 2, 10, 9]); // 8
 ### clamp
 Restricts a value to be within a range.
 
-```php
+```
 clamp(1, 10, -5); // 1
 clamp(1, 10, 15); // 10
 clamp(1, 10, 4); // 4
@@ -961,7 +961,7 @@ X × Y × Z = { (1, a, A), (2, a, A), (1, b, A), (2, b, A)
 
 Note: This function is not curried because of no fixed arity.
 
-```php
+```
 $ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
 $suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
 
@@ -979,7 +979,7 @@ $cards = pipe(cartesian_product, map(join('')))($ranks, [' of '], $suits);
 Returns new function which will behave like `$f` with
 predefined left arguments passed to partial.
 
-```php
+```
 $implode_coma = partial('implode', ',');
 $implode_coma([1, 2]); // 1,2
 ```
@@ -988,7 +988,7 @@ $implode_coma([1, 2]); // 1,2
 Returns new partial function which will behave like `$f` with
 predefined right arguments passed to rpartial.
 
-```php
+```
 $implode12 = partial_r('implode', [1, 2]);
 $implode12(','); // 1,2
 ```
@@ -997,7 +997,7 @@ $implode12(','); // 1,2
 Returns new partial function which will behave like `$f` with
 predefined positional arguments passed to ppartial.
 
-```php
+```
 $sub_abcdef_from = partial_p('substr', [
      1 => 'abcdef',
      3 => 2
@@ -1009,7 +1009,7 @@ $sub_abcdef_from(0); // 'ab'
 Returns a lens for the given getter and setter functions.
 The getter "gets" the value of the focus; the setter "sets" the value of the focus.
 
-```php
+```
 $xLens = lens(prop('x'), assoc('x'));
 view($xLens, ['x' => 1, 'y' => 2]); // 1
 set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
@@ -1019,7 +1019,7 @@ over($xLens, dec, ['x' => 1, 'y' => 2]); // ['x' => 0, 'y' => 2]
 ### view
 Returns a "view" of the given data structure, determined by the given lens.
 
-```php
+```
 $xLens = lens_prop('x');
 view($xLens, ['x' => 1, 'y' => 2]); // 1
 view($xLens, ['x' => 4, 'y' => 2]); // 4
@@ -1029,7 +1029,7 @@ view($xLens, ['x' => 4, 'y' => 2]); // 4
 Returns the result of "setting" the portion of the given data structure
 focused by the given lens to the result of applying the given function to the focused value.
 
-```php
+```
 $xLens = lens_prop('x');
 over($xLens, plus(100), ['x' => 1, 'y' => 2]); // ['x' => 101, 'y' => 2]
 ```
@@ -1037,7 +1037,7 @@ over($xLens, plus(100), ['x' => 1, 'y' => 2]); // ['x' => 101, 'y' => 2]
 ### set
 Returns the result of "setting" the portion of the given data structure focused by the given lens to the given value.
 
-```php
+```
 $xLens = lens_prop('x');
 set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
 set($xLens, 8, ['x' => 1, 'y' => 2]); // ['x' => 8, 'y' => 2]
@@ -1046,7 +1046,7 @@ set($xLens, 8, ['x' => 1, 'y' => 2]); // ['x' => 8, 'y' => 2]
 ### lens_prop
 Returns a lens whose focus is the specified property.
 
-```php
+```
 $xLens = lens_prop('x');
 view($xLens, ['x' => 1, 'y' => 2]); // 1
 set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
@@ -1056,7 +1056,7 @@ over($xLens, dec, ['x' => 1, 'y' => 2]); // ['x' => 0, 'y' => 2]
 ### lens_prop_path
 Returns a lens whose focus is the specified path.
 
-```php
+```
 $data = [
      'a' => 1,
      'b' => [
@@ -1072,7 +1072,7 @@ view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
 ### lens_element
 Returns a lens whose focus is the specified `nth` element.
 
-```php
+```
 view(lens_element(1), [10, 20, 30]); // 10
 view(lens_element(-1), [10, 20, 30]); // 30
 set(lens_element(1), 99, [10, 20, 30]); // [99, 20, 30]
@@ -1081,7 +1081,7 @@ set(lens_element(1), 99, [10, 20, 30]); // [99, 20, 30]
 ### to_list
 Returns arguments as a list.
 
-```php
+```
 to_list(1, 2, 3); // [1, 2, 3]
 to_list('1, 2, 3'); // [1, 2, 3]
 ```
@@ -1089,14 +1089,14 @@ to_list('1, 2, 3'); // [1, 2, 3]
 ### concat
 Concatenates `$a` with `$b`.
 
-```php
+```
 concat('foo', 'bar'); // 'foobar'
 ```
 
 ### concat_all
 Concatenates all given arguments.
 
-```php
+```
 concat('foo', 'bar', 'baz'); // 'foobarbaz'
 ```
 
@@ -1104,14 +1104,14 @@ concat('foo', 'bar', 'baz'); // 'foobarbaz'
 Returns a string made by inserting the separator between each element and concatenating all the elements
 into a single string.
 
-```php
+```
 join('|', [1, 2, 3]); // '1|2|3'
 ```
 
 ### if_else
 Performs an `if/else` condition over a value using functions as statements.
 
-```php
+```
 $ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
 $ifFoo('foo'); // 'bar'
 $ifFoo('qux'); // 'baz'
@@ -1120,7 +1120,7 @@ $ifFoo('qux'); // 'baz'
 ### repeat
 Creates a function that can be used to repeat the execution of `$f`.
 
-```php
+```
 repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
 ```
 
@@ -1130,7 +1130,7 @@ it simply returns the result. If the tryer does throw, the returned function eva
 and returns its result. For effective composition with this function, both the tryer and catcher functions
 must return the same type of results.
 
-```php
+```
 try_catch(function () {
      throw new \Exception();
 }, always('val'))(); // 'val'
@@ -1139,14 +1139,14 @@ try_catch(function () {
 ### invoker
 Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
 
-```php
+```
 array_filter([$user1, $user2], invoker('isActive')); // only active users
 ```
 
 ### len
 Count length of string or number of elements in the array.
 
-```php
+```
 len('foo'); // 3
 len(['a', 'b']); // 2
 ```
@@ -1154,7 +1154,7 @@ len(['a', 'b']); // 2
 ### prop
 Returns a function that when supplied an object returns the indicated property of that object, if it exists.
 
-```php
+```
 prop(0, [99]); // 99
 prop('x', ['x' => 100]); // 100
 $object = new \stdClass();
@@ -1165,14 +1165,14 @@ prop('x', $object); // 101
 ### prop_thunk
 Thunkified version of `prop` function, for more easily composition with `either` for example.
 
-```php
+```
 prop_thunk(0, [99])(); // 99
 ```
 
 ### prop_path
 Nested version of `prop` function.
 
-```php
+```
 prop_path(['b', 'c'], [
      'a' => 1,
      'b' => [
@@ -1184,14 +1184,14 @@ prop_path(['b', 'c'], [
 ### props
 Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
 
-```php
+```
 props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
 ```
 
 ### assoc
 Creates a shallow clone of a list with an overwritten value at a specified index.
 
-```php
+```
 assoc('bar', 42, ['foo' => 'foo', 'bar' => 'bar']); // ['foo' => 'foo', 'bar' => 42]
 
 assoc(
@@ -1207,7 +1207,7 @@ assoc(
 ### assoc_element
 Same as `assoc`, but it allows to specify element by its number rather than named key.
 
-```php
+```
 assoc_element(1, 999, [10, 20, 30]); // [999, 20, 30]
 assoc_element(-1, 999, [10, 20, 30]); // [10, 20, 999]
 ```
@@ -1215,21 +1215,21 @@ assoc_element(-1, 999, [10, 20, 30]); // [10, 20, 999]
 ### assoc_path
 Nested version of `assoc` function.
 
-```php
+```
 assoc_path(['bar', 'baz'], 42, ['foo' => 'foo', 'bar' => ['baz' => 41]]); // ['foo' => 'foo', 'bar' => ['baz' => 42]]
 ```
 
 ### to_fn
 Returns a function that invokes `$method` with arguments `$arguments` on the $object.
 
-```php
+```
 to_fn($obj, 'someMethod', ['arg'])(); // Equal to $obj->someMethod('arg');
 ```
 
 ### pair
 Takes two arguments, `$fst` and `$snd`, and returns `[$fst, $snd]`.
 
-```php
+```
 pair('foo', 'bar'); // ['foo', 'bar']
 ```
 
@@ -1238,7 +1238,7 @@ A function wrapping calls to the functions in an `||` operation, returning the r
 if it is truth-y and the result of the next function otherwise.
 Note: Will return result of the last function if all fail.
 
-```php
+```
 $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
 $value([
      'prop2' => 'some value'
@@ -1253,7 +1253,7 @@ Note: Will return NULL if all fail.
 ### quote
 Quote given string.
 
-```php
+```
 quote('foo'); // "foo"
 map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
 ```
@@ -1264,21 +1264,21 @@ Same as `quote`, but with `addslashes` before.
 ### only_keys
 Returns an array only with the specified keys.
 
-```php
+```
 only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
 ```
 
 ### omit_keys
 Drops specified keys.
 
-```php
+```
 omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
 ```
 
 ### map_keys
 Applies provided function to specified keys.
 
-```php
+```
 map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
 ```
 
@@ -1286,14 +1286,14 @@ map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' =
 Applies provided function to N-th elements of an array.
 First element is first, but not zero (similar to `nth` function).
 
-```php
+```
 map_elements('strtoupper', [1], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
 ```
 
 ### find_missing_keys
 Finds if a given array has all of the required keys set.
 
-```php
+```
 find_missing_keys(
      ['login', 'email'],
      ['login' => 'admin']
@@ -1304,7 +1304,7 @@ find_missing_keys(
 Creates copy of provided value. `clone` will be called for objects.
 You can overwrite `clone` and provide your specific function, just define `CLONE_FUNCTION` constant.
 
-```php
+```
 $obj = new \stdClass();  // object hash: 00000000000000030000000000000000
 cp($obj);                // object hash: 00000000000000070000000000000000
 ```
@@ -1312,7 +1312,7 @@ cp($obj);                // object hash: 00000000000000070000000000000000
 ### pick_random_value
 Return random value from list.
 
-```php
+```
 pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
 ```
 
@@ -1320,7 +1320,7 @@ pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
 Creates an associative array using a `$keyProp` as the path to build its keys,
 and `$valueProp` as path to get the values.
 
-```php
+```
 combine('alpha2', 'name', [
      [
          'name' => 'Netherlands',
@@ -1353,7 +1353,7 @@ This helper mostly to use with `retry`.
 ### retry
 Retry a function until the number of retries are reached or the function does no longer throw an exception.
 
-```php
+```
 retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
 retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
 ```
@@ -1361,14 +1361,14 @@ retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 ti
 ### construct
 Creates instance of given class.
 
-```php
+```
 construct('stdClass'); // object(stdClass)
 ```
 
 ### construct_with_args
 Creates instance of given class with arguments passed to `__construct` method.
 
-```php
+```
 $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);
 echo $user->first_name; // Slava
 ```
@@ -1376,14 +1376,14 @@ echo $user->first_name; // Slava
 ### flip_values
 Swaps the values of keys `a` and `b`.
 
-```php
+```
 flip_values('key1', 'key2', ['key1' => 'val1', 'key2' => 'val2']); // ['key1' => 'val2', 'key2' => 'val1']
 ```
 
 ### is_nth
 Function that helps you determine every Nth iteration of a loop.
 
-```php
+```
 $is10thIteration = is_nth(10);
 
 for ($i = 1; $i <= 20; $i++) {
@@ -1396,7 +1396,7 @@ for ($i = 1; $i <= 20; $i++) {
 ### publish
 Publishes any private method.
 
-```php
+```
 class Collection
 {
      public function filterNumbers(array $collection) {
@@ -1411,7 +1411,7 @@ class Collection
 The above will generate an error because `isInt` is a private method.
 
 This will work.
-```php
+```
 public function filterNumbers(array $collection)
 {
      return select(publish('isInt', $this), $collection);
@@ -1421,26 +1421,26 @@ public function filterNumbers(array $collection)
 ### str_split
 Alias of `explode`.
 
-```php
+```
 str_split(' ', 'Hello World'); // ['Hello', 'World']
 ```
 
 ### str_split_on
 Splits string on 2 parts by X position.
 
-```php
+```
 str_split_on(2, 'UA1234567890'); // ['UA', '1234567890']
 ```
 
 ### str_replace
 Alias of native `str_replace`.
 
-```php
+```
 str_replace(' ', '', 'a b c d e f'); // abcdef
 ```
 
 Use `partial_p` if you need $count argument:
-```php
+```
 $f = partial_p('str_replace', [
      1 => $search,
      2 => $replace,
@@ -1451,21 +1451,21 @@ $f = partial_p('str_replace', [
 ### str_starts_with
 Checks if `$string` starts with `$token`.
 
-```php
+```
 str_starts_with('http://', 'http://gitbub.com'); // true
 ```
 
 ### str_ends_with
 Checks if `$string` ends with `$token`.
 
-```php
+```
 str_ends_with('.com', 'http://gitbub.com'); // true
 ```
 
 ### str_test
 Checks if a string matches a regular expression.
 
-```php
+```
 $is_numeric = str_test('/^[0-9.]+$/');
 $is_numeric('123.43'); // true
 $is_numeric('12a3.43'); // false
@@ -1474,21 +1474,21 @@ $is_numeric('12a3.43'); // false
 ### str_pad_left
 Alias of `str_pad`.
 
-```php
+```
 str_pad_left('6', '0', '481'); // 000481
 ```
 
 ### str_pad_right
 Alias of `str_pad`.
 
-```php
+```
 str_pad_right('6', '0', '481'); // 481000
 ```
 
 ### str_contains_any
 Checks if any of the strings in an array `$needles` present in `$haystack` string.
 
-```php
+```
 str_contains_any(['a', 'b', 'c'], 'abc'); // true
 str_contains_any(['a', 'b', 'c'], 'a'); // true
 str_contains_any(['a', 'b', 'c'], ''); // false
@@ -1499,7 +1499,7 @@ str_contains_any(['a', 'b', 'c'], 'defg'); // false
 Checks if all of the strings in an array `$needles` present in `$haystack` string.
 Note: Will return true if `$needles` is an empty array.
 
-```php
+```
 str_contains_all(['a', 'b', 'c'], 'abc'); // true
 str_contains_all(['a', 'b', 'c'], 'cba'); // true
 str_contains_all(['a', 'b', 'c'], 'a'); // false
@@ -1510,7 +1510,7 @@ str_contains_all([], 'abc'); // true
 ### is_type_of
 Validates that the value is instance of specific class.
 
-```php
+```
 is_type_of(\User::class, new User()); // true
 is_type_of(\User::class, new SomeClass()); // false
 ```
@@ -1518,7 +1518,7 @@ is_type_of(\User::class, new SomeClass()); // false
 ### type_of
 Checks that the value is instance of specific class.
 
-```php
+```
 type_of(\User::class, new User()); // User
 type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
 ```
@@ -1526,7 +1526,7 @@ type_of(\User::class, new SomeClass()); // TypeException: Could not convert "Som
 ### type_bool
 Checks and coerces value to `bool`.
 
-```php
+```
 type_bool(true); // true
 type_bool(1); // true
 type_bool('1'); // true
@@ -1541,7 +1541,7 @@ Checks and coerces value to `string`.
 Object: method `__toString` will be called
 Array: all values will be concatenated with comma.
 
-```php
+```
 type_string('hello'); // 'hello'
 type_string(123); // '123'
 ```
@@ -1551,7 +1551,7 @@ Checks and coerces value to `non-empty-string`.
 Object: method `__toString` will be called
 Array: all values will be concatenated with comma.
 
-```php
+```
 type_non_empty_string('abc'); // 'abc'
 type_non_empty_string([]); // TypeException: Could not convert "array" to type "non-empty-string"
 ```
@@ -1559,7 +1559,7 @@ type_non_empty_string([]); // TypeException: Could not convert "array" to type "
 ### type_int
 Checks and coerces value to `int`.
 
-```php
+```
 type_int('123'); // 123
 type_int('007'); // 7
 type_int('1.0'); // 1
@@ -1568,7 +1568,7 @@ type_int('1.0'); // 1
 ### type_positive_int
 Checks and coerces value to `positive_int`.
 
-```php
+```
 type_positive_int(2); // 2
 type_positive_int('2'); // 2
 ```
@@ -1576,7 +1576,7 @@ type_positive_int('2'); // 2
 ### type_float
 Checks and coerces value to `float`.
 
-```php
+```
 type_float(123); // 123.0
 type_float('123'); // 123.0
 ```
@@ -1584,7 +1584,7 @@ type_float('123'); // 123.0
 ### type_union
 Union type.
 
-```php
+```
 $t = type_union(type_int, type_float);
 $t(1); // 1;
 $t(1.00); // 1
@@ -1594,7 +1594,7 @@ $t('1'); // 1
 ### type_array_key
 Checks and coerces value to valid array key that can either be an `int` or a `string`.
 
-```php
+```
 type_array_key(1); // 1
 type_array_key('some_key'); // some_key
 ```
@@ -1602,7 +1602,7 @@ type_array_key('some_key'); // some_key
 ### type_list
 Checks and coerces list values to `$type[]`.
 
-```php
+```
 type_list(type_int, [1, '2']); // [1, 2]
 type_list(type_int, [1, 2.0]); // [1, 2]
 type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
@@ -1611,7 +1611,7 @@ type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $enti
 ### type_array
 Checks and coerces array keys to `$keyType` and values to `$valueType`.
 
-```php
+```
 type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
 ```
 
@@ -1619,7 +1619,7 @@ type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1
 Checks array keys presence and coerces values to according types.
 All `key => value` pair that not described will be removed.
 
-```php
+```
 $parcelShape = type_shape([
      'description' => type_string,
      'value' => type_union(type_int, type_float),
@@ -1659,7 +1659,7 @@ $parcelShape([
 
 ### type_optional
 Makes sense to use in `type_shape`.
-```php
+```
 $typeUser = type_shape([
      'name' => type_string,
      'lastName' => type_string,
@@ -1678,7 +1678,7 @@ $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}
 ### write_file
 Race conditions safe file write.
 
-```php
+```
 $io = write_file(0666, '/path/to/file.txt', 'content');
 $io(); // Content write into file at this moment.
 ```
@@ -1686,7 +1686,7 @@ $io(); // Content write into file at this moment.
 ### read_file
 Read file contents.
 
-```php
+```
 $io = read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```

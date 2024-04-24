@@ -7,7 +7,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
 /**
  * Alias of `explode`.
  *
- * ```php
+ * ```
  * str_split(' ', 'Hello World'); // ['Hello', 'World']
  * ```
  *
@@ -34,7 +34,7 @@ define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
 /**
  * Splits string on 2 parts by X position.
  *
- * ```php
+ * ```
  * str_split_on(2, 'UA1234567890'); // ['UA', '1234567890']
  * ```
  *
@@ -67,12 +67,12 @@ define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
 /**
  * Alias of native `str_replace`.
  *
- * ```php
+ * ```
  * str_replace(' ', '', 'a b c d e f'); // abcdef
  * ```
  *
  * Use `partial_p` if you need $count argument:
- * ```php
+ * ```
  * $f = partial_p('str_replace', [
  *      1 => $search,
  *      2 => $replace,
@@ -107,7 +107,7 @@ define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
 /**
  * Checks if `$string` starts with `$token`.
  *
- * ```php
+ * ```
  * str_starts_with('http://', 'http://gitbub.com'); // true
  * ```
  *
@@ -134,7 +134,7 @@ define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
 /**
  * Checks if `$string` ends with `$token`.
  *
- * ```php
+ * ```
  * str_ends_with('.com', 'http://gitbub.com'); // true
  * ```
  *
@@ -161,7 +161,7 @@ define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
 /**
  * Checks if a string matches a regular expression.
  *
- * ```php
+ * ```
  * $is_numeric = str_test('/^[0-9.]+$/');
  * $is_numeric('123.43'); // true
  * $is_numeric('12a3.43'); // false
@@ -190,7 +190,7 @@ define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
 /**
  * Alias of `str_pad`.
  *
- * ```php
+ * ```
  * str_pad_left('6', '0', '481'); // 000481
  * ```
  *
@@ -223,7 +223,7 @@ define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
 /**
  * Alias of `str_pad`.
  *
- * ```php
+ * ```
  * str_pad_right('6', '0', '481'); // 481000
  * ```
  *
@@ -256,7 +256,7 @@ define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');
 /**
  * Checks if any of the strings in an array `$needles` present in `$haystack` string.
  *
- * ```php
+ * ```
  * str_contains_any(['a', 'b', 'c'], 'abc'); // true
  * str_contains_any(['a', 'b', 'c'], 'a'); // true
  * str_contains_any(['a', 'b', 'c'], ''); // false
@@ -286,7 +286,7 @@ define('Basko\Functional\str_contains_any', __NAMESPACE__ . '\\str_contains_any'
  * Checks if all of the strings in an array `$needles` present in `$haystack` string.
  * Note: Will return true if `$needles` is an empty array.
  *
- * ```php
+ * ```
  * str_contains_all(['a', 'b', 'c'], 'abc'); // true
  * str_contains_all(['a', 'b', 'c'], 'cba'); // true
  * str_contains_all(['a', 'b', 'c'], 'a'); // false

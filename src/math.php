@@ -7,7 +7,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
 /**
  * Check if number is even.
  *
- * ```php
+ * ```
  * is_even(4); // true
  * is_even(3); // false
  * ```
@@ -28,7 +28,7 @@ define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
 /**
  * Check if number is odd.
  *
- * ```php
+ * ```
  * is_odd(5); // true
  * is_odd(2); // false
  * ```
@@ -49,7 +49,7 @@ define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
 /**
  * Increments its argument.
  *
- * ```php
+ * ```
  * inc(41); // 42
  * ```
  *
@@ -69,7 +69,7 @@ define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
 /**
  * Decrements its argument.
  *
- * ```php
+ * ```
  * dec(43); // 42
  * ```
  *
@@ -89,7 +89,7 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
 /**
  * Perform `$a + $b`.
  *
- * ```php
+ * ```
  * plus(4, 2); // 6
  * ```
  *
@@ -122,7 +122,7 @@ define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
 /**
  * Perform `$a - $b`.
  *
- * ```php
+ * ```
  * minus(4, 2); // 2
  * ```
  *
@@ -155,7 +155,7 @@ define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
 /**
  * Perform `$a / $b`.
  *
- * ```php
+ * ```
  * div(4, 2); // 2
  * ```
  *
@@ -188,7 +188,7 @@ define('Basko\Functional\div', __NAMESPACE__ . '\\div');
 /**
  * Modulo of two numbers.
  *
- * ```php
+ * ```
  * modulo(1089, 37)); // 16
  * ```
  *
@@ -221,7 +221,7 @@ define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo');
 /**
  * Perform `$a * $b`.
  *
- * ```php
+ * ```
  * multiply(4, 2); // 8
  * ```
  *
@@ -254,7 +254,7 @@ define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply');
 /**
  * Fold list with `plus`.
  *
- * ```php
+ * ```
  * sum([3, 2, 1]); // 6
  * ```
  *
@@ -274,7 +274,7 @@ define('Basko\Functional\sum', __NAMESPACE__ . '\\sum');
 /**
  * Fold list with `minus`.
  *
- * ```php
+ * ```
  * diff([10, 2, 1]); // 7
  * ```
  *
@@ -296,7 +296,7 @@ define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
 /**
  * Fold list with `div`.
  *
- * ```php
+ * ```
  * divide([20, 2, 2]); // 5
  * ```
  *
@@ -318,7 +318,7 @@ define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
 /**
  * Fold list with `multiply`.
  *
- * ```php
+ * ```
  * product([4, 2, 2]); // 16
  * ```
  *
@@ -340,7 +340,7 @@ define('Basko\Functional\product', __NAMESPACE__ . '\\product');
 /**
  * Calculate average value.
  *
- * ```php
+ * ```
  * average([1, 2, 3, 4, 5, 6, 7]); // 4
  * ```
  *
@@ -361,7 +361,7 @@ define('Basko\Functional\average', __NAMESPACE__ . '\\average');
 /**
  * Power its argument.
  *
- * ```php
+ * ```
  * power(4); // 16
  * ```
  *
@@ -381,7 +381,7 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power');
 /**
  * Calculate median.
  *
- * ```php
+ * ```
  * median([2, 9, 7]); // 7
  * median([7, 2, 10, 9]); // 8
  * ```
@@ -415,7 +415,7 @@ define('Basko\Functional\median', __NAMESPACE__ . '\\median');
 /**
  * Restricts a value to be within a range.
  *
- * ```php
+ * ```
  * clamp(1, 10, -5); // 1
  * clamp(1, 10, 15); // 10
  * clamp(1, 10, 4); // 4
@@ -456,7 +456,7 @@ define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');
  *
  * Note: This function is not curried because of no fixed arity.
  *
- * ```php
+ * ```
  * $ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
  * $suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
  *

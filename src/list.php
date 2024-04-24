@@ -8,7 +8,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * Produces a new list of elements by mapping each element in list through a transformation function.
  * Function arguments will be `element`, `index`, `list`.
  *
- * ```php
+ * ```
  * map(plus(1), [1, 2, 3]); // [2, 3, 4]
  * ```
  *
@@ -55,7 +55,7 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
  * `flat_map($data)` differs from `flatten(map($data))` because it only flattens one level of nesting,
  * whereas flatten will recursively flatten nested collections. Indexes will not preserve.
  *
- * ```php
+ * ```
  * $items = [
  *      [
  *          'id' => 1,
@@ -121,7 +121,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
  * Calls `$f` on each element in list. Returns origin `$list`.
  * Function arguments will be `element`, `index`, `list`.
  *
- * ```php
+ * ```
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
  * ```
  *
@@ -160,7 +160,7 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
 /**
  * Applies a function to each element in the list and reduces it to a single value.
  *
- * ```php
+ * ```
  * fold(concat, '4', [5, 1]); // 451
  *
  * function sc($a, $b)
@@ -201,7 +201,7 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
 /**
  * The same as `fold` but accumulator on the right.
  *
- * ```php
+ * ```
  * fold_r(concat, '4', [5, 1]); // 514
  *
  * function sc($a, $b)
@@ -248,7 +248,7 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
 /**
  * Returns a new list containing the contents of the given list, followed by the given element.
  *
- * ```php
+ * ```
  * append('three', ['one', 'two']); // ['one', 'two', 'three']
  * ```
  *
@@ -280,7 +280,7 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append');
 /**
  * Returns a new list with the given element at the front, followed by the contents of the list.
  *
- * ```php
+ * ```
  * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
  * ```
  *
@@ -311,7 +311,7 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
 /**
  * Extract a property from a list of objects.
  *
- * ```php
+ * ```
  * pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
  * ```
  *
@@ -355,7 +355,7 @@ define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
 /**
  * Looks through each element in the list, returning the first one.
  *
- * ```php
+ * ```
  * head([
  *      ['name' => 'jack', 'score' => 1],
  *      ['name' => 'mark', 'score' => 9],
@@ -412,7 +412,7 @@ define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
 /**
  * Returns all items from `$list` except first element (head). Preserves `$list` keys.
  *
- * ```php
+ * ```
  * tail([
  *      ['name' => 'jack', 'score' => 1],
  *      ['name' => 'mark', 'score' => 9],
@@ -449,7 +449,7 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
  * Returns all items from `$list` except first element (head) if `$f` returns true. Preserves `$list` keys.
  * Can be considered as `tail` + `select`.
  *
- * ```php
+ * ```
  * tail_by(f\compose(gt(8), prop('score')), [
  *      ['name' => 'jack', 'score' => 1],
  *      ['name' => 'mark', 'score' => 9],
@@ -492,7 +492,7 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
  * Opposite is `reject()`. Function arguments will be `element`, `index`, `list`.
  *
- * ```php
+ * ```
  * $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
  * ```
  *
@@ -526,7 +526,7 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select');
  * Returns the elements in list without the elements that the test (function) passes.
  * The opposite of `select()`. Function arguments will be `element`, `index`, `list`.
  *
- * ```php
+ * ```
  * $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
  * ```
  *
@@ -560,7 +560,7 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
  * Returns true if the list contains the given value. If the third parameter is
  * true values will be compared in strict mode.
  *
- * ```php
+ * ```
  * contains('foo', ['foo', 'bar']); // true
  * contains('foo', 'foo and bar'); // true
  * ```
@@ -598,7 +598,7 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains');
  * the whole list will be returned as an array.
  * For strings its works like `substr`.
  *
- * ```php
+ * ```
  * take(2, [1, 2, 3]); // [0 => 1, 1 => 2]
  * take(4, 'Slava'); // 'Slav'
  * ```
@@ -637,7 +637,7 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take');
  * the whole list will be returned as an array.
  * For strings its works like `substr`.
  *
- * ```php
+ * ```
  * take_r(2, [1, 2, 3]); // [1 => 2, 2 => 3]
  * take_r(4, 'Slava'); // 'lava'
  * ```
@@ -677,7 +677,7 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
  * First element is first, but not zero. So you need to write `nth(1, ['one', 'two']); // one` if you want first item.
  * Consider `$elementNumber` as a position but not index.
  *
- * ```php
+ * ```
  * nth(1, ['foo', 'bar', 'baz', 'qwe']); // 'foo'
  * nth(-1, ['foo', 'bar', 'baz', 'qwe']); // 'qwe'
  * nth(1, 'Slava'); // 'S'
@@ -727,7 +727,7 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
 /**
  * Groups a list by index returned by `$f` function.
  *
- * ```php
+ * ```
  * group(prop('type'), [
  *      [
  *          'name' => 'john',
@@ -787,7 +787,7 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  * Elements are not re-ordered and have the same index they had in the
  * original array.
  *
- * ```php
+ * ```
  * list($best, $good_students, $others) = partition(
  *      [
  *          compose(partial_r(gte, 9), prop('score')),
@@ -833,7 +833,7 @@ define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
 /**
  * Takes a nested combination of list and returns their contents as a single, flat list.
  *
- * ```php
+ * ```
  * flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
  * flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
  * ```
@@ -864,7 +864,7 @@ define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten');
  * Takes a nested combination of list and returns their contents as a single, flat list.
  * Keys concatenated by `.` and element index.
  *
- * ```php
+ * ```
  * flatten_with_keys([
  *  'title' => 'Some title',
  *  'body' => 'content',
@@ -919,7 +919,7 @@ define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_key
  * Insert a given value between each element of a collection.
  * Indexes are not preserved.
  *
- * ```php
+ * ```
  * intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
  * ```
  *
@@ -952,7 +952,7 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 /**
  * Sorts a list with a user-defined function.
  *
- * ```php
+ * ```
  * sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
  * ```
  *
@@ -996,7 +996,7 @@ define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
  * Makes a comparator function out of a function that reports whether the first
  * element is less than the second.
  *
- * ```php
+ * ```
  * $ar = [1, 1, 2, 3, 5, 8];
  * usort($ar, comparator(function ($a, $b) {
  *      return $a < $b;
@@ -1030,7 +1030,7 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
 /**
  * Makes an ascending comparator function out of a function that returns a value that can be compared with `<` and `>`.
  *
- * ```php
+ * ```
  * sort(ascend(prop('age')), [
  *      ['name' => 'Emma', 'age' => 70],
  *      ['name' => 'Peter', 'age' => 78],
@@ -1063,7 +1063,7 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
 /**
  * Makes a descending comparator function out of a function that returns a value that can be compared with `<` and `>`.
  *
- * ```php
+ * ```
  * sort(descend(prop('age')), [
  *      ['name' => 'Emma', 'age' => 70],
  *      ['name' => 'Peter', 'age' => 78],
@@ -1098,7 +1098,7 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
  * based upon the value returned by applying the supplied function to each list element.
  * Prefers the first item if the supplied function produces the same value on two items.
  *
- * ```php
+ * ```
  * uniq_by('abs', [-1, -5, 2, 10, 1, 2]); // [-1, -5, 2, 10]
  * ```
  *
@@ -1134,7 +1134,7 @@ define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by');
 /**
  * Returns a new list containing only one copy of each element in the original list.
  *
- * ```php
+ * ```
  * uniq([1, 1, 2, 1]); // [1, 2]
  * uniq([1, '1']); // [1, '1']
  * ```
@@ -1196,7 +1196,7 @@ function _zip()
  *
  * Note: This function is not curried because of no fixed arity.
  *
- * ```php
+ * ```
  * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
  * ```
  *
@@ -1219,7 +1219,7 @@ define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
  * As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
  * But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
  *
- * ```php
+ * ```
  * zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
  * ```
  *
@@ -1246,7 +1246,7 @@ define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with');
 /**
  * Returns all possible permutations.
  *
- * ```php
+ * ```
  * permute(['a', 'b']); // [['a', 'b'], ['b', 'a']]
  * ```
  *

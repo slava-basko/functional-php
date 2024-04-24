@@ -7,7 +7,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
 /**
  * Return number of function arguments.
  *
- * ```php
+ * ```
  * count_args('explode'); // 3
  * ```
  *
@@ -73,7 +73,7 @@ define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n');
  * Return a curried version of the given function. You can decide if you also
  * want to curry optional parameters or not.
  *
- * ```php
+ * ```
  * function add($a, $b, $c) {
  *      return $a + $b + $c;
  * };
@@ -103,7 +103,7 @@ define('Basko\Functional\curry', __NAMESPACE__ . '\\curry');
  * Creates a thunk out of a function. A thunk delays calculation until its result is needed,
  * providing lazy evaluation of arguments.
  *
- * ```php
+ * ```
  * $add = function($a, $b) {
  *      return $a + $b;
  * };
@@ -140,7 +140,7 @@ function _thunkify_n(callable $f, $count)
  * Return function `$f` that will be called only with `abs($count)` arguments,
  * taken either from the left or right depending on the sign.
  *
- * ```php
+ * ```
  * $f = static function ($a = 0, $b = 0, $c = 0) {
  *      return $a + $b + $c;
  * };
@@ -176,7 +176,7 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary');
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 1 parameter.
  * Any extraneous parameters will not be passed to the supplied function.
  *
- * ```php
+ * ```
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
@@ -197,7 +197,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
  * Wraps a function of any arity (including nullary) in a function that accepts exactly 2 parameters.
  * Any extraneous parameters will not be passed to the supplied function.
  *
- * ```php
+ * ```
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };

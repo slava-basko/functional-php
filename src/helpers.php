@@ -100,7 +100,7 @@ function _value_to_key($value)
 /**
  * Returns arguments as a list.
  *
- * ```php
+ * ```
  * to_list(1, 2, 3); // [1, 2, 3]
  * to_list('1, 2, 3'); // [1, 2, 3]
  * ```
@@ -122,7 +122,7 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list');
 /**
  * Concatenates `$a` with `$b`.
  *
- * ```php
+ * ```
  * concat('foo', 'bar'); // 'foobar'
  * ```
  *
@@ -155,7 +155,7 @@ define('Basko\Functional\concat', __NAMESPACE__ . '\\concat');
 /**
  * Concatenates all given arguments.
  *
- * ```php
+ * ```
  * concat('foo', 'bar', 'baz'); // 'foobarbaz'
  * ```
  *
@@ -175,7 +175,7 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
  * Returns a string made by inserting the separator between each element and concatenating all the elements
  * into a single string.
  *
- * ```php
+ * ```
  * join('|', [1, 2, 3]); // '1|2|3'
  * ```
  *
@@ -215,7 +215,7 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join');
 /**
  * Performs an `if/else` condition over a value using functions as statements.
  *
- * ```php
+ * ```
  * $ifFoo = if_else(eq('foo'), always('bar'), always('baz'));
  * $ifFoo('foo'); // 'bar'
  * $ifFoo('qux'); // 'baz'
@@ -253,7 +253,7 @@ define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else');
 /**
  * Creates a function that can be used to repeat the execution of `$f`.
  *
- * ```php
+ * ```
  * repeat(thunkify('print_r')('Hello'))(3); // Print 'Hello' 3 times
  * ```
  *
@@ -282,7 +282,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
  * and returns its result. For effective composition with this function, both the tryer and catcher functions
  * must return the same type of results.
  *
- * ```php
+ * ```
  * try_catch(function () {
  *      throw new \Exception();
  * }, always('val'))(); // 'val'
@@ -343,7 +343,7 @@ define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch');
 /**
  * Returns a function that invokes method `$method` with arguments `$methodArguments` on the object.
  *
- * ```php
+ * ```
  * array_filter([$user1, $user2], invoker('isActive')); // only active users
  * ```
  *
@@ -370,7 +370,7 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker');
 /**
  * Count length of string or number of elements in the array.
  *
- * ```php
+ * ```
  * len('foo'); // 3
  * len(['a', 'b']); // 2
  * ```
@@ -403,7 +403,7 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len');
 /**
  * Returns a function that when supplied an object returns the indicated property of that object, if it exists.
  *
- * ```php
+ * ```
  * prop(0, [99]); // 99
  * prop('x', ['x' => 100]); // 100
  * $object = new \stdClass();
@@ -458,7 +458,7 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop');
 /**
  * Thunkified version of `prop` function, for more easily composition with `either` for example.
  *
- * ```php
+ * ```
  * prop_thunk(0, [99])(); // 99
  * ```
  *
@@ -480,7 +480,7 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
 /**
  * Nested version of `prop` function.
  *
- * ```php
+ * ```
  * prop_path(['b', 'c'], [
  *      'a' => 1,
  *      'b' => [
@@ -518,7 +518,7 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
 /**
  * Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
  *
- * ```php
+ * ```
  * props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
  * ```
  *
@@ -555,7 +555,7 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props');
 /**
  * Creates a shallow clone of a list with an overwritten value at a specified index.
  *
- * ```php
+ * ```
  * assoc('bar', 42, ['foo' => 'foo', 'bar' => 'bar']); // ['foo' => 'foo', 'bar' => 42]
  *
  * assoc(
@@ -606,7 +606,7 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
 /**
  * Same as `assoc`, but it allows to specify element by its number rather than named key.
  *
- * ```php
+ * ```
  * assoc_element(1, 999, [10, 20, 30]); // [999, 20, 30]
  * assoc_element(-1, 999, [10, 20, 30]); // [10, 20, 999]
  * ```
@@ -650,7 +650,7 @@ define('Basko\Functional\assoc_element', __NAMESPACE__ . '\\assoc_element');
 /**
  * Nested version of `assoc` function.
  *
- * ```php
+ * ```
  * assoc_path(['bar', 'baz'], 42, ['foo' => 'foo', 'bar' => ['baz' => 41]]); // ['foo' => 'foo', 'bar' => ['baz' => 42]]
  * ```
  *
@@ -694,7 +694,7 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
 /**
  * Returns a function that invokes `$method` with arguments `$arguments` on the $object.
  *
- * ```php
+ * ```
  * to_fn($obj, 'someMethod', ['arg'])(); // Equal to $obj->someMethod('arg');
  * ```
  *
@@ -721,7 +721,7 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn');
 /**
  * Takes two arguments, `$fst` and `$snd`, and returns `[$fst, $snd]`.
  *
- * ```php
+ * ```
  * pair('foo', 'bar'); // ['foo', 'bar']
  * ```
  *
@@ -779,14 +779,14 @@ function _either()
  * if it is truth-y and the result of the next function otherwise.
  * Note: Will return result of the last function if all fail.
  *
- * ```php
+ * ```
  * $value = either(prop('prop1'), prop('prop2'), prop('prop3'));
  * $value([
  *      'prop2' => 'some value'
  * ]); // 'some value'
  * ```
  *
- * @return callable|mixed
+ * @return callable
  * @no-named-arguments
  */
 function either()
@@ -801,7 +801,7 @@ define('Basko\Functional\either', __NAMESPACE__ . '\\either');
  * if it is not NULL and the result of the next function otherwise.
  * Note: Will return NULL if all fail.
  *
- * @return callable|mixed
+ * @return callable
  * @no-named-arguments
  */
 function either_strict()
@@ -814,7 +814,7 @@ define('Basko\Functional\either_strict', __NAMESPACE__ . '\\either_strict');
 /**
  * Quote given string.
  *
- * ```php
+ * ```
  * quote('foo'); // "foo"
  * map(quote, ['foo', 'bar']); // ['"foo"', '"bar"']
  * ```
@@ -849,7 +849,7 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
 /**
  * Returns an array only with the specified keys.
  *
- * ```php
+ * ```
  * only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
  * ```
  *
@@ -886,7 +886,7 @@ define('Basko\Functional\only_keys', __NAMESPACE__ . '\\only_keys');
 /**
  * Drops specified keys.
  *
- * ```php
+ * ```
  * omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
  * ```
  *
@@ -916,7 +916,7 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
 /**
  * Applies provided function to specified keys.
  *
- * ```php
+ * ```
  * map_keys('strtoupper', ['foo'], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
  * ```
  *
@@ -955,7 +955,7 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  * Applies provided function to N-th elements of an array.
  * First element is first, but not zero (similar to `nth` function).
  *
- * ```php
+ * ```
  * map_elements('strtoupper', [1], ['foo' => 'val1', 'bar' => 'val2']); // ['foo' => 'VAL1', 'bar' => 'val2']
  * ```
  *
@@ -995,7 +995,7 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
 /**
  * Finds if a given array has all of the required keys set.
  *
- * ```php
+ * ```
  * find_missing_keys(
  *      ['login', 'email'],
  *      ['login' => 'admin']
@@ -1026,7 +1026,7 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
  * Creates copy of provided value. `clone` will be called for objects.
  * You can overwrite `clone` and provide your specific function, just define `CLONE_FUNCTION` constant.
  *
- * ```php
+ * ```
  * $obj = new \stdClass();  // object hash: 00000000000000030000000000000000
  * cp($obj);                // object hash: 00000000000000070000000000000000
  * ```
@@ -1057,7 +1057,7 @@ define('Basko\Functional\cp', __NAMESPACE__ . '\\cp');
 /**
  * Return random value from list.
  *
- * ```php
+ * ```
  * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
  * ```
  *
@@ -1091,7 +1091,7 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
  * Creates an associative array using a `$keyProp` as the path to build its keys,
  * and `$valueProp` as path to get the values.
  *
- * ```php
+ * ```
  * combine('alpha2', 'name', [
  *      [
  *          'name' => 'Netherlands',
@@ -1206,7 +1206,7 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
 /**
  * Retry a function until the number of retries are reached or the function does no longer throw an exception.
  *
- * ```php
+ * ```
  * retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
  * retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
  * ```
@@ -1260,7 +1260,7 @@ define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
 /**
  * Creates instance of given class.
  *
- * ```php
+ * ```
  * construct('stdClass'); // object(stdClass)
  * ```
  *
@@ -1279,7 +1279,7 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct');
 /**
  * Creates instance of given class with arguments passed to `__construct` method.
  *
- * ```php
+ * ```
  * $user = construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);
  * echo $user->first_name; // Slava
  * ```
@@ -1304,7 +1304,7 @@ define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with
 /**
  * Swaps the values of keys `a` and `b`.
  *
- * ```php
+ * ```
  * flip_values('key1', 'key2', ['key1' => 'val1', 'key2' => 'val2']); // ['key1' => 'val2', 'key2' => 'val1']
  * ```
  *
@@ -1339,7 +1339,7 @@ define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values');
 /**
  * Function that helps you determine every Nth iteration of a loop.
  *
- * ```php
+ * ```
  * $is10thIteration = is_nth(10);
  *
  * for ($i = 1; $i <= 20; $i++) {
@@ -1376,7 +1376,7 @@ define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth');
 /**
  * Publishes any private method.
  *
- * ```php
+ * ```
  * class Collection
  * {
  *      public function filterNumbers(array $collection) {
@@ -1391,7 +1391,7 @@ define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth');
  * The above will generate an error because `isInt` is a private method.
  *
  * This will work.
- * ```php
+ * ```
  * public function filterNumbers(array $collection)
  * {
  *      return select(publish('isInt', $this), $collection);

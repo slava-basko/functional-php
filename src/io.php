@@ -8,7 +8,7 @@ use Basko\Functional\Functor\IO;
 /**
  * Race conditions safe file write.
  *
- * ```php
+ * ```
  * $io = write_file(0666, '/path/to/file.txt', 'content');
  * $io(); // Content write into file at this moment.
  * ```
@@ -82,7 +82,7 @@ define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file');
 /**
  * Read file contents.
  *
- * ```php
+ * ```
  * $io = read_file('/path/to/file.txt');
  * $content = $io(); // Content read from file at this moment.
  * ```

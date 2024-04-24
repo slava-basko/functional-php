@@ -12,7 +12,7 @@ use Basko\Functional\Functor\Optional;
 /**
  * Function that do nothing.
  *
- * ```php
+ * ```
  * noop(); // nothing happen
  * noop('some string'); // nothing happen
  * ```
@@ -28,7 +28,7 @@ define('Basko\Functional\noop', __NAMESPACE__ . '\\noop');
 /**
  * Return the parameter supplied to it.
  *
- * ```php
+ * ```
  * identity(1); // 1
  *
  * $obj = new \stdClass;
@@ -50,7 +50,7 @@ define('Basko\Functional\identity', __NAMESPACE__ . '\\identity');
 /**
  * Always return `true`.
  *
- * ```php
+ * ```
  * T(); // true
  * ```
  *
@@ -66,7 +66,7 @@ define('Basko\Functional\T', __NAMESPACE__ . '\\T');
 /**
  * Always return `false`.
  *
- * ```php
+ * ```
  * F(); // false
  * ```
  *
@@ -82,7 +82,7 @@ define('Basko\Functional\F', __NAMESPACE__ . '\\F');
 /**
  * Always return `null`.
  *
- * ```php
+ * ```
  * N(); // null
  * ```
  *
@@ -98,7 +98,7 @@ define('Basko\Functional\N', __NAMESPACE__ . '\\N');
 /**
  * Runs PHP comparison operator `==`.
  *
- * ```php
+ * ```
  * eq(1, 1); // true
  * eq(1, '1'); // true
  * eq(1, 2); // false
@@ -125,7 +125,7 @@ define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
 /**
  * Runs PHP comparison operator `===`.
  *
- * ```php
+ * ```
  * identical(1, 1); // true
  * identical(1, '1'); // false
  * ```
@@ -151,7 +151,7 @@ define('Basko\Functional\identical', __NAMESPACE__ . '\\identical');
 /**
  * Returns true if the first argument is less than the second; false otherwise.
  *
- * ```php
+ * ```
  * lt(2, 1); // false
  * lt(2, 2); // false
  * lt(2, 3); // true
@@ -180,7 +180,7 @@ define('Basko\Functional\lt', __NAMESPACE__ . '\\lt');
 /**
  * Returns true if the first argument is less than or equal to the second; false otherwise.
  *
- * ```php
+ * ```
  * lte(2, 1); // false
  * lte(2, 2); // true
  * lte(2, 3); // true
@@ -209,7 +209,7 @@ define('Basko\Functional\lte', __NAMESPACE__ . '\\lte');
 /**
  * Returns true if the first argument is greater than the second; false otherwise.
  *
- * ```php
+ * ```
  * gt(2, 1); // true
  * gt(2, 2); // false
  * gt(2, 3); // false
@@ -238,7 +238,7 @@ define('Basko\Functional\gt', __NAMESPACE__ . '\\gt');
 /**
  * Returns true if the first argument is greater than or equal to the second; false otherwise.
  *
- * ```php
+ * ```
  * gte(2, 1); // true
  * gte(2, 2); // true
  * gte(2, 3); // false
@@ -267,7 +267,7 @@ define('Basko\Functional\gte', __NAMESPACE__ . '\\gte');
 /**
  * Decorates given function with tail recursion optimization using trampoline.
  *
- * ```php
+ * ```
  * $fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
  *      if ($n == 0) {
  *          return $acc;
@@ -307,7 +307,7 @@ define('Basko\Functional\tail_recursion', __NAMESPACE__ . '\\tail_recursion');
 /**
  * Returns the `!` of its argument.
  *
- * ```php
+ * ```
  * not(true); // false
  * not(false); // true
  * not(0); // true
@@ -328,7 +328,7 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not');
 /**
  * Logical negation of the given function `$f`.
  *
- * ```php
+ * ```
  * $notString = complement('is_string');
  * $notString(1); // true
  * ```
@@ -349,7 +349,7 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement');
 /**
  * Call the given function with the given value, then return the value.
  *
- * ```php
+ * ```
  * $input = new \stdClass();
  * $input->property = 'foo';
  * tap(function ($o) {
@@ -360,7 +360,7 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement');
  *
  * Also, this function useful as a debug in the `pipe`.
  *
- * ```php
+ * ```
  * pipe(
  *      'strrev',
  *      tap('var_dump'),
@@ -394,7 +394,7 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
 /**
  * Wrap value within a function, which will return it, without any modifications. Kinda constant function.
  *
- * ```php
+ * ```
  * $constA = always('a');
  * $constA(); // 'a'
  * $constA(); // 'a'
@@ -419,7 +419,7 @@ define('Basko\Functional\always', __NAMESPACE__ . '\\always');
  * `compose(f, g, h)` is the same as `f(g(h(x)))`.
  * Note: Lenses don't compose backwards https://www.reddit.com/r/haskell/comments/23x3f3/lenses_dont_compose_backwards/
  *
- * ```php
+ * ```
  * $powerPlus1 = compose(plus(1), power);
  * $powerPlus1(3); // 10
  * ```
@@ -454,7 +454,7 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
  * Performs left to right function composition.
  * `pipe(f, g, h)` is the same as `h(g(f(x)))`.
  *
- * ```php
+ * ```
  * $plus1AndPower = pipe(plus(1), power);
  * $plus1AndPower(3); // 16
  * ```
@@ -490,7 +490,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  * The results of each branching function are passed as arguments
  * to the converging function to produce the return value.
  *
- * ```php
+ * ```
  * function div($dividend, $divisor) {
  *      return $dividend / $divisor;
  * }
@@ -573,7 +573,7 @@ define('Basko\Functional\call_array', __NAMESPACE__ . '\\call_array');
 /**
  * Create a function that will pass arguments to a given function.
  *
- * ```php
+ * ```
  * $fiveAndThree = apply_to([5, 3]);
  * $fiveAndThree(sum); // 8
  * ```
@@ -606,7 +606,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
  * Performs an operation checking for the given conditions.
  * Returns a new function that behaves like a match operator. Encapsulates `if/elseif,elseif, ...` logic.
  *
- * ```php
+ * ```
  * $cond = cond([
  *      [eq(0), always('water freezes')],
  *      [partial_r(gte, 100), always('water boils')],
@@ -649,7 +649,7 @@ define('Basko\Functional\cond', __NAMESPACE__ . '\\cond');
  * `curry` uses reflection to get the number of function arguments,
  * but this is not possible on the function returned from flip. Instead, use `curry_n` on flipped functions.
  *
- * ```php
+ * ```
  * $mergeStrings = function ($head, $tail) {
  *      return $head . $tail;
  * };
@@ -673,7 +673,7 @@ define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped');
 /**
  * Returns function which accepts two arguments in the reversed order.
  *
- * ```php
+ * ```
  * $gt9 = flip(gt)(9);
  * $gt9(10); // true
  * $gt9(7); // false
@@ -705,7 +705,7 @@ define('Basko\Functional\flip', __NAMESPACE__ . '\\flip');
  * then applies the result of each to `$f`.
  * Also known as the P combinator.
  *
- * ```php
+ * ```
  * $containsInsensitive = on(contains, 'strtolower');
  * $containsInsensitive('o', 'FOO'); // true
  * ```
@@ -736,7 +736,7 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on');
  * Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
  * Also known as the Y combinator.
  *
- * ```php
+ * ```
  * function factorial($n) {
  *      return ($n <= 1) ? 1 : $n * factorial($n - 1);
  * }
@@ -751,7 +751,7 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on');
  * ```
  *
  * You can't call anonymous function recursively. But you can use `y` to make it possible.
- * ```php
+ * ```
  * $factorial = y(function ($fact) {
  *      return function ($n) use ($fact) {
  *          return ($n <= 1) ? 1 : $n * $fact($n - 1);
@@ -780,7 +780,7 @@ define('Basko\Functional\y', __NAMESPACE__ . '\\y');
 /**
  * Acts as the boolean `and` statement.
  *
- * ```php
+ * ```
  * both(T(), T()); // true
  * both(F(), T()); // false
  * $between6And9 = both(flip(gt)(6), flip(lt)(9));
@@ -822,7 +822,7 @@ define('Basko\Functional\both', __NAMESPACE__ . '\\both');
  * Takes a list of predicates and returns a predicate that returns true for a given list of arguments
  * if every one of the provided predicates is satisfied by those arguments.
  *
- * ```php
+ * ```
  * $isQueen = pipe(prop('rank'), eq('Q'));
  * $isSpade = pipe(prop('suit'), eq('♠︎'));
  * $isQueenOfSpades = all_pass([$isQueen, $isSpade]);
@@ -868,7 +868,7 @@ define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass');
  * Takes a list of predicates and returns a predicate that returns true for a given list of arguments
  * if at least one of the provided predicates is satisfied by those arguments.
  *
- * ```php
+ * ```
  * $isClub = pipe(prop('suit'), eq('♣'));
  * $isSpade = pipe(prop('suit'), eq('♠'));
  * $isBlackCard = any_pass([$isClub, $isSpade]);
@@ -914,7 +914,7 @@ define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass');
 /**
  * Applies a list of functions to a list of values.
  *
- * ```php
+ * ```
  * ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
  * ```
  *
@@ -1009,7 +1009,7 @@ define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
  * In particular, the function to be memoized should never rely on a state of a
  * mutable object. Only immutable objects are safe.
  *
- * ```php
+ * ```
  * $randAndSalt = function ($salt) {
  *      return rand(1, 100) . $salt;
  * };

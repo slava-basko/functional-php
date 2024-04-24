@@ -10,7 +10,7 @@ use Basko\Functional\Functor\Identity;
  * Returns a lens for the given getter and setter functions.
  * The getter "gets" the value of the focus; the setter "sets" the value of the focus.
  *
- * ```php
+ * ```
  * $xLens = lens(prop('x'), assoc('x'));
  * view($xLens, ['x' => 1, 'y' => 2]); // 1
  * set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
@@ -44,7 +44,7 @@ define('Basko\Functional\lens', __NAMESPACE__ . '\\lens');
 /**
  * Returns a "view" of the given data structure, determined by the given lens.
  *
- * ```php
+ * ```
  * $xLens = lens_prop('x');
  * view($xLens, ['x' => 1, 'y' => 2]); // 1
  * view($xLens, ['x' => 4, 'y' => 2]); // 4
@@ -69,7 +69,7 @@ define('Basko\Functional\view', __NAMESPACE__ . '\\view');
  * Returns the result of "setting" the portion of the given data structure
  * focused by the given lens to the result of applying the given function to the focused value.
  *
- * ```php
+ * ```
  * $xLens = lens_prop('x');
  * over($xLens, plus(100), ['x' => 1, 'y' => 2]); // ['x' => 101, 'y' => 2]
  * ```
@@ -96,7 +96,7 @@ define('Basko\Functional\over', __NAMESPACE__ . '\\over');
 /**
  * Returns the result of "setting" the portion of the given data structure focused by the given lens to the given value.
  *
- * ```php
+ * ```
  * $xLens = lens_prop('x');
  * set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
  * set($xLens, 8, ['x' => 1, 'y' => 2]); // ['x' => 8, 'y' => 2]
@@ -118,7 +118,7 @@ define('Basko\Functional\set', __NAMESPACE__ . '\\set');
 /**
  * Returns a lens whose focus is the specified property.
  *
- * ```php
+ * ```
  * $xLens = lens_prop('x');
  * view($xLens, ['x' => 1, 'y' => 2]); // 1
  * set($xLens, 4, ['x' => 1, 'y' => 2]); // ['x' => 4, 'y' => 2]
@@ -141,7 +141,7 @@ define('Basko\Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
 /**
  * Returns a lens whose focus is the specified path.
  *
- * ```php
+ * ```
  * $data = [
  *      'a' => 1,
  *      'b' => [
@@ -168,7 +168,7 @@ define('Basko\Functional\lens_prop_path', __NAMESPACE__ . '\\lens_prop_path');
 /**
  * Returns a lens whose focus is the specified `nth` element.
  *
- * ```php
+ * ```
  * view(lens_element(1), [10, 20, 30]); // 10
  * view(lens_element(-1), [10, 20, 30]); // 30
  * set(lens_element(1), 99, [10, 20, 30]); // [99, 20, 30]
