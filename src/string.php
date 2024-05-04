@@ -98,6 +98,7 @@ function str_replace($search, $replace = null, $string = null)
     }
 
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     return \str_replace($search, $replace, $string);
 }
@@ -129,6 +130,7 @@ function str_replace_first($search, $replace = null, $string = null)
     }
 
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     $pos = \strpos($string, $search);
     if ($pos !== false) {
@@ -249,6 +251,7 @@ function str_pad_left($length, $pad_string = null, $string = null)
         return partial(str_pad_left, $length, $pad_string);
     }
 
+    InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     return \str_pad($string, $length, $pad_string, STR_PAD_LEFT);
@@ -282,6 +285,7 @@ function str_pad_right($length, $pad_string = null, $string = null)
         return partial(str_pad_right, $length, $pad_string);
     }
 
+    InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
     return \str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
@@ -348,3 +352,38 @@ function str_contains_all(array $needles, $haystack = null)
 }
 
 define('Basko\Functional\str_contains_all', __NAMESPACE__ . '\\str_contains_all');
+
+/**
+ * Surrounds a string with a prefix and suffix.
+ *
+ * ```
+ * str_surround('(', ')', 'abc'); // (abc)
+ * str_surround('<strong>', '</strong>', 'abc'); // <strong>abc</strong>
+ * ```
+ *
+ * @param string $prefix
+ * @param string $suffix
+ * @param string $string
+ * @return callable|string
+ * @no-named-arguments
+ */
+function str_surround($prefix, $suffix = null, $string = null)
+{
+    InvalidArgumentException::assertString($prefix, __FUNCTION__, 1);
+
+    $n = \func_num_args();
+    if ($n === 1) {
+        return partial(str_surround, $prefix);
+    } elseif ($n === 2) {
+        InvalidArgumentException::assertString($suffix, __FUNCTION__, 2);
+
+        return partial(str_surround, $prefix, $suffix);
+    }
+
+    InvalidArgumentException::assertString($suffix, __FUNCTION__, 2);
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
+
+    return $prefix . $string . $suffix;
+}
+
+define('Basko\Functional\str_surround', __NAMESPACE__ . '\\str_surround');

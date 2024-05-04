@@ -1514,6 +1514,14 @@ str_contains_all(['a', 'b', 'c'], ''); // false
 str_contains_all([], 'abc'); // true
 ```
 
+### str_surround
+Surrounds a string with a prefix and suffix.
+
+```php
+str_surround('(', ')', 'abc'); // (abc)
+str_surround('<strong>', '</strong>', 'abc'); // <strong>abc</strong>
+```
+
 ### is_type_of
 Validates that the value is instance of specific class.
 

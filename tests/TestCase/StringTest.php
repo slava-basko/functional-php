@@ -215,4 +215,23 @@ class StringTest extends BaseTest
         );
         f\str_contains_all(['a', 'b', 'c'], null);
     }
+
+    public function test_str_surround()
+    {
+        $prefixLeftParenthesis = f\str_surround('(');
+        $prefixLeftAndRightParenthesis = $prefixLeftParenthesis(')');
+        $this->assertEquals('(abc)', $prefixLeftAndRightParenthesis('abc'));
+
+        $parenthesisWrap = f\str_surround('(', ')');
+        $this->assertEquals('(abc)', $parenthesisWrap('abc'));
+    }
+
+    public function test_str_surround_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_surround() expects parameter 2 to be string, NULL given'
+        );
+        f\str_surround('(', null);
+    }
 }
