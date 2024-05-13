@@ -1705,7 +1705,3 @@ Read file contents.
 $io = read_file('/path/to/file.txt');
 $content = $io(); // Content read from file at this moment.
 ```
-
-### read_url
-
-
