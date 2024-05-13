@@ -140,11 +140,9 @@ tap(function ($o) {
      $o->property = 'bar';
 }, $input);
 $input->property; // 'foo'
-```
 
-Also, this function useful as a debug in the `pipe`.
+// Also, this function useful as a debug in the `pipe`.
 
-```
 pipe(
      'strrev',
      tap('var_dump'),
@@ -277,10 +275,9 @@ $factorial = function ($n) {
 };
 
 echo $factorial(5); // Exception will be thrown
-```
 
-You can't call anonymous function recursively. But you can use `y` to make it possible.
-```
+// You can't call anonymous function recursively. But you can use `y` to make it possible.
+
 $factorial = y(function ($fact) {
      return function ($n) use ($fact) {
          return ($n <= 1) ? 1 : $n$fact($n - 1);
@@ -1407,11 +1404,11 @@ class Collection
          return is_int($n);
      }
 }
-```
-The above will generate an error because `isInt` is a private method.
 
-This will work.
-```php
+// The above will generate an error because `isInt` is a private method.
+
+// This will work.
+
 public function filterNumbers(array $collection)
 {
      return select(publish('isInt', $this), $collection);

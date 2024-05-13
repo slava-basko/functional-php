@@ -1387,11 +1387,11 @@ define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth');
  *          return is_int($n);
  *      }
  * }
- * ```
- * The above will generate an error because `isInt` is a private method.
  *
- * This will work.
- * ```
+ * // The above will generate an error because `isInt` is a private method.
+ *
+ * // This will work.
+ *
  * public function filterNumbers(array $collection)
  * {
  *      return select(publish('isInt', $this), $collection);

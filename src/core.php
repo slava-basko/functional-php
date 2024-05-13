@@ -356,11 +356,9 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement');
  *      $o->property = 'bar';
  * }, $input);
  * $input->property; // 'foo'
- * ```
  *
- * Also, this function useful as a debug in the `pipe`.
+ * // Also, this function useful as a debug in the `pipe`.
  *
- * ```
  * pipe(
  *      'strrev',
  *      tap('var_dump'),
@@ -748,10 +746,9 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on');
  * };
  *
  * echo $factorial(5); // Exception will be thrown
- * ```
  *
- * You can't call anonymous function recursively. But you can use `y` to make it possible.
- * ```
+ * // You can't call anonymous function recursively. But you can use `y` to make it possible.
+ *
  * $factorial = y(function ($fact) {
  *      return function ($n) use ($fact) {
  *          return ($n <= 1) ? 1 : $n * $fact($n - 1);
