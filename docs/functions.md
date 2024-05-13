@@ -1411,7 +1411,7 @@ class Collection
 The above will generate an error because `isInt` is a private method.
 
 This will work.
-```
+```php
 public function filterNumbers(array $collection)
 {
      return select(publish('isInt', $this), $collection);
