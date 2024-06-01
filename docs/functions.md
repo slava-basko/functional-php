@@ -1687,6 +1687,14 @@ $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => 'Vancouver'])
 $typeUser(['name' => 'Slava', 'lastName' => 'Basko', 'location' => function() {}]); // TypeException
 ```
 
+### type_enum
+Checks if a given value is within a predefined set of values (enumeration).
+
+```php
+type_enum(['one', 'two', 'three'], 'one'); // 'one'
+type_enum(['one', 'two', 'three'], 'four'); // TypeException: Value "four" is not in enum('one', 'two', 'three')
+```
+
 ### write_file
 Race conditions safe file write.
 

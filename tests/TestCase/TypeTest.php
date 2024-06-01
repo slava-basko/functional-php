@@ -447,6 +447,7 @@ class TypeTest extends BaseTest
         $parcelShape = f\type_shape([
             'description' => f\type_string,
             'value' => f\type_positive_int,
+            'currency' => f\type_enum(['USD', 'UAH']),
             'dimensions' => f\type_shape([
                 'width' => f\type_union(f\type_int, f\type_float),
                 'height' => f\type_union(f\type_int, f\type_float),
@@ -461,6 +462,7 @@ class TypeTest extends BaseTest
         $parcel = [
             'description' => 'some goods',
             'value' => 200,
+            'currency' => 'USD',
             'dimensions' => [
                 'width' => 0.1,
                 'height' => 2.4,
@@ -532,5 +534,21 @@ class TypeTest extends BaseTest
             'Shape element \'location\' -> Could not convert "Closure" to type "string"'
         );
         $typeUser($userWithInvalidLocation);
+    }
+
+    public function test_type_enum()
+    {
+        $this->assertEquals('one', f\type_enum(['one', 'two', 'three'], 'one'));
+
+        $typeEnum = f\type_enum(['one', 2, 'three']);
+        $this->assertEquals('one', $typeEnum('one'));
+        $this->assertEquals(2, $typeEnum(2));
+        $this->assertEquals('three', $typeEnum('three'));
+
+        $this->setExpectedException(
+            f\Exception\TypeException::class,
+            'Value "\'four\'" is not in enum(\'one\', 2, \'three\')'
+        );
+        $typeEnum('four');
     }
 }

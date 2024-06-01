@@ -614,3 +614,44 @@ function type_optional(callable $type, $value = null)
 }
 
 define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');
+
+/**
+ *  Checks if a given value is within a predefined set of values (enumeration).
+ *
+ * ```
+ * type_enum(['one', 'two', 'three'], 'one'); // 'one'
+ * type_enum(['one', 'two', 'three'], 'four'); // TypeException: Value "four" is not in enum('one', 'two', 'three')
+ * ```
+ *
+ * @param array $enum
+ * @param $value
+ * @return callable|mixed
+ * @throws \Basko\Functional\Exception\TypeException
+ * @no-named-arguments
+ */
+function type_enum(array $enum, $value = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(type_enum, $enum);
+    }
+
+    if (\in_array($value, $enum, true)) {
+        return $value;
+    }
+
+    throw new TypeException(\sprintf(
+        'Value "%s" is not in enum(%s)',
+        \var_export($value, true),
+        \implode(
+            ', ',
+            \array_map(
+                function ($val) {
+                    return \var_export($val, true);
+                },
+                $enum
+            )
+        )
+    ));
+}
+
+define('Basko\Functional\type_enum', __NAMESPACE__ . '\\type_enum');
