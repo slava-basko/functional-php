@@ -28,7 +28,7 @@ class CurryTest extends BaseTest
 
         $user = new User([
             'first_name' => 'Slava',
-            'last_name' => 'Basko'
+            'last_name' => 'Basko',
         ]);
         $this->assertEquals(1, f\count_args($user));
         $this->assertEquals(1, f\count_args([$user, 'getFullName']));
@@ -105,5 +105,20 @@ class CurryTest extends BaseTest
         };
         $this->assertSame('one', call_user_func_array(f\unary($f), ['one', 'two', 'three']));
         $this->assertSame('onetwo', call_user_func_array(f\binary($f), ['one', 'two', 'three']));
+    }
+
+    public function test_nullary ()
+    {
+        $f = static function () {
+            if (func_num_args() > 0) {
+                throw new \Exception('No arguments expected');
+            }
+
+            return 'ok';
+        };
+
+        $this->assertSame('ok', call_user_func(f\nullary($f)));
+        $this->assertSame('ok', call_user_func_array(f\nullary($f), [1]));
+        $this->assertSame('ok', call_user_func_array(f\nullary($f), [1, 'string']));
     }
 }

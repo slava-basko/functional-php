@@ -213,3 +213,33 @@ function binary(callable $f)
 }
 
 define('Basko\Functional\binary', __NAMESPACE__ . '\\binary');
+
+/**
+ * Wraps a function of any arity (including nullary) in a function that accepts exactly 0 parameters.
+ * Any extraneous parameters will not be passed to the supplied function.
+ *
+ * ```
+ * $f = static function () {
+ *     if (func_num_args() > 0) {
+ *         throw new \Exception('No arguments expected');
+ *     }
+ *
+ *     return 'ok';
+ * };
+ * $f(); // 'ok'
+ * $f('string'); // 'ok'
+ * $f(1); // 'ok'
+ * $f(1, 'string'); // 'ok'
+ * ```
+ *
+ * @param callable $f
+ * @return callable():mixed
+ */
+function nullary(callable $f)
+{
+    return function () use ($f) {
+        return \call_user_func($f);
+    };
+}
+
+define('Basko\Functional\nullary', __NAMESPACE__ . '\\nullary');

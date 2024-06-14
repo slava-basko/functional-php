@@ -436,6 +436,24 @@ $f = static function ($a = '', $b = '', $c = '') {
 binary($f)(['one', 'two', 'three]); // onetwo
 ```
 
+### nullary
+Wraps a function of any arity (including nullary) in a function that accepts exactly 0 parameters.
+Any extraneous parameters will not be passed to the supplied function.
+
+```php
+$f = static function () {
+    if (func_num_args() > 0) {
+        throw new \Exception('No arguments expected');
+    }
+
+    return 'ok';
+};
+$f(); // 'ok'
+$f('string'); // 'ok'
+$f(1); // 'ok'
+$f(1, 'string'); // 'ok'
+```
+
 ### map
 Produces a new list of elements by mapping each element in list through a transformation function.
 Function arguments will be `element`, `index`, `list`.
