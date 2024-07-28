@@ -158,7 +158,7 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
  * ```
  *
  * @param mixed $value
- * @return string
+ * @return non-empty-string
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
  */
