@@ -12,10 +12,14 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * map(plus(1), [1, 2, 3]); // [2, 3, 4]
  * ```
  *
- * @template T of iterable|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @template TKey of array-key
+ * @template TValue
+ * @template TNewValue
+ * @template T of iterable<TKey, TValue>|null
+ * @template Tn of array<TKey, TNewValue>
+ * @param callable(TValue $element, TKey $index, T $list):TNewValue $f
  * @param T $list
- * @return ($list is null ? callable(T):array : array)
+ * @return ($list is null ? callable(T):Tn : Tn)
  * @no-named-arguments
  */
 function map(callable $f, $list = null)
@@ -128,7 +132,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
  * @template T of iterable|null
  * @param callable(mixed $element, mixed $index, T $list):mixed $f
  * @param T $list
- * @return callable(T):T|T
+ * @return ($list is null ? callable(T):T : T)
  * @no-named-arguments
  */
 function each(callable $f, $list = null)
@@ -252,9 +256,10 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
  * append('three', ['one', 'two']); // ['one', 'two', 'three']
  * ```
  *
+ * @template T of iterable|null
  * @param mixed $element
- * @param iterable|null $list
- * @return array|callable
+ * @param T $list
+ * @return ($list is null ? callable(T):array : array)
  * @no-named-arguments
  */
 function append($element, $list = null)
@@ -284,9 +289,10 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append');
  * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
  * ```
  *
+ * @template T of iterable|null
  * @param mixed $element
- * @param iterable|null $list
- * @return array|callable
+ * @param T $list
+ * @return ($list is null ? callable(T):array : array)
  * @no-named-arguments
  */
 function prepend($element, $list = null)
@@ -315,9 +321,10 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
  * pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
  * ```
  *
+ * @template T of iterable|null
  * @param string $property
- * @param iterable $list
- * @return callable|array
+ * @param T $list
+ * @return ($list is null ? callable(T):array : array)
  * @no-named-arguments
  */
 function pluck($property, $list = null)
@@ -385,9 +392,10 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head');
  * function returns as soon as it finds an acceptable element, and doesn't traverse the entire list. Function
  * arguments will be `element`, `index`, `list`
  *
+ * @template T of iterable|null
  * @param callable $f
- * @param iterable $list
- * @return callable|mixed
+ * @param T $list
+ * @return ($list is null ? callable(T):mixed : mixed)
  * @no-named-arguments
  */
 function head_by(callable $f, $list = null)
@@ -712,7 +720,7 @@ function nth($elementNumber, $list = null)
     }
 
     if (\is_array($list)) {
-        for ($i = 1; $i <= $len; ++$i) {
+        for ($i = 1; $i <= $len; $i++) {
             if ($i == $elementNumber) {
                 return $list[$elementNumber];
             }

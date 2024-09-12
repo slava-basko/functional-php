@@ -189,18 +189,9 @@ function join($separator, $list = null)
     InvalidArgumentException::assertString($separator, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-
-        return function ($list) use ($separator, $pfn) {
-            InvalidArgumentException::assertList($list, $pfn, 2);
-
-            if ($list instanceof \Traversable) {
-                $list = \iterator_to_array($list);
-            }
-
-            return \implode($separator, $list);
-        };
+        return partial(join, $separator);
     }
+
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     if ($list instanceof \Traversable) {
@@ -268,7 +259,7 @@ function repeat(callable $f)
     return function ($times) use ($f, $pfn) {
         InvalidArgumentException::assertInteger($times, concat('Callable created by ', $pfn), 1);
 
-        for ($i = 0; $i < $times; ++$i) {
+        for ($i = 0; $i < $times; $i++) {
             \call_user_func($f);
         }
     };
@@ -356,7 +347,7 @@ function invoker($methodName, array $arguments = [])
 {
     InvalidArgumentException::assertMethodName($methodName, __FUNCTION__, 1);
 
-    $pfn = 'Function created by' . __FUNCTION__;
+    $pfn = 'Function created by ' . __FUNCTION__;
 
     return static function ($object) use ($methodName, $arguments, $pfn) {
         InvalidArgumentException::assertObject($object, $pfn, 1);
@@ -421,21 +412,7 @@ function prop($property, $object = null)
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return function ($object) use ($property) {
-            if (\is_object($object) && \property_exists($object, $property)) {
-                return $object->{$property};
-            }
-
-            if ($object instanceof \ArrayAccess) {
-                return $object->offsetGet($property);
-            }
-
-            if (\is_array($object) && \array_key_exists($property, $object)) {
-                return $object[$property];
-            }
-
-            return null;
-        };
+        return partial(prop, $property);
     }
 
     if (\is_object($object) && \property_exists($object, $property)) {
@@ -497,13 +474,7 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
 function prop_path(array $path, $object = null)
 {
     if (\func_num_args() < 2) {
-        return function ($object) use ($path) {
-            foreach ($path as $pathItem) {
-                $object = prop($pathItem, $object);
-            }
-
-            return $object;
-        };
+        return partial(prop_path, $path);
     }
 
     foreach ($path as $pathItem) {
@@ -530,15 +501,7 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
 function props(array $properties, $object = null)
 {
     if (\func_num_args() < 2) {
-        return function ($object) use ($properties) {
-            $accumulator = [];
-
-            foreach ($properties as $property) {
-                $accumulator[] = prop($property, $object);
-            }
-
-            return $accumulator;
-        };
+        return partial(props, $properties);
     }
 
     $accumulator = [];
@@ -1128,12 +1091,7 @@ function combine($keyProp, $valueProp = null, $list = null)
     InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
-    $combineFunction = converge('array_combine', [
-        pluck($keyProp),
-        pluck($valueProp),
-    ]);
-
-    return $combineFunction($list);
+    return \array_combine(pluck($keyProp, $list), pluck($valueProp, $list));
 }
 
 define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
@@ -1251,7 +1209,7 @@ function retry($retries, \Iterator $delaySequence = null, $f = null)
             \usleep($delay);
         }
 
-        ++$retry;
+        $retry++;
     }
 }
 
@@ -1290,13 +1248,16 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct');
  */
 function construct_with_args($class, $constructArguments = null)
 {
-    if (\func_num_args() < 2) {
+    $args = \func_get_args();
+
+    if (\count($args) < 2) {
         return partial(construct_with_args, $class);
     }
 
     InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
-    return new $class($constructArguments);
+    $constructArgs = \array_slice($args, 1);
+    return (new \ReflectionClass($class))->newInstanceArgs($constructArgs);
 }
 
 define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with_args');
@@ -1359,11 +1320,7 @@ function is_nth($n, $i = null)
     InvalidArgumentException::assertPositiveInteger($n, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return function ($i) use ($n) {
-            InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);
-
-            return modulo($i, $n) === 0;
-        };
+        return partial(is_nth, $n);
     }
 
     InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);

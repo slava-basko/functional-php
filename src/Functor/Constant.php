@@ -3,7 +3,8 @@
 namespace Basko\Functional\Functor;
 
 /**
- * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ * @template T
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Constant extends Monad
 {
@@ -41,7 +42,7 @@ class Constant extends Monad
     }
 
     /**
-     * @template M as object
+     * @template M of \Basko\Functional\Functor\Monad<T>
      * @param class-string<M> $m
      * @return M
      */

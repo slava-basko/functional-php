@@ -112,9 +112,14 @@ define('Basko\Functional\N', __NAMESPACE__ . '\\N');
 function eq($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a == $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a == $b;
+            };
     }
 
     return $a == $b;
@@ -138,9 +143,14 @@ define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
 function identical($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a === $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a === $b;
+            };
     }
 
     return $a === $b;
@@ -167,9 +177,14 @@ define('Basko\Functional\identical', __NAMESPACE__ . '\\identical');
 function lt($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a < $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a < $b;
+            };
     }
 
     return $a < $b;
@@ -196,9 +211,14 @@ define('Basko\Functional\lt', __NAMESPACE__ . '\\lt');
 function lte($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a <= $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a <= $b;
+            };
     }
 
     return $a <= $b;
@@ -225,9 +245,14 @@ define('Basko\Functional\lte', __NAMESPACE__ . '\\lte');
 function gt($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a > $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a > $b;
+            };
     }
 
     return $a > $b;
@@ -254,9 +279,14 @@ define('Basko\Functional\gt', __NAMESPACE__ . '\\gt');
 function gte($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            return $a >= $b;
-        };
+        return
+            /**
+             * @param mixed $b
+             * @return bool
+             */
+            function ($b) use ($a) {
+                return $a >= $b;
+            };
     }
 
     return $a >= $b;
@@ -339,7 +369,7 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not');
  */
 function complement(callable $f)
 {
-    return function ($value) use ($f) {
+    return function () use ($f) {
         return !\call_user_func_array($f, \func_get_args());
     };
 }
@@ -367,8 +397,9 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement');
  * ```
  *
  * @template T
- * @param callable(T):void $f
- * @param T|null $value
+ * @template F of callable(T):void
+ * @param F $f
+ * @param T $value
  * @return ($value is null ? callable(T):T : T)
  * @no-named-arguments
  */
@@ -432,6 +463,8 @@ function compose(callable $f, callable $g)
 {
     $functions = \func_get_args();
 
+    InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, InvalidArgumentException::ALL);
+
     /**
      * @return mixed|Maybe|Either
      */
@@ -466,6 +499,8 @@ define('Basko\Functional\compose', __NAMESPACE__ . '\\compose');
 function pipe(callable $f, callable $g)
 {
     $functions = \func_get_args();
+
+    InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, InvalidArgumentException::ALL);
 
     /**
      * @return mixed|Maybe|Either
@@ -587,9 +622,7 @@ function apply_to($arg, callable $f = null)
     $args = \func_get_args();
 
     if (\count($args) < 2) {
-        return function (callable $f) use ($arg) {
-            return \call_user_func($f, $arg);
-        };
+        return partial(apply_to, $arg);
     }
 
     $function = \array_pop($args);
@@ -716,11 +749,7 @@ define('Basko\Functional\flip', __NAMESPACE__ . '\\flip');
 function on(callable $f, callable $g = null)
 {
     if (\func_num_args() < 2) {
-        return function ($g) use ($f) {
-            return function ($a, $b) use ($f, $g) {
-                return \call_user_func_array($f, [\call_user_func_array($g, [$a]), \call_user_func_array($g, [$b])]);
-            };
-        };
+        return partial(on, $f);
     }
 
     return function ($a, $b) use ($f, $g) {
@@ -793,15 +822,7 @@ define('Basko\Functional\y', __NAMESPACE__ . '\\y');
 function both($a, $b = null)
 {
     if (\func_num_args() < 2) {
-        return function ($b) use ($a) {
-            if (\is_callable($a) && \is_callable($b)) {
-                return function ($value) use ($a, $b) {
-                    return \call_user_func_array($a, [$value]) && \call_user_func_array($b, [$value]);
-                };
-            }
-
-            return $a && $b;
-        };
+        return partial(both, $a);
     }
 
     if (\is_callable($a) && \is_callable($b)) {
@@ -839,15 +860,7 @@ function all_pass(array $functions, $value = null)
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return function ($value) use ($functions) {
-            foreach ($functions as $f) {
-                if (!\call_user_func($f, $value)) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
+        return partial(all_pass, $functions);
     }
 
     foreach ($functions as $f) {
@@ -886,15 +899,7 @@ function any_pass(array $functions, $value = null)
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        return function ($value) use ($functions) {
-            foreach ($functions as $f) {
-                if (\call_user_func($f, $value)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
+        return partial(any_pass, $functions);
     }
 
     foreach ($functions as $f) {
@@ -926,19 +931,7 @@ function ap($flist, $list = null)
     InvalidArgumentException::assertListOfCallables($flist, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-
-        return function ($list) use ($flist, $pfn) {
-            InvalidArgumentException::assertList($list, $pfn, 2);
-
-            $aggregation = [];
-
-            foreach ($flist as $f) {
-                $aggregation = \array_merge($aggregation, map($f, $list));
-            }
-
-            return $aggregation;
-        };
+        return partial(ap, $flist);
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
@@ -1022,13 +1015,20 @@ define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
 function memoized(callable $f)
 {
     return function () use ($f) {
+        /**
+         * @var array<string, mixed> $cache
+         */
         static $cache = [];
 
         $args = \func_get_args();
         $key = _value_to_key(\array_merge([$f], $args));
 
         if (!isset($cache[$key]) || !\array_key_exists($key, $cache)) {
-            $cache[$key] = \call_user_func_array($f, $args);
+            /**
+             * @var scalar|object|resource|array|null $res
+             */
+            $res = \call_user_func_array($f, $args);
+            $cache[$key] = $res;
         }
 
         return $cache[$key];

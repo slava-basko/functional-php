@@ -83,7 +83,7 @@ define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
  * @param array|string $search
  * @param array|string $replace
  * @param array|string $string
- * @return array|string|string[]|callable
+ * @return ($replace is null ? (callable(array|string $replace, array|string $string): string|array<string>) : ($string is null ? (callable(array|string $string): string|array<string>) : string|array<string>))
  * @no-named-arguments
  */
 function str_replace($search, $replace = null, $string = null)

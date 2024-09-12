@@ -210,6 +210,12 @@ class CoreTest extends BaseTest
     {
         $notString = f\complement('is_string');
         $this->assertTrue($notString(1));
+
+        $fTrue = function () {
+            return true;
+        };
+        $fFalse = f\complement($fTrue);
+        $this->assertFalse($fFalse());
     }
 
     public function test_tap()
