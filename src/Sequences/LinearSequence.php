@@ -2,6 +2,9 @@
 
 namespace Basko\Functional\Sequences;
 
+/**
+ * @implements \Iterator<array-key, mixed>
+ */
 class LinearSequence implements \Iterator
 {
     /**

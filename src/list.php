@@ -128,7 +128,7 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
  * @template T of iterable|null
  * @param callable(mixed $element, mixed $index, T $list):mixed $f
  * @param T $list
- * @return callable(T):T|T
+ * @return ($list is null ? callable(T):T : T)
  * @no-named-arguments
  */
 function each(callable $f, $list = null)
@@ -712,7 +712,7 @@ function nth($elementNumber, $list = null)
     }
 
     if (\is_array($list)) {
-        for ($i = 1; $i <= $len; ++$i) {
+        for ($i = 1; $i <= $len; $i++) {
             if ($i == $elementNumber) {
                 return $list[$elementNumber];
             }

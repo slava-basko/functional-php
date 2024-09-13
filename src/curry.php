@@ -48,6 +48,8 @@ define('Basko\Functional\count_args', __NAMESPACE__ . '\\count_args');
  */
 function curry_n($count, callable $f)
 {
+    InvalidArgumentException::assertNonZeroInteger($count, __FUNCTION__, 1);
+
     $accumulator = function (array $arguments) use ($count, $f, &$accumulator) {
         return function () use ($count, $f, $arguments, $accumulator) {
             $newArguments = \func_get_args();
@@ -133,6 +135,8 @@ define('Basko\Functional\thunkify', __NAMESPACE__ . '\\thunkify');
  */
 function _thunkify_n(callable $f, $count)
 {
+    InvalidArgumentException::assertNonZeroInteger($count, __FUNCTION__, 2);
+
     return curry_n($count + 1, $f);
 }
 

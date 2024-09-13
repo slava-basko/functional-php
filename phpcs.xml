@@ -3,11 +3,11 @@
     <exclude-pattern>tests/*</exclude-pattern>
 
     <rule ref="PSR12">
-        <!-- we use constants to refer to functions, and functions are lowercase -->
+        <!-- use constants to refer to functions, and functions are lowercase -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase"/>
-        <!-- we support PHP 5.5, so we can't define constant visibility -->
+        <!-- support PHP 5.5, so we can't define constant visibility -->
         <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
-        <!-- we use Monad::of, Maybe::just, etc. constants -->
+        <!-- use Monad::of, Maybe::just, etc. constants -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase" />
     </rule>
 </ruleset>

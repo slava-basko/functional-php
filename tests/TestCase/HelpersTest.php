@@ -4,6 +4,7 @@ namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 use Basko\FunctionalTest\Helpers\ClassWithPrivateMethod;
+use Basko\FunctionalTest\Helpers\Dto;
 use Basko\FunctionalTest\Helpers\Repeated;
 use Basko\FunctionalTest\Helpers\User;
 use Basko\FunctionalTest\Helpers\Value;
@@ -36,6 +37,16 @@ class HelpersTest extends BaseTest
             'Basko\Functional\concat() expects parameter 2 to be string, NULL given'
         );
         f\concat('bar', null);
+    }
+
+    public function test_concat_fail2()
+    {
+        $f = f\concat('bar');
+        $this->setExpectedException(
+            f\Exception\InvalidArgumentException::class,
+            'Basko\Functional\concat() expects parameter 2 to be string, NULL given'
+        );
+        $f(null);
     }
 
     public function test_join_fai()
@@ -146,7 +157,7 @@ class HelpersTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\InvalidArgumentException::class,
-            'Function created byBasko\Functional\invoker() expects parameter 1 to be object, integer given'
+            'Function created by Basko\Functional\invoker() expects parameter 1 to be object, integer given'
         );
         $f = f\invoker('isActive');
         call_user_func($f, 1);
@@ -699,5 +710,23 @@ class HelpersTest extends BaseTest
             'Basko\Functional\combine() expects parameter 3 to be array or instance of Traversable, NULL given'
         );
         f\combine('name', 'last_name', null);
+    }
+
+    public function test_construct()
+    {
+        $dto = f\construct(Dto::class);
+        $this->assertNull($dto->value1);
+        $this->assertNull($dto->value2);
+    }
+
+    public function test_construct_with_args()
+    {
+        $user = f\construct_with_args(User::class, ['first_name' => 'Slava', 'last_name' => 'Basko']);
+        $this->assertEquals('Slava', $user->first_name);
+        $this->assertEquals('Slava Basko', $user->getFullName(' '));
+
+        $dto = f\construct_with_args(Dto::class, 1, 2);
+        $this->assertEquals(1, $dto->value1);
+        $this->assertEquals(2, $dto->value2);
     }
 }

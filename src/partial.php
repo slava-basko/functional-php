@@ -80,7 +80,7 @@ function partial_p(callable $f, array $args)
             if (!isset($args[$position]) && !\array_key_exists($position, $args)) {
                 $args[$position] = \array_shift($_args);
             }
-            ++$position;
+            $position++;
         } while ($_args);
         \ksort($args);
 

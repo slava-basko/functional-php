@@ -161,7 +161,7 @@ class StringTest extends BaseTest
 
     public function test_str_pad_right()
     {
-        $pad6 = f\str_pad_right('6');
+        $pad6 = f\str_pad_right(6);
         $padZero = $pad6('0');
         $this->assertEquals('481000', $padZero('481'));
     }

@@ -1,3 +1,21 @@
+* text=auto
+*.php text
+*.css text
+*.js text
+*.txt text
+*.md text
+*.xml text
+*.json text
+*.bat text
+*.sql text
+*.yml text
+
+*.png binary
+*.jpg binary
+*.gif binary
+*.ttf binary
+
+# Ignore meta data
 /tests export-ignore
 /.gitignore export-ignore
 /.gitattributes export-ignore
@@ -9,3 +27,4 @@
 /internal export-ignore
 /docs export-ignore
 /examples export-ignore
+/Makefile export-ignore
