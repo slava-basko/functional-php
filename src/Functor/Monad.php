@@ -23,7 +23,6 @@ abstract class Monad
             $vType = \gettype($value);
             $mType = $this::type();
             if (\is_object($value)) {
-                // @phpstan-ignore argument.type
                 InvalidArgumentException::assertType(\get_class($value), $mType, static::class, 1);
             } elseif ($mType !== $vType) {
                 throw new InvalidArgumentException(
@@ -33,7 +32,6 @@ abstract class Monad
                         1,
                         $mType,
                         $vType,
-                        // @phpstan-ignore argument.type
                         $value
                     )
                 );

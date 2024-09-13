@@ -1,8 +1,4 @@
-# Autodetect text files
 * text=auto
-
-# ...Unless the name matches the following overriding patterns
-
 *.php text
 *.css text
 *.js text
