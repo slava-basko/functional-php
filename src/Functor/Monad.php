@@ -22,7 +22,7 @@ abstract class Monad
         if ($this instanceof Type) {
             $vType = \gettype($value);
             $mType = $this::type();
-            if ($vType === 'object') {
+            if (\is_object($value)) {
                 InvalidArgumentException::assertType(\get_class($value), $mType, static::class, 1);
             } elseif ($mType !== $vType) {
                 throw new InvalidArgumentException(
@@ -67,7 +67,7 @@ abstract class Monad
     /**
      * Transforms monad to another monad
      *
-     * @template M as object
+     * @template M of \Basko\Functional\Functor\Monad<T>
      * @param class-string<M> $m
      * @return M
      */
@@ -76,6 +76,7 @@ abstract class Monad
     /**
      * @param class-string $m
      * @return void
+     * @throws \InvalidArgumentException
      */
     protected function assertTransform($m)
     {
@@ -98,7 +99,8 @@ abstract class Monad
 
     /**
      * @param class-string $m
-     * @return mixed
+     * @return void
+     * @throws \LogicException
      */
     protected function cantTransformException($m)
     {
