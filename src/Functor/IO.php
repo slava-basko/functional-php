@@ -6,7 +6,8 @@ use Basko\Functional as f;
 use Basko\Functional\Exception\TypeException;
 
 /**
- * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ * @template T
+ * @template-extends \Basko\Functional\Functor\Monad<T>
  */
 class IO extends Monad
 {
@@ -29,8 +30,7 @@ class IO extends Monad
     }
 
     /**
-     * @param callable $f
-     * @return static
+     * @inheritdoc
      */
     public function map(callable $f)
     {
@@ -38,9 +38,7 @@ class IO extends Monad
     }
 
     /**
-     * @param callable(mixed):static $f
-     * @return static
-     * @throws \Basko\Functional\Exception\TypeException
+     * @inheritdoc
      */
     public function flatMap(callable $f)
     {
@@ -52,40 +50,38 @@ class IO extends Monad
     }
 
     /**
-     * @template M as object
-     * @param class-string<M> $m
-     * @return M
+     * @inheritdoc
      */
     public function transform($m)
     {
         $this->assertTransform($m);
 
-        if ($m == Maybe::class) {
+        if ($m === Maybe::class) {
             try {
                 $value = \call_user_func($this);
                 return $value === null ? Maybe::nothing() : Maybe::just($value);
             } catch (\Exception $e) {
                 return Maybe::nothing();
             }
-        } elseif ($m == Either::class) {
+        } elseif ($m === Either::class) {
             try {
                 return Either::right(\call_user_func($this));
             } catch (\Exception $e) {
                 return Either::left($e);
             }
-        } elseif ($m == Optional::class) {
+        } elseif ($m === Optional::class) {
             try {
                 return Optional::just(\call_user_func($this));
             } catch (\Exception $e) {
                 return Optional::nothing();
             }
-        } elseif ($m == Constant::class) {
+        } elseif ($m === Constant::class) {
             return Constant::of(\call_user_func($this));
-        } elseif ($m == Identity::class) {
+        } elseif ($m === Identity::class) {
             return Identity::of(\call_user_func($this));
-        } elseif ($m == Writer::class) {
+        } elseif ($m === Writer::class) {
             return Writer::of([], \call_user_func($this));
-        } elseif ($m == EitherWriter::class) {
+        } elseif ($m === EitherWriter::class) {
             try {
                 return EitherWriter::right(\call_user_func($this));
             } catch (\Exception $e) {
@@ -93,7 +89,7 @@ class IO extends Monad
             }
         }
 
-        $this->cantTransformException($m);
+        throw $this->cantTransformException($m);
     }
 
     /**

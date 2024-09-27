@@ -15,7 +15,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * @template TKey of array-key
  * @template TValue
  * @template TNewValue
- * @template T of iterable<TKey, TValue>|null
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
  * @template Tn of array<TKey, TNewValue>
  * @param callable(TValue $element, TKey $index, T $list):TNewValue $f
  * @param T $list
@@ -25,24 +25,13 @@ use Basko\Functional\Exception\InvalidArgumentException;
 function map(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-
-        return function ($list) use ($f, $pfn) {
-            InvalidArgumentException::assertList($list, $pfn, 2);
-
-            $aggregation = [];
-
-            foreach ($list as $index => $element) {
-                $aggregation[$index] = \call_user_func_array($f, [$element, $index, $list]);
-            }
-
-            return $aggregation;
-        };
+        return partial(map, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         $aggregation[$index] = \call_user_func_array($f, [$element, $index, $list]);
     }
@@ -89,10 +78,14 @@ define('Basko\Functional\map', __NAMESPACE__ . '\\map');
  * //];
  * ```
  *
- * @template T of iterable|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @template TKey of array-key
+ * @template TValue
+ * @template TNewValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @template Tn of array<TNewValue>
+ * @param callable(TValue $element, TKey $index, T $list):TNewValue $f
  * @param T $list
- * @return ($list is null ? callable(T):array : array)
+ * @return ($list is null ? callable(T):Tn : Tn)
  * @no-named-arguments
  */
 function flat_map(callable $f, $list = null)
@@ -104,6 +97,7 @@ function flat_map(callable $f, $list = null)
 
     $flattened = [];
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         $result = \call_user_func_array($f, [$element, $index, $list]);
 
@@ -129,8 +123,10 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
  * each(unary('print_r'), [1, 2, 3]); // Print: 123
  * ```
  *
- * @template T of iterable|null
- * @param callable(mixed $element, mixed $index, T $list):mixed $f
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):void $f
  * @param T $list
  * @return ($list is null ? callable(T):T : T)
  * @no-named-arguments
@@ -138,20 +134,11 @@ define('Basko\Functional\flat_map', __NAMESPACE__ . '\\flat_map');
 function each(callable $f, $list = null)
 {
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-
-        return function ($list) use ($f, $pfn) {
-            InvalidArgumentException::assertList($list, $pfn, 2);
-
-            foreach ($list as $index => $element) {
-                \call_user_func_array($f, [$element, $index, $list]);
-            }
-
-            return $list;
-        };
+        return partial(each, $f);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         \call_user_func_array($f, [$element, $index, $list]);
     }
@@ -175,16 +162,30 @@ define('Basko\Functional\each', __NAMESPACE__ . '\\each');
  * fold('sc', '0', range(1, 13)); // (((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)
  * ```
  *
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
  * @template Ta
- * @template Tl of iterable
- * @param callable(Ta $accumulator, mixed $value, mixed $index, Tl $list):mixed $f
- * @param Ta|null $accumulator
- * @param Tl|null $list
- * @return callable|Ta
+ * @param callable(Ta $accumulator, TValue $value, TKey $index, T $list):Ta $f
+ * @param Ta $accumulator
+ * @param T $list
+ * @return ($accumulator is null ? ($list is null ? callable(Ta $accumulator, T $list):Ta : callable(Ta $accumulator, T $list):Ta) : ($list is null ? callable(T $list):Ta : Ta))
  * @no-named-arguments
  */
 function fold(callable $f, $accumulator = null, $list = null)
 {
+    if (is_null($accumulator)) {
+        if (is_null($list)) {
+            return partial(fold, $f);
+        } else {
+            return partial(fold, $f);
+        }
+    } else {
+        if (is_null($list)) {
+            return partial(fold, $f, $accumulator);
+        }
+    }
+
     $n = \func_num_args();
     if ($n === 1) {
         return partial(fold, $f);
@@ -193,6 +194,7 @@ function fold(callable $f, $accumulator = null, $list = null)
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
+    /** @var T $list */
     foreach ($list as $index => $value) {
         $accumulator = \call_user_func_array($f, [$accumulator, $value, $index, $list]);
     }
@@ -216,12 +218,14 @@ define('Basko\Functional\fold', __NAMESPACE__ . '\\fold');
  * fold_r('sc', '0', range(1, 13)); // (1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))
  * ```
  *
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
  * @template Ta
- * @template Tl of iterable
- * @param callable(mixed $value, Ta $accumulator, mixed $index, Tl $list):mixed $f
- * @param Ta|null $accumulator
- * @param Tl|null $list
- * @return callable|Ta
+ * @param callable(Ta $accumulator, TValue $value, TKey $index, T $list):Ta $f
+ * @param Ta $accumulator
+ * @param T $list
+ * @return ($accumulator is null ? callable(Ta $accumulator, T $list):Ta : ($list is null ? callable(T $list):Ta : Ta))
  * @no-named-arguments
  */
 function fold_r(callable $f, $accumulator = null, $list = null)
@@ -235,6 +239,7 @@ function fold_r(callable $f, $accumulator = null, $list = null)
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
     $data = [];
+    /** @var T $list */
     foreach ($list as $index => $value) {
         $data[] = [$index, $value];
     }
@@ -256,10 +261,10 @@ define('Basko\Functional\fold_r', __NAMESPACE__ . '\\fold_r');
  * append('three', ['one', 'two']); // ['one', 'two', 'three']
  * ```
  *
- * @template T of iterable|null
+ * @template T of array<array-key, mixed>|\Traversable<array-key, mixed>
  * @param mixed $element
  * @param T $list
- * @return ($list is null ? callable(T):array : array)
+ * @return ($list is null ? callable(T $list):array<array-key, mixed> : array<array-key, mixed>)
  * @no-named-arguments
  */
 function append($element, $list = null)
@@ -272,6 +277,7 @@ function append($element, $list = null)
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $listElement) {
         $aggregation[] = $listElement;
     }
@@ -289,10 +295,10 @@ define('Basko\Functional\append', __NAMESPACE__ . '\\append');
  * prepend('three', ['one', 'two']); // ['three', 'one', 'two']
  * ```
  *
- * @template T of iterable|null
+ * @template T of array<array-key, mixed>|\Traversable<array-key, mixed>
  * @param mixed $element
  * @param T $list
- * @return ($list is null ? callable(T):array : array)
+ * @return ($list is null ? callable(T $list):array<array-key, mixed> : array<array-key, mixed>)
  * @no-named-arguments
  */
 function prepend($element, $list = null)
@@ -305,6 +311,7 @@ function prepend($element, $list = null)
 
     $aggregation = [$element];
 
+    /** @var T $list */
     foreach ($list as $listElement) {
         $aggregation[] = $listElement;
     }
@@ -321,10 +328,10 @@ define('Basko\Functional\prepend', __NAMESPACE__ . '\\prepend');
  * pluck('qty', [['qty' => 2], ['qty' => 1]]); // [2, 1]
  * ```
  *
- * @template T of iterable|null
+ * @template T of array<array-key, mixed>|\Traversable<array-key, mixed>
  * @param string $property
  * @param T $list
- * @return ($list is null ? callable(T):array : array)
+ * @return ($list is null ? callable(T $list):array<mixed> : array<mixed>)
  * @no-named-arguments
  */
 function pluck($property, $list = null)
@@ -332,24 +339,13 @@ function pluck($property, $list = null)
     InvalidArgumentException::assertString($property, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-
-        return function ($list) use ($property, $pfn) {
-            InvalidArgumentException::assertList($list, $pfn, 2);
-
-            $aggregation = [];
-
-            foreach ($list as $element) {
-                $aggregation[] = prop($property, $element);
-            }
-
-            return $aggregation;
-        };
+        return partial(pluck, $property);
     }
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $element) {
         $aggregation[] = prop($property, $element);
     }
@@ -370,8 +366,9 @@ define('Basko\Functional\pluck', __NAMESPACE__ . '\\pluck');
  * ]); // ['name' => 'jack', 'score' => 1]
  * ```
  *
- * @param iterable $list
- * @return mixed
+ * @template T
+ * @param array<array-key, T>|\Traversable<array-key, T> $list
+ * @return T|null
  * @no-named-arguments
  */
 function head($list)
@@ -392,10 +389,12 @@ define('Basko\Functional\head', __NAMESPACE__ . '\\head');
  * function returns as soon as it finds an acceptable element, and doesn't traverse the entire list. Function
  * arguments will be `element`, `index`, `list`
  *
- * @template T of iterable|null
- * @param callable $f
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):bool $f
  * @param T $list
- * @return ($list is null ? callable(T):mixed : mixed)
+ * @return ($list is null ? callable(T $list):TValue|null : TValue|null)
  * @no-named-arguments
  */
 function head_by(callable $f, $list = null)
@@ -406,6 +405,7 @@ function head_by(callable $f, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         if (\call_user_func_array($f, [$element, $index, $list])) {
             return $element;
@@ -428,9 +428,11 @@ define('Basko\Functional\head_by', __NAMESPACE__ . '\\head_by');
  * ]); // [1 => ['name' => 'mark', 'score' => 9], 2 => ['name' => 'john', 'score' => 1]]
  * ```
  *
- * @param iterable $list
- * @return array
- * @no-named-arguments
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param T $list
+ * @return array<TKey, TValue>
  */
 function tail($list)
 {
@@ -465,9 +467,12 @@ define('Basko\Functional\tail', __NAMESPACE__ . '\\tail');
  * ]); // [1 => ['name' => 'mark', 'score' => 9]]
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return callable|array
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):bool $f
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<TKey, TValue> : array<TKey, TValue>)
  * @no-named-arguments
  */
 function tail_by(callable $f, $list = null)
@@ -480,6 +485,7 @@ function tail_by(callable $f, $list = null)
     $tail = [];
     $isHead = true;
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         if ($isHead) {
             $isHead = false;
@@ -504,9 +510,12 @@ define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
  * $activeUsers = select(invoker('isActive'), [$user1, $user2, $user3]);
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return callable|array
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):bool $f
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<TKey, TValue> : array<TKey, TValue>)
  * @no-named-arguments
  */
 function select(callable $f, $list = null)
@@ -519,6 +528,7 @@ function select(callable $f, $list = null)
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         if (\call_user_func_array($f, [$element, $index, $list])) {
             $aggregation[$index] = $element;
@@ -538,9 +548,12 @@ define('Basko\Functional\select', __NAMESPACE__ . '\\select');
  * $inactiveUsers = reject(invoker('isActive'), [$user1, $user2, $user3]);
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return callable|array
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):bool $f
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<TKey, TValue> : array<TKey, TValue>)
  * @no-named-arguments
  */
 function reject(callable $f, $list = null)
@@ -553,6 +566,7 @@ function reject(callable $f, $list = null)
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         if (!\call_user_func_array($f, [$element, $index, $list])) {
             $aggregation[$index] = $element;
@@ -573,9 +587,10 @@ define('Basko\Functional\reject', __NAMESPACE__ . '\\reject');
  * contains('foo', 'foo and bar'); // true
  * ```
  *
+ * @template T of array<mixed>|\Traversable<mixed>
  * @param mixed $needle
- * @param string|iterable $haystack
- * @return callable|bool
+ * @param string|T $haystack
+ * @return ($haystack is null ? callable(T $haystack):bool : bool)
  * @no-named-arguments
  */
 function contains($needle, $haystack = null)
@@ -590,6 +605,7 @@ function contains($needle, $haystack = null)
         return $needle === '' || false !== \strpos($haystack, $needle);
     }
 
+    /** @var array<mixed>|\Traversable<mixed> $haystack */
     foreach ($haystack as $element) {
         if ($needle === $element) {
             return true;
@@ -611,9 +627,11 @@ define('Basko\Functional\contains', __NAMESPACE__ . '\\contains');
  * take(4, 'Slava'); // 'Slav'
  * ```
  *
- * @param iterable|string $list
+ * @template TValue
+ * @template T of array<TValue>|\Traversable<TValue>
+ * @param string|T $list
  * @param int $count
- * @return callable|array|string
+ * @return ($list is null ? callable(T $list):string|array<TValue> : string|array<TValue>)
  * @no-named-arguments
  */
 function take($count, $list = null)
@@ -630,6 +648,7 @@ function take($count, $list = null)
         return \substr($list, 0, $count);
     }
 
+    /** @var T $list */
     // TODO: foreach?
     return \array_slice(
         \is_array($list) ? $list : \iterator_to_array($list),
@@ -650,9 +669,11 @@ define('Basko\Functional\take', __NAMESPACE__ . '\\take');
  * take_r(4, 'Slava'); // 'lava'
  * ```
  *
- * @param iterable|string $list
+ * @template TValue
+ * @template T of array<TValue>|\Traversable<TValue>
+ * @param string|T $list
  * @param int $count
- * @return callable|array|string
+ * @return ($list is null ? callable(T $list):string|array<TValue> : string|array<TValue>)
  * @no-named-arguments
  */
 function take_r($count, $list = null)
@@ -669,6 +690,7 @@ function take_r($count, $list = null)
         return \substr($list, -$count);
     }
 
+    /** @var T $list */
     // TODO: foreach?
     return \array_slice(
         \is_array($list) ? $list : \iterator_to_array($list),
@@ -692,9 +714,11 @@ define('Basko\Functional\take_r', __NAMESPACE__ . '\\take_r');
  * nth(-2, 'Slava'); // 'v'
  * ```
  *
+ * @template TValue
+ * @template T of array<TValue>|\Traversable<TValue>
  * @param int $elementNumber
- * @param iterable|string $list
- * @return callable|mixed
+ * @param string|T $list
+ * @return ($list is null ? callable(T $list):string|TValue|null : string|TValue|null)
  * @no-named-arguments
  */
 function nth($elementNumber, $list = null)
@@ -706,6 +730,7 @@ function nth($elementNumber, $list = null)
     }
 
     InvalidArgumentException::assertStringOrList($list, __FUNCTION__, 2);
+    /** @var T $list */
 
     if ($list instanceof \Traversable) {
         $list = \array_values(\iterator_to_array($list));
@@ -756,9 +781,15 @@ define('Basko\Functional\nth', __NAMESPACE__ . '\\nth');
  * ]); // ['admin' => [...], 'user' => [...], 'anonymous' => [...]]
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return callable|array
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $element, TKey $index, T $list):array-key $f
+ * @param T $list
+ * @return ($list is null
+ *      ? callable(T $list):array<int|string, non-empty-array<TKey, TValue>>
+ *      : array<int|string, non-empty-array<TKey, TValue>>
+ * )
  * @no-named-arguments
  */
 function group(callable $f, $list = null)
@@ -768,6 +799,7 @@ function group(callable $f, $list = null)
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+    /** @var T $list */
 
     $groups = [];
 
@@ -805,9 +837,15 @@ define('Basko\Functional\group', __NAMESPACE__ . '\\group');
  * );
  * ```
  *
- * @param callable[] $functions
- * @param iterable $list
- * @return callable|array
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param array<callable(TValue $element, TKey $index, T $list):bool> $functions
+ * @param T $list
+ * @return ($list is null
+ *      ? callable(T $list):array<array-key, array<array<TKey, TValue>>>
+ *      : array<array-key, array<array<TKey, TValue>>>
+ * )
  * @no-named-arguments
  */
 function partition(array $functions, $list = null)
@@ -822,6 +860,7 @@ function partition(array $functions, $list = null)
     $lastPartition = \count($functions);
     $partitions = \array_fill(0, $lastPartition + 1, []);
 
+    /** @var T $list */
     foreach ($list as $index => $element) {
         foreach ($functions as $partition => $fn) {
             if (\call_user_func_array($fn, [$element, $index, $list])) {
@@ -846,8 +885,8 @@ define('Basko\Functional\partition', __NAMESPACE__ . '\\partition');
  * flatten([1 => 1, 'foo' => '2', 3 => '3', ['foo' => 5]]); // [1, "2", "3", 5]
  * ```
  *
- * @param iterable $list
- * @return array
+ * @param iterable<mixed> $list
+ * @return array<mixed>
  * @no-named-arguments
  */
 function flatten($list)
@@ -898,8 +937,8 @@ define('Basko\Functional\flatten', __NAMESPACE__ . '\\flatten');
  * //  ]
  * ```
  *
- * @param iterable $list
- * @return array
+ * @param iterable<mixed> $list
+ * @return array<string, mixed>
  * @no-named-arguments
  */
 function flatten_with_keys($list)
@@ -931,9 +970,10 @@ define('Basko\Functional\flatten_with_keys', __NAMESPACE__ . '\\flatten_with_key
  * intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
  * ```
  *
+ * @template T of array<array-key, mixed>|\Traversable<array-key, mixed>
  * @param mixed $separator
- * @param iterable $list
- * @return callable|array
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<mixed> : array<mixed>)
  * @no-named-arguments
  */
 function intersperse($separator, $list = null)
@@ -945,6 +985,7 @@ function intersperse($separator, $list = null)
 
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $element) {
         $aggregation[] = $element;
         $aggregation[] = $separator;
@@ -964,9 +1005,12 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
  * sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return array|callable
+ * @template TKey of array-key
+ * @template TValue
+ * @template T of array<TKey, TValue>|\Traversable<TKey, TValue>
+ * @param callable(TValue $left, TValue $right, T $list):int $f
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<mixed> : array<mixed>)
  * @no-named-arguments
  */
 function sort(callable $f, $list = null)
@@ -983,6 +1027,7 @@ function sort(callable $f, $list = null)
         $array = $list;
     }
 
+    /** @var array<TKey, TValue> $array */
     \uasort(
         $array,
         /**
@@ -1046,10 +1091,12 @@ define('Basko\Functional\comparator', __NAMESPACE__ . '\\comparator');
  * ]); // [['name' => 'Mikhail', 'age' => 62], ['name' => 'Emma', 'age' => 70], ['name' => 'Peter', 'age' => 78]]
  * ```
  *
- * @param callable $f
- * @param numeric $a
- * @param numeric $b
- * @return int|callable
+ * @template T
+ * @param callable(T):(numeric|string) $f
+ * @param T $a
+ * @param T $b
+ * @return ($a is null ? callable(T $a, T $b):int : ($b is null ? callable(T $b):int : int))
+ * @no-named-arguments
  */
 function ascend(callable $f, $a = null, $b = null)
 {
@@ -1079,10 +1126,12 @@ define('Basko\Functional\ascend', __NAMESPACE__ . '\\ascend');
  * ]); // [['name' => 'Peter', 'age' => 78], ['name' => 'Emma', 'age' => 70], ['name' => 'Mikhail', 'age' => 62]]
  * ```
  *
- * @param callable $f
- * @param numeric $a
- * @param numeric $b
- * @return int|callable
+ * @template T
+ * @param callable(T):(numeric|string) $f
+ * @param T $a
+ * @param T $b
+ * @return ($a is null ? callable(T $a, T $b):int : ($b is null ? callable(T $b):int : int))
+ * @no-named-arguments
  */
 function descend(callable $f, $a = null, $b = null)
 {
@@ -1110,9 +1159,11 @@ define('Basko\Functional\descend', __NAMESPACE__ . '\\descend');
  * uniq_by('abs', [-1, -5, 2, 10, 1, 2]); // [-1, -5, 2, 10]
  * ```
  *
- * @param callable $f
- * @param iterable $list
- * @return array|callable
+ * @template TValue
+ * @template T of array<TValue>|\Traversable<TValue>
+ * @param callable(TValue $element):TValue $f
+ * @param T $list
+ * @return ($list is null ? callable(T $list):array<TValue> : array<TValue>)
  * @no-named-arguments
  */
 function uniq_by(callable $f, $list = null)
@@ -1126,6 +1177,7 @@ function uniq_by(callable $f, $list = null)
     $_aggregation = [];
     $aggregation = [];
 
+    /** @var T $list */
     foreach ($list as $element) {
         $appliedItem = \call_user_func_array($f, [$element]);
         if (!\in_array($appliedItem, $_aggregation, true)) {
@@ -1147,8 +1199,8 @@ define('Basko\Functional\uniq_by', __NAMESPACE__ . '\\uniq_by');
  * uniq([1, '1']); // [1, '1']
  * ```
  *
- * @param iterable $list
- * @return array|callable
+ * @param array<mixed>|\Traversable<mixed> $list
+ * @return array<mixed>
  * @no-named-arguments
  */
 function uniq($list)
@@ -1163,7 +1215,7 @@ define('Basko\Functional\uniq', __NAMESPACE__ . '\\uniq');
 /**
  * Internal function for `zip` and `zip_with`.
  *
- * @return array
+ * @return array<mixed>
  */
 function _zip()
 {
@@ -1208,9 +1260,9 @@ function _zip()
  * zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
  * ```
  *
- * @param iterable $list1
- * @param iterable $list2
- * @return array
+ * @param iterable<mixed> $list1
+ * @param iterable<mixed> $list2
+ * @return array<array-key, array<mixed>>
  * @no-named-arguments
  */
 function zip($list1, $list2)
@@ -1223,6 +1275,7 @@ define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
 /**
  * Zips two or more sequences with given function `$f`.
  *
+ * Note: This function is not curried because of no fixed arity.
  * Note: `$f` signature is `callable(array $arg):mixed`.
  * As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
  * But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
@@ -1231,13 +1284,16 @@ define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
  * zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
  * ```
  *
- * @param callable $f
- * @param iterable $sequence1
- * @param iterable $sequence2
- * @return array|callable(...\able|array):array
+ * @param callable(array<mixed>):mixed $f
+ * @param iterable<mixed> $list1
+ * @param iterable<mixed> $list2
+ * @return ($list1 is null
+ *      ? callable(iterable<mixed> $list1, iterable<mixed>$list2):array<array-key, array<mixed>>
+ *      : array<array-key, array<mixed>>
+ * )
  * @no-named-arguments
  */
-function zip_with(callable $f, $sequence1 = null, $sequence2 = null)
+function zip_with(callable $f, $list1 = null, $list2 = null)
 {
     $args = \func_get_args();
     $f = \array_shift($args);
@@ -1258,8 +1314,8 @@ define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with');
  * permute(['a', 'b']); // [['a', 'b'], ['b', 'a']]
  * ```
  *
- * @param iterable $list
- * @return array
+ * @param iterable<mixed> $list
+ * @return array<mixed>
  * @no-named-arguments
  */
 function permute($list)

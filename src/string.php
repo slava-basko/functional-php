@@ -11,7 +11,7 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * str_split(' ', 'Hello World'); // ['Hello', 'World']
  * ```
  *
- * @param non-empty-string $separator
+ * @param string $separator
  * @param string $string
  * @return callable|string[]
  * @no-named-arguments

@@ -58,19 +58,20 @@ function _object_to_ref($value)
  * Internal function.
  *
  * @param mixed $value
+ * @param mixed $key
  * @return string
  * @internal
  */
 function _value_to_ref($value, $key = null)
 {
-    $type = \gettype($value);
-    if ($type === 'array') {
+    if (\is_array($value)) {
+        /** @var array<mixed> $value */
         $ref = '[' . \implode(':', map(_value_to_ref, $value)) . ']';
     } elseif ($value instanceof \Traversable) {
         $ref = _object_to_ref($value) . '[' . \implode(':', map(_value_to_ref, $value)) . ']';
-    } elseif ($type === 'object') {
+    } elseif (\is_object($value)) {
         $ref = _object_to_ref($value);
-    } elseif ($type === 'resource') {
+    } elseif (\is_resource($value)) {
         throw new \InvalidArgumentException(
             'Resource type cannot be used as part of a memoization key. Please pass a custom key instead'
         );
@@ -105,12 +106,13 @@ function _value_to_key($value)
  * to_list('1, 2, 3'); // [1, 2, 3]
  * ```
  *
- * @param mixed $args
- * @return array
+ * @param string|mixed $args
+ * @return array<mixed>
  */
 function to_list($args)
 {
     if (\is_string($args)) {
+        // @phpstan-ignore-next-line
         return \array_filter(\array_map('trim', \explode(',', $args)), 'strlen');
     }
 
@@ -128,7 +130,7 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list');
  *
  * @param string $a
  * @param string $b
- * @return ($b is null ? callable(string):string : string)
+ * @return ($b is null ? callable(string $b):string : string)
  * @no-named-arguments
  */
 function concat($a, $b = null)
@@ -1120,14 +1122,14 @@ define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constan
  * Returns an infinite, traversable sequence that linearly grows by given amount.
  *
  * @param int $start
- * @param int $amount
+ * @param int $step
  * @return LinearSequence
  * @throws \InvalidArgumentException
  * @no-named-arguments
  */
-function sequence_linear($start, $amount)
+function sequence_linear($start, $step)
 {
-    return new LinearSequence($start, $amount);
+    return new LinearSequence($start, $step);
 }
 
 define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear');

@@ -4,6 +4,10 @@ namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\TypeException;
 
+/**
+ * @template T
+ * @template-extends \Basko\Functional\Functor\Either<T>
+ */
 class EitherWriter extends Either
 {
     const of = "Basko\Functional\Functor\EitherWriter::of";
@@ -13,7 +17,7 @@ class EitherWriter extends Either
     const left = "Basko\Functional\Functor\EitherWriter::left";
 
     /**
-     * @var array
+     * @var array<array-key, mixed>
      */
     protected $aggregation = [];
 
@@ -32,9 +36,7 @@ class EitherWriter extends Either
     }
 
     /**
-     * @param callable(mixed):static $f
-     * @return static
-     * @throws \Basko\Functional\Exception\TypeException
+     * @inheritdoc
      */
     public function flatMap(callable $f)
     {
@@ -49,16 +51,14 @@ class EitherWriter extends Either
         if ($result->isLeft() || $this->isLeft()) {
             $result->aggregation = array_merge($this->aggregation, $result->aggregation);
             $result->validValue = false;
-            $result->value = null;
+            $result->value = null; // @phpstan-ignore assign.propertyType
         }
 
         return $result;
     }
 
     /**
-     * @template M as object
-     * @param class-string<M> $m
-     * @return M
+     * @inheritdoc
      */
     public function transform($m)
     {
@@ -66,31 +66,31 @@ class EitherWriter extends Either
 
         $value = $this->extract();
 
-        if ($m == Maybe::class) {
+        if ($m === Maybe::class) {
             return $value === null ? Maybe::nothing() : Maybe::just($value);
-        } elseif ($m == Either::class) {
+        } elseif ($m === Either::class) {
             return $this->isLeft() ? Either::left($value) : Either::right($value);
-        } elseif ($m == Optional::class) {
+        } elseif ($m === Optional::class) {
             return Optional::just($value);
-        } elseif ($m == Constant::class) {
+        } elseif ($m === Constant::class) {
             return Constant::of($value);
-        } elseif ($m == Identity::class) {
+        } elseif ($m === Identity::class) {
             return Identity::of($value);
-        } elseif ($m == IO::class) {
+        } elseif ($m === IO::class) {
             return IO::of(function () use ($value) {
                 return $value;
             });
-        } elseif ($m == Writer::class) {
+        } elseif ($m === Writer::class) {
             return Writer::of($this->aggregation, $value);
         }
 
-        $this->cantTransformException($m);
+        throw $this->cantTransformException($m);
     }
 
     /**
-     * @param callable $right
-     * @param callable $left
-     * @return \Basko\Functional\Functor\Either
+     * @param callable(T):void $right
+     * @param callable(array<array-key, mixed>):void $left
+     * @return static
      */
     public function match(callable $right, callable $left)
     {
@@ -103,6 +103,9 @@ class EitherWriter extends Either
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         if ($this->isRight()) {

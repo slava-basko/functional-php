@@ -95,7 +95,7 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
  *
  * @param numeric $a
  * @param numeric $b
- * @return mixed
+ * @return ($b is null ? callable(numeric $b):float|int : float|int)
  * @no-named-arguments
  */
 function plus($a, $b = null)
@@ -128,7 +128,7 @@ define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
  *
  * @param numeric $a
  * @param numeric $b
- * @return mixed
+ * @return ($b is null ? callable(numeric $b):float|int : float|int)
  * @no-named-arguments
  */
 function minus($a, $b = null)
@@ -161,7 +161,7 @@ define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
  *
  * @param numeric $a
  * @param numeric $b
- * @return callable|float|int
+ * @return ($b is null ? callable(numeric $b):float|int : float|int)
  * @no-named-arguments
  */
 function div($a, $b = null)
@@ -192,10 +192,9 @@ define('Basko\Functional\div', __NAMESPACE__ . '\\div');
  * modulo(1089, 37)); // 16
  * ```
  *
- * @template T of int
- * @param T $a
- * @param T $b
- * @return ($b is null ? callable(T $b):T : T)
+ * @param numeric $a
+ * @param numeric $b
+ * @return ($b is null ? callable(numeric $b):int : int)
  */
 function modulo($a, $b = null)
 {
@@ -227,7 +226,7 @@ define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo');
  *
  * @param numeric $a
  * @param numeric $b
- * @return callable|float|int
+ * @return ($b is null ? callable(numeric $b):float|int : float|int)
  * @no-named-arguments
  */
 function multiply($a, $b = null)
@@ -258,7 +257,7 @@ define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply');
  * sum([3, 2, 1]); // 6
  * ```
  *
- * @param iterable $list
+ * @param iterable<float|int> $list
  * @return mixed
  * @no-named-arguments
  */
@@ -300,8 +299,8 @@ define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
  * divide([20, 2, 2]); // 5
  * ```
  *
- * @param iterable $list
- * @return mixed
+ * @param iterable<int|float> $list
+ * @return int|float
  * @no-named-arguments
  */
 function divide($list)
@@ -322,8 +321,8 @@ define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
  * product([4, 2, 2]); // 16
  * ```
  *
- * @param iterable $list
- * @return mixed
+ * @param array<int|float> $list
+ * @return int|float
  * @no-named-arguments
  */
 function product($list)
@@ -386,14 +385,15 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power');
  * median([7, 2, 10, 9]); // 8
  * ```
  *
- * @template T
- * @param T[] $list
- * @return T
+ * @param array<int|float> $list
+ * @return int|float
  * @no-named-arguments
  */
 function median($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
     \sort($list);
     $count = \count($list);
@@ -440,6 +440,9 @@ function clamp($min, $max = null, $value = null)
         return partial(clamp, $min, $max);
     }
 
+    /** @var numeric $max */
+    /** @var numeric $value */
+
     return $value < $min ? $min : ($value > $max ? $max : $value);
 }
 
@@ -470,9 +473,9 @@ define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');
  * // ];
  * ```
  *
- * @param iterable $list1
- * @param iterable $list2
- * @return array
+ * @param iterable<mixed> $list1
+ * @param iterable<mixed> $list2
+ * @return array<mixed>
  */
 function cartesian_product($list1, $list2)
 {

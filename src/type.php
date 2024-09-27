@@ -67,6 +67,7 @@ function type_of($class, $value = null)
 
     InvalidArgumentException::assertObject($value, __FUNCTION__, 2);
 
+    /** @var T $value */
     if (is_type_of($class, $value)) {
         return $value;
     }
@@ -399,10 +400,10 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
  * type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
  * ```
  *
- * @template T of iterable|null
+ * @template T of array<mixed>|\Traversable<mixed>
  * @param callable $type
  * @param T $value
- * @return ($value is null ? callable(T):array : array)
+ * @return ($value is null ? callable(T):array<mixed> : array<mixed>)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -435,6 +436,7 @@ function type_list(callable $type, $value = null)
 
     $result = [];
 
+    /** @var T $value */
     foreach ($value as $k => $v) {
         try {
             $result[] = \call_user_func($type, $v);
@@ -459,10 +461,12 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  * type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
  * ```
  *
- * @param callable $keyType
- * @param callable|null $valueType
- * @param mixed $value
- * @return array|callable
+ * @template TKey of array-key
+ * @template TValue
+ * @param callable(TKey):TKey $keyType
+ * @param callable(TValue):TValue $valueType
+ * @param array<TKey, TValue> $value
+ * @return array<TKey, TValue>|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -479,7 +483,9 @@ function type_array(callable $keyType, callable $valueType = null, $value = null
 
     $result = [];
 
+    /** @var array<TKey, TValue> $value */
     foreach ($value as $k => $v) {
+        /** @var TValue $valueType */
         $result[\call_user_func($keyType, $k)] = \call_user_func($valueType, $v);
     }
 
@@ -530,10 +536,10 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
  * ]); // checked and coerced array will be returned and `additional` will be removed
  * ```
  *
- * @template T of array|null
- * @param array $shape
+ * @template T of array
+ * @param array<array-key, mixed> $shape
  * @param T $value
- * @return ($value is null ? callable(T):array : array)
+ * @return ($value is null ? callable(T):T : T)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -548,6 +554,7 @@ function type_shape(array $shape, $value = null)
     $result = [];
 
     foreach ($shape as $k => $type) {
+        /** @var T $value */
         if (\array_key_exists($k, $value)) {
             try {
                 $result[$k] = \call_user_func($type, $value[$k]);
@@ -623,9 +630,10 @@ define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');
  * type_enum(['one', 'two', 'three'], 'four'); // TypeException: Value "four" is not in enum('one', 'two', 'three')
  * ```
  *
- * @param array $enum
- * @param $value
- * @return callable|mixed
+ * @template T
+ * @param array<T> $enum
+ * @param T $value
+ * @return ($value is null ? callable(T):T : T)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */

@@ -4,7 +4,7 @@ namespace Basko\Functional\Functor;
 
 /**
  * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
+ * @template-extends \Basko\Functional\Functor\Monad<T>
  */
 class Constant extends Monad
 {
@@ -24,8 +24,7 @@ class Constant extends Monad
     }
 
     /**
-     * @param callable $f
-     * @return static
+     * @inheritdoc
      */
     public function map(callable $f)
     {
@@ -33,8 +32,7 @@ class Constant extends Monad
     }
 
     /**
-     * @param callable $f
-     * @return static
+     * @inheritdoc
      */
     public function flatMap(callable $f)
     {
@@ -42,9 +40,7 @@ class Constant extends Monad
     }
 
     /**
-     * @template M of \Basko\Functional\Functor\Monad<T>
-     * @param class-string<M> $m
-     * @return M
+     * @inheritdoc
      */
     public function transform($m)
     {
@@ -52,24 +48,24 @@ class Constant extends Monad
 
         $value = $this->extract();
 
-        if ($m == Maybe::class) {
+        if ($m === Maybe::class) {
             return $value === null ? Maybe::nothing() : Maybe::just($value);
-        } elseif ($m == Either::class) {
+        } elseif ($m === Either::class) {
             return Either::right($value);
-        } elseif ($m == Optional::class) {
+        } elseif ($m === Optional::class) {
             return Optional::just($value);
-        } elseif ($m == Identity::class) {
+        } elseif ($m === Identity::class) {
             return Identity::of($value);
-        } elseif ($m == IO::class) {
+        } elseif ($m === IO::class) {
             return IO::of(function () use ($value) {
                 return $value;
             });
-        } elseif ($m == Writer::class) {
+        } elseif ($m === Writer::class) {
             return Writer::of([], $value);
-        } elseif ($m == EitherWriter::class) {
+        } elseif ($m === EitherWriter::class) {
             return EitherWriter::right($value);
         }
 
-        $this->cantTransformException($m);
+        throw $this->cantTransformException($m);
     }
 }
