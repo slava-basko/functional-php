@@ -17,6 +17,7 @@ use Basko\Functional\Functor\IO;
  * @param string $file
  * @param mixed $content
  * @return callable|IO
+ * @phpstan-return ($file is null ? (callable(string $file, mixed $content=):($content is null ? callable(mixed $content):\Basko\Functional\Functor\IO<callable> : \Basko\Functional\Functor\IO<callable>|\Basko\Functional\Functor\IO<callable>)) : ($content is null ? callable(mixed $content):\Basko\Functional\Functor\IO<callable> : \Basko\Functional\Functor\IO<callable>))
  */
 function write_file($chmod, $file = null, $content = null)
 {
@@ -30,6 +31,7 @@ function write_file($chmod, $file = null, $content = null)
 
     InvalidArgumentException::assertString($file, __FUNCTION__, 2);
 
+    /** @var string $file */
     return IO::of(function () use ($chmod, $file, $content) {
         $dir = \dirname($file);
 
@@ -88,7 +90,7 @@ define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file');
  * ```
  *
  * @param string $file
- * @return IO
+ * @return \Basko\Functional\Functor\IO<callable>
  */
 function read_file($file)
 {
@@ -135,10 +137,10 @@ function read_file($file)
 }
 
 /**
- * @param $url
- * @param array $postData
- * @param array $params
- * @return \Basko\Functional\Functor\IO
+ * @param string $url
+ * @param array<string, mixed> $postData
+ * @param array<string, mixed> $params
+ * @return \Basko\Functional\Functor\IO<callable>
  */
 function read_url($url, array $postData = [], array $params = [])
 {
@@ -166,7 +168,7 @@ function read_url($url, array $postData = [], array $params = [])
         \curl_setopt($ch, \CURLOPT_RETURNTRANSFER, 1);
         \curl_setopt($ch, \CURLOPT_HEADER, 1);
 
-        $result = \curl_exec($ch);
+        $result = (string)\curl_exec($ch);
         $httpCode = (int)\curl_getinfo($ch, \CURLINFO_HTTP_CODE);
         $headerSize = (int)\curl_getinfo($ch, \CURLINFO_HEADER_SIZE);
 

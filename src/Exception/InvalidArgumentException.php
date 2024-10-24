@@ -66,7 +66,7 @@ final class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param callable[] $listOfCallables
+     * @param callable[]|null $listOfCallables
      * @param string $callee
      * @param int $parameterPosition
      * @return void

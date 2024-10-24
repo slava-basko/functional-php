@@ -82,7 +82,7 @@ class MathTest extends BaseTest
     {
         $this->setExpectedException(
             'Basko\Functional\Exception\InvalidArgumentException',
-            'modulo() expects parameter 2 to be numeric, NULL given'
+            'modulo() expects parameter 2 to be integer, NULL given'
         );
         f\modulo(2, null);
     }
@@ -147,6 +147,7 @@ class MathTest extends BaseTest
     {
         $this->assertEquals(7, f\median([2, 9, 7]));
         $this->assertEquals(8, f\median([7, 2, 10, 9]));
+        $this->assertEquals(7, f\median(new \ArrayIterator([2, 9, 7])));
     }
 
     public function test_clamp()

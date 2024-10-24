@@ -11,4 +11,4 @@ generate-docs:																	## generate documentation
 	php internal/doc_generator.php
 
 static-analysis:																## run static analysis checks
-	./vendor/bin/psalm --no-cache --memory-limit=-1 --php-version=5.5 --show-info=true
+	./vendor/bin/phpstan --configuration=phpstan.neon --memory-limit=-1

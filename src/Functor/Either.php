@@ -6,7 +6,8 @@ use Basko\Functional\Exception\TypeException;
 use Exception;
 
 /**
- * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ * @template T
+ * @template-extends \Basko\Functional\Functor\Monad<T>
  */
 class Either extends Monad
 {
@@ -61,8 +62,7 @@ class Either extends Monad
     }
 
     /**
-     * @param callable $f
-     * @return static
+     * @inheritdoc
      */
     public function map(callable $f)
     {
@@ -78,9 +78,7 @@ class Either extends Monad
     }
 
     /**
-     * @param callable(mixed):static $f
-     * @return static
-     * @throws \Basko\Functional\Exception\TypeException
+     * @inheritdoc
      */
     public function flatMap(callable $f)
     {
@@ -100,9 +98,7 @@ class Either extends Monad
     }
 
     /**
-     * @template M as object
-     * @param class-string<M> $m
-     * @return M
+     * @inheritdoc
      */
     public function transform($m)
     {
@@ -110,37 +106,37 @@ class Either extends Monad
 
         $value = $this->extract();
 
-        if ($m == Maybe::class) {
+        if ($m === Maybe::class) {
             return $this->isRight()
                 ? Maybe::just($value)
                 : Maybe::nothing();
-        } elseif ($m == Optional::class) {
+        } elseif ($m === Optional::class) {
             return $this->isRight()
                 ? Optional::just($value)
                 : Optional::nothing();
-        } elseif ($m == Constant::class) {
+        } elseif ($m === Constant::class) {
             return Constant::of($value);
-        } elseif ($m == Identity::class) {
+        } elseif ($m === Identity::class) {
             return Identity::of($value);
-        } elseif ($m == IO::class) {
+        } elseif ($m === IO::class) {
             return IO::of(function () use ($value) {
                 return $value;
             });
-        } elseif ($m == Writer::class) {
+        } elseif ($m === Writer::class) {
             return Writer::of([], $value);
-        } elseif ($m == EitherWriter::class) {
+        } elseif ($m === EitherWriter::class) {
             return $this->isRight()
                 ? EitherWriter::right($value)
                 : EitherWriter::left($value);
         }
 
-        $this->cantTransformException($m);
+        throw $this->cantTransformException($m);
     }
 
     /**
-     * @param callable $right
-     * @param callable $left
-     * @return \Basko\Functional\Functor\Either
+     * @param callable(T):void $right
+     * @param callable(T):void $left
+     * @return static
      */
     public function match(callable $right, callable $left)
     {

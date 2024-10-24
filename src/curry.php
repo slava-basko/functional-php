@@ -26,7 +26,7 @@ function count_args(callable $f, $only_required = false)
     } elseif (\is_object($f) && \method_exists($f, '__invoke')) {
         $reflection = new \ReflectionMethod($f, '__invoke');
     } else {
-        $reflection = new \ReflectionFunction($f);
+        $reflection = new \ReflectionFunction($f); // @phpstan-ignore argument.type
     }
 
     return $only_required ? $reflection->getNumberOfRequiredParameters() : $reflection->getNumberOfParameters();
@@ -205,7 +205,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
- * binary($f)(['one', 'two', 'three]); // onetwo
+ * binary($f)(['one', 'two', 'three']); // onetwo
  * ```
  *
  * @param callable $f
