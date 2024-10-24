@@ -12,3 +12,8 @@ generate-docs:																	## generate documentation
 
 static-analysis:																## run static analysis checks
 	./vendor/bin/phpstan --configuration=phpstan.neon --memory-limit=-1
+
+code-style:																		## run phpcs
+	./vendor/bin/phpcs --basepath=. --standard=phpcs.xml
+
+check: unit-tests code-style static-analysis

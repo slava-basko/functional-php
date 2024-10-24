@@ -1263,12 +1263,19 @@ define('Basko\Functional\zip', __NAMESPACE__ . '\\zip');
  * @param callable(array{T1, T2}):mixed $f
  * @param array<T1>|\Traversable<T1> $list1
  * @param array<T2>|\Traversable<T2> $list2
- * @return array<array{T1, T2}>
+ * @return ($list1 is null ? callable(array<T1>|\Traversable<T1> $list1, array<T2>|\Traversable<T2> $list2):array<array{T1, T2}> : array<array{T1, T2}>)
  * @no-named-arguments
  */
-function zip_with(callable $f, $list1, $list2)
+function zip_with(callable $f, $list1 = null, $list2 = null)
 {
-    return \call_user_func_array('Basko\Functional\_zip', \array_merge([__FUNCTION__, $f], \func_get_args()));
+    $args = \func_get_args();
+    $f = \array_shift($args);
+
+    if (empty($args)) {
+        return partial(zip_with, $f);
+    }
+
+    return \call_user_func_array('Basko\Functional\_zip', \array_merge([__FUNCTION__, $f], $args));
 }
 
 define('Basko\Functional\zip_with', __NAMESPACE__ . '\\zip_with');
