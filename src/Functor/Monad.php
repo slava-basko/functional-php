@@ -17,12 +17,13 @@ abstract class Monad
     /**
      * @param T $value
      */
-    protected function __construct($value)
+    final protected function __construct($value)
     {
         if ($this instanceof Type) {
             $vType = \gettype($value);
             $mType = $this::type();
             if (\is_object($value)) {
+                /** @var class-string $mType */
                 InvalidArgumentException::assertType(\get_class($value), $mType, static::class, 1);
             } elseif ($mType !== $vType) {
                 throw new InvalidArgumentException(
@@ -67,9 +68,10 @@ abstract class Monad
     /**
      * Transforms monad to another monad
      *
-     * @template M of \Basko\Functional\Functor\Monad<T>
+     * @template M of \Basko\Functional\Functor\Monad
      * @param class-string<M> $m
      * @return M
+     * @phpstan-return new<M[T]>
      */
     abstract public function transform($m);
 
@@ -83,7 +85,7 @@ abstract class Monad
         InvalidArgumentException::assertClass($m, static::class, 1);
 
         $classes = \class_parents($m);
-        $possibleMonadClass = \end($classes);
+        $possibleMonadClass = (string)\end($classes);
 
         if ($possibleMonadClass != Monad::class) {
             throw new InvalidArgumentException(
@@ -99,13 +101,12 @@ abstract class Monad
 
     /**
      * @param class-string $m
-     * @return void
-     * @throws \LogicException
+     * @return \LogicException
      */
     protected function cantTransformException($m)
     {
         $thisClass = \get_class($this);
-        throw new \LogicException("Cannot transform $thisClass monad to $m monad");
+        return new \LogicException("Cannot transform $thisClass monad to $m monad");
     }
 
     /**

@@ -15,7 +15,12 @@ class LinearSequence implements \Iterator
     /**
      * @var int
      */
-    private $amount;
+    private $step;
+
+    /**
+     * @var int
+     */
+    private $key = 0;
 
     /**
      * @var int
@@ -24,25 +29,27 @@ class LinearSequence implements \Iterator
 
     /**
      * @param int $start
-     * @param int $amount
+     * @param int $step
      */
-    public function __construct($start, $amount)
+    public function __construct($start, $step)
     {
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_int($start) || $start < 0) {
             throw new \InvalidArgumentException(
                 'LinearSequence expects $start argument to be an integer, greater than or equal to 0'
             );
         }
 
-        if (!\is_int($amount)) {
+        /** @psalm-suppress DocblockTypeContradiction */
+        if (!\is_int($step)) {
             throw new \InvalidArgumentException(\sprintf(
                 'LinearSequence expects $amount argument to be integer, %s given',
-                \gettype($amount)
+                \gettype($step)
             ));
         }
 
         $this->start = $start;
-        $this->amount = $amount;
+        $this->step = $step;
     }
 
     #[\ReturnTypeWillChange]
@@ -54,13 +61,14 @@ class LinearSequence implements \Iterator
     #[\ReturnTypeWillChange]
     public function next()
     {
-        $this->value += $this->amount;
+        $this->key++;
+        $this->value += $this->step;
     }
 
     #[\ReturnTypeWillChange]
     public function key()
     {
-        return 0;
+        return $this->key;
     }
 
     #[\ReturnTypeWillChange]
@@ -72,6 +80,7 @@ class LinearSequence implements \Iterator
     #[\ReturnTypeWillChange]
     public function rewind()
     {
+        $this->key = 0;
         $this->value = $this->start;
     }
 }

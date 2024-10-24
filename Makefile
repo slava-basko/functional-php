@@ -9,3 +9,8 @@ unit-tests:																		## run phpunit
 
 generate-docs:																	## generate documentation
 	php internal/doc_generator.php
+
+code-style:																		## run phpcs
+	./vendor/bin/phpcs --basepath=. --standard=phpcs.xml
+
+check: unit-tests code-style

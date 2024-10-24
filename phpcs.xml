@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <ruleset>
+    <file>src</file>
     <exclude-pattern>tests/*</exclude-pattern>
 
     <rule ref="PSR12">
@@ -9,5 +10,7 @@
         <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
         <!-- use Monad::of, Maybe::just, etc. constants -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase" />
+        <!-- @phpstan-return sometimes breaks if split by several lines -->
+        <exclude name="Generic.Files.LineLength.TooLong" />
     </rule>
 </ruleset>

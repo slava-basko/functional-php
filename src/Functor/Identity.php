@@ -5,7 +5,8 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\TypeException;
 
 /**
- * @template-extends \Basko\Functional\Functor\Monad<mixed>
+ * @template T
+ * @template-extends Monad<T>
  */
 class Identity extends Monad
 {
@@ -25,8 +26,7 @@ class Identity extends Monad
     }
 
     /**
-     * @param callable $f
-     * @return static
+     * @inheritdoc
      */
     public function map(callable $f)
     {
@@ -34,9 +34,7 @@ class Identity extends Monad
     }
 
     /**
-     * @param callable(mixed):static $f
-     * @return static
-     * @throws \Basko\Functional\Exception\TypeException
+     * @inheritdoc
      */
     public function flatMap(callable $f)
     {
@@ -48,9 +46,7 @@ class Identity extends Monad
     }
 
     /**
-     * @template M as object
-     * @param class-string<M> $m
-     * @return M
+     * @inheritdoc
      */
     public function transform($m)
     {
@@ -76,6 +72,6 @@ class Identity extends Monad
             return EitherWriter::right($value);
         }
 
-        $this->cantTransformException($m);
+        throw $this->cantTransformException($m);
     }
 }

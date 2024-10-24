@@ -20,6 +20,11 @@ class ExponentialSequence implements \Iterator
     /**
      * @var int
      */
+    private $key = 0;
+
+    /**
+     * @var int
+     */
     private $value = 0;
 
     /**
@@ -33,12 +38,14 @@ class ExponentialSequence implements \Iterator
      */
     public function __construct($start, $percentage)
     {
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_int($start) || $start < 1) {
             throw new \InvalidArgumentException(
                 'ExponentialSequence expects $start argument to be an integer, greater than or equal to 1'
             );
         }
 
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!\is_int($percentage) || $percentage < 1 || $percentage > 100) {
             throw new \InvalidArgumentException(
                 'ExponentialSequence expects $percentage argument to be an integer, between 1 and 100'
@@ -58,6 +65,7 @@ class ExponentialSequence implements \Iterator
     #[\ReturnTypeWillChange]
     public function next()
     {
+        $this->key++;
         $this->value = (int)\round(\pow($this->start * (1 + $this->percentage / 100), $this->times));
         $this->times++;
     }
@@ -65,7 +73,7 @@ class ExponentialSequence implements \Iterator
     #[\ReturnTypeWillChange]
     public function key()
     {
-        return null; // @phpstan-ignore-line
+        return $this->key;
     }
 
     #[\ReturnTypeWillChange]
@@ -78,6 +86,7 @@ class ExponentialSequence implements \Iterator
     public function rewind()
     {
         $this->times = 1;
+        $this->key = 0;
         $this->value = $this->start;
     }
 }

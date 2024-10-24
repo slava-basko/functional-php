@@ -4,6 +4,7 @@ namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
 use Basko\Functional\Exception\InvalidArgumentException;
+use Basko\FunctionalTest\Helpers\PositiveIntType;
 use Basko\FunctionalTest\Helpers\User;
 use Basko\FunctionalTest\Helpers\Value;
 
@@ -258,7 +259,9 @@ class TypeTest extends BaseTest
 
         $this->assertEquals(1, $t(1));
         $this->assertEquals(1, $t(1.00));
+        $this->assertEquals(1.25, $t(1.25));
         $this->assertEquals(1, $t('1'));
+        $this->assertEquals(1.75, $t('1.75'));
 
         $this->assertEquals(true, $t2('1'));
         $this->assertEquals(true, $t2(1));
@@ -309,6 +312,7 @@ class TypeTest extends BaseTest
     {
         $this->assertEquals(2, f\type_positive_int(2));
         $this->assertEquals(2, f\type_positive_int('2'));
+        $this->assertEquals(5, f\type_positive_int(new PositiveIntType()));
     }
 
     public function test_type_positive_int_invalid()
