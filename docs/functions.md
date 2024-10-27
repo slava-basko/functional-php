@@ -422,7 +422,7 @@ Any extraneous parameters will not be passed to the supplied function.
 $f = static function ($a = '', $b = '', $c = '') {
      return $a . $b . $c;
 };
-unary($f)(['one', 'two', 'three]); // one
+unary($f)(['one', 'two', 'three']); // one
 ```
 
 ### binary
@@ -433,7 +433,7 @@ Any extraneous parameters will not be passed to the supplied function.
 $f = static function ($a = '', $b = '', $c = '') {
      return $a . $b . $c;
 };
-binary($f)(['one', 'two', 'three]); // onetwo
+binary($f)('one', 'two', 'three'); // onetwo
 ```
 
 ### nullary
@@ -821,9 +821,9 @@ zip([1, 2], ['a', 'b']); // [[1, 'a'], [2, 'b']]
 ### zip_with
 Zips two or more sequences with given function `$f`.
 
-Note: `$f` signature is `callable(array $arg):mixed`.
 As a result: `zip_with(plus, [1, 2], [3, 4])` equals to `plus([$arg1, $arg2])`.
 But `zip_with(call(plus), [1, 2], [3, 4])` equals to `plus($arg1, $arg2)`.
+Note: This function is not curried because of no fixed arity.
 
 ```php
 zip_with(call(plus), [1, 2], [3, 4]); // [4, 6]
@@ -962,7 +962,7 @@ clamp('2023-01-01', '2023-11-22', '2012-11-22'); // 2023-01-01
 clamp('2023-01-01', '2023-11-22', '2023-04-22'); // 2023-04-22
 
 // Example:
-$pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']); // Safely use $pagePortion in your SQL query.
+$pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']);
 ```
 
 ### cartesian_product
@@ -1617,7 +1617,7 @@ Union type.
 ```php
 $t = type_union(type_int, type_float);
 $t(1); // 1;
-$t(1.00); // 1
+$t(1.25); // 1.25
 $t('1'); // 1
 ```
 

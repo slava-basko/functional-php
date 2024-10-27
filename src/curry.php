@@ -184,7 +184,7 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary');
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
- * unary($f)(['one', 'two', 'three]); // one
+ * unary($f)(['one', 'two', 'three']); // one
  * ```
  *
  * @param callable $f
@@ -205,7 +205,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
- * binary($f)(['one', 'two', 'three']); // onetwo
+ * binary($f)('one', 'two', 'three'); // onetwo
  * ```
  *
  * @param callable $f

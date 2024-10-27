@@ -103,7 +103,9 @@ class CurryTest extends BaseTest
         $f = static function ($a = '', $b = '', $c = '') {
             return $a . $b . $c;
         };
-        $this->assertSame('one', call_user_func_array(f\unary($f), ['one', 'two', 'three']));
+        $f1 = f\unary($f);
+        $this->assertSame('one', call_user_func_array($f1, ['one', 'two', 'three']));
+        $this->assertSame('one', $f1('one', 'two', 'three'));
         $this->assertSame('onetwo', call_user_func_array(f\binary($f), ['one', 'two', 'three']));
     }
 
