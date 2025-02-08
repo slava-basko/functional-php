@@ -221,7 +221,7 @@ define('Basko\Functional\join', __NAMESPACE__ . '\\join');
  * @return callable The return value of the given $then or $else functions
  * @no-named-arguments
  */
-function if_else(callable $if, callable $then = null, callable $else = null)
+function if_else(callable $if, $then = null, $else = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -291,7 +291,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
  * @return ($catcher is null ? callable(callable $catcher):callable : callable():mixed)
  * @no-named-arguments
  */
-function try_catch(callable $tryer, callable $catcher = null)
+function try_catch(callable $tryer, $catcher = null)
 {
     if (\func_num_args() < 2) {
         return partial(try_catch, $tryer);
@@ -684,7 +684,7 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
  * @return callable
  * @no-named-arguments
  */
-function to_fn($object, $methodName = null, array $arguments = null)
+function to_fn($object, $methodName = null, $arguments = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -699,6 +699,7 @@ function to_fn($object, $methodName = null, array $arguments = null)
 //    $arguments = flatten($args);
 
     InvalidArgumentException::assertString($methodName, __FUNCTION__, 2);
+    InvalidArgumentException::assertArray($arguments, __FUNCTION__, 3);
 
     $pfn = __FUNCTION__;
     return function () use ($pfn, $object, $methodName, $arguments) {
@@ -938,7 +939,7 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
  * @phpstan-return ($keys is null ? (callable(array<string> $keys, array<mixed>|\Traversable<mixed>|object $list=):($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)|(array<array-key, mixed>|object))) : ($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)))
  * @no-named-arguments
  */
-function map_keys(callable $f, array $keys = null, $list = null)
+function map_keys(callable $f, $keys = null, $list = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -983,7 +984,7 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  * @phpstan-return ($elementsNumbers is null ? (callable(array<int> $elementsNumbers, array<mixed>|\Traversable<mixed> $list=):($list is null ? callable(array<mixed>|\Traversable<mixed> $list):array<array-key, mixed> : array<array-key, mixed>|array<array-key, mixed>)) : ($list is null ? callable(array<mixed>|\Traversable<mixed> $list):array<array-key, mixed> : array<array-key, mixed>))
  * @no-named-arguments
  */
-function map_elements(callable $f, array $elementsNumbers = null, $list = null)
+function map_elements(callable $f, $elementsNumbers = null, $list = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -1251,7 +1252,7 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
  * @throws \Exception Any exception thrown by the callback
  * @no-named-arguments
  */
-function retry($retries, \Iterator $delaySequence = null, $f = null)
+function retry($retries, $delaySequence = null, $f = null)
 {
     $n = \func_num_args();
     if ($n === 1) {

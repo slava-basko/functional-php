@@ -414,9 +414,8 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power');
  * median([7, 2, 10, 9]); // 8
  * ```
  *
- * @template T of int|float
- * @param array<T>|\Traversable<T> $list
- * @return T
+ * @param array<int|float>|\Traversable<int|float> $list
+ * @return int|float
  * @no-named-arguments
  */
 function median($list)

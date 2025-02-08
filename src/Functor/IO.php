@@ -7,7 +7,7 @@ use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class IO extends Monad
 {
@@ -18,19 +18,16 @@ class IO extends Monad
      * IMPORTANT: throw Exception in `$f` to clearly show error path.
      *
      * @param callable $f
-     * @return static
+     * @return static<callable>
      */
     public static function of(callable $f)
     {
-        if ($f instanceof static) {
-            return $f;
-        }
-
         return new static($f);
     }
 
     /**
-     * @inheritdoc
+     * @param callable $f
+     * @return static<callable>
      */
     public function map(callable $f)
     {

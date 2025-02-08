@@ -10,7 +10,10 @@ unit-tests:																		## run phpunit
 generate-docs:																	## generate documentation
 	php internal/doc_generator.php
 
+static-analysis:																## run static analysis checks
+	php phpstan.phar --configuration=phpstan.neon --memory-limit=-1
+
 code-style:																		## run phpcs
 	./vendor/bin/phpcs --basepath=. --standard=phpcs.xml
 
-check: unit-tests code-style
+check: code-style static-analysis unit-tests

@@ -66,6 +66,22 @@ final class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
+     * @param mixed $callback
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public static function assertOptionalCallable($callback, $callee, $parameterPosition)
+    {
+        if (\is_callable($callback) || \is_null($callback)) {
+            return;
+        }
+
+        static::assertCallable($callback, $callee, $parameterPosition);
+    }
+
+    /**
      * @param callable[]|null $listOfCallables
      * @param string $callee
      * @param int $parameterPosition
@@ -136,6 +152,26 @@ final class InvalidArgumentException extends \InvalidArgumentException
     public static function assertArrayAccess($collection, $callee, $parameterPosition)
     {
         self::assertListAlike($collection, 'ArrayAccess', $callee, $parameterPosition);
+    }
+
+    /**
+     * @param mixed $array
+     * @param string $callee
+     * @param int $parameterPosition
+     * @return void
+     */
+    public static function assertArray($array, $callee, $parameterPosition)
+    {
+        if (!\is_array($array)) {
+            throw new static(
+                \sprintf(
+                    '%s() expects parameter %d to be array, %s given',
+                    $callee,
+                    $parameterPosition,
+                    self::getType($array)
+                )
+            );
+        }
     }
 
     /**

@@ -419,6 +419,22 @@ function tap(callable $f, $value = null)
 
 define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
 
+//function trace($marker, callable $f)
+//{
+//    return function () use ($marker, $f) {
+//        $args = \func_get_args();
+//
+//        $cleanArgs = [$marker];
+//        foreach ($args as $arg) {
+//            $cleanArgs[] = cp($arg);
+//        }
+//
+//        \call_user_func_array($f, $cleanArgs);
+//
+//        return $args;
+//    };
+//}
+
 /**
  * Wrap value within a function, which will return it, without any modifications. Kinda constant function.
  *
@@ -535,7 +551,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  * @return callable
  * @no-named-arguments
  */
-function converge(callable $convergingFunction, array $branchingFunctions = null)
+function converge(callable $convergingFunction, $branchingFunctions = null)
 {
     if (\func_num_args() < 2) {
         return partial(converge, $convergingFunction);
@@ -590,11 +606,13 @@ define('Basko\Functional\call', __NAMESPACE__ . '\\call');
  * @return ($args is null ? callable(array<mixed> $args=):mixed : mixed)
  * @no-named-arguments
  */
-function call_array(callable $f, array $args = null)
+function call_array(callable $f, $args = null)
 {
     if (\func_num_args() < 2) {
         return partial(call_array, $f);
     }
+
+    InvalidArgumentException::assertArray($args, __FUNCTION__, 2);
 
     /** @var array<mixed> $args */
     return \call_user_func_array($f, $args);
@@ -616,7 +634,7 @@ define('Basko\Functional\call_array', __NAMESPACE__ . '\\call_array');
  * @return ($f is null ? callable(callable(T):mixed):mixed : mixed)
  * @no-named-arguments
  */
-function apply_to($arg, callable $f = null)
+function apply_to($arg, $f = null)
 {
     $args = \func_get_args();
 
@@ -746,11 +764,13 @@ define('Basko\Functional\flip', __NAMESPACE__ . '\\flip');
  * @return ($g is null ? callable(mixed):mixed : callable(mixed, mixed):mixed)
  * @no-named-arguments
  */
-function on(callable $f, callable $g = null)
+function on(callable $f, $g = null)
 {
     if (\func_num_args() < 2) {
         return partial(on, $f);
     }
+
+    InvalidArgumentException::assertOptionalCallable($g, __FUNCTION__, 2);
 
     return function ($a, $b) use ($f, $g) {
         /** @var callable $g */

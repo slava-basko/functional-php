@@ -165,8 +165,8 @@ function read_url($url, array $postData = [], array $params = [])
             }
         }
 
-        \curl_setopt($ch, \CURLOPT_RETURNTRANSFER, 1);
-        \curl_setopt($ch, \CURLOPT_HEADER, 1);
+        \curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($ch, \CURLOPT_HEADER, true);
 
         $result = (string)\curl_exec($ch);
         $httpCode = (int)\curl_getinfo($ch, \CURLINFO_HTTP_CODE);

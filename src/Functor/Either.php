@@ -7,7 +7,7 @@ use Exception;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Either extends Monad
 {
@@ -29,10 +29,6 @@ class Either extends Monad
      */
     public static function of($validValue, $value)
     {
-        if ($value instanceof static) {
-            return $value;
-        }
-
         $m = new static($value);
         $m->validValue = $validValue;
 
@@ -71,7 +67,9 @@ class Either extends Monad
         }
 
         try {
-            return static::right(\call_user_func($f, $this->value));
+            $this->value = \call_user_func($f, $this->value);
+
+            return $this;
         } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }

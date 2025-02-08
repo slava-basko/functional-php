@@ -20,7 +20,12 @@ use Basko\Functional\Exception\InvalidArgumentException;
 function count_args(callable $f, $only_required = false)
 {
     if (\is_string($f) && \strpos($f, '::', 1) !== false) {
-        $reflection = new \ReflectionMethod($f);
+        //$reflection = new \ReflectionMethod($f);
+        if (PHP_VERSION_ID >= 80400) {
+            $reflection = \ReflectionMethod::createFromMethodName($f);
+        } else {
+            $reflection = new \ReflectionMethod($f);
+        }
     } elseif (\is_array($f) && \count($f) === 2) {
         $reflection = new \ReflectionMethod($f[0], $f[1]);
     } elseif (\is_object($f) && \method_exists($f, '__invoke')) {

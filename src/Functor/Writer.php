@@ -7,7 +7,7 @@ use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Writer extends Monad
 {
@@ -41,10 +41,6 @@ class Writer extends Monad
             );
         }
 
-        if ($value instanceof static) {
-            return $value;
-        }
-
         $m = new static($value);
         $m->aggregation = $aggregation;
 
@@ -72,7 +68,7 @@ class Writer extends Monad
     }
 
     /**
-     * @param \Basko\Functional\Functor\Writer<T> $m
+     * @param \Basko\Functional\Functor\Writer<mixed> $m
      * @return static
      */
     protected function concat(Writer $m)

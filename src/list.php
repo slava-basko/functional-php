@@ -36,6 +36,7 @@ function map(callable $f, $list = null)
         $aggregation[$index] = \call_user_func_array($f, [$element, $index, $list]);
     }
 
+    /** @var Tn $aggregation */
     return $aggregation;
 }
 

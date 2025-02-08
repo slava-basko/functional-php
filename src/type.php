@@ -447,7 +447,7 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
-function type_array(callable $keyType, callable $valueType = null, $value = null)
+function type_array(callable $keyType, $valueType = null, $value = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -457,6 +457,7 @@ function type_array(callable $keyType, callable $valueType = null, $value = null
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 3);
+    InvalidArgumentException::assertCallable($valueType, __FUNCTION__, 2);
 
     $result = [];
 
@@ -555,7 +556,7 @@ function type_shape(array $shape, $value = null)
                 );
             }
         } else {
-            $optionalValue = \call_user_func($type, null);
+            $optionalValue = \call_user_func($type, null); // @phpstan-ignore argument.type
             if ($optionalValue === '__basko_functional_type_optional') {
                 continue;
             }
