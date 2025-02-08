@@ -6,7 +6,7 @@ use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Maybe extends Monad
 {
@@ -22,10 +22,6 @@ class Maybe extends Monad
      */
     public static function of($value)
     {
-        if ($value instanceof static) {
-            return $value;
-        }
-
         return new static($value);
     }
 
@@ -52,10 +48,12 @@ class Maybe extends Monad
     public function map(callable $f)
     {
         if (\is_null($this->value)) {
-            return $this::nothing();
+            return $this;
         }
 
-        return static::just(\call_user_func($f, $this->value));
+        $this->value = \call_user_func($f, $this->value);
+
+        return $this;
     }
 
     /**
@@ -64,7 +62,7 @@ class Maybe extends Monad
     public function flatMap(callable $f)
     {
         if (\is_null($this->value)) {
-            return $this::nothing();
+            return $this;
         }
 
         $result = \call_user_func($f, $this->value);

@@ -82,7 +82,7 @@ class MathTest extends BaseTest
     {
         $this->setExpectedException(
             'Basko\Functional\Exception\InvalidArgumentException',
-            'modulo() expects parameter 2 to be numeric, NULL given'
+            'modulo() expects parameter 2 to be integer, NULL given'
         );
         f\modulo(2, null);
     }

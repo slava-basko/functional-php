@@ -6,7 +6,7 @@ use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Identity extends Monad
 {
@@ -18,10 +18,6 @@ class Identity extends Monad
      */
     public static function of($value)
     {
-        if ($value instanceof static) {
-            return $value;
-        }
-
         return new static($value);
     }
 
@@ -30,7 +26,9 @@ class Identity extends Monad
      */
     public function map(callable $f)
     {
-        return static::of(\call_user_func($f, $this->value));
+        $this->value = \call_user_func($f, $this->value);
+
+        return $this;
     }
 
     /**

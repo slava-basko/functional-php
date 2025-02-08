@@ -2,11 +2,12 @@
 
 namespace Basko\Functional\Functor;
 
+use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Optional extends Monad
 {
@@ -28,10 +29,6 @@ class Optional extends Monad
      */
     public static function of($hasValue, $value)
     {
-        if ($value instanceof static) {
-            return $value;
-        }
-
         $m = new static($value);
         $m->hasValue = $hasValue;
 
@@ -61,10 +58,13 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            return static::just(\call_user_func_array($f, [$this->value]));
+            $this->value = \call_user_func($f, $this->value);
+
+            return $this;
+//            return static::just(\call_user_func_array($f, [$this->value]));
         }
 
-        return static::nothing();
+        return $this;
     }
 
     /**
@@ -139,8 +139,13 @@ class Optional extends Monad
      * @param callable|null $f
      * @return static
      */
-    public static function fromProp($key, $data, callable $f = null)
+    public static function fromProp($key, $data, $f = null)
     {
+        InvalidArgumentException::assertValidArrayKey($key, __METHOD__);
+        if (!is_null($f)) {
+            InvalidArgumentException::assertCallable($f, __METHOD__, 3);
+        }
+
         if (\is_array($data) && \array_key_exists($key, $data)) {
             return static::just(\is_callable($f) ? \call_user_func($f, $data[$key]) : $data[$key]);
         }

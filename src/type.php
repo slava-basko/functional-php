@@ -13,10 +13,10 @@ use Basko\Functional\Exception\TypeException;
  * is_type_of(\User::class, new SomeClass()); // false
  * ```
  *
- * @template T of object
+ * @template T
  * @param class-string $class
  * @param T $value
- * @return ($value is null ? callable(T):bool : bool)
+ * @return ($value is null ? callable(T $value):bool : bool)
  * @no-named-arguments
  */
 function is_type_of($class, $value = null)
@@ -42,10 +42,10 @@ define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of');
  * type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
  * ```
  *
- * @template T of object
+ * @template T
  * @param class-string $class
  * @param T $value
- * @return ($value is null ? callable(T):T : T)
+ * @return ($value is null ? callable(T $value):T : T)
  * @throws \Basko\Functional\Exception\TypeException
  */
 function type_of($class, $value = null)
@@ -53,21 +53,11 @@ function type_of($class, $value = null)
     InvalidArgumentException::assertClass($class, __FUNCTION__, 1);
 
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-        return function ($value) use ($class, $pfn) {
-            InvalidArgumentException::assertObject($value, $pfn, 2);
-
-            if (is_type_of($class, $value)) {
-                return $value;
-            }
-
-            throw TypeException::forValue($value, $class);
-        };
+        return partial(type_of, $class);
     }
 
     InvalidArgumentException::assertObject($value, __FUNCTION__, 2);
 
-    /** @var T $value */
     if (is_type_of($class, $value)) {
         return $value;
     }
@@ -165,8 +155,9 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
  */
 function type_non_empty_string($value)
 {
-    if (type_string($value) && \strlen($value) > 0) {
-        return $value;
+    $newValue = type_string($value);
+    if (\strlen($newValue) > 0) {
+        return $newValue;
     }
 
     throw TypeException::forValue($value, 'non-empty-string');
@@ -234,14 +225,15 @@ define('Basko\Functional\type_int', __NAMESPACE__ . '\\type_int');
  * ```
  *
  * @param mixed $value
- * @return int Positive int
+ * @return int
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
  */
 function type_positive_int($value)
 {
-    if (type_int($value) && $value > 0) {
-        return $value;
+    $newValue = type_int($value);
+    if ($newValue > 0) {
+        return $newValue;
     }
 
     throw TypeException::forValue($value, 'positive_int');
@@ -297,7 +289,7 @@ define('Basko\Functional\type_float', __NAMESPACE__ . '\\type_float');
  * ```
  * $t = type_union(type_int, type_float);
  * $t(1); // 1;
- * $t(1.00); // 1
+ * $t(1.25); // 1.25
  * $t('1'); // 1
  * ```
  *
@@ -400,36 +392,19 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
  * type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
  * ```
  *
- * @template T of array<mixed>|\Traversable<mixed>
- * @param callable $type
+ * @template TValue
+ * @template TNewValue
+ * @template T of array<TValue>|\Traversable<TValue>
+ * @param callable(TValue):TNewValue $type
  * @param T $value
- * @return ($value is null ? callable(T):array<mixed> : array<mixed>)
+ * @return ($value is null ? callable(T $value):array<TNewValue> : array<TNewValue>)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
 function type_list(callable $type, $value = null)
 {
     if (\func_num_args() < 2) {
-        $pfn = __FUNCTION__;
-        return function ($value) use ($type, $pfn) {
-            InvalidArgumentException::assertList($value, $pfn, 2);
-
-            $result = [];
-
-            foreach ($value as $k => $v) {
-                try {
-                    $result[] = \call_user_func($type, $v);
-                } catch (TypeException $typeException) {
-                    throw new TypeException(
-                        'List element \'' . $k . '\' -> ' . $typeException->getMessage(),
-                        0,
-                        $typeException
-                    );
-                }
-            }
-
-            return $result;
-        };
+        return partial(type_list, $type);
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 2);
@@ -463,14 +438,16 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  *
  * @template TKey of array-key
  * @template TValue
- * @param callable(TKey):TKey $keyType
- * @param callable(TValue):TValue $valueType
- * @param array<TKey, TValue> $value
- * @return array<TKey, TValue>|callable
+ * @template TNewKey of array-key
+ * @template TNewValue
+ * @param callable(TKey):TNewKey $keyType
+ * @param callable(TValue):TNewValue $valueType
+ * @param array<TKey, TValue>|\Traversable<TKey, TValue> $value
+ * @return array<TNewKey, TNewValue>|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
-function type_array(callable $keyType, callable $valueType = null, $value = null)
+function type_array(callable $keyType, $valueType = null, $value = null)
 {
     $n = \func_num_args();
     if ($n === 1) {
@@ -480,12 +457,16 @@ function type_array(callable $keyType, callable $valueType = null, $value = null
     }
 
     InvalidArgumentException::assertList($value, __FUNCTION__, 3);
+    InvalidArgumentException::assertCallable($valueType, __FUNCTION__, 2);
 
     $result = [];
 
-    /** @var array<TKey, TValue> $value */
+    /** @var array<TKey, TValue>|\Traversable<TKey, TValue> $value */
     foreach ($value as $k => $v) {
-        /** @var TValue $valueType */
+        /**
+         * @var callable(TKey):TNewKey $keyType
+         * @var callable(TValue):TNewValue $valueType
+         */
         $result[\call_user_func($keyType, $k)] = \call_user_func($valueType, $v);
     }
 
@@ -536,10 +517,13 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
  * ]); // checked and coerced array will be returned and `additional` will be removed
  * ```
  *
- * @template T of array
- * @param array<array-key, mixed> $shape
+ * @template TKey of array-key
+ * @template TValue
+ * @template TNewValue
+ * @template T of array<TKey, TValue>
+ * @param array<TKey, callable(TValue):TNewValue> $shape
  * @param T $value
- * @return ($value is null ? callable(T):T : T)
+ * @return ($value is null ? callable(T $value):array<TKey, TNewValue> : array<TKey, TNewValue>)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -572,7 +556,7 @@ function type_shape(array $shape, $value = null)
                 );
             }
         } else {
-            $optionalValue = \call_user_func($type, null);
+            $optionalValue = \call_user_func($type, null); // @phpstan-ignore argument.type
             if ($optionalValue === '__basko_functional_type_optional') {
                 continue;
             }
@@ -630,10 +614,9 @@ define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');
  * type_enum(['one', 'two', 'three'], 'four'); // TypeException: Value "four" is not in enum('one', 'two', 'three')
  * ```
  *
- * @template T
- * @param array<T> $enum
- * @param T $value
- * @return ($value is null ? callable(T):T : T)
+ * @param array<mixed> $enum
+ * @param mixed $value
+ * @return ($value is null ? callable(mixed $value):mixed : mixed)
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */

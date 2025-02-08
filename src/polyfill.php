@@ -16,7 +16,8 @@ if (!function_exists('get_debug_type')) {
             ['is_array', f\always('array')],
             ['is_int', f\always('int')],
             ['is_float', f\always('float')],
-            [f\is_type_of(__PHP_Incomplete_Class::class), f\always('__PHP_Incomplete_Class')],
+            [f\is_type_of(__PHP_Incomplete_Class::class),
+                f\always('__PHP_Incomplete_Class')],
             ['is_object', function ($value) {
                 /** @var object $value */
                 $class = \get_class($value);
@@ -28,7 +29,7 @@ if (!function_exists('get_debug_type')) {
                 return (\get_parent_class($class) ?: \key(\class_implements($class)) ?: 'class') . '@anonymous';
             }],
             [f\T, function ($value) {
-                if (null === $type = @\get_resource_type($value)) {
+                if (null == $type = @\get_resource_type($value)) {
                     return 'unknown';
                 }
 
@@ -45,6 +46,11 @@ if (!function_exists('get_debug_type')) {
 }
 
 if (!function_exists('ctype_digit')) {
+    /**
+     * @param int $int
+     * @param string $function
+     * @return mixed|string
+     */
     function convert_int_to_char_before_ctype($int, $function)
     {
         if (!\is_int($int)) {
@@ -70,7 +76,7 @@ if (!function_exists('ctype_digit')) {
     }
 
     /**
-     * @param string $text
+     * @param mixed $text
      * @return bool
      */
     function ctype_digit($text)

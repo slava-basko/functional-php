@@ -6,7 +6,7 @@ use Basko\Functional\Exception\TypeException;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Either<T>
+ * @extends \Basko\Functional\Functor\Either<T>
  */
 class EitherWriter extends Either
 {

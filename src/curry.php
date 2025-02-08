@@ -20,13 +20,18 @@ use Basko\Functional\Exception\InvalidArgumentException;
 function count_args(callable $f, $only_required = false)
 {
     if (\is_string($f) && \strpos($f, '::', 1) !== false) {
-        $reflection = new \ReflectionMethod($f);
+        //$reflection = new \ReflectionMethod($f);
+        if (PHP_VERSION_ID >= 80400) {
+            $reflection = \ReflectionMethod::createFromMethodName($f);
+        } else {
+            $reflection = new \ReflectionMethod($f);
+        }
     } elseif (\is_array($f) && \count($f) === 2) {
         $reflection = new \ReflectionMethod($f[0], $f[1]);
     } elseif (\is_object($f) && \method_exists($f, '__invoke')) {
         $reflection = new \ReflectionMethod($f, '__invoke');
     } else {
-        $reflection = new \ReflectionFunction($f);
+        $reflection = new \ReflectionFunction($f); // @phpstan-ignore argument.type
     }
 
     return $only_required ? $reflection->getNumberOfRequiredParameters() : $reflection->getNumberOfParameters();
@@ -184,7 +189,7 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary');
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
- * unary($f)(['one', 'two', 'three]); // one
+ * unary($f)(['one', 'two', 'three']); // one
  * ```
  *
  * @param callable $f
@@ -205,7 +210,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
  * $f = static function ($a = '', $b = '', $c = '') {
  *      return $a . $b . $c;
  * };
- * binary($f)(['one', 'two', 'three]); // onetwo
+ * binary($f)('one', 'two', 'three'); // onetwo
  * ```
  *
  * @param callable $f

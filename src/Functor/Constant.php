@@ -4,7 +4,7 @@ namespace Basko\Functional\Functor;
 
 /**
  * @template T
- * @template-extends \Basko\Functional\Functor\Monad<T>
+ * @extends \Basko\Functional\Functor\Monad<T>
  */
 class Constant extends Monad
 {
@@ -16,10 +16,6 @@ class Constant extends Monad
      */
     public static function of($value)
     {
-        if ($value instanceof static) {
-            return $value;
-        }
-
         return new static($value);
     }
 

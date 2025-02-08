@@ -160,19 +160,13 @@ class FunctorTest extends BaseTest
     {
         $half = function ($x) {
             f\Exception\InvalidArgumentException::assertInteger($x, __FUNCTION__, 1);
-            $f = f\if_else(f\is_even, f\pipe(f\partial_r(f\div, 2), f\Functor\Maybe::just), f\Functor\Maybe::nothing);
 
-            return $f($x);
+            return $x / 2;
         };
 
         $this->assertEquals(
             f\Functor\Maybe::just(2),
             f\Functor\Maybe::just(8)->map($half)->map($half)
-        );
-
-        $this->assertEquals(
-            f\Functor\Maybe::nothing(),
-            f\Functor\Maybe::just(3)->map($half)
         );
     }
 
@@ -191,12 +185,12 @@ class FunctorTest extends BaseTest
 
         $this->assertEquals(
             f\Functor\Maybe::just(4),
-            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 2))
+            f\Functor\Maybe::just(8)->flatMap(f\partial_r($safe_div, 2))
         );
 
         $this->assertEquals(
             f\Functor\Maybe::nothing(),
-            f\Functor\Maybe::just(8)->map(f\partial_r($safe_div, 0))
+            f\Functor\Maybe::just(8)->flatMap(f\partial_r($safe_div, 0))
         );
     }
 
@@ -416,20 +410,20 @@ class FunctorTest extends BaseTest
         $this->assertEquals(
             Either::right('name@example.com'),
             Either::right('name@example.com')
-                ->map($shouldContainAtSign)
-                ->map($shouldContainDot)
+                ->flatMap($shouldContainAtSign)
+                ->flatMap($shouldContainDot)
         );
 
         $this->assertEquals(
             Either::left('The string should contain an @ sign'),
             Either::right('nameexample.com')
-                ->map($shouldContainAtSign)
-                ->map($shouldContainDot)
+                ->flatMap($shouldContainAtSign)
+                ->flatMap($shouldContainDot)
         );
 
         $m = Either::right('name@examplecom')
-            ->map($shouldContainAtSign)
-            ->map($shouldContainDot);
+            ->flatMap($shouldContainAtSign)
+            ->flatMap($shouldContainDot);
         $this->assertEquals(
             Either::left('The string should contain a . sign'),
             $m

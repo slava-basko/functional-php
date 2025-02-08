@@ -9,7 +9,7 @@ f\pipe(
     f\prop('user'),
     f\select(f\contains('basko\functional')),
     f\map(f\pipe(
-        f\construct_with_args(ReflectionFunction::class),
+        f\unary(f\construct_with_args(ReflectionFunction::class)),
         f\prop('name')
     )),
     f\converge('array_combine', [
@@ -28,7 +28,7 @@ f\pipe(
     f\reject(f\str_starts_with('_')),
     f\unary('array_flip'),
     f\map(f\pipe(
-        f\construct_with_args(ReflectionFunction::class),
+        f\unary(f\construct_with_args(ReflectionFunction::class)),
         f\invoker('getDocComment')
     )),
     f\map(f\pipe(
