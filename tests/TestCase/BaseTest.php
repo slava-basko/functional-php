@@ -9,13 +9,19 @@ abstract class BaseTest extends TestCase
 {
     protected function mock($class)
     {
-        if (PHP_VERSION_ID < 80000 && !\function_exists('Functional\match')) {
-            $mockMethod = 'getMock';
-        } else {
-            $mockMethod = 'createMock';
+//        if (PHP_VERSION_ID < 80000) {
+//            $mockMethod = 'getMock';
+//        } else {
+//            $mockMethod = 'createMock';
+//        }
+//
+//        return $this->{$mockMethod}($class);
+
+        if (method_exists($this, 'getMock')) {
+            return $this->getMock($class);
         }
 
-        return $this->{$mockMethod}($class);
+        return $this->createMock($class);
     }
 
     /**
