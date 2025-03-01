@@ -1079,7 +1079,7 @@ function liftA3(callable $f)
     $curryF = curry_n(3, $f);
 
     return function (Monad $m1, Monad $m2, Monad $m3) use ($curryF) {
-        return $m3->ap(liftA2($curryF)($m1, $m2));
+        return $m3->ap(\call_user_func_array(liftA2($curryF), [$m1, $m2]));
     };
 }
 

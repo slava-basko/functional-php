@@ -668,7 +668,7 @@ class CoreTest extends BaseTest
 
         $this->assertEquals(
             f\Functor\Maybe::just('Slava'),
-            f\lift('clenStr')($firstName)
+            \call_user_func(f\lift('clenStr'), $firstName)
         );
         $this->assertEquals(
             f\Functor\Maybe::just('Slava Basko'),
