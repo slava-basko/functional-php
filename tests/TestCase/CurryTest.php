@@ -59,8 +59,8 @@ class CurryTest extends BaseTest
 
         $this->assertEquals(15, $addEleven(4));
         $this->assertEquals(15, $curryiedAdd(4, 10, 1));
-        $this->assertEquals(15, $curryiedAdd(4)(10,1));
-        $this->assertEquals(15, $curryiedAdd(4)(10)(1));
+        $this->assertEquals(15, \call_user_func_array($curryiedAdd(4), [10,1]));
+        $this->assertEquals(15, \call_user_func(\call_user_func($curryiedAdd(4), 10),1));
         $this->assertEquals(15, $addTen(4, 1));
         $this->assertEquals(15, $addEleven(4));
     }

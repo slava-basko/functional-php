@@ -672,11 +672,11 @@ class CoreTest extends BaseTest
         );
         $this->assertEquals(
             f\Functor\Maybe::just('Slava Basko'),
-            f\liftA2('cleanName')($firstName, $lastName)
+            \call_user_func_array(f\liftA2('cleanName'), [$firstName, $lastName])
         );
         $this->assertEquals(
             f\Functor\Maybe::just('Slava Leo Basko'),
-            f\liftA3('cleanFullName')($firstName, $middleName, $lastName)
+            \call_user_func_array(f\liftA3('cleanFullName'), [$firstName, $middleName, $lastName])
         );
     }
 
