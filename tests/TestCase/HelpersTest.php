@@ -88,12 +88,7 @@ class HelpersTest extends BaseTest
 
     public function test_repeat()
     {
-        if (PHP_VERSION_ID < 80000 && !\function_exists('Functional\match')) {
-            $mockMethod = 'getMock';
-        } else {
-            $mockMethod = 'createMock';
-        }
-        $rep = $this->{$mockMethod}(Repeated::class);
+        $rep = $this->mock(Repeated::class);
         $rep->expects($this->exactly(5))->method('someMethod');
 
         $repeatedSomeMethod = f\repeat([$rep, 'someMethod']);
