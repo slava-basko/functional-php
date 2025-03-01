@@ -63,13 +63,11 @@ class Either extends Monad
     public function map(callable $f)
     {
         if (!$this->validValue) {
-            return $this;
+            return static::left($this->value);
         }
 
         try {
-            $this->value = \call_user_func($f, $this->value);
-
-            return $this;
+            return static::right(\call_user_func($f, $this->value));
         } catch (Exception $exception) {
             return static::left($exception->getMessage());
         }
@@ -81,7 +79,7 @@ class Either extends Monad
     public function flatMap(callable $f)
     {
         if (!$this->validValue) {
-            return $this;
+            return static::left($this->value);
         }
 
         try {
@@ -93,6 +91,24 @@ class Either extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function ap(Monad $m)
+    {
+        TypeException::assertReturnType($m, static::class, __METHOD__);
+
+        if (!$this->validValue) {
+            return static::left($this->value);
+        }
+
+        try {
+            return $this->map($m->extract());
+        } catch (Exception $exception) {
+            return static::left($exception->getMessage());
+        }
     }
 
     /**
@@ -167,7 +183,7 @@ class Either extends Monad
         return $this->validValue === false;
     }
 
-    public function __toString()
+    public function toString()
     {
         if ($this->isRight()) {
             return 'Right(' . \var_export($this->value, true) . ')';

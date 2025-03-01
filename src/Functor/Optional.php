@@ -58,10 +58,7 @@ class Optional extends Monad
     public function map(callable $f)
     {
         if ($this->hasValue) {
-            $this->value = \call_user_func($f, $this->value);
-
-            return $this;
-//            return static::just(\call_user_func_array($f, [$this->value]));
+            return static::just(\call_user_func($f, $this->value));
         }
 
         return $this;
@@ -81,6 +78,20 @@ class Optional extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function ap(Monad $m)
+    {
+        TypeException::assertReturnType($m, static::class, __METHOD__);
+
+        if ($this->hasValue) {
+            return $this->map($m->extract());
+        }
+
+        return static::nothing();
     }
 
     /**
@@ -186,7 +197,7 @@ class Optional extends Monad
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function toString()
     {
         return $this->isJust() ? 'Just(' . \var_export($this->value, true) . ')' : 'Nothing';
     }

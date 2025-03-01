@@ -28,9 +28,12 @@ class IO extends Monad
     /**
      * @param callable $f
      * @return static<callable>
+     * @throws \Basko\Functional\Exception\TypeException
      */
     public function map(callable $f)
     {
+        TypeException::assertNotSelfType($f, static::class, __METHOD__);
+
         return static::of(f\compose($f, $this->value));
     }
 
@@ -44,6 +47,15 @@ class IO extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    /**
+     * @param static $m
+     * @return static<callable>
+     */
+    public function ap(Monad $m)
+    {
+        return static::of(f\compose($m, $this->value));
     }
 
     /**

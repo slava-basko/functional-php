@@ -106,7 +106,7 @@ class EitherWriter extends Either
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function toString()
     {
         if ($this->isRight()) {
             $str = 'Right(' . \var_export($this->value, true) . ')';

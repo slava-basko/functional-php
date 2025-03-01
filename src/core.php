@@ -1005,6 +1005,87 @@ function lift_m(callable $f)
 define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
 
 /**
+ * Lift the unary function so that it accepts `Monad` as parameter. Lifted function returns `Monad`.
+ *
+ * ```
+ * function clenStr(string $str) {
+ *      return trim($str);
+ * }
+ *
+ * clenStr(Maybe::just(' Slava   ')); // Exception because function clenStr expect string
+ *
+ * lift(clenStr(...))(Maybe::just(' Slava   ')); // The result will be Just('Slava')
+ * ```
+ *
+ * @param callable(mixed):mixed $f
+ * @return callable(\Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ */
+function lift(callable $f)
+{
+    $unaryF = unary($f);
+
+    return function (Monad $m) use ($unaryF) {
+        return $m->map($unaryF);
+    };
+}
+
+define('Basko\Functional\lift', __NAMESPACE__ . '\\lift');
+
+/**
+ *  Lift the binary function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
+ *
+ * ```
+ * function cleanName(string $firstName, string $lastName) {
+ *      return trim($firstName) . ' ' . trim($lastName);
+ * }
+ *
+ * cleanName(Maybe::just(' Slava   '), Maybe::just('  Basko')); // Exception because function cleanName expect strings
+ *
+ * lift(cleanName(...))(Maybe::just(' Slava   '), Maybe::just('  Basko')); // The result will be Just('Slava Basko')
+ * ```
+ *
+ * @param callable(mixed, mixed):mixed $f
+ * @return callable(\Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ */
+function liftA2(callable $f)
+{
+    $curryF = curry_n(2, $f);
+
+    return function (Monad $m1, Monad $m2) use ($curryF) {
+        return $m2->ap($m1->map($curryF));
+    };
+}
+
+define('Basko\Functional\liftA2', __NAMESPACE__ . '\\liftA2');
+
+/**
+ * Lift the function that accept three parameters so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
+ *
+ * ```
+ * function cleanFullName(string $firstName, string $middleName, string $lastName) {
+ *      return trim($firstName) . ' ' . trim($middleName) . ' ' . trim($lastName);
+ * }
+ *
+ * cleanFullName(Maybe::just(' Slava   '), Maybe::just('Leonidovich '), Maybe::just('  Basko')); // Exception because function cleanFullName expect strings
+ *
+ * lift(cleanFullName(...))(Maybe::just(' Slava   '), Maybe::just('Leonidovich '), Maybe::just('  Basko')); // The result will be Just('Slava Leonidovich Basko')
+ * ```
+ *
+ * @param callable(mixed, mixed, mixed):mixed $f
+ * @return callable(\Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ */
+function liftA3(callable $f)
+{
+    $curryF = curry_n(3, $f);
+
+    return function (Monad $m1, Monad $m2, Monad $m3) use ($curryF) {
+        return $m3->ap(liftA2($curryF)($m1, $m2));
+    };
+}
+
+define('Basko\Functional\liftA3', __NAMESPACE__ . '\\liftA3');
+
+/**
  * Create memoized versions of `$f` function.
  *
  * Note that memoization is safe for pure functions only. For a function to be

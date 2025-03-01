@@ -660,6 +660,26 @@ class CoreTest extends BaseTest
         );
     }
 
+    public function test_lift()
+    {
+        $firstName = f\Functor\Maybe::just(' Slava   ');
+        $middleName = f\Functor\Maybe::just('Leo ');
+        $lastName = f\Functor\Maybe::just('  Basko');
+
+        $this->assertEquals(
+            f\Functor\Maybe::just('Slava'),
+            f\lift('clenStr')($firstName)
+        );
+        $this->assertEquals(
+            f\Functor\Maybe::just('Slava Basko'),
+            f\liftA2('cleanName')($firstName, $lastName)
+        );
+        $this->assertEquals(
+            f\Functor\Maybe::just('Slava Leo Basko'),
+            f\liftA3('cleanFullName')($firstName, $middleName, $lastName)
+        );
+    }
+
     public function test_zip()
     {
         $result = [[1, 'a'], [2, 'b'], [3, 'c']];

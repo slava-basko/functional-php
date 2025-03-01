@@ -1,8 +1,7 @@
 <?php
 
-// php -dxdebug.mode=debug -dxdebug.client_host=127.0.0.1 -dxdebug.client_port=9003 -dxdebug.start_with_request=yes internal/doc_generator.php
+require_once __DIR__ . '/../vendor/autoload.php';
 
-require_once __DIR__ . '/../vendor/autoload.php'; // composer autoload
 use Basko\Functional as f;
 
 f\pipe(

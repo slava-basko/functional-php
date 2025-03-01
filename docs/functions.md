@@ -335,6 +335,45 @@ ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
 ### lift_m
 Lift a function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
 
+### lift
+Lift the unary function so that it accepts `Monad` as parameter. Lifted function returns `Monad`.
+
+```php
+function clenStr(string $str) {
+     return trim($str);
+}
+
+clenStr(Maybe::just(' Slava   ')); // Exception because function clenStr expect string
+
+lift(clenStr(...))(Maybe::just(' Slava   ')); // The result will be Just('Slava')
+```
+
+### liftA2
+Lift the binary function so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
+
+```php
+function cleanName(string $firstName, string $lastName) {
+     return trim($firstName) . ' ' . trim($lastName);
+}
+
+cleanName(Maybe::just(' Slava   '), Maybe::just('  Basko')); // Exception because function cleanName expect strings
+
+lift(cleanName(...))(Maybe::just(' Slava   '), Maybe::just('  Basko')); // The result will be Just('Slava Basko')
+```
+
+### liftA3
+Lift the function that accept three parameters so that it accepts `Monad` as parameters. Lifted function returns `Monad`.
+
+```php
+function cleanFullName(string $firstName, string $middleName, string $lastName) {
+     return trim($firstName) . ' ' . trim($middleName) . ' ' . trim($lastName);
+}
+
+cleanFullName(Maybe::just(' Slava   '), Maybe::just('Leonidovich '), Maybe::just('  Basko')); // Exception because function cleanFullName expect strings
+
+lift(cleanFullName(...))(Maybe::just(' Slava   '), Maybe::just('Leonidovich '), Maybe::just('  Basko')); // The result will be Just('Slava Leonidovich Basko')
+```
+
 ### memoized
 Create memoized versions of `$f` function.
 

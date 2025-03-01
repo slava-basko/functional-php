@@ -24,3 +24,18 @@ function float($str)
 {
     return (bool)preg_match('/^\d+([\.,]\d+)?$/D', $str);
 }
+
+function clenStr($str)
+{
+    return \trim($str);
+}
+
+function cleanName($firstName, $lastName)
+{
+    return clenStr($firstName) . ' ' . clenStr($lastName);
+}
+
+function cleanFullName($firstName, $middleName, $lastName)
+{
+    return clenStr($firstName) . ' ' . clenStr($middleName) . ' ' . clenStr($lastName);
+}

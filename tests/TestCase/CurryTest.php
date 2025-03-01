@@ -49,7 +49,7 @@ class CurryTest extends BaseTest
 
     public function test_curry()
     {
-        $add = function($a, $b, $c) {
+        $add = function ($a, $b, $c) {
             return $a + $b + $c;
         };
 
@@ -57,6 +57,11 @@ class CurryTest extends BaseTest
         $addTen = $curryiedAdd(10);
         $addEleven = $addTen(1);
 
+        $this->assertEquals(15, $addEleven(4));
+        $this->assertEquals(15, $curryiedAdd(4, 10, 1));
+        $this->assertEquals(15, $curryiedAdd(4)(10,1));
+        $this->assertEquals(15, $curryiedAdd(4)(10)(1));
+        $this->assertEquals(15, $addTen(4, 1));
         $this->assertEquals(15, $addEleven(4));
     }
 

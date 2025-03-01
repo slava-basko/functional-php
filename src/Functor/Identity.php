@@ -26,9 +26,7 @@ class Identity extends Monad
      */
     public function map(callable $f)
     {
-        $this->value = \call_user_func($f, $this->value);
-
-        return $this;
+        return static::of(\call_user_func($f, $this->value));
     }
 
     /**
@@ -41,6 +39,16 @@ class Identity extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function ap(Monad $m)
+    {
+        TypeException::assertReturnType($m, static::class, __METHOD__);
+
+        return $this->map($m->extract());
     }
 
     /**

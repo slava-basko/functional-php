@@ -62,4 +62,25 @@ class TypeException extends Exception
             );
         }
     }
+
+    /**
+     * @param mixed $value
+     * @param class-string $type
+     * @param string $callee
+     * @return void
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public static function assertNotSelfType($value, $type, $callee)
+    {
+        if ($value instanceof $type) {
+            throw new static(
+                \sprintf(
+                    '%s(): argument type is %s, but is should not be %s',
+                    $callee,
+                    \get_class($value),
+                    $type
+                )
+            );
+        }
+    }
 }

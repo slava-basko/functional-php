@@ -68,6 +68,18 @@ class Writer extends Monad
     }
 
     /**
+     * @inheritdoc
+     */
+    public function ap(Monad $m)
+    {
+        TypeException::assertReturnType($m, static::class, __METHOD__);
+
+        $result = $this->map($m->extract());
+
+        return $this->concat($result);
+    }
+
+    /**
      * @param \Basko\Functional\Functor\Writer<mixed> $m
      * @return static
      */
@@ -132,7 +144,7 @@ class Writer extends Monad
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function toString()
     {
         return \sprintf(
             "%s(aggregation: %s, value: %s)",

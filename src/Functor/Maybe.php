@@ -48,12 +48,10 @@ class Maybe extends Monad
     public function map(callable $f)
     {
         if (\is_null($this->value)) {
-            return $this;
+            return static::nothing();
         }
 
-        $this->value = \call_user_func($f, $this->value);
-
-        return $this;
+        return static::of(\call_user_func($f, $this->value));
     }
 
     /**
@@ -62,7 +60,7 @@ class Maybe extends Monad
     public function flatMap(callable $f)
     {
         if (\is_null($this->value)) {
-            return $this;
+            return static::nothing();
         }
 
         $result = \call_user_func($f, $this->value);
@@ -70,6 +68,20 @@ class Maybe extends Monad
         TypeException::assertReturnType($result, static::class, __METHOD__);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function ap(Monad $m)
+    {
+        TypeException::assertReturnType($m, static::class, __METHOD__);
+
+        if (\is_null($this->value)) {
+            return static::nothing();
+        }
+
+        return $this->map($m->extract());
     }
 
     /**
@@ -147,7 +159,7 @@ class Maybe extends Monad
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function toString()
     {
         return $this->isJust() ? 'Just(' . \var_export($this->value, true) . ')' : 'Nothing';
     }

@@ -14,24 +14,24 @@ class FunctorTest extends BaseTest
 {
     public function test_string_representation()
     {
-        $this->assertEquals('Identity(1)', (string)f\Functor\Identity::of(1));
-        $this->assertEquals('Constant(1)', (string)f\Functor\Constant::of(1));
+        $this->assertEquals('Identity(1)', f\Functor\Identity::of(1)->toString());
+        $this->assertEquals('Constant(1)', f\Functor\Constant::of(1)->toString());
 
-        $this->assertEquals('Just(1)', (string)f\Functor\Maybe::just(1));
-        $this->assertEquals('Nothing', (string)f\Functor\Maybe::nothing());
+        $this->assertEquals('Just(1)', f\Functor\Maybe::just(1)->toString());
+        $this->assertEquals('Nothing', f\Functor\Maybe::nothing()->toString());
 
-        $this->assertEquals('Just(1)', (string)f\Functor\Optional::just(1));
-        $this->assertEquals('Just(NULL)', (string)f\Functor\Optional::just(null));
-        $this->assertEquals('Nothing', (string)f\Functor\Optional::nothing());
+        $this->assertEquals('Just(1)', f\Functor\Optional::just(1)->toString());
+        $this->assertEquals('Just(NULL)', f\Functor\Optional::just(null)->toString());
+        $this->assertEquals('Nothing', f\Functor\Optional::nothing()->toString());
 
-        $this->assertEquals("IO('file_get_contents')", (string)f\Functor\IO::of('file_get_contents'));
+        $this->assertEquals("IO('file_get_contents')", f\Functor\IO::of('file_get_contents')->toString());
 
-        $this->assertEquals('Right(1)', (string)f\Functor\Either::right(1));
-        $this->assertEquals("Left('error')", (string)f\Functor\Either::left('error'));
+        $this->assertEquals('Right(1)', f\Functor\Either::right(1)->toString());
+        $this->assertEquals("Left('error')", f\Functor\Either::left('error')->toString());
 
         $this->assertEquals(
             'Writer(aggregation:array(0=>1,1=>2,2=>3,),value:1)',
-            \str_replace([' ', "\n"], '', (string)f\Functor\Writer::of([1, 2, 3], 1))
+            \str_replace([' ', "\n"], '', f\Functor\Writer::of([1, 2, 3], 1)->toString())
         );
     }
 
@@ -51,6 +51,22 @@ class FunctorTest extends BaseTest
         );
     }
 
+    public function test_identity_ap()
+    {
+        $this->assertEquals(
+            f\Functor\Identity::of(6),
+            f\Functor\Identity::of(3)->ap(f\Functor\Identity::of(3)->map(f\plus))
+        );
+
+        $plus3 = f\Functor\Identity::of(f\plus(3));
+        $plus2 = f\Functor\Identity::of(f\plus(2));
+
+        $this->assertEquals(
+            f\Functor\Identity::of(8),
+            f\Functor\Identity::of(3)->ap($plus3)->ap($plus2)
+        );
+    }
+
     public function test_identity_flat_map_falsy()
     {
         $this->setExpectedException(
@@ -63,6 +79,10 @@ class FunctorTest extends BaseTest
     public function test_constant()
     {
         $this->assertEquals(f\Functor\Constant::of(3), f\Functor\Constant::of(3)->map(f\multiply(2)));
+        $this->assertEquals(
+            f\Functor\Constant::of(3),
+            f\Functor\Constant::of(3)->map(f\plus)->ap(f\Functor\Constant::of(3))
+        );
     }
 
     public function test_maybe()
@@ -204,6 +224,24 @@ class FunctorTest extends BaseTest
         );
     }
 
+    public function test_maybe_ap()
+    {
+        $this->assertEquals(
+            f\Functor\Maybe::of(6),
+            f\Functor\Maybe::of(3)->ap(f\Functor\Maybe::of(3)->map(f\plus))
+        );
+
+        $called = false;
+        $func = function ($a) use (&$called) {
+            $called = true;
+        };
+        $this->assertEquals(
+            f\Functor\Maybe::nothing(),
+            f\Functor\Maybe::nothing()->ap(f\Functor\Maybe::of(3)->map(f\plus))
+        );
+        $this->assertFalse($called);
+    }
+
     public function test_maybe_flat_map_falsy()
     {
         $this->setExpectedException(
@@ -327,6 +365,24 @@ class FunctorTest extends BaseTest
             'Basko\Functional\Functor\Optional::flatMap(): Return value must be of type Basko\Functional\Functor\Optional, int returned'
         );
         f\Functor\Optional::just(3)->flatMap(f\multiply(2));
+    }
+
+    public function test_optional_ap()
+    {
+        $this->assertEquals(
+            f\Functor\Optional::just(6),
+            f\Functor\Optional::just(3)->ap(f\Functor\Optional::just(3)->map(f\plus))
+        );
+
+        $called = false;
+        $func = function ($a) use (&$called) {
+            $called = true;
+        };
+        $this->assertEquals(
+            f\Functor\Optional::nothing(),
+            f\Functor\Optional::nothing()->map(f\plus)->ap(f\Functor\Optional::just(3))
+        );
+        $this->assertFalse($called);
     }
 
     public function test_either()
@@ -458,6 +514,24 @@ class FunctorTest extends BaseTest
         f\Functor\Either::right(3)->flatMap(f\multiply(2));
     }
 
+    public function test_either_ap()
+    {
+        $this->assertEquals(
+            f\Functor\Either::right(6),
+            f\Functor\Either::right(3)->ap(f\Functor\Either::right(3)->map(f\plus))
+        );
+
+        $called = false;
+        $func = function ($a) use (&$called) {
+            $called = true;
+        };
+        $this->assertEquals(
+            f\Functor\Either::left('error'),
+            f\Functor\Either::left('error')->ap(f\Functor\Either::right(3)->map(f\plus))
+        );
+        $this->assertFalse($called);
+    }
+
     public function test_io()
     {
         $m = f\Functor\IO::of('file_get_contents')
@@ -480,6 +554,18 @@ class FunctorTest extends BaseTest
         $this->assertTrue(
             f\contains('No such file or directory', $result->extract())
         );
+    }
+
+    public function test_io_ap()
+    {
+        $mF = f\Functor\IO::of(f\partial_r(f\concat, 'ik'));
+
+        $m = f\Functor\IO::of('file_get_contents')
+            ->map('ucfirst')
+            ->map(f\take(4))
+            ->ap($mF);
+
+        $this->assertEquals('Slavik', $m(__DIR__ . '/../name.txt'));
     }
 
     public function test_io_flat_map_falsy()

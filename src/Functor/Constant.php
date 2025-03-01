@@ -38,6 +38,14 @@ class Constant extends Monad
     /**
      * @inheritdoc
      */
+    public function ap(Monad $m)
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function transform($m)
     {
         $this->assertTransform($m);

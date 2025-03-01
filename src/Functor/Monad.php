@@ -54,6 +54,12 @@ abstract class Monad
     abstract public function flatMap(callable $f);
 
     /**
+     * @param static $m
+     * @return static
+     */
+    abstract public function ap(Monad $m);
+
+    /**
      * @return T
      */
     public function extract()
@@ -121,10 +127,12 @@ abstract class Monad
 
     /**
      * String representation of monad
+     * Magic method `__toString` can't be used because php will use it to cast the object to string
+     * when passing it as an argument into `someFunction(string $param)`
      *
      * @return string
      */
-    public function __toString()
+    public function toString()
     {
         return $this->getClass() . '(' . \var_export($this->value, true) . ')';
     }
