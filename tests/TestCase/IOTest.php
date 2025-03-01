@@ -74,7 +74,8 @@ class IOTest extends BaseTest
 
         $this->setExpectedException(
             \Exception::class,
-            'Could not create temporary file in directory "' . $dir . '"'
+            'Could not create temporary file in directory "' . $dir . '"',
+            2
         );
         $io = f\write_file(0666, $dir . '/test', 'foo');
         $io();
@@ -114,7 +115,7 @@ class IOTest extends BaseTest
 
     public function testReadFileFail()
     {
-        $this->setExpectedException(\Exception::class, 'File "/non-existed-file.txt" does not exist');
+        $this->setExpectedException(\Exception::class, 'File "/non-existed-file.txt" does not exist', 1);
         $io = f\read_file('/non-existed-file.txt');
         $io();
     }

@@ -30,7 +30,7 @@ abstract class BaseTest extends TestCase
      * @param $exceptionCode
      * @return void
      */
-    public function setExpectedException($exceptionClass, $exceptionMessage = '', $exceptionCode = null)
+    public function setExpectedException($exceptionClass, $exceptionMessage = '', $exceptionCode = 0)
     {
         if (method_exists($this, 'expectException')) {
             $this->expectException($exceptionClass);
