@@ -31,7 +31,7 @@ function count_args(callable $f, $only_required = false)
     } elseif (\is_object($f) && \method_exists($f, '__invoke')) {
         $reflection = new \ReflectionMethod($f, '__invoke');
     } else {
-        $reflection = new \ReflectionFunction($f); // @phpstan-ignore argument.type
+        $reflection = new \ReflectionFunction($f);
     }
 
     return $only_required ? $reflection->getNumberOfRequiredParameters() : $reflection->getNumberOfParameters();
@@ -95,7 +95,6 @@ define('Basko\Functional\curry_n', __NAMESPACE__ . '\\curry_n');
  * @param callable $f The function to curry
  * @param bool $required Curry optional parameters ?
  * @return callable A curryied version of the given function
- * @no-named-arguments
  * @throws \ReflectionException
  * @no-named-arguments
  */
@@ -137,6 +136,7 @@ define('Basko\Functional\thunkify', __NAMESPACE__ . '\\thunkify');
  * @param callable $f
  * @param int $count number of arguments you want to curry
  * @return callable
+ * @no-named-arguments
  */
 function _thunkify_n(callable $f, $count)
 {
@@ -193,7 +193,7 @@ define('Basko\Functional\ary', __NAMESPACE__ . '\\ary');
  * ```
  *
  * @param callable $f
- * @return callable(mixed):mixed
+ * @return callable
  */
 function unary(callable $f)
 {
@@ -214,7 +214,7 @@ define('Basko\Functional\unary', __NAMESPACE__ . '\\unary');
  * ```
  *
  * @param callable $f
- * @return callable(mixed, mixed):mixed
+ * @return callable
  */
 function binary(callable $f)
 {
@@ -242,7 +242,7 @@ define('Basko\Functional\binary', __NAMESPACE__ . '\\binary');
  * ```
  *
  * @param callable $f
- * @return callable():mixed
+ * @return callable
  */
 function nullary(callable $f)
 {

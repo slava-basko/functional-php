@@ -19,7 +19,6 @@ if (!function_exists('get_debug_type')) {
             [f\is_type_of(__PHP_Incomplete_Class::class),
                 f\always('__PHP_Incomplete_Class')],
             ['is_object', function ($value) {
-                /** @var object $value */
                 $class = \get_class($value);
 
                 if (false === \strpos($class, '@')) {
@@ -89,7 +88,7 @@ if (!function_exists('ctype_digit')) {
 
 if (!function_exists('array_is_list')) {
     /**
-     * @param array<mixed> $arr
+     * @param array $arr
      * @return bool
      */
     function array_is_list(array $arr)

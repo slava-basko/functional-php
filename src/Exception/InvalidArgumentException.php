@@ -481,7 +481,7 @@ final class InvalidArgumentException extends \InvalidArgumentException
 
     /**
      * @param object|string $value
-     * @param class-string $type
+     * @param string $type
      * @param string $callee
      * @param int $parameterPosition
      * @return void
@@ -580,8 +580,8 @@ final class InvalidArgumentException extends \InvalidArgumentException
     }
 
     /**
-     * @param array<array-key, mixed>|object $list
-     * @param class-string $className
+     * @param array|object $list
+     * @param string $className
      * @return bool
      */
     private static function isListAlike($list, $className)

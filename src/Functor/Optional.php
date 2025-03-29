@@ -5,10 +5,6 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
 
-/**
- * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
- */
 class Optional extends Monad
 {
     const of = "Basko\Functional\Functor\Optional::of";
@@ -75,7 +71,7 @@ class Optional extends Monad
             $result = static::nothing();
         }
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Monad::class, __METHOD__);
 
         return $result;
     }
@@ -85,7 +81,7 @@ class Optional extends Monad
      */
     public function ap(Monad $m)
     {
-        TypeException::assertReturnType($m, static::class, __METHOD__);
+        TypeException::assertType($m, static::class, __METHOD__);
 
         if ($this->hasValue) {
             return $this->map($m->extract());
@@ -97,40 +93,20 @@ class Optional extends Monad
     /**
      * @inheritdoc
      */
-    public function transform($m)
+    public function flatAp(Monad $m)
     {
-        $this->assertTransform($m);
+        TypeException::assertType($m, static::class, __METHOD__);
 
-        $value = $this->extract();
-
-        if ($m === Maybe::class) {
-            return $value === null ? Maybe::nothing() : Maybe::just($value);
-        } elseif ($m === Either::class) {
-            return $this->isJust()
-                ? Either::right($value)
-                : Either::left('Nothing');
-        } elseif ($m === Constant::class) {
-            return Constant::of($value);
-        } elseif ($m === Identity::class) {
-            return Identity::of($value);
-        } elseif ($m === IO::class) {
-            return IO::of(function () use ($value) {
-                return $value;
-            });
-        } elseif ($m === Writer::class) {
-            return Writer::of([], $value);
-        } elseif ($m === EitherWriter::class) {
-            return $this->isJust()
-                ? EitherWriter::right($value)
-                : EitherWriter::left('Nothing');
+        if ($this->hasValue) {
+            return $this->flatMap($m->extract());
         }
 
-        throw $this->cantTransformException($m);
+        return static::nothing();
     }
 
     /**
-     * @param callable(T):void $just
-     * @param callable():void $nothing
+     * @param callable $just
+     * @param callable $nothing
      * @return static
      */
     public function match(callable $just, callable $nothing)
@@ -146,7 +122,7 @@ class Optional extends Monad
 
     /**
      * @param array-key $key
-     * @param array<array-key, mixed>|\ArrayAccess|object $data
+     * @param array|\ArrayAccess|object $data
      * @param callable|null $f
      * @return static
      */

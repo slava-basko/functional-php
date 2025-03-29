@@ -12,8 +12,8 @@ namespace Basko\Functional;
  * ```
  *
  * @param callable $f
- * @param mixed ...$args
- * @return callable(mixed ...$args):mixed
+ * @param mixed $args
+ * @return callable
  * @no-named-arguments
  */
 function partial(callable $f, $args)
@@ -37,8 +37,8 @@ define('Basko\Functional\partial', __NAMESPACE__ . '\\partial');
  * ```
  *
  * @param callable $f
- * @param mixed ...$args
- * @return callable(mixed ...$args):mixed
+ * @param mixed $args
+ * @return callable
  * @no-named-arguments
  */
 function partial_r(callable $f, $args)
@@ -65,8 +65,8 @@ define('Basko\Functional\partial_r', __NAMESPACE__ . '\\partial_r');
  * ```
  *
  * @param callable $f
- * @param array<int, mixed> $args Predefined positional args (position => value)
- * @return callable(mixed):mixed
+ * @param array $args Predefined positional args (position => value)
+ * @return callable
  * @no-named-arguments
  */
 function partial_p(callable $f, array $args)

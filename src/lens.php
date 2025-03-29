@@ -154,7 +154,7 @@ define('Basko\Functional\lens_prop', __NAMESPACE__ . '\\lens_prop');
  * view($lens, over($lens, multiply(2), $data)); // ['a' => 1, 'b' => ['c' => 4]]
  * ```
  *
- * @param array<string> $path
+ * @param array $path
  * @return callable
  * @no-named-arguments
  */
@@ -181,7 +181,7 @@ function lens_element($n)
 {
     InvalidArgumentException::assertInteger($n, __FUNCTION__, 1);
 
-    return lens(nth($n), assoc_element($n)); // @phpstan-ignore argument.templateType
+    return lens(nth($n), assoc_element($n));
 }
 
 define('Basko\Functional\lens_element', __NAMESPACE__ . '\\lens_element');

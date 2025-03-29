@@ -5,10 +5,6 @@ namespace Basko\Functional\Functor;
 use Basko\Functional as f;
 use Basko\Functional\Exception\TypeException;
 
-/**
- * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
- */
 class IO extends Monad
 {
     const of = "Basko\Functional\Functor\IO::of";
@@ -18,7 +14,7 @@ class IO extends Monad
      * IMPORTANT: throw Exception in `$f` to clearly show error path.
      *
      * @param callable $f
-     * @return static<callable>
+     * @return static
      */
     public static function of(callable $f)
     {
@@ -27,7 +23,7 @@ class IO extends Monad
 
     /**
      * @param callable $f
-     * @return static<callable>
+     * @return static
      * @throws \Basko\Functional\Exception\TypeException
      */
     public function map(callable $f)
@@ -44,14 +40,14 @@ class IO extends Monad
     {
         $result = \call_user_func($f, $this->__invoke());
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Monad::class, __METHOD__);
 
         return $result;
     }
 
     /**
      * @param static $m
-     * @return static<callable>
+     * @return \Basko\Functional\Functor\Monad
      */
     public function ap(Monad $m)
     {
@@ -59,46 +55,12 @@ class IO extends Monad
     }
 
     /**
-     * @inheritdoc
+     * @param static $m
+     * @return \Basko\Functional\Functor\Monad
      */
-    public function transform($m)
+    public function flatAp(Monad $m)
     {
-        $this->assertTransform($m);
-
-        if ($m === Maybe::class) {
-            try {
-                $value = \call_user_func($this);
-                return $value === null ? Maybe::nothing() : Maybe::just($value);
-            } catch (\Exception $e) {
-                return Maybe::nothing();
-            }
-        } elseif ($m === Either::class) {
-            try {
-                return Either::right(\call_user_func($this));
-            } catch (\Exception $e) {
-                return Either::left($e);
-            }
-        } elseif ($m === Optional::class) {
-            try {
-                return Optional::just(\call_user_func($this));
-            } catch (\Exception $e) {
-                return Optional::nothing();
-            }
-        } elseif ($m === Constant::class) {
-            return Constant::of(\call_user_func($this));
-        } elseif ($m === Identity::class) {
-            return Identity::of(\call_user_func($this));
-        } elseif ($m === Writer::class) {
-            return Writer::of([], \call_user_func($this));
-        } elseif ($m === EitherWriter::class) {
-            try {
-                return EitherWriter::right(\call_user_func($this));
-            } catch (\Exception $e) {
-                return EitherWriter::left($e);
-            }
-        }
-
-        throw $this->cantTransformException($m);
+        return static::of(f\compose($m, $this->value));
     }
 
     /**

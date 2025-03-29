@@ -71,7 +71,7 @@ class FunctorTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Basko\Functional\Functor\Identity::flatMap(): Return value must be of type Basko\Functional\Functor\Identity, int returned'
+            'Basko\Functional\Functor\Identity::flatMap(): Return value must be of type Basko\Functional\Functor\Monad, int returned'
         );
         f\Functor\Identity::of(3)->flatMap(f\multiply(2));
     }
@@ -246,7 +246,7 @@ class FunctorTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Basko\Functional\Functor\Maybe::flatMap(): Return value must be of type Basko\Functional\Functor\Maybe, int returned'
+            'Basko\Functional\Functor\Maybe::flatMap(): Return value must be of type Basko\Functional\Functor\Monad, int returned'
         );
         f\Functor\Maybe::just(3)->flatMap(f\multiply(2));
     }
@@ -362,7 +362,7 @@ class FunctorTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Basko\Functional\Functor\Optional::flatMap(): Return value must be of type Basko\Functional\Functor\Optional, int returned'
+            'Basko\Functional\Functor\Optional::flatMap(): Return value must be of type Basko\Functional\Functor\Monad, int returned'
         );
         f\Functor\Optional::just(3)->flatMap(f\multiply(2));
     }
@@ -509,7 +509,7 @@ class FunctorTest extends BaseTest
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Basko\Functional\Functor\Either::flatMap(): Return value must be of type Basko\Functional\Functor\Either, int returned'
+            'Basko\Functional\Functor\Either::flatMap(): Return value must be of type Basko\Functional\Functor\Monad, int returned'
         );
         f\Functor\Either::right(3)->flatMap(f\multiply(2));
     }
@@ -565,190 +565,16 @@ class FunctorTest extends BaseTest
             ->map(f\take(4))
             ->ap($mF);
 
-        $this->assertEquals('Slavik', $m(__DIR__ . '/../name.txt'));
+        $this->assertEquals('Slavik', call_user_func($m, __DIR__ . '/../name.txt'));
     }
 
     public function test_io_flat_map_falsy()
     {
         $this->setExpectedException(
             f\Exception\TypeException::class,
-            'Basko\Functional\Functor\IO::flatMap(): Return value must be of type Basko\Functional\Functor\IO, int returned'
+            'Basko\Functional\Functor\IO::flatMap(): Return value must be of type Basko\Functional\Functor\Monad, int returned'
         );
         f\Functor\IO::of(f\always(3))->flatMap(f\multiply(2));
-    }
-
-    public function test_transform_identity()
-    {
-        $m = f\Functor\Identity::of(1);
-
-        $m2 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Constant::class, $m2);
-        $this->assertEquals(1, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Either::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m2);
-        $this->assertEquals(2, $m2());
-    }
-
-    public function test_transform_constant()
-    {
-        $m = f\Functor\Constant::of(1);
-
-        $m2 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Identity::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Either::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m2);
-        $this->assertEquals(2, $m2());
-    }
-
-    public function test_transform_either()
-    {
-        $m = f\Functor\Either::right(1);
-        $m2 = f\Functor\Either::left('error');
-
-        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
-        $this->assertEquals(1, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Maybe::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m4);
-        $this->assertEquals(null, $m4->extract());
-
-        $m3 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Optional::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Optional::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Optional::class, $m4);
-        $this->assertEquals(null, $m4->extract());
-
-        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m3);
-        $this->assertEquals(2, $m3());
-    }
-
-    public function test_transform_maybe()
-    {
-        $m = f\Functor\Maybe::just(1);
-        $m2 = f\Functor\Maybe::nothing();
-
-        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
-        $this->assertEquals(1, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Either::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Either::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Either::class, $m4);
-        $this->assertEquals('Nothing', $m4->extract());
-
-        $m3 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Optional::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Optional::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Optional::class, $m4);
-        $this->assertEquals(null, $m4->extract());
-
-        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m3);
-        $this->assertEquals(2, $m3());
-    }
-
-    public function test_transform_optional()
-    {
-        $m = f\Functor\Optional::just(1);
-        $m2 = f\Functor\Optional::nothing();
-
-        $m3 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Constant::class, $m3);
-        $this->assertEquals(1, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Identity::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Identity::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-
-        $m3 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Either::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Either::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Either::class, $m4);
-        $this->assertEquals('Nothing', $m4->extract());
-
-        $m3 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-        $m4 = $m2->transform(f\Functor\Maybe::class)->map(function () {
-            $this->fail('test_transform_either test failed');
-        });
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m4);
-        $this->assertEquals(null, $m4->extract());
-
-        $m3 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m3);
-        $this->assertEquals(2, $m3());
-
-        $plus1 = function ($x) {
-            return f\Functor\Writer::of([__FUNCTION__ . ' executed'], $x + 1);
-        };
-        $m3 = $m->transform(f\Functor\Writer::class)->map($plus1);
-        $this->assertInstanceOf(f\Functor\Writer::class, $m3);
-        $this->assertEquals(2, $m3->extract());
-    }
-
-    public function test_transform_fail()
-    {
-        $this->setExpectedException(
-            f\Exception\InvalidArgumentException::class,
-            'Monad::transform() expects parameter 1 to be class-string<Monad>'
-        );
-        f\Functor\Identity::of(1)->transform(User::class);
     }
 
     public function test_writer()
@@ -809,33 +635,4 @@ class FunctorTest extends BaseTest
         );
         f\Functor\Writer::of(null, 1);
     }
-
-    public function test_transform_writer()
-    {
-        $m = f\Functor\Writer::of([], 1);
-        $mNull = f\Functor\Writer::of([], null);
-
-        $m2 = $m->transform(f\Functor\Constant::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Constant::class, $m2);
-        $this->assertEquals(1, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Either::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Either::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Maybe::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-        $m2 = $mNull->transform(f\Functor\Maybe::class)->map(f\plus(1));
-        $this->assertTrue($m2->isNothing());
-
-        $m2 = $m->transform(f\Functor\Optional::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\Optional::class, $m2);
-        $this->assertEquals(2, $m2->extract());
-
-        $m2 = $m->transform(f\Functor\IO::class)->map(f\plus(1));
-        $this->assertInstanceOf(f\Functor\IO::class, $m2);
-        $this->assertEquals(2, $m2());
-    }
-
 }

@@ -4,13 +4,11 @@
     <exclude-pattern>tests/*</exclude-pattern>
 
     <rule ref="PSR12">
-        <!-- use constants to refer to functions, and functions are lowercase -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase"/>
         <!-- support PHP 5.5, so we can't define constant visibility -->
         <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
         <!-- use Monad::of, Maybe::just, etc. constants -->
         <exclude name="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase" />
-        <!-- @phpstan-return sometimes breaks if split by several lines -->
         <exclude name="Generic.Files.LineLength.TooLong" />
     </rule>
 </ruleset>

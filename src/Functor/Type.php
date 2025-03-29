@@ -8,7 +8,7 @@ interface Type
      * Returns the type of the value.
      * Expected values: 'boolean', 'integer', 'double', 'string', 'array' or 'class-string' (e.g. Some::class).
      *
-     * @return string|class-string
+     * @return string
      */
     public static function type();
 }

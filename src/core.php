@@ -35,9 +35,8 @@ define('Basko\Functional\noop', __NAMESPACE__ . '\\noop');
  * identity($obj) === $obj; // true
  * ```
  *
- * @template T
- * @param T $value
- * @return T
+ * @param mixed $value
+ * @return mixed
  * @no-named-arguments
  */
 function identity($value)
@@ -106,7 +105,7 @@ define('Basko\Functional\N', __NAMESPACE__ . '\\N');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function eq($a, $b = null)
@@ -137,7 +136,7 @@ define('Basko\Functional\eq', __NAMESPACE__ . '\\eq');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function identical($a, $b = null)
@@ -171,7 +170,7 @@ define('Basko\Functional\identical', __NAMESPACE__ . '\\identical');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function lt($a, $b = null)
@@ -205,7 +204,7 @@ define('Basko\Functional\lt', __NAMESPACE__ . '\\lt');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function lte($a, $b = null)
@@ -239,7 +238,7 @@ define('Basko\Functional\lte', __NAMESPACE__ . '\\lte');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function gt($a, $b = null)
@@ -273,7 +272,7 @@ define('Basko\Functional\gt', __NAMESPACE__ . '\\gt');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function gte($a, $b = null)
@@ -320,7 +319,7 @@ function tail_recursion(callable $f)
     return function () use (&$f, &$underCall, &$queue) {
         $result = null;
         $queue[] = \func_get_args();
-        if (!$underCall) { // @phpstan-ignore booleanNot.alwaysTrue
+        if (!$underCall) {
             $underCall = true;
             while ($head = \array_shift($queue)) {
                 $result = \call_user_func_array($f, $head);
@@ -364,7 +363,7 @@ define('Basko\Functional\not', __NAMESPACE__ . '\\not');
  * ```
  *
  * @param callable $f The function to run value against
- * @return callable(mixed ...$args=):bool A negation version on the given $function
+ * @return callable A negation version on the given $function
  * @no-named-arguments
  */
 function complement(callable $f)
@@ -396,10 +395,9 @@ define('Basko\Functional\complement', __NAMESPACE__ . '\\complement');
  * )('avalS'); //string(5) "Slava"
  * ```
  *
- * @template T
- * @param callable(T):void $f
- * @param T $value
- * @return ($value is null ? callable(T):T : T)
+ * @param callable $f
+ * @param mixed $value
+ * @return mixed|callable
  * @no-named-arguments
  */
 function tap(callable $f, $value = null)
@@ -444,9 +442,8 @@ define('Basko\Functional\tap', __NAMESPACE__ . '\\tap');
  * $constA(); // 'a'
  * ```
  *
- * @template T
- * @param T $value
- * @return callable():T
+ * @param mixed $value
+ * @return callable
  * @no-named-arguments
  */
 function always($value)
@@ -547,7 +544,7 @@ define('Basko\Functional\pipe', __NAMESPACE__ . '\\pipe');
  *
  * @param callable $convergingFunction Will be invoked with the return values of all branching functions
  *                                     as its arguments
- * @param array<callable> $branchingFunctions A list of functions
+ * @param array $branchingFunctions A list of functions
  * @return callable
  * @no-named-arguments
  */
@@ -564,7 +561,6 @@ function converge(callable $convergingFunction, $branchingFunctions = null)
 
         $result = [];
 
-        /** @var array<callable> $branchingFunctions */
         foreach ($branchingFunctions as $branchingFunction) {
             $result[] = \call_user_func_array($branchingFunction, $values);
         }
@@ -580,7 +576,7 @@ define('Basko\Functional\converge', __NAMESPACE__ . '\\converge');
  *
  * @param callable $f
  * @param mixed $args
- * @return ($args is null ? callable(mixed $args=):mixed : mixed)
+ * @return mixed|callable
  * @no-named-arguments
  */
 function call(callable $f, $args = null)
@@ -602,8 +598,8 @@ define('Basko\Functional\call', __NAMESPACE__ . '\\call');
  * Alias for `call_user_func_array`.
  *
  * @param callable $f
- * @param array<mixed> $args
- * @return ($args is null ? callable(array<mixed> $args=):mixed : mixed)
+ * @param array $args
+ * @return mixed|callable
  * @no-named-arguments
  */
 function call_array(callable $f, $args = null)
@@ -614,7 +610,6 @@ function call_array(callable $f, $args = null)
 
     InvalidArgumentException::assertArray($args, __FUNCTION__, 2);
 
-    /** @var array<mixed> $args */
     return \call_user_func_array($f, $args);
 }
 
@@ -628,10 +623,9 @@ define('Basko\Functional\call_array', __NAMESPACE__ . '\\call_array');
  * $fiveAndThree(sum); // 8
  * ```
  *
- * @template T
- * @param T $arg
- * @param callable(T):mixed $f
- * @return ($f is null ? callable(callable(T):mixed):mixed : mixed)
+ * @param mixed $arg
+ * @param callable $f
+ * @return mixed|callable
  * @no-named-arguments
  */
 function apply_to($arg, $f = null)
@@ -645,7 +639,6 @@ function apply_to($arg, $f = null)
     $function = \array_pop($args);
     InvalidArgumentException::assertCallable($function, __FUNCTION__, 2);
 
-    /** @var callable $function */
     return \call_user_func_array($function, $args);
 }
 
@@ -669,7 +662,7 @@ define('Basko\Functional\apply_to', __NAMESPACE__ . '\\apply_to');
  * $cond(50) // 'nothing special happens at 50 °C'
  * ```
  *
- * @param array<array{callable, callable}> $conditions the conditions to check against
+ * @param array $conditions the conditions to check against
  *
  * @return callable The function that calls the callable of the first truthy condition
  * @no-named-arguments
@@ -728,10 +721,8 @@ define('Basko\Functional\flipped', __NAMESPACE__ . '\\flipped');
  * $gt9(7); // false
  * ```
  *
- * @template Ta
- * @template Tb
- * @param callable(Ta, Tb):mixed $f
- * @return callable(Tb, Ta):mixed
+ * @param callable $f
+ * @return callable
  * @no-named-arguments
  */
 function flip(callable $f)
@@ -759,9 +750,9 @@ define('Basko\Functional\flip', __NAMESPACE__ . '\\flip');
  * $containsInsensitive('o', 'FOO'); // true
  * ```
  *
- * @param callable(mixed, mixed):mixed $f
- * @param callable(mixed):mixed $g
- * @return ($g is null ? callable(mixed):mixed : callable(mixed, mixed):mixed)
+ * @param callable $f
+ * @param callable $g
+ * @return callable
  * @no-named-arguments
  */
 function on(callable $f, $g = null)
@@ -773,7 +764,6 @@ function on(callable $f, $g = null)
     InvalidArgumentException::assertOptionalCallable($g, __FUNCTION__, 2);
 
     return function ($a, $b) use ($f, $g) {
-        /** @var callable $g */
         return \call_user_func_array($f, [\call_user_func_array($g, [$a]), \call_user_func_array($g, [$b])]);
     };
 }
@@ -782,7 +772,7 @@ define('Basko\Functional\on', __NAMESPACE__ . '\\on');
 
 /**
  * Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
- * Also known as the Y combinator.
+ * Also known as the Y Combinator.
  *
  * ```
  * function factorial($n) {
@@ -837,7 +827,7 @@ define('Basko\Functional\y', __NAMESPACE__ . '\\y');
  *
  * @param mixed $a
  * @param mixed $b
- * @return ($b is null ? callable(mixed $b):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function both($a, $b = null)
@@ -870,9 +860,9 @@ define('Basko\Functional\both', __NAMESPACE__ . '\\both');
  * $isQueenOfSpades(['rank' => 'Q', 'suit' => '♠︎']); // true
  * ```
  *
- * @param array<callable> $functions
+ * @param array $functions
  * @param mixed $value
- * @return ($value is null ? callable(mixed $value):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function all_pass(array $functions, $value = null)
@@ -908,9 +898,9 @@ define('Basko\Functional\all_pass', __NAMESPACE__ . '\\all_pass');
  * $isBlackCard(['rank' => 'Q', 'suit' => '♦']); // false
  * ```
  *
- * @param array<callable> $functions
+ * @param array $functions
  * @param mixed $value
- * @return ($value is null ? callable(mixed $value):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function any_pass(array $functions, $value = null)
@@ -939,9 +929,9 @@ define('Basko\Functional\any_pass', __NAMESPACE__ . '\\any_pass');
  * ap([multiply(2), plus(3)], [1,2,3]); // [2, 4, 6, 4, 5, 6]
  * ```
  *
- * @param array<callable> $flist
- * @param array<mixed> $list
- * @return ($list is null ? callable(array<mixed> $list):array<mixed> : array<mixed>)
+ * @param array $flist
+ * @param array $list
+ * @return array|callable
  * @no-named-arguments
  */
 function ap($flist, $list = null)
@@ -957,7 +947,6 @@ function ap($flist, $list = null)
     $aggregation = [];
 
     foreach ($flist as $f) {
-        /** @var array<mixed> $list */
         $aggregation = \array_merge($aggregation, map($f, $list));
     }
 
@@ -979,7 +968,6 @@ function lift_m(callable $f)
         $ofFunc = Identity::of;
 
         $extractedArgs = map(function ($possibleM) use (&$ofFunc) {
-            /** @var \Basko\Functional\Functor\Monad<mixed> $possibleM */
             if (is_type_of(Monad::class, $possibleM)) {
                 $ofFunc = call_user_func(cond([
                     [eq(Maybe::class), always(Maybe::just)],
@@ -1017,8 +1005,8 @@ define('Basko\Functional\lift_m', __NAMESPACE__ . '\\lift_m');
  * lift(clenStr(...))(Maybe::just(' Slava   ')); // The result will be Just('Slava')
  * ```
  *
- * @param callable(mixed):mixed $f
- * @return callable(\Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ * @param callable $f
+ * @return callable
  */
 function lift(callable $f)
 {
@@ -1044,8 +1032,8 @@ define('Basko\Functional\lift', __NAMESPACE__ . '\\lift');
  * lift(cleanName(...))(Maybe::just(' Slava   '), Maybe::just('  Basko')); // The result will be Just('Slava Basko')
  * ```
  *
- * @param callable(mixed, mixed):mixed $f
- * @return callable(\Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ * @param callable $f
+ * @return callable
  */
 function liftA2(callable $f)
 {
@@ -1071,8 +1059,8 @@ define('Basko\Functional\liftA2', __NAMESPACE__ . '\\liftA2');
  * lift(cleanFullName(...))(Maybe::just(' Slava   '), Maybe::just('Leonidovich '), Maybe::just('  Basko')); // The result will be Just('Slava Leonidovich Basko')
  * ```
  *
- * @param callable(mixed, mixed, mixed):mixed $f
- * @return callable(\Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>, \Basko\Functional\Functor\Monad<mixed>):\Basko\Functional\Functor\Monad<mixed>
+ * @param callable $f
+ * @return callable
  */
 function liftA3(callable $f)
 {
@@ -1114,16 +1102,12 @@ define('Basko\Functional\liftA3', __NAMESPACE__ . '\\liftA3');
 function memoized(callable $f)
 {
     return function () use ($f) {
-        /**
-         * @var array<string, mixed> $cache
-         */
         static $cache = [];
 
         $args = \func_get_args();
         $key = _value_to_key(\array_merge([$f], $args));
 
         if (!isset($cache[$key]) || !\array_key_exists($key, $cache)) {
-            /** @var scalar|object|resource|array<mixed>|null $res */
             $res = \call_user_func_array($f, $args);
             $cache[$key] = $res;
         }

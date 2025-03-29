@@ -24,7 +24,5 @@
 /.gitignore export-ignore
 /Makefile export-ignore
 /phpcs.xml export-ignore
-/phpstan.neon export-ignore
-/phpstan.phar export-ignore
 /phpunit.xml.dist export-ignore
 /README.md export-ignore

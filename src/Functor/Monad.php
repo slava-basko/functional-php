@@ -4,18 +4,15 @@ namespace Basko\Functional\Functor;
 
 use Basko\Functional\Exception\InvalidArgumentException;
 
-/**
- * @template T
- */
 abstract class Monad
 {
     /**
-     * @var T
+     * @var mixed
      */
     protected $value;
 
     /**
-     * @param T $value
+     * @param mixed $value
      */
     final protected function __construct($value)
     {
@@ -23,7 +20,6 @@ abstract class Monad
             $vType = \gettype($value);
             $mType = $this::type();
             if (\is_object($value)) {
-                /** @var class-string $mType */
                 InvalidArgumentException::assertType(\get_class($value), $mType, static::class, 1);
             } elseif ($mType !== $vType) {
                 throw new InvalidArgumentException(
@@ -42,25 +38,31 @@ abstract class Monad
     }
 
     /**
-     * @param callable(T):mixed $f
+     * @param callable $f
      * @return static
      */
     abstract public function map(callable $f);
 
     /**
-     * @param callable(T):static $f
-     * @return static
+     * @param callable $f
+     * @return \Basko\Functional\Functor\Monad
      */
     abstract public function flatMap(callable $f);
 
     /**
-     * @param static $m
+     * @param static<callable> $m
      * @return static
      */
     abstract public function ap(Monad $m);
 
     /**
-     * @return T
+     * @param static<callable> $m
+     * @return \Basko\Functional\Functor\Monad
+     */
+    abstract public function flatAp(Monad $m);
+
+    /**
+     * @return mixed
      */
     public function extract()
     {
@@ -69,50 +71,6 @@ abstract class Monad
         }
 
         return $this->value;
-    }
-
-    /**
-     * Transforms monad to another monad
-     *
-     * @template M of \Basko\Functional\Functor\Monad
-     * @param class-string<M> $m
-     * @return M
-     * @phpstan-return new<M[T]>
-     */
-    abstract public function transform($m);
-
-    /**
-     * @param class-string $m
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    protected function assertTransform($m)
-    {
-        InvalidArgumentException::assertClass($m, static::class, 1);
-
-        $classes = \class_parents($m);
-        $possibleMonadClass = (string)\end($classes);
-
-        if ($possibleMonadClass != Monad::class) {
-            throw new InvalidArgumentException(
-                \sprintf(
-                    'Monad::transform() expects parameter %d to be class-string<Monad>, %s (%s) given',
-                    1,
-                    \gettype($m),
-                    \var_export($m, true)
-                )
-            );
-        }
-    }
-
-    /**
-     * @param class-string $m
-     * @return \LogicException
-     */
-    protected function cantTransformException($m)
-    {
-        $thisClass = \get_class($this);
-        return new \LogicException("Cannot transform $thisClass monad to $m monad");
     }
 
     /**

@@ -28,10 +28,8 @@ function _object_to_ref($value)
          * object gets out of scope, the weak ref will no longer return the object, that’s how we know we
          * have a collision and increment a version in the collisions array.
          */
-        /** @var int[] $collisions */
         static $collisions = [];
 
-        /** @var array<string, \WeakReference<object>> $objectReferences */
         if (isset($objectReferences[$hash])) {
             if ($objectReferences[$hash]->get() === null) {
                 $collisions[$hash] = ($collisions[$hash] ?: 0) + 1;
@@ -47,7 +45,6 @@ function _object_to_ref($value)
          * For PHP < 7.4 we keep a static reference to the object so that cannot accidentally go out of
          * scope and mess with the object hashes
          */
-        /** @var array<string, object> $objectReferences */
         $objectReferences[$hash] = $value;
         $key = \get_class($value) . ':' . $hash;
     }
@@ -62,12 +59,12 @@ function _object_to_ref($value)
  * @param mixed $key
  * @return string
  * @internal
+ * @no-named-arguments
  */
 function _value_to_ref($value, $key = null)
 {
     $type = \gettype($value);
     if ($type === 'array') {
-        /** @var array<mixed> $value */
         $ref = '[' . \implode(':', map(_value_to_ref, $value)) . ']';
     } elseif ($value instanceof \Traversable) {
         $ref = _object_to_ref($value) . '[' . \implode(':', map(_value_to_ref, $value)) . ']';
@@ -108,14 +105,14 @@ function _value_to_key($value)
  * ```
  *
  * @param mixed $args
- * @return array<mixed>
+ * @return array
  */
 function to_list($args)
 {
     if (\is_string($args)) {
         return \array_filter(
             \array_map('trim', \explode(',', $args)),
-            'strlen' // @phpstan-ignore argument.type
+            'strlen'
         );
     }
 
@@ -133,7 +130,7 @@ define('Basko\Functional\to_list', __NAMESPACE__ . '\\to_list');
  *
  * @param string $a
  * @param string $b
- * @return ($b is null ? callable(string $b):string : string)
+ * @return string|callable
  * @no-named-arguments
  */
 function concat($a, $b = null)
@@ -185,8 +182,8 @@ define('Basko\Functional\concat_all', __NAMESPACE__ . '\\concat_all');
  * ```
  *
  * @param string $separator
- * @param array<mixed>|\Traversable<mixed> $list
- * @return ($list is null ? callable(array<mixed>|\Traversable<mixed> $list):string : string)
+ * @param array|\Traversable $list
+ * @return string|callable
  * @no-named-arguments
  */
 function join($separator, $list = null)
@@ -256,7 +253,7 @@ define('Basko\Functional\if_else', __NAMESPACE__ . '\\if_else');
  * ```
  *
  * @param callable $f
- * @return callable(int):void
+ * @return callable
  * @no-named-arguments
  */
 function repeat(callable $f)
@@ -288,7 +285,7 @@ define('Basko\Functional\repeat', __NAMESPACE__ . '\\repeat');
  *
  * @param callable $tryer
  * @param callable $catcher
- * @return ($catcher is null ? callable(callable $catcher):callable : callable():mixed)
+ * @return callable
  * @no-named-arguments
  */
 function try_catch(callable $tryer, $catcher = null)
@@ -301,8 +298,6 @@ function try_catch(callable $tryer, $catcher = null)
 
     return function () use ($tryer, $catcher) {
         $args = \func_get_args();
-
-        /** @var callable $catcher */
 
         \set_error_handler(function ($errno, $errstr, $errfile, $errline) {
             $errLvl = \error_reporting();
@@ -348,7 +343,7 @@ define('Basko\Functional\try_catch', __NAMESPACE__ . '\\try_catch');
  * ```
  *
  * @param string $methodName
- * @param array<mixed> $arguments
+ * @param array $arguments
  * @return callable
  * @no-named-arguments
  */
@@ -361,7 +356,7 @@ function invoker($methodName, array $arguments = [])
     return static function ($object) use ($methodName, $arguments, $pfn) {
         InvalidArgumentException::assertObject($object, $pfn, 1);
 
-        return \call_user_func_array([$object, $methodName], $arguments); // @phpstan-ignore argument.type
+        return \call_user_func_array([$object, $methodName], $arguments);
     };
 }
 
@@ -375,7 +370,7 @@ define('Basko\Functional\invoker', __NAMESPACE__ . '\\invoker');
  * len(['a', 'b']); // 2
  * ```
  *
- * @param string|array<mixed>|\Traversable<mixed> $a
+ * @param string|array|\Traversable $a
  * @return int
  * @no-named-arguments
  */
@@ -410,8 +405,8 @@ define('Basko\Functional\len', __NAMESPACE__ . '\\len');
  * ```
  *
  * @param string|int $property
- * @param array<mixed>|object $object
- * @return ($object is null ? callable(array<mixed>|object $object):mixed : mixed)
+ * @param array|object $object
+ * @return mixed|callable
  * @no-named-arguments
  */
 function prop($property, $object = null)
@@ -422,12 +417,10 @@ function prop($property, $object = null)
         return partial(prop, $property);
     }
 
-    /** @var string $property */
     if (\is_object($object) && \property_exists($object, $property)) {
         return $object->{$property};
     }
 
-    /** @var int $property */
     if ($object instanceof \ArrayAccess) {
         return $object->offsetGet($property);
     }
@@ -449,7 +442,7 @@ define('Basko\Functional\prop', __NAMESPACE__ . '\\prop');
  * ```
  *
  * @param string|int $property
- * @param array<mixed>|object $object
+ * @param array|object $object
  * @return callable
  * @no-named-arguments
  */
@@ -476,9 +469,9 @@ define('Basko\Functional\prop_thunk', __NAMESPACE__ . '\\prop_thunk');
  * ]); // 2
  * ```
  *
- * @param array<string|int> $path
- * @param array<mixed>|object $object
- * @return ($object is null ? callable(array<mixed>|object $object):mixed : mixed)
+ * @param array $path
+ * @param array|object $object
+ * @return mixed|callable
  * @no-named-arguments
  */
 function prop_path(array $path, $object = null)
@@ -503,9 +496,9 @@ define('Basko\Functional\prop_path', __NAMESPACE__ . '\\prop_path');
  * props(['c', 'a', 'b'], ['b' => 2, 'a' => 1]); // [null, 1, 2]
  * ```
  *
- * @param array<string|int> $properties
- * @param array<mixed>|object $object
- * @return ($object is null ? callable(array<mixed>|object $object):array<mixed> : array<mixed>)
+ * @param array $properties
+ * @param array|object $object
+ * @return array|callable
  * @no-named-arguments
  */
 function props(array $properties, $object = null)
@@ -543,9 +536,8 @@ define('Basko\Functional\props', __NAMESPACE__ . '\\props');
  *
  * @param string|int $key
  * @param mixed|callable $val
- * @param array<mixed>|\Traversable<mixed>|object $list
- * @return callable|array<mixed>|object
- * @phpstan-return ($val is null ? (callable(mixed|callable $val, array<mixed>|\Traversable<mixed>|object $list=):($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)|(array<mixed>|object))) : ($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)))
+ * @param array|\Traversable|object $list
+ * @return array|object|callable
  * @no-named-arguments
  */
 function assoc($key, $val = null, $list = null)
@@ -587,9 +579,8 @@ define('Basko\Functional\assoc', __NAMESPACE__ . '\\assoc');
  *
  * @param integer $key
  * @param mixed|callable $val
- * @param array<mixed>|\Traversable<mixed> $list
- * @return callable|array<mixed>|object
- * @phpstan-return ($val is null ? (callable(mixed|callable $val, array<mixed>|\Traversable<mixed>|object $list=):($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)|(array<mixed>|object))) : ($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)))
+ * @param array|\Traversable $list
+ * @return array|object|callable
  * @no-named-arguments
  */
 function assoc_element($key, $val = null, $list = null)
@@ -613,7 +604,6 @@ function assoc_element($key, $val = null, $list = null)
         );
     }
 
-    /** @var array<mixed> $list */
     if ($key < 0) {
         $key = \count($list) - \abs($key);
     } else {
@@ -632,11 +622,10 @@ define('Basko\Functional\assoc_element', __NAMESPACE__ . '\\assoc_element');
  * assoc_path(['bar', 'baz'], 42, ['foo' => 'foo', 'bar' => ['baz' => 41]]); // ['foo' => 'foo', 'bar' => ['baz' => 42]]
  * ```
  *
- * @param array<string|int> $path
+ * @param array $path
  * @param mixed|callable $val
- * @param array<mixed>|\Traversable<mixed>|object $list
- * @return callable|array<mixed>|object
- * @phpstan-return ($val is null ? (callable(mixed|callable $val, array<mixed>|\Traversable<mixed>|object $list=):($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)|(array<mixed>|object))) : ($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<mixed>|object) : (array<mixed>|object)))
+ * @param array|\Traversable|object $list
+ * @return array|object|callable
  * @no-named-arguments
  */
 function assoc_path(array $path, $val = null, $list = null)
@@ -649,7 +638,6 @@ function assoc_path(array $path, $val = null, $list = null)
     }
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
-    /** @var array<mixed>|\Traversable<mixed>|object $list */
 
     $pathLen = \count($path);
     if ($pathLen == 0) {
@@ -680,7 +668,7 @@ define('Basko\Functional\assoc_path', __NAMESPACE__ . '\\assoc_path');
  *
  * @param object $object
  * @param string $methodName
- * @param array<mixed>|null $arguments
+ * @param array|null $arguments
  * @return callable
  * @no-named-arguments
  */
@@ -706,9 +694,8 @@ function to_fn($object, $methodName = null, $arguments = null)
         if (\is_null($arguments)) {
             $arguments = [];
         }
-        /** @var string $methodName */
         if (\is_callable([$object, $methodName])) {
-            return \call_user_func_array([$object, $methodName], $arguments); // @phpstan-ignore argument.type
+            return \call_user_func_array([$object, $methodName], $arguments);
         }
 
         throw new InvalidArgumentException(
@@ -732,7 +719,7 @@ define('Basko\Functional\to_fn', __NAMESPACE__ . '\\to_fn');
  *
  * @param mixed $fst
  * @param mixed $snd
- * @return ($snd is null ? callable(mixed $snd):array{mixed, mixed} : array{mixed, mixed})
+ * @return array|callable
  * @no-named-arguments
  */
 function pair($fst, $snd = null)
@@ -767,7 +754,6 @@ function _either()
 
     return function () use ($strict, $functions) {
         $args = \func_get_args();
-        /** @var non-empty-array<callable> $functions */
         foreach ($functions as $function) {
             $res = \call_user_func_array($function, $args);
             if ($strict && !\is_null($res)) {
@@ -866,9 +852,9 @@ define('Basko\Functional\safe_quote', __NAMESPACE__ . '\\safe_quote');
  * only_keys(['bar', 'baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['bar' => 2, 'baz' => 3]
  * ```
  *
- * @param array<string|int> $keys
- * @param array<array-key, mixed>|\Traversable<array-key, mixed>|object $object
- * @return ($object is null ? callable(array<array-key, mixed>|\Traversable<array-key, mixed>|object $object):array<array-key, mixed> : array<array-key, mixed>)
+ * @param array $keys
+ * @param array|\Traversable|object $object
+ * @return array|callable
  * @no-named-arguments
  */
 function only_keys(array $keys, $object = null)
@@ -901,9 +887,9 @@ define('Basko\Functional\only_keys', __NAMESPACE__ . '\\only_keys');
  * omit_keys(['baz'], ['foo' => 1, 'bar' => 2, 'baz' => 3]); // ['foo' => 1, 'bar' => 2]
  * ```
  *
- * @param array<string|int> $keys
- * @param array<array-key, mixed>|\Traversable<array-key, mixed>|object $object
- * @return ($object is null ? callable(array<array-key, mixed>|\Traversable<array-key, mixed>|object $object):array<array-key, mixed> : array<array-key, mixed>)
+ * @param array $keys
+ * @param array|\Traversable|object $object
+ * @return array|callable
  * @no-named-arguments
  */
 function omit_keys(array $keys, $object = null)
@@ -919,7 +905,6 @@ function omit_keys(array $keys, $object = null)
         $object = \get_object_vars($object);
     }
 
-    /** @var array<array-key, mixed> $object */
     return \array_diff_key($object, \array_flip($keys));
 }
 
@@ -933,10 +918,9 @@ define('Basko\Functional\omit_keys', __NAMESPACE__ . '\\omit_keys');
  * ```
  *
  * @param callable $f
- * @param array<string> $keys
- * @param array<mixed>|\Traversable<mixed>|object $list
- * @return callable|array<array-key, mixed>|object
- * @phpstan-return ($keys is null ? (callable(array<string> $keys, array<mixed>|\Traversable<mixed>|object $list=):($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)|(array<array-key, mixed>|object))) : ($list is null ? callable(array<mixed>|\Traversable<mixed>|object $list):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)))
+ * @param array $keys
+ * @param array|\Traversable|object $list
+ * @return array|object|callable
  * @no-named-arguments
  */
 function map_keys(callable $f, $keys = null, $list = null)
@@ -953,17 +937,14 @@ function map_keys(callable $f, $keys = null, $list = null)
 
     $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
-    /**  @var iterable<string> $keys */
     foreach ($keys as $key) {
         if (\is_object($list)) {
             $list->{$key} = \call_user_func_array($f, [$list->{$key}]);
         } else {
-            /** @var array<array-key, mixed> $list */
             $list[$key] = \call_user_func_array($f, [$list[$key]]);
         }
     }
 
-    /** @var array<array-key, mixed>|object $list */
     return $list;
 }
 
@@ -978,10 +959,9 @@ define('Basko\Functional\map_keys', __NAMESPACE__ . '\\map_keys');
  * ```
  *
  * @param callable $f
- * @param array<int> $elementsNumbers
- * @param array<mixed>|\Traversable<mixed> $list
- * @return callable|array<array-key, mixed>
- * @phpstan-return ($elementsNumbers is null ? (callable(array<int> $elementsNumbers, array<mixed>|\Traversable<mixed> $list=):($list is null ? callable(array<mixed>|\Traversable<mixed> $list):array<array-key, mixed> : array<array-key, mixed>|array<array-key, mixed>)) : ($list is null ? callable(array<mixed>|\Traversable<mixed> $list):array<array-key, mixed> : array<array-key, mixed>))
+ * @param array $elementsNumbers
+ * @param array|\Traversable $list
+ * @return array|callable
  * @no-named-arguments
  */
 function map_elements(callable $f, $elementsNumbers = null, $list = null)
@@ -998,10 +978,8 @@ function map_elements(callable $f, $elementsNumbers = null, $list = null)
 
     $list = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
 
-    /** @var array<int> $elementsNumbers */
     foreach ($elementsNumbers as $elementNumber) {
         if ($elementNumber < 0) {
-            /** @var array<int, mixed> $list */
             $internalElementNumber = len($list) - \abs($elementNumber);
         } else {
             $internalElementNumber = $elementNumber - 1;
@@ -1010,7 +988,6 @@ function map_elements(callable $f, $elementsNumbers = null, $list = null)
         $list[$internalElementNumber] = \call_user_func_array($f, [nth($elementNumber, $list)]);
     }
 
-    /** @var array<int, mixed> $list */
     return $list;
 }
 
@@ -1026,9 +1003,9 @@ define('Basko\Functional\map_elements', __NAMESPACE__ . '\\map_elements');
  * ); // ['email']
  * ```
  *
- * @param array<string|int> $required
- * @param array<array-key, mixed>|\Traversable<array-key, mixed> $array
- * @return ($array is null ? (callable(array<array-key, mixed>|\Traversable<array-key, mixed> $array):array<string|int>) : array<string|int>)
+ * @param array $required
+ * @param array|\Traversable $array
+ * @return array|callable
  * @no-named-arguments
  */
 function find_missing_keys(array $required, $array = null)
@@ -1041,7 +1018,6 @@ function find_missing_keys(array $required, $array = null)
 
     $array = $array instanceof \Traversable ? \iterator_to_array($array) : $array;
 
-    /** @var array<array-key, mixed> $array */
     return \array_keys(\array_diff_key(\array_flip($required), $array));
 }
 
@@ -1056,9 +1032,8 @@ define('Basko\Functional\find_missing_keys', __NAMESPACE__ . '\\find_missing_key
  * cp($obj);                // object hash: 00000000000000070000000000000000
  * ```
  *
- * @template T
- * @param T $object
- * @return T
+ * @param mixed $object
+ * @return mixed
  * @no-named-arguments
  */
 function cp($object)
@@ -1087,10 +1062,8 @@ define('Basko\Functional\cp', __NAMESPACE__ . '\\cp');
  * pick_random_value(['sword', 'gold', 'ring', 'jewel']); // 'gold'
  * ```
  *
- * @template T
- * @param array<T>|\Traversable<T> $list
- * @return T
- * @no-named-arguments
+ * @param array|\Traversable $list
+ * @return mixed
  */
 function pick_random_value($list)
 {
@@ -1107,8 +1080,7 @@ function pick_random_value($list)
 
     $fN = \function_exists('mt_rand') ? 'mt_rand' : 'rand';
 
-    /** @var T $randomElement */
-    $randomElement = nth( // @phpstan-ignore function.unresolvableReturnType
+    $randomElement = nth(
         \call_user_func_array($fN, [1, \count($list)]),
         $list
     );
@@ -1139,12 +1111,10 @@ define('Basko\Functional\pick_random_value', __NAMESPACE__ . '\\pick_random_valu
  * ]); // ['NL' => 'Netherlands', 'UA' => 'Ukraine']
  * ```
  *
- * @template T of array<string, mixed>|object
  * @param string $keyProp
  * @param string $valueProp
- * @param array<T>|\Traversable<T> $list
- * @return callable|array<array-key, mixed>
- * @phpstan-return ($valueProp is null ? (callable(string $valueProp, array<T>|\Traversable<T> $list=):($list is null ? callable(array<T>|\Traversable<T> $list):(array<array-key, mixed>) : (array<array-key, mixed>)|(array<array-key, mixed>))) : ($list is null ? callable(array<T>|\Traversable<T> $list):(array<array-key, mixed>) : (array<array-key, mixed>)))
+ * @param array|\Traversable $list
+ * @return array|callable
  * @no-named-arguments
  */
 function combine($keyProp, $valueProp = null, $list = null)
@@ -1161,10 +1131,6 @@ function combine($keyProp, $valueProp = null, $list = null)
     InvalidArgumentException::assertString($valueProp, __FUNCTION__, 2);
     InvalidArgumentException::assertList($list, __FUNCTION__, 3);
 
-    /**
-     * @var string $valueProp
-     * @var array<T>|\Traversable<T> $list
-     */
     return \array_combine(pluck($keyProp, $list), pluck($valueProp, $list));
 }
 
@@ -1174,8 +1140,7 @@ define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
  * Returns an infinite, traversable sequence of constant values.
  *
  * @param int $value
- * @return \Traversable<int>
- * @no-named-arguments
+ * @return \Traversable
  */
 function sequence_constant($value)
 {
@@ -1226,7 +1191,7 @@ define('Basko\Functional\sequence_exponential', __NAMESPACE__ . '\\sequence_expo
  * Returns an infinite, traversable sequence of 0.
  * This helper mostly to use with `retry`.
  *
- * @return \Traversable<int>
+ * @return \Traversable
  */
 function no_delay()
 {
@@ -1247,7 +1212,6 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
  * @param \Iterator $delaySequence
  * @param callable $f
  * @return callable|mixed Return value of the function
- * @phpstan-return ($delaySequence is null ? (callable(\Iterator $delaySequence, callable $f=):($f is null ? callable(callable $f):mixed : mixed|mixed)) : ($f is null ? callable(callable $f):mixed : mixed))
  * @throws InvalidArgumentException
  * @throws \Exception Any exception thrown by the callback
  * @no-named-arguments
@@ -1266,7 +1230,6 @@ function retry($retries, $delaySequence = null, $f = null)
     InvalidArgumentException::assertCallable($f, __FUNCTION__, 3);
 
     $delays = new \AppendIterator();
-    /** @var \Iterator $delaySequence */
     $delays->append(new \InfiniteIterator($delaySequence));
     $delays->append(new \InfiniteIterator(new \ArrayIterator([0])));
     $delays = new \LimitIterator($delays, 0, $retries);
@@ -1274,7 +1237,6 @@ function retry($retries, $delaySequence = null, $f = null)
     $retry = 0;
     foreach ($delays as $delay) {
         try {
-            /** @var callable $f */
             return \call_user_func_array($f, [$retry, $delay]);
         } catch (\Exception $e) {
             if ($retry === $retries - 1) {
@@ -1299,9 +1261,8 @@ define('Basko\Functional\retry', __NAMESPACE__ . '\\retry');
  * construct('stdClass'); // object(stdClass)
  * ```
  *
- * @template T
- * @param class-string<T> $class
- * @return T
+ * @param string $class
+ * @return object
  */
 function construct($class)
 {
@@ -1320,10 +1281,10 @@ define('Basko\Functional\construct', __NAMESPACE__ . '\\construct');
  * echo $user->first_name; // Slava
  * ```
  *
- * @template T of object
- * @param class-string<T> $class
+ * @param string $class
  * @param mixed $constructArguments
- * @return ($constructArguments is null ? callable(mixed $constructArguments):T : T)
+ * @return object|callable
+ * @no-named-arguments
  */
 function construct_with_args($class, $constructArguments = null)
 {
@@ -1350,9 +1311,8 @@ define('Basko\Functional\construct_with_args', __NAMESPACE__ . '\\construct_with
  *
  * @param string $keyA
  * @param string $keyB
- * @param array<array-key, mixed>|object $object
- * @return callable|array<array-key, mixed>|object
- * @phpstan-return ($keyB is null ? (callable(string $keyB, array<array-key, mixed>|object $object=):($object is null ? callable(array<array-key, mixed>|object $object):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)|(array<array-key, mixed>|object))) : ($object is null ? callable(array<array-key, mixed>|object $object):(array<array-key, mixed>|object) : (array<array-key, mixed>|object)))
+ * @param array|object $object
+ * @return array|object|callable
  */
 function flip_values($keyA, $keyB = null, $object = null)
 {
@@ -1369,10 +1329,9 @@ function flip_values($keyA, $keyB = null, $object = null)
     InvalidArgumentException::assertList($object, __FUNCTION__, 3);
 
     $valueA = prop($keyA, $object);
-    /** @var string $keyB */
     $valueB = prop($keyB, $object);
 
-    return assoc($keyB, $valueA, assoc($keyA, $valueB, $object)); // @phpstan-ignore argument.type
+    return assoc($keyB, $valueA, assoc($keyA, $valueB, $object));
 }
 
 define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values');
@@ -1392,7 +1351,7 @@ define('Basko\Functional\flip_values', __NAMESPACE__ . '\\flip_values');
  *
  * @param int $n
  * @param int $i
- * @return ($i is null ? callable(int $i):bool : bool)
+ * @return bool|callable
  */
 function is_nth($n, $i = null)
 {
@@ -1404,7 +1363,6 @@ function is_nth($n, $i = null)
 
     InvalidArgumentException::assertInteger($i, __FUNCTION__, 2);
 
-    /** @var int $i */
     return modulo($i, $n) === 0;
 }
 
@@ -1438,6 +1396,7 @@ define('Basko\Functional\is_nth', __NAMESPACE__ . '\\is_nth');
  * @param string $method
  * @param object $context Used for both "newscope" and "newthis"
  * @return callable
+ * @no-named-arguments
  */
 function publish($method, $context = null)
 {
@@ -1452,7 +1411,7 @@ function publish($method, $context = null)
     $caller = function () use ($method) {
         $args = \func_get_args();
 
-        return \call_user_func_array([$this, $method], $args); // @phpstan-ignore argument.type, variable.undefined
+        return \call_user_func_array([$this, $method], $args);
     };
 
     return $caller->bindTo($context, $context);

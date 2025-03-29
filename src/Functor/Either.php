@@ -5,10 +5,6 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\TypeException;
 use Exception;
 
-/**
- * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
- */
 class Either extends Monad
 {
     const of = "Basko\Functional\Functor\Either::of";
@@ -88,7 +84,7 @@ class Either extends Monad
             $result = static::left($exception->getMessage());
         }
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Monad::class, __METHOD__);
 
         return $result;
     }
@@ -98,7 +94,7 @@ class Either extends Monad
      */
     public function ap(Monad $m)
     {
-        TypeException::assertReturnType($m, static::class, __METHOD__);
+        TypeException::assertType($m, static::class, __METHOD__);
 
         if (!$this->validValue) {
             return static::left($this->value);
@@ -114,50 +110,32 @@ class Either extends Monad
     /**
      * @inheritdoc
      */
-    public function transform($m)
+    public function flatAp(Monad $m)
     {
-        $this->assertTransform($m);
+        TypeException::assertType($m, static::class, __METHOD__);
 
-        $value = $this->extract();
-
-        if ($m === Maybe::class) {
-            return $this->isRight()
-                ? Maybe::just($value)
-                : Maybe::nothing();
-        } elseif ($m === Optional::class) {
-            return $this->isRight()
-                ? Optional::just($value)
-                : Optional::nothing();
-        } elseif ($m === Constant::class) {
-            return Constant::of($value);
-        } elseif ($m === Identity::class) {
-            return Identity::of($value);
-        } elseif ($m === IO::class) {
-            return IO::of(function () use ($value) {
-                return $value;
-            });
-        } elseif ($m === Writer::class) {
-            return Writer::of([], $value);
-        } elseif ($m === EitherWriter::class) {
-            return $this->isRight()
-                ? EitherWriter::right($value)
-                : EitherWriter::left($value);
+        if (!$this->validValue) {
+            return static::left($this->value);
         }
 
-        throw $this->cantTransformException($m);
+        try {
+            return $this->flatMap($m->extract());
+        } catch (Exception $exception) {
+            return static::left($exception->getMessage());
+        }
     }
 
     /**
-     * @param callable(T):void $right
-     * @param callable(T):void $left
+     * @param callable $right
+     * @param callable $left
      * @return static
      */
     public function match(callable $right, callable $left)
     {
         if ($this->validValue) {
-            \call_user_func_array($right, [$this->extract()]);
+            \call_user_func($right, $this->extract());
         } else {
-            \call_user_func_array($left, [$this->extract()]);
+            \call_user_func($left, $this->extract());
         }
 
         return $this;

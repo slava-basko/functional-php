@@ -13,10 +13,9 @@ use Basko\Functional\Exception\TypeException;
  * is_type_of(\User::class, new SomeClass()); // false
  * ```
  *
- * @template T
- * @param class-string $class
- * @param T $value
- * @return ($value is null ? callable(T $value):bool : bool)
+ * @param string $class
+ * @param mixed $value
+ * @return bool|callable
  * @no-named-arguments
  */
 function is_type_of($class, $value = null)
@@ -42,10 +41,10 @@ define('Basko\Functional\is_type_of', __NAMESPACE__ . '\\is_type_of');
  * type_of(\User::class, new SomeClass()); // TypeException: Could not convert "SomeClass" to type "User"
  * ```
  *
- * @template T
- * @param class-string $class
- * @param T $value
- * @return ($value is null ? callable(T $value):T : T)
+ * @param string $class
+ * @param mixed $value
+ * @return mixed|callable
+ * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
  */
 function type_of($class, $value = null)
@@ -149,7 +148,7 @@ define('Basko\Functional\type_string', __NAMESPACE__ . '\\type_string');
  * ```
  *
  * @param mixed $value
- * @return non-empty-string
+ * @return string
  * @no-named-arguments
  * @throws \Basko\Functional\Exception\TypeException
  */
@@ -308,44 +307,38 @@ function type_union($firsts, $second)
          * @return callable
          */
         function (callable $left, callable $right) use ($pfn) {
-            return
-                /**
-                 * @param mixed $value
-                 * @return mixed
-                 * @throws \Basko\Functional\Exception\TypeException
-                 */
-                function ($value) use ($left, $right, $pfn) {
-                    try {
-                        return \call_user_func($left, $value);
-                    } catch (TypeException $typeException) {
-                        $leftType = $typeException->getTarget();
-                    } catch (\Exception $exception) {
-                        throw new TypeException(\sprintf(
-                            '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
-                            $pfn
-                        ), 0, $exception);
-                    }
+            return function ($value) use ($left, $right, $pfn) {
+                try {
+                    return \call_user_func($left, $value);
+                } catch (TypeException $typeException) {
+                    $leftType = $typeException->getTarget();
+                } catch (\Exception $exception) {
+                    throw new TypeException(\sprintf(
+                        '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
+                        $pfn
+                    ), 0, $exception);
+                }
 
-                    try {
-                        return \call_user_func($right, $value);
-                    } catch (TypeException $typeException) {
-                        $rightType = $typeException->getTarget();
-                    } catch (\Exception $exception) {
-                        throw new TypeException(\sprintf(
-                            '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
-                            $pfn
-                        ), 0, $exception);
-                    }
+                try {
+                    return \call_user_func($right, $value);
+                } catch (TypeException $typeException) {
+                    $rightType = $typeException->getTarget();
+                } catch (\Exception $exception) {
+                    throw new TypeException(\sprintf(
+                        '%s() fail and there no \Basko\Functional\Exception\TypeException exception was thrown',
+                        $pfn
+                    ), 0, $exception);
+                }
 
-                    if (!\is_string($leftType) || !\is_string($rightType)) {
-                        throw new TypeException(\sprintf(
-                            'One of type in %s() fail and TypeException::forValue() never called',
-                            $pfn
-                        ));
-                    }
+                if (!\is_string($leftType) || !\is_string($rightType)) {
+                    throw new TypeException(\sprintf(
+                        'One of type in %s() fail and TypeException::forValue() never called',
+                        $pfn
+                    ));
+                }
 
-                    throw TypeException::forValue($value, \sprintf('%s|%s', $leftType, $rightType));
-                };
+                throw TypeException::forValue($value, \sprintf('%s|%s', $leftType, $rightType));
+            };
         };
 
     $types = \func_get_args();
@@ -392,12 +385,9 @@ define('Basko\Functional\type_array_key', __NAMESPACE__ . '\\type_array_key');
  * type_list(type_of(SomeEntity::class), [$entity1, $entity2]); // [$entity1, $entity2]
  * ```
  *
- * @template TValue
- * @template TNewValue
- * @template T of array<TValue>|\Traversable<TValue>
- * @param callable(TValue):TNewValue $type
- * @param T $value
- * @return ($value is null ? callable(T $value):array<TNewValue> : array<TNewValue>)
+ * @param callable $type
+ * @param array|\Traversable $value
+ * @return array|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -411,7 +401,6 @@ function type_list(callable $type, $value = null)
 
     $result = [];
 
-    /** @var T $value */
     foreach ($value as $k => $v) {
         try {
             $result[] = \call_user_func($type, $v);
@@ -436,14 +425,10 @@ define('Basko\Functional\type_list', __NAMESPACE__ . '\\type_list');
  * type_array(type_array_key, type_int, ['one' => '1', 'two' => 2]); // ['one' => 1, 'two' => 2]
  * ```
  *
- * @template TKey of array-key
- * @template TValue
- * @template TNewKey of array-key
- * @template TNewValue
- * @param callable(TKey):TNewKey $keyType
- * @param callable(TValue):TNewValue $valueType
- * @param array<TKey, TValue>|\Traversable<TKey, TValue> $value
- * @return array<TNewKey, TNewValue>|callable
+ * @param callable $keyType
+ * @param callable $valueType
+ * @param array|\Traversable $value
+ * @return array|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -461,12 +446,7 @@ function type_array(callable $keyType, $valueType = null, $value = null)
 
     $result = [];
 
-    /** @var array<TKey, TValue>|\Traversable<TKey, TValue> $value */
     foreach ($value as $k => $v) {
-        /**
-         * @var callable(TKey):TNewKey $keyType
-         * @var callable(TValue):TNewValue $valueType
-         */
         $result[\call_user_func($keyType, $k)] = \call_user_func($valueType, $v);
     }
 
@@ -517,13 +497,9 @@ define('Basko\Functional\type_array', __NAMESPACE__ . '\\type_array');
  * ]); // checked and coerced array will be returned and `additional` will be removed
  * ```
  *
- * @template TKey of array-key
- * @template TValue
- * @template TNewValue
- * @template T of array<TKey, TValue>
- * @param array<TKey, callable(TValue):TNewValue> $shape
- * @param T $value
- * @return ($value is null ? callable(T $value):array<TKey, TNewValue> : array<TKey, TNewValue>)
+ * @param array $shape
+ * @param array $value
+ * @return array|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */
@@ -538,7 +514,6 @@ function type_shape(array $shape, $value = null)
     $result = [];
 
     foreach ($shape as $k => $type) {
-        /** @var T $value */
         if (\array_key_exists($k, $value)) {
             try {
                 $result[$k] = \call_user_func($type, $value[$k]);
@@ -556,7 +531,7 @@ function type_shape(array $shape, $value = null)
                 );
             }
         } else {
-            $optionalValue = \call_user_func($type, null); // @phpstan-ignore argument.type
+            $optionalValue = \call_user_func($type, null);
             if ($optionalValue === '__basko_functional_type_optional') {
                 continue;
             }
@@ -589,7 +564,8 @@ define('Basko\Functional\type_shape', __NAMESPACE__ . '\\type_shape');
  *
  * @param callable $type
  * @param mixed $value
- * @return callable|mixed|string
+ * @return mixed|string|callable
+ * @no-named-arguments
  */
 function type_optional(callable $type, $value = null)
 {
@@ -614,9 +590,9 @@ define('Basko\Functional\type_optional', __NAMESPACE__ . '\\type_optional');
  * type_enum(['one', 'two', 'three'], 'four'); // TypeException: Value "four" is not in enum('one', 'two', 'three')
  * ```
  *
- * @param array<mixed> $enum
+ * @param array $enum
  * @param mixed $value
- * @return ($value is null ? callable(mixed $value):mixed : mixed)
+ * @return mixed|callable
  * @throws \Basko\Functional\Exception\TypeException
  * @no-named-arguments
  */

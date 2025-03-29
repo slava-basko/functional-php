@@ -2,10 +2,6 @@
 
 namespace Basko\Functional\Functor;
 
-/**
- * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
- */
 class Constant extends Monad
 {
     const of = "Basko\Functional\Functor\Constant::of";
@@ -46,30 +42,8 @@ class Constant extends Monad
     /**
      * @inheritdoc
      */
-    public function transform($m)
+    public function flatAp(Monad $m)
     {
-        $this->assertTransform($m);
-
-        $value = $this->extract();
-
-        if ($m === Maybe::class) {
-            return $value === null ? Maybe::nothing() : Maybe::just($value);
-        } elseif ($m === Either::class) {
-            return Either::right($value);
-        } elseif ($m === Optional::class) {
-            return Optional::just($value);
-        } elseif ($m === Identity::class) {
-            return Identity::of($value);
-        } elseif ($m === IO::class) {
-            return IO::of(function () use ($value) {
-                return $value;
-            });
-        } elseif ($m === Writer::class) {
-            return Writer::of([], $value);
-        } elseif ($m === EitherWriter::class) {
-            return EitherWriter::right($value);
-        }
-
-        throw $this->cantTransformException($m);
+        return $this;
     }
 }

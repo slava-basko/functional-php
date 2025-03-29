@@ -5,10 +5,6 @@ namespace Basko\Functional\Functor;
 use Basko\Functional\Exception\InvalidArgumentException;
 use Basko\Functional\Exception\TypeException;
 
-/**
- * @template T
- * @extends \Basko\Functional\Functor\Monad<T>
- */
 class Writer extends Monad
 {
     const of = "Basko\Functional\Functor\Writer::of";
@@ -62,7 +58,7 @@ class Writer extends Monad
     {
         $result = \call_user_func($f, $this->value);
 
-        TypeException::assertReturnType($result, static::class, __METHOD__);
+        TypeException::assertReturnType($result, Monad::class, __METHOD__);
 
         return $this->concat($result);
     }
@@ -72,7 +68,7 @@ class Writer extends Monad
      */
     public function ap(Monad $m)
     {
-        TypeException::assertReturnType($m, static::class, __METHOD__);
+        TypeException::assertType($m, static::class, __METHOD__);
 
         $result = $this->map($m->extract());
 
@@ -80,7 +76,19 @@ class Writer extends Monad
     }
 
     /**
-     * @param \Basko\Functional\Functor\Writer<mixed> $m
+     * @inheritdoc
+     */
+    public function flatAp(Monad $m)
+    {
+        TypeException::assertType($m, static::class, __METHOD__);
+
+        $result = $this->flatMap($m->extract());
+
+        return $this->concat($result);
+    }
+
+    /**
+     * @param \Basko\Functional\Functor\Writer $m
      * @return static
      */
     protected function concat(Writer $m)
@@ -99,37 +107,7 @@ class Writer extends Monad
     }
 
     /**
-     * @inheritdoc
-     */
-    public function transform($m)
-    {
-        $this->assertTransform($m);
-
-        $value = $this->extract();
-
-        if ($m === Maybe::class) {
-            return $value === null ? Maybe::nothing() : Maybe::just($value);
-        } elseif ($m === Either::class) {
-            return Either::right($value);
-        } elseif ($m === Optional::class) {
-            return Optional::just($value);
-        } elseif ($m === Constant::class) {
-            return Constant::of($value);
-        } elseif ($m === Identity::class) {
-            return Identity::of($value);
-        } elseif ($m === IO::class) {
-            return IO::of(function () use ($value) {
-                return $value;
-            });
-        } elseif ($m === EitherWriter::class) {
-            return EitherWriter::right($value);
-        }
-
-        throw $this->cantTransformException($m);
-    }
-
-    /**
-     * @param callable(T):void $value
+     * @param callable $value
      * @param callable $aggregation
      * @return static
      */

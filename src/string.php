@@ -11,9 +11,9 @@ use Basko\Functional\Exception\InvalidArgumentException;
  * str_split(' ', 'Hello World'); // ['Hello', 'World']
  * ```
  *
- * @param non-empty-string $separator
+ * @param string $separator
  * @param string $string
- * @return ($string is null ? callable(string $string):array<string> : array<string>)
+ * @return array|callable
  * @no-named-arguments
  */
 function str_split($separator, $string = null)
@@ -26,7 +26,6 @@ function str_split($separator, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    /** @var string $string */
     return \explode($separator, $string);
 }
 
@@ -41,7 +40,7 @@ define('Basko\Functional\str_split', __NAMESPACE__ . '\\str_split');
  *
  * @param int $num
  * @param string $string
- * @return ($string is null ? callable(string $string):array{string, string} : array{string, string})
+ * @return array|callable
  * @no-named-arguments
  */
 function str_split_on($num, $string = null)
@@ -54,7 +53,6 @@ function str_split_on($num, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    /** @var string $string */
     $length = \strlen($string);
     $output = [];
 
@@ -82,13 +80,10 @@ define('Basko\Functional\str_split_on', __NAMESPACE__ . '\\str_split_on');
  * ]);
  * ```
  *
- * @param string|array<string> $search
- * @param string|array<string> $replace
+ * @param string|array $search
+ * @param string|array $replace
  * @param string $string
- * @return ($replace is null
- *      ? (callable(string|array<string> $replace, string|array<string> $string=): string)
- *      : ($string is null ? (callable(string|array<string> $string): string) : string)
- * )
+ * @return string|array|callable
  * @no-named-arguments
  */
 function str_replace($search, $replace = null, $string = null)
@@ -105,10 +100,6 @@ function str_replace($search, $replace = null, $string = null)
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    /**
-     * @var string $replace
-     * @var string $string
-     */
     return \str_replace($search, $replace, $string);
 }
 
@@ -124,7 +115,7 @@ define('Basko\Functional\str_replace', __NAMESPACE__ . '\\str_replace');
  * @param string $search
  * @param string $replace
  * @param string $string
- * @return callable|string
+ * @return string|callable
  * @no-named-arguments
  */
 function str_replace_first($search, $replace = null, $string = null)
@@ -141,10 +132,6 @@ function str_replace_first($search, $replace = null, $string = null)
     InvalidArgumentException::assertStringOrList($replace, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    /**
-     * @var string $string
-     * @var string $replace
-     */
     $pos = \strpos($string, $search);
     if ($pos !== false) {
         return \substr_replace($string, $replace, $pos, \strlen($search));
@@ -164,7 +151,7 @@ define('Basko\Functional\str_replace_first', __NAMESPACE__ . '\\str_replace_firs
  *
  * @param string $token
  * @param string $string
- * @return ($string is null ? callable(string $string):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function str_starts_with($token, $string = null)
@@ -177,7 +164,6 @@ function str_starts_with($token, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    /** @var string $string */
     return \strlen($token) <= \strlen($string) && \substr($string, 0, \strlen($token)) === $token;
 }
 
@@ -192,7 +178,7 @@ define('Basko\Functional\str_starts_with', __NAMESPACE__ . '\\str_starts_with');
  *
  * @param string $token
  * @param string $string
- * @return ($string is null ? callable(string $string):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function str_ends_with($token, $string = null)
@@ -205,7 +191,6 @@ function str_ends_with($token, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    /** @var string $string */
     return \strlen($token) <= \strlen($string) && \substr($string, -\strlen($token)) === $token;
 }
 
@@ -220,9 +205,9 @@ define('Basko\Functional\str_ends_with', __NAMESPACE__ . '\\str_ends_with');
  * $is_numeric('12a3.43'); // false
  * ```
  *
- * @param non-empty-string $pattern
+ * @param string $pattern
  * @param string $string
- * @return ($string is null ? callable(string $string):bool : bool)
+ * @return bool|callable
  * @no-named-arguments
  */
 function str_test($pattern, $string = null)
@@ -235,7 +220,6 @@ function str_test($pattern, $string = null)
 
     InvalidArgumentException::assertString($string, __FUNCTION__, 2);
 
-    /** @var string $string */
     return 1 === \preg_match($pattern, $string);
 }
 
@@ -251,7 +235,7 @@ define('Basko\Functional\str_test', __NAMESPACE__ . '\\str_test');
  * @param int $length
  * @param string $pad_string
  * @param string $string
- * @return callable|string
+ * @return string|callable
  * @no-named-arguments
  */
 function str_pad_left($length, $pad_string = null, $string = null)
@@ -270,10 +254,6 @@ function str_pad_left($length, $pad_string = null, $string = null)
     InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    /**
-     * @var string $string
-     * @var string $pad_string
-     */
     return \str_pad($string, $length, $pad_string, STR_PAD_LEFT);
 }
 
@@ -289,7 +269,7 @@ define('Basko\Functional\str_pad_left', __NAMESPACE__ . '\\str_pad_left');
  * @param int $length
  * @param string $pad_string
  * @param string $string
- * @return callable|string
+ * @return string|callable
  * @no-named-arguments
  */
 function str_pad_right($length, $pad_string = null, $string = null)
@@ -308,10 +288,6 @@ function str_pad_right($length, $pad_string = null, $string = null)
     InvalidArgumentException::assertString($pad_string, __FUNCTION__, 2);
     InvalidArgumentException::assertString($string, __FUNCTION__, 3);
 
-    /**
-     * @var string $string
-     * @var string $pad_string
-     */
     return \str_pad($string, $length, $pad_string, STR_PAD_RIGHT);
 }
 
@@ -327,9 +303,9 @@ define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');
  * str_contains_any(['a', 'b', 'c'], 'defg'); // false
  * ```
  *
- * @param array<string> $needles
+ * @param array $needles
  * @param string $haystack
- * @return ($haystack is null ? callable(string $haystack):bool : bool)
+ * @return bool|callable
  */
 function str_contains_any(array $needles, $haystack = null)
 {
@@ -358,9 +334,9 @@ define('Basko\Functional\str_contains_any', __NAMESPACE__ . '\\str_contains_any'
  * str_contains_all([], 'abc'); // true
  * ```
  *
- * @param array<string> $needles
+ * @param array $needles
  * @param string $haystack
- * @return ($haystack is null ? callable(string $haystack):bool : bool)
+ * @return bool|callable
  */
 function str_contains_all(array $needles, $haystack = null)
 {
@@ -388,7 +364,7 @@ define('Basko\Functional\str_contains_all', __NAMESPACE__ . '\\str_contains_all'
  * @param string $prefix
  * @param string $suffix
  * @param string $string
- * @return callable|string
+ * @return string|callable
  * @no-named-arguments
  */
 function str_surround($prefix, $suffix = null, $string = null)

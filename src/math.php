@@ -14,7 +14,6 @@ use Basko\Functional\Exception\InvalidArgumentException;
  *
  * @param int $n
  * @return bool
- * @no-named-arguments
  */
 function is_even($n)
 {
@@ -35,7 +34,6 @@ define('Basko\Functional\is_even', __NAMESPACE__ . '\\is_even');
  *
  * @param int $n
  * @return bool
- * @no-named-arguments
  */
 function is_odd($n)
 {
@@ -55,7 +53,6 @@ define('Basko\Functional\is_odd', __NAMESPACE__ . '\\is_odd');
  *
  * @param int $n
  * @return int
- * @no-named-arguments
  */
 function inc($n)
 {
@@ -75,7 +72,6 @@ define('Basko\Functional\inc', __NAMESPACE__ . '\\inc');
  *
  * @param int $n
  * @return int
- * @no-named-arguments
  */
 function dec($n)
 {
@@ -93,9 +89,9 @@ define('Basko\Functional\dec', __NAMESPACE__ . '\\dec');
  * plus(4, 2); // 6
  * ```
  *
- * @param numeric $a
- * @param numeric $b
- * @return ($b is null ? callable(numeric $b):int|float : int|float)
+ * @param int|float $a
+ * @param int|float $b
+ * @return int|float|callable
  * @no-named-arguments
  */
 function plus($a, $b = null)
@@ -126,9 +122,9 @@ define('Basko\Functional\plus', __NAMESPACE__ . '\\plus');
  * minus(4, 2); // 2
  * ```
  *
- * @param numeric $a
- * @param numeric $b
- * @return ($b is null ? callable(numeric $b):int|float : int|float)
+ * @param int|float $a
+ * @param int|float $b
+ * @return int|float|callable
  * @no-named-arguments
  */
 function minus($a, $b = null)
@@ -159,9 +155,9 @@ define('Basko\Functional\minus', __NAMESPACE__ . '\\minus');
  * div(4, 2); // 2
  * ```
  *
- * @param numeric $a
- * @param numeric $b
- * @return ($b is null ? callable(numeric $b):int|float : int|float)
+ * @param int|float $a
+ * @param int|float $b
+ * @return int|float|callable
  * @no-named-arguments
  */
 function div($a, $b = null)
@@ -192,9 +188,10 @@ define('Basko\Functional\div', __NAMESPACE__ . '\\div');
  * modulo(1089, 37)); // 16
  * ```
  *
- * @param int $a
- * @param int $b
- * @return ($b is null ? callable(int $b):int : int)
+ * @param int|float $a
+ * @param int|float $b
+ * @return int|float|callable
+ * @no-named-arguments
  */
 function modulo($a, $b = null)
 {
@@ -224,9 +221,9 @@ define('Basko\Functional\modulo', __NAMESPACE__ . '\\modulo');
  * multiply(4, 2); // 8
  * ```
  *
- * @param numeric $a
- * @param numeric $b
- * @return ($b is null ? callable(numeric $b):int|float : int|float)
+ * @param int|float $a
+ * @param int|float $b
+ * @return int|float|callable
  * @no-named-arguments
  */
 function multiply($a, $b = null)
@@ -257,11 +254,10 @@ define('Basko\Functional\multiply', __NAMESPACE__ . '\\multiply');
  * sum([3, 2, 1]); // 6
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return int|float
- * @no-named-arguments
  */
-function sum($list) // @phpstan-ignore return.unusedType
+function sum($list)
 {
     InvalidArgumentException::assertList($list, __FUNCTION__, 1);
 
@@ -277,9 +273,8 @@ define('Basko\Functional\sum', __NAMESPACE__ . '\\sum');
  * diff([10, 2, 1]); // 7
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return int|float
- * @no-named-arguments
  */
 function diff($list)
 {
@@ -309,9 +304,8 @@ define('Basko\Functional\diff', __NAMESPACE__ . '\\diff');
  * divide([20, 2, 2]); // 5
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return int|float
- * @no-named-arguments
  */
 function divide($list)
 {
@@ -341,9 +335,8 @@ define('Basko\Functional\divide', __NAMESPACE__ . '\\divide');
  * product([4, 2, 2]); // 16
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return int|float
- * @no-named-arguments
  */
 function product($list)
 {
@@ -373,9 +366,8 @@ define('Basko\Functional\product', __NAMESPACE__ . '\\product');
  * average([1, 2, 3, 4, 5, 6, 7]); // 4
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return float|int
- * @no-named-arguments
  */
 function average($list)
 {
@@ -393,9 +385,8 @@ define('Basko\Functional\average', __NAMESPACE__ . '\\average');
  * power(4); // 16
  * ```
  *
- * @param numeric $n
+ * @param int|float $n
  * @return float|int
- * @no-named-arguments
  */
 function power($n)
 {
@@ -414,9 +405,8 @@ define('Basko\Functional\power', __NAMESPACE__ . '\\power');
  * median([7, 2, 10, 9]); // 8
  * ```
  *
- * @param array<int|float>|\Traversable<int|float> $list
+ * @param array|\Traversable $list
  * @return int|float
- * @no-named-arguments
  */
 function median($list)
 {
@@ -455,11 +445,11 @@ define('Basko\Functional\median', __NAMESPACE__ . '\\median');
  * $pagePortion = clamp(MIN_PORTION, MAX_PORTION, $_REQUEST['perPage']);
  * ```
  *
- * @param numeric $min
- * @param numeric $max
- * @param numeric $value
- * @return callable|numeric
- * @phpstan-return ($max is null ? (callable(numeric $max, numeric $value=):($value is null ? callable(numeric $value):numeric : numeric|numeric)) : ($value is null ? callable(numeric $value):numeric : numeric))
+ * @param int|float|string $min
+ * @param int|float|string $max
+ * @param int|float|string $value
+ * @return int|float|string|callable
+ * @no-named-arguments
  */
 function clamp($min, $max = null, $value = null)
 {
@@ -504,9 +494,9 @@ define('Basko\Functional\clamp', __NAMESPACE__ . '\\clamp');
  * // ];
  * ```
  *
- * @param array<mixed>|\Traversable<mixed> $list1
- * @param array<mixed>|\Traversable<mixed> $list2
- * @return array<mixed>
+ * @param array|\Traversable $list1
+ * @param array|\Traversable $list2
+ * @return array
  */
 function cartesian_product($list1, $list2)
 {

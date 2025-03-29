@@ -44,7 +44,7 @@ class TypeException extends Exception
 
     /**
      * @param mixed $value
-     * @param class-string $type
+     * @param string $type
      * @param string $callee
      * @return void
      * @throws \Basko\Functional\Exception\TypeException
@@ -65,7 +65,28 @@ class TypeException extends Exception
 
     /**
      * @param mixed $value
-     * @param class-string $type
+     * @param string $type
+     * @param string $callee
+     * @return void
+     * @throws \Basko\Functional\Exception\TypeException
+     */
+    public static function assertType($value, $type, $callee)
+    {
+        if (!$value instanceof $type) {
+            throw new static(
+                \sprintf(
+                    '%s(): Parameter must be of type %s, %s given',
+                    $callee,
+                    $type,
+                    \is_object($value) ? \get_class($value) : \get_debug_type($value)
+                )
+            );
+        }
+    }
+
+    /**
+     * @param mixed $value
+     * @param string $type
      * @param string $callee
      * @return void
      * @throws \Basko\Functional\Exception\TypeException

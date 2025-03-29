@@ -1,6 +1,7 @@
 <?php
 
 // php -S localhost:8000 examples/http.php
+// All `f\functionName()` should be replaced by `use function functionName` in moder PHP versions
 // curl "http://localhost:8000?id=1"
 // curl "http://localhost:8000?id=str"
 
@@ -24,7 +25,7 @@ function getParams()
  */
 function getParam($param)
 {
-    return getParams()->map(f\prop($param))->transform(f\Functor\Maybe::class);
+    return f\Functor\Maybe::of(getParams()->map(f\prop($param))());
 }
 
 /**
@@ -56,6 +57,16 @@ function getUserById($id)
 }
 
 /**
+ * @param string $name
+ * @return string
+ * @throws \Basko\Functional\Exception\TypeException
+ */
+function formatName($name)
+{
+    return 'Hello ' . f\type_string($name) . '!';
+}
+
+/**
  * @return \Basko\Functional\Functor\IO
  */
 function outputValue()
@@ -64,7 +75,6 @@ function outputValue()
         http_response_code(200);
         header('Content-Type: text/plain');
         echo (string)$value;
-        exit;
     });
 }
 
@@ -78,16 +88,13 @@ function outputError($generalMsg = null)
         http_response_code(400);
         header('Content-Type: text/plain');
         echo $specificMsg ?: ($generalMsg ?: 'Unknown error');
-        exit;
     });
 }
 
 getParam('id')
     ->map('trim')
-    ->transform(f\Functor\Either::class)
     ->flatMap('toUserId')
-    ->match(f\identity, outputError())
-    ->transform(f\Functor\Maybe::class)
     ->flatMap('getUserById')
     ->map(f\prop('name'))
+    ->map('formatName')
     ->match(outputValue(), outputError('Oops =('));

@@ -16,8 +16,7 @@ use Basko\Functional\Functor\IO;
  * @param int $chmod
  * @param string $file
  * @param mixed $content
- * @return callable|IO
- * @phpstan-return ($file is null ? (callable(string $file, mixed $content=):($content is null ? callable(mixed $content):\Basko\Functional\Functor\IO<callable> : \Basko\Functional\Functor\IO<callable>|\Basko\Functional\Functor\IO<callable>)) : ($content is null ? callable(mixed $content):\Basko\Functional\Functor\IO<callable> : \Basko\Functional\Functor\IO<callable>))
+ * @return IO|callable
  */
 function write_file($chmod, $file = null, $content = null)
 {
@@ -31,7 +30,6 @@ function write_file($chmod, $file = null, $content = null)
 
     InvalidArgumentException::assertString($file, __FUNCTION__, 2);
 
-    /** @var string $file */
     return IO::of(function () use ($chmod, $file, $content) {
         $dir = \dirname($file);
 
@@ -90,7 +88,7 @@ define('Basko\Functional\write_file', __NAMESPACE__ . '\\write_file');
  * ```
  *
  * @param string $file
- * @return \Basko\Functional\Functor\IO<callable>
+ * @return IO
  */
 function read_file($file)
 {
@@ -138,9 +136,9 @@ function read_file($file)
 
 /**
  * @param string $url
- * @param array<string, mixed> $postData
- * @param array<string, mixed> $params
- * @return \Basko\Functional\Functor\IO<callable>
+ * @param array $postData
+ * @param array $params
+ * @return IO
  */
 function read_url($url, array $postData = [], array $params = [])
 {
