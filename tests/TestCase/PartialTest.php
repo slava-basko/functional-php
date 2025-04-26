@@ -46,7 +46,7 @@ class PartialTest extends BaseTest
     }
 
     /**
-     * @requires PHP 8.1
+     * @requires PHP >= 8.1
      */
     public function test_partial_closure_modern()
     {
