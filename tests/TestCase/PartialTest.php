@@ -43,10 +43,20 @@ class PartialTest extends BaseTest
 
         $f = f\partial([$v, 'concatWith2'], 'b');
         $this->assertEquals('abc', $f('c'));
+    }
+
+    /**
+     * @requires PHP 8.1
+     */
+    public function test_partial_closure_modern()
+    {
+        $v = new Value('a');
 
         if (PHP_VERSION_ID >= 80100) {
-            $f2 = f\partial($v->concatWith2(...), 'b');
-            $this->assertEquals('abcd', $f2('cd'));
+            $f = f\partial($v->concatWith2(...), 'b');
+            $this->assertEquals('abcd', $f('cd'));
+        } else {
+            $this->fail('This test should run only from PHP 8.1, but somehow ran on lower version');
         }
     }
 }
