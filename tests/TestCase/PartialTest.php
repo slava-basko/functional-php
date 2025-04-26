@@ -50,13 +50,12 @@ class PartialTest extends BaseTest
      */
     public function test_partial_closure_modern()
     {
-        $v = new Value('a');
-
-        if (PHP_VERSION_ID >= 80100) {
-            $f = f\partial($v->concatWith2(...), 'b');
-            $this->assertEquals('abcd', $f('cd'));
-        } else {
-            $this->fail('This test should run only from PHP 8.1, but somehow ran on lower version');
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('This test requires PHP 8.1 or higher');
         }
+
+        $factory = require __DIR__ . '/../partial_closure_modern.php';
+        $f = $factory();
+        $this->assertEquals('abcd', $f('cd'));
     }
 }
