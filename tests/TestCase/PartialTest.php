@@ -3,6 +3,7 @@
 namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
+use Basko\FunctionalTest\Helpers\Value;
 
 class PartialTest extends BaseTest
 {
@@ -31,8 +32,21 @@ class PartialTest extends BaseTest
     {
         $sub = f\partial_p('substr', [
             1 => 'abcdef',
-            3 => 2
+            3 => 2,
         ]);
         $this->assertEquals('ab', $sub(0));
+    }
+
+    public function test_partial_closure()
+    {
+        $v = new Value('a');
+
+        $f = f\partial([$v, 'concatWith2'], 'b');
+        $this->assertEquals('abc', $f('c'));
+
+        if (PHP_VERSION_ID >= 80100) {
+            $f2 = f\partial($v->concatWith2(...), 'b');
+            $this->assertEquals('abcd', $f2('cd'));
+        }
     }
 }

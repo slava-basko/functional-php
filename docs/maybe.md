@@ -1,19 +1,20 @@
 # Maybe
 
-Usually we're thinking like that: "I have a $value, and I need to pass it to someFunction()".
-This container force us to swap our thoughts to: "I have a $value, and I need apply someFunction() to it".
-This allows us to encapsulate some logic inside container, like `is_null` checks.
+Normally, we think like this: "I have a \$value, so I pass it to someFunction()."
+But `Maybe` flips it around: "I have a \$value, so I can apply someFunction() to it."
 
+This shift lets you encapsulate logic inside the container — for example, common `is_null` checks:
 ```php
 if(!is_null($value)) {
     // do something with $value
 }
 ```
 
-`Maybe` helps you avoid code duplication like above. `Maybe` is a container for a value that could present 
-or not (it's like a Schrödinger's box with the cat inside).
+`Maybe` helps you avoid repetitive code like that. It acts as a container for a value that might be present — or not 
+(like Schrödinger's cat in a box).
 
-Let's imagine that you need took `$article` from repository, take only 22 characters from title, and make it caps.
+Let's say you need to fetch an `$article` from the repository, grab the first 22 characters of its title, and 
+capitalize them:
 ```php
 class ArticlesRepository
 {
@@ -30,7 +31,7 @@ if (!is_null($article)) {
     $articleTitle = strtoupper(substr($article['title'], 0, 22));
 }
 
-// use $articleTitle somewhere below
+// use $articleTitle later
 ```
 
 Now let's modify repository, so it will return one type `Maybe`.
@@ -48,8 +49,8 @@ $articleTitle = $repository->get(120)->map(prop('title'))->map(take(22))->map('s
 // use $articleTitle somewhere below, you can call `$articleTitle->extract()` if you want to get value outside from container.
 ```
 
-The point is that your methods and function return one type. Usually they return value or NULL, so it lead to 
-additional IFs.
+The point is that your methods and function return the same type. Without `Maybe`, you'd typically return either 
+a value or null, forcing you to scatter `if` checks everywhere.
 
-You may notice that Maybe can't tell what exactly happened. No entity in DB or it was connection issue?
-User [Either](either.md) if error is matter for you.
+One thing to note. The `Maybe` doesn't tell you why there's no value. Was it a missing entity in the DB? A connection 
+issue? If you care about why, use [Either](either.md) instead.

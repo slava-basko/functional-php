@@ -1,12 +1,11 @@
 # Optional
 
-Almost the same as `Maybe`. But `Maybe` is more about technical layer, and `Optional` is about business cases.
+Almost the same as [Maybe](maybe.md). But `Maybe` is more about technical layer, and `Optional` is about business cases.
 The `NULL` in the context of `Maybe` is just `nothing`, no value. But in the context of `Optional` the `NULL` is a 
 valid value, operation will be performed.
 
-Let's take CRUD operation as an example. Does a `null` value of `$description` mean "remove the description",
-or "skip setting the description"?
-
+Let's take CRUD operation as an example. Does a `null` `$description` mean "remove the description",
+or "skip updating the description"?
 ```php
 class EditArticle {
     private function __construct(
@@ -29,7 +28,7 @@ class EditArticle {
 }
 ```
 
-The usage side.
+The usage side:
 ```php
 class HandleEditArticle
 {
@@ -54,7 +53,7 @@ class HandleEditArticle
 }
 ```
 
-Now let's use `Optional`.
+Now, let's use `Optional`:
 ```php
 class EditArticle {
     private function __construct(
@@ -77,7 +76,7 @@ class EditArticle {
 }
 ```
 
-The handler.
+The handler:
 ```php
 class HandleEditArticle
 {
@@ -87,8 +86,8 @@ class HandleEditArticle
         $article = $this->articles->get($command->id);
         
         // Only called if a fields has a provided value.
-        $command->title->match([$article, 'setTitle'], N);
-        $command->description->match([$article, 'setDescription'], N);
+        $command->title->match($article->setTitle(...), noop);
+        $command->description->match($article->setDescription(...), noop);
         
         $this->articles->save($article);
     }
@@ -98,4 +97,4 @@ class HandleEditArticle
 What we have here:
 * Better clarity about the optional nature of specific fields
 * No conditional logic (less static analysis and testing efforts)
-* Strict behavior: field provided — will be updated, not provided — nothing happen
+* Strict behavior: field provided -> update it, field missing -> do nothing
