@@ -3,6 +3,7 @@
 namespace Basko\FunctionalTest\TestCase;
 
 use Basko\Functional as f;
+use Basko\Functional\Exception\InvalidArgumentException;
 
 class LensTest extends BaseTest
 {
@@ -145,5 +146,25 @@ class LensTest extends BaseTest
 
         $this->assertEquals([99, 20, 30], f\set(f\lens_element(1), 99, $data));
         $this->assertEquals([10, 20, 99], f\set(f\lens_element(-1), 99, $data));
+    }
+
+    public function test_lens_view_non_existed()
+    {
+        $data = [
+            'x' => 1,
+            'y' => 2,
+        ];
+
+        $lens = f\lens(f\prop('z'), f\assoc('z'));
+        $this->assertEquals(null, f\view($lens, $data));
+
+        $data2 = f\set($lens, 11, $data);
+        $this->assertEquals(11, f\view($lens, $data2));
+
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'plus() expects parameter 2 to be numeric, NULL given'
+        );
+        f\over($lens, f\plus(100), $data);
     }
 }

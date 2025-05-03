@@ -136,11 +136,11 @@ function read_file($file)
 
 /**
  * @param string $url
- * @param array $postData
+ * @param array|string $postData
  * @param array $params
  * @return IO
  */
-function read_url($url, array $postData = [], array $params = [])
+function read_url($url, $postData = [], array $params = [])
 {
     InvalidArgumentException::assertNotEmptyString($url, __FUNCTION__, 1);
 
@@ -195,8 +195,8 @@ function read_url($url, array $postData = [], array $params = [])
                 }
             }
 
-            $result = (string)substr($result, $headerSize);
-            if (!preg_match('/^2\d\d$/D', (string)$httpCode)) {
+            $result = (string)\substr($result, $headerSize);
+            if (!\preg_match('/^2\d\d$/D', (string)$httpCode)) {
                 $errorBody = $result ?: 'HTTP CODE ' . $httpCode;
             }
         }
