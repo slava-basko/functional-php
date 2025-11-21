@@ -107,6 +107,47 @@ class ListTest extends BaseTest
         f\tail_by(f\T, 1);
     }
 
+    public function test_last()
+    {
+        $this->assertEquals(null, f\last([]));
+        $this->assertEquals(3, f\last([1, 2, 3]));
+        $this->assertEquals(1, f\last([3, 2, 1]));
+        $this->assertEquals(['name' => 'mark', 'score' => 9], f\last([
+            ['name' => 'jack', 'score' => 1],
+            ['name' => 'mark', 'score' => 9],
+        ]));
+    }
+
+    public function test_last_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\last() expects parameter 1 to be array or instance of Traversable, integer give'
+        );
+        f\last(1);
+    }
+
+    public function test_last_by()
+    {
+        $f = f\last_by(function () {});
+        $this->assertIsCallable($f);
+
+        $this->assertEquals(null, f\last_by(function () {}, []));
+        $this->assertEquals(null, f\last_by(function () {}, [1, 2, 3, 4]));
+        $this->assertEquals(3.5, f\last_by(function ($item) {
+            return $item > 3 && $item < 4;
+        }, [1, 2, 3, 3.5, 4]));
+    }
+
+    public function test_last_by_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Basko\Functional\last_by() expects parameter 2 to be array or instance of Traversable, integer given'
+        );
+        f\last_by(function () {}, 1);
+    }
+
     public function test_select()
     {
         $user1 = new User([

@@ -261,7 +261,7 @@ $containsInsensitive('o', 'FOO'); // true
 
 ### y
 Accepts function `$f` that isn't recursive and returns function `$g` which is recursive.
-Also known as the Y combinator.
+Also known as the Y Combinator.
 
 ```php
 function factorial($n) {
@@ -632,6 +632,22 @@ tail_by(f\compose(gt(8), prop('score')), [
      ['name' => 'mark', 'score' => 9],
      ['name' => 'john', 'score' => 1],
 ]); // [1 => ['name' => 'mark', 'score' => 9]]
+```
+
+### last
+Returns last element from `$list`. Basically works like built-in `end` function.
+
+```php
+last([1, 2, 3]); // 3
+```
+
+### last_by
+Returns last item from `$list` if `$f` returns true.
+
+```phpphp
+last_by(function ($item) {
+     return $item > 3 && $item < 4;
+}, [1, 2, 3, 3.5, 4]); // 3.5
 ```
 
 ### select

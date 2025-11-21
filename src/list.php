@@ -448,6 +448,63 @@ function tail_by(callable $f, $list = null)
 define('Basko\Functional\tail_by', __NAMESPACE__ . '\\tail_by');
 
 /**
+ * Returns last element from `$list`. Basically works like built-in `end` function.
+ *
+ * ```
+ * last([1, 2, 3]); // 3
+ * ```
+ *
+ * @param array|\Traversable $list
+ * @return mixed
+ */
+function last($list)
+{
+    InvalidArgumentException::assertList($list, __FUNCTION__, 1);
+
+    $last = null;
+    foreach ($list as $element) {
+        $last = $element;
+    }
+
+    return $last;
+}
+
+define('Basko\Functional\last', __NAMESPACE__ . '\\last');
+
+/**
+ * Returns last item from `$list` if `$f` returns true.
+ *
+ * ```php
+ * last_by(function ($item) {
+ *      return $item > 3 && $item < 4;
+ * }, [1, 2, 3, 3.5, 4]); // 3.5
+ * ```
+ *
+ * @param callable $f
+ * @param array|\Traversable $list
+ * @return callable|mixed
+ */
+function last_by(callable $f, $list = null)
+{
+    if (\func_num_args() < 2) {
+        return partial(last_by, $f);
+    }
+
+    InvalidArgumentException::assertList($list, __FUNCTION__, 2);
+
+    $last = null;
+    foreach ($list as $index => $element) {
+        if (\call_user_func_array($f, [$element, $index, $list])) {
+            $last = $element;
+        }
+    }
+
+    return $last;
+}
+
+define('Basko\Functional\last_by', __NAMESPACE__ . '\\last_by');
+
+/**
  * Looks through each element in the list, returning an array of all the elements that pass a test (function).
  * Opposite is `reject()`. Function arguments will be `element`, `index`, `list`.
  *
