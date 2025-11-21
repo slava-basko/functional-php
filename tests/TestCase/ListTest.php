@@ -130,8 +130,7 @@ class ListTest extends BaseTest
     public function test_last_by()
     {
         $f = f\last_by(function () {});
-        $this->assertIsCallable($f);
-
+        $this->assertEquals(null, $f([]));
         $this->assertEquals(null, f\last_by(function () {}, []));
         $this->assertEquals(null, f\last_by(function () {}, [1, 2, 3, 4]));
         $this->assertEquals(3.5, f\last_by(function ($item) {
