@@ -52,10 +52,12 @@ class SequenceTest extends BaseTest
     public function testLinearIncrements()
     {
         $sequence = f\sequence_linear(0, 1);
-
         $values = $this->sequenceToArray($sequence, 10);
-
         $this->assertSame([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], $values);
+
+        $sequence = f\sequence_linear(5, 5);
+        $values = $this->sequenceToArray($sequence, 3);
+        $this->assertSame([5, 10, 15], $values);
     }
 
     public function testSequenceLinearLinearNegativeIncrements()
@@ -86,10 +88,12 @@ class SequenceTest extends BaseTest
     public function testSequenceExponentialExponentialIncrementsWith100PercentGrowth()
     {
         $sequence = f\sequence_exponential(1, 100);
-
         $values = $this->sequenceToArray($sequence, 10);
-
         $this->assertSame([1, 2, 4, 8, 16, 32, 64, 128, 256, 512], $values);
+
+        $sequence = f\sequence_exponential(200000, 100);
+        $values = $this->sequenceToArray($sequence, 3);
+        $this->assertSame([200000, 400000, 800000], $values);
     }
 
     public function testSequenceExponentialExponentialIncrementsWith50PercentGrowth()

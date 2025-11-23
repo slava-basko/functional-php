@@ -140,6 +140,22 @@ class RetryTest extends BaseTest
         f\retry(4, new \ArrayIterator([10, 20, 30]), [$this->retryer, 'retry']);
     }
 
+    public function testRetryLinear()
+    {
+        $this->retryer
+            ->expects(self::exactly(3))
+            ->method('retry')
+            ->withConsecutive([0, 200000], [1, 400000], [2, 600000])
+            ->willReturnOnConsecutiveCalls(
+                self::throwException(new \Exception('first')),
+                self::throwException(new \Exception('second')),
+                self::returnValue('v')
+            );
+
+        $value = f\retry(3, f\sequence_linear(200000, 200000), [$this->retryer, 'retry']);
+        $this->assertSame('v', $value);
+    }
+
     public function testRetry5Linear()
     {
         $this->retryer
@@ -193,7 +209,7 @@ class RetryTest extends BaseTest
         $this->retryer
             ->expects(self::exactly(3))
             ->method('retry')
-            ->withConsecutive([0, 1000000], [1, 2000000], [2, 4000000000000])
+            ->withConsecutive([0, 1000000], [1, 2000000], [2, 4000000])
             ->willReturnOnConsecutiveCalls(
                 self::throwException(new \Exception('first')),
                 self::throwException(new \Exception('second')),

@@ -1139,6 +1139,10 @@ define('Basko\Functional\combine', __NAMESPACE__ . '\\combine');
 /**
  * Returns an infinite, traversable sequence of constant values.
  *
+ * ```php
+ * sequence_constant(1); // 1, 1, 1, ...
+ * ```
+ *
  * @param int $value
  * @return \Traversable
  */
@@ -1158,6 +1162,11 @@ define('Basko\Functional\sequence_constant', __NAMESPACE__ . '\\sequence_constan
 /**
  * Returns an infinite, traversable sequence that linearly grows by given amount.
  *
+ * ```php
+ * sequence_linear(0, 1); // 0, 1, 2, 3, 4, ...
+ * sequence_linear(5, 5); // 5, 10, 15, 20, ...
+ * ```
+ *
  * @param int $start
  * @param int $amount
  * @return LinearSequence
@@ -1173,6 +1182,11 @@ define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear');
 
 /**
  * Returns an infinite, traversable sequence that exponentially grows by given percentage.
+ *
+ * ```php
+ * sequence_exponential(1, 100); // 1, 2, 4, 8, 16, 32, ...
+ * sequence_exponential(1, 50); // 1, 2, 2, 3, 5, 8, ...
+ * ```
  *
  * @param int $start
  * @param int $percentage Integer between 1 and 100
@@ -1205,11 +1219,13 @@ define('Basko\Functional\no_delay', __NAMESPACE__ . '\\no_delay');
  *
  * ```
  * retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
- * retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
+ * retry(3, sequence_constant(200000), [$db, 'connect']); // 3 times with 200ms interval
+ * retry(3, sequence_linear(200000, 200000), [$ftp, 'upload']); // 3 times with a linear back-off 200mm, 400ms, 600ms
+ * retry(3, sequence_exponential(1000000, 100), [$apiClient, 'get']); // 3 times with an exponential back-off 1sec, 2sec, 4sec
  * ```
  *
- * @param int $retries
- * @param \Iterator $delaySequence
+ * @param int $retries Total number of attempts.
+ * @param \Iterator $delaySequence Iterator of non-negative integer delays in microseconds.
  * @param callable $f
  * @return callable|mixed Return value of the function
  * @throws InvalidArgumentException

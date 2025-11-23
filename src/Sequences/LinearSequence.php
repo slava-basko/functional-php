@@ -3,6 +3,19 @@
 namespace Basko\Functional\Sequences;
 
 /**
+ * Infinite iterator that produces a linearly growing integer sequence.
+ *
+ * Semantics:
+ *  - The first yielded value equals $start.
+ *  - Each subsequent value is start + n * $step for n >= 1.
+ *  - Until rewind() is called (or the iterator is consumed by foreach), current() returns 0 and key() is 0.
+ *    This is intentional and models the "iteration has not started yet" state.
+ *
+ * Notes:
+ *  - valid() always returns true (infinite sequence).
+ *  - $step can be any integer (including 0 or negative); the resulting sequence may be constant or decreasing.
+ *  - No overflow protection is performed.
+ *
  * @implements \Iterator<array-key, mixed>
  */
 class LinearSequence implements \Iterator

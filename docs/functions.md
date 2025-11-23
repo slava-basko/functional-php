@@ -1410,11 +1410,25 @@ combine('alpha2', 'name', [
 ### sequence_constant
 Returns an infinite, traversable sequence of constant values.
 
+```phpphp
+sequence_constant(1); // 1, 1, 1, ...
+```
+
 ### sequence_linear
 Returns an infinite, traversable sequence that linearly grows by given amount.
 
+```phpphp
+sequence_linear(0, 1); // 0, 1, 2, 3, 4, ...
+sequence_linear(5, 5); // 5, 10, 15, 20, ...
+```
+
 ### sequence_exponential
 Returns an infinite, traversable sequence that exponentially grows by given percentage.
+
+```phpphp
+sequence_exponential(1, 100); // 1, 2, 4, 8, 16, 32, ...
+sequence_exponential(1, 50); // 1, 2, 2, 3, 5, 8, ...
+```
 
 ### no_delay
 Returns an infinite, traversable sequence of 0.
@@ -1425,7 +1439,9 @@ Retry a function until the number of retries are reached or the function does no
 
 ```php
 retry(3, no_delay, [$db, 'connect']); // Runs `$db->connect()` 3 times without delay (if method throw exception)
-retry(3, sequence_linear(1, 5), [$ftp, 'upload']); // Runs `$ftp->upload()` 3 times with a linear back-off
+retry(3, sequence_constant(200000), [$db, 'connect']); // 3 times with 200ms interval
+retry(3, sequence_linear(200000, 200000), [$ftp, 'upload']); // 3 times with a linear back-off 200mm, 400ms, 600ms
+retry(3, sequence_exponential(1000000, 100), [$apiClient, 'get']); // 3 times with an exponential back-off 1sec, 2sec, 4sec
 ```
 
 ### construct

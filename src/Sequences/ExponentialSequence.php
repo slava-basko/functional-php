@@ -3,6 +3,19 @@
 namespace Basko\Functional\Sequences;
 
 /**
+ * Infinite iterator that produces an exponentially growing integer sequence.
+ *
+ * Semantics:
+ *  - The first yielded value equals $start.
+ *  - Each subsequent value is round($start * (1 + $percentage/100)^n) for n >= 1.
+ *  - Until rewind() is called (or the iterator is consumed by foreach), current() returns 0 and key() is 0.
+ *    This is intentional and models the "iteration has not started yet" state.
+ *
+ * Notes:
+ *  - valid() always returns true (infinite sequence).
+ *  - Values are rounded with round(); with small percentages repeated values may occur.
+ *  - No overflow protection is performed.
+ *
  * @implements \Iterator<array-key, mixed>
  */
 class ExponentialSequence implements \Iterator
@@ -33,8 +46,9 @@ class ExponentialSequence implements \Iterator
     private $times = 0;
 
     /**
-     * @param int $start
-     * @param int $percentage
+     * @param int $start Start value, must be >= 1.
+     * @param int $percentage Growth per step in percent, must be between 1 and 100.
+     * @throws \InvalidArgumentException If arguments are not integers or out of range.
      */
     public function __construct($start, $percentage)
     {
@@ -64,7 +78,7 @@ class ExponentialSequence implements \Iterator
     public function next()
     {
         $this->key++;
-        $this->value = (int)\round(\pow($this->start * (1 + $this->percentage / 100), $this->times));
+        $this->value = (int) \round($this->start * \pow(1 + $this->percentage / 100, $this->times));
         $this->times++;
     }
 
