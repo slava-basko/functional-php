@@ -477,7 +477,7 @@ function compose(callable $f, callable $g)
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, InvalidArgumentException::ALL);
 
     /**
-     * @return mixed|Maybe|Either
+     * @return mixed
      */
     return function () use ($functions) {
         $args = \func_get_args();
@@ -513,7 +513,7 @@ function pipe(callable $f, callable $g)
     InvalidArgumentException::assertListOfCallables($functions, __FUNCTION__, InvalidArgumentException::ALL);
 
     /**
-     * @return mixed|Maybe|Either
+     * @return mixed
      */
     return function () use ($functions) {
         $args = \func_get_args();
