@@ -107,7 +107,7 @@ $fact = tail_recursion(function ($n, $acc = 1) use (&$fact) {
          return $acc;
      }
 
-     return $fact($n - 1, $acc$n);
+     return $fact($n - 1, $acc * $n);
 });
 $fact(10); // 3628800
 ```
@@ -265,13 +265,13 @@ Also known as the Y Combinator.
 
 ```php
 function factorial($n) {
-     return ($n <= 1) ? 1 : $nfactorial($n - 1);
+     return ($n <= 1) ? 1 : $n * factorial($n - 1);
 }
 
 echo factorial(5); // 120, no problem here
 
 $factorial = function ($n) {
-     return ($n <= 1) ? 1 : $ncall_user_func(__FUNCTION__, $n - 1);
+     return ($n <= 1) ? 1 : $n * call_user_func(__FUNCTION__, $n - 1);
 };
 
 echo $factorial(5); // Exception will be thrown
@@ -280,7 +280,7 @@ echo $factorial(5); // Exception will be thrown
 
 $factorial = y(function ($fact) {
      return function ($n) use ($fact) {
-         return ($n <= 1) ? 1 : $n$fact($n - 1);
+         return ($n <= 1) ? 1 : $n * $fact($n - 1);
      };
 });
 
@@ -950,7 +950,7 @@ modulo(1089, 37)); // 16
 ```
 
 ### multiply
-Perform `$a$b`.
+Perform `$a * $b`.
 
 ```php
 multiply(4, 2); // 8

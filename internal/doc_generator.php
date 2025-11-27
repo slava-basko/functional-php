@@ -35,7 +35,8 @@ f\pipe(
         f\partial_p('explode', [1 => "@", 3 => 2]),
         f\prop(0),
         f\str_replace_first('* ```', '* ```php'),
-        f\str_replace([' * ', '/**', ' *'], ''),
+        f\partial(f\ary('preg_replace', 3), ['/^\s\*$/m'], ''),
+        f\partial(f\ary('preg_replace', 3), ['/^\/\*\*/m', '/^\s\*\s/m'], ''),
         'trim'
     )),
     f\map(f\binary(f\flipped(f\partial_p(
