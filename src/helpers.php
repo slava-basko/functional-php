@@ -1189,7 +1189,7 @@ define('Basko\Functional\sequence_linear', __NAMESPACE__ . '\\sequence_linear');
  * ```
  *
  * @param int $start
- * @param int $percentage Integer between 1 and 100
+ * @param int $percentage Greater than or equal to 1
  * @return ExponentialSequence
  * @throws \InvalidArgumentException
  * @no-named-arguments

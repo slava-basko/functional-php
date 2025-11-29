@@ -91,6 +91,10 @@ class SequenceTest extends BaseTest
         $values = $this->sequenceToArray($sequence, 10);
         $this->assertSame([1, 2, 4, 8, 16, 32, 64, 128, 256, 512], $values);
 
+        $sequence = f\sequence_exponential(1, 200);
+        $values = $this->sequenceToArray($sequence, 10);
+        $this->assertSame([1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683], $values);
+
         $sequence = f\sequence_exponential(200000, 100);
         $values = $this->sequenceToArray($sequence, 3);
         $this->assertSame([200000, 400000, 800000], $values);
@@ -116,16 +120,8 @@ class SequenceTest extends BaseTest
     public function testSequenceExponentialGrowthArgumentMustBePositiveInteger()
     {
         $this->expectArgumentError(
-            'ExponentialSequence expects $percentage argument to be an integer, between 1 and 100'
+            'ExponentialSequence expects $percentage argument to be an integer, greater than or equal to 1'
         );
         f\sequence_exponential(1, 0);
-    }
-
-    public function testSequenceExponentialGrowthArgumentMustBePositiveIntegerLessThan100()
-    {
-        $this->expectArgumentError(
-            'ExponentialSequence expects $percentage argument to be an integer, between 1 and 100'
-        );
-        f\sequence_exponential(1, 101);
     }
 }

@@ -58,9 +58,9 @@ class ExponentialSequence implements \Iterator
             );
         }
 
-        if (!\is_int($percentage) || $percentage < 1 || $percentage > 100) {
+        if (!\is_int($percentage) || $percentage < 1) {
             throw new \InvalidArgumentException(
-                'ExponentialSequence expects $percentage argument to be an integer, between 1 and 100'
+                'ExponentialSequence expects $percentage argument to be an integer, greater than or equal to 1'
             );
         }
 
