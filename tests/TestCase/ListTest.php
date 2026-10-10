@@ -493,11 +493,26 @@ class ListTest extends BaseTest
             return strcmp($left, $right);
         };
 
-        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort($sort_callback, $list));
-        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort(f\binary('strcmp'), $list));
-        $this->assertSame([2 => 'aardvark', 1 => 'bear', 0 => 'cat'], f\sort($sort_callback, $list_iterator));
+        $this->assertSame(['aardvark', 'bear', 'cat'], f\sort($sort_callback, $list));
+        $this->assertSame(['aardvark', 'bear', 'cat'], f\sort(f\binary('strcmp'), $list));
+        $this->assertSame(['aardvark', 'bear', 'cat'], f\sort($sort_callback, $list_iterator));
+        $this->assertSame([], f\sort($sort_callback, []));
+        $this->assertSame([2 => 'aardvark', 0 => 'bear', 1 => 'cat'], f\sort($sort_callback, [1 => 'cat', 2 => 'aardvark', 0 => 'bear']));
         $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash));
         $this->assertSame(['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat'], f\sort($sort_callback, $hash_iterator));
+    }
+
+    public function test_sort_list_is_reindexed()
+    {
+        $r = f\sort(f\ascend(f\prop('age')), [
+            ['n' => 'Emma', 'age' => 70],
+            ['n' => 'Peter', 'age' => 78],
+            ['n' => 'Mikhail', 'age' => 62],
+        ]);
+
+        $this->assertSame([0, 1, 2], array_keys($r));
+        $this->assertSame('Mikhail', $r[0]['n']);
+        $this->assertSame('[{"n":"Mikhail","age":62},{"n":"Emma","age":70},{"n":"Peter","age":78}]', json_encode($r));
     }
 
     public function test_sort_fail()
@@ -572,11 +587,11 @@ class ListTest extends BaseTest
         ];
 
         $peopleByYoungestFirst = f\sort($byAge, $people);
-        $this->assertEquals(
+        $this->assertSame(
             [
-                2 => ['name' => 'Mikhail', 'age' => 62],
-                0 => ['name' => 'Emma', 'age' => 70],
-                1 => ['name' => 'Peter', 'age' => 78],
+                ['name' => 'Mikhail', 'age' => 62],
+                ['name' => 'Emma', 'age' => 70],
+                ['name' => 'Peter', 'age' => 78],
             ],
             $peopleByYoungestFirst
         );
@@ -592,23 +607,23 @@ class ListTest extends BaseTest
             ['name' => 'Slava', 'age' => 33],
         ];
         $peopleByYoungestFirst = f\sort($byAge, $people);
-        $this->assertEquals(
+        $this->assertSame(
             [
-                3 => ['name' => 'Slava', 'age' => 33],
-                2 => ['name' => 'Mikhail', 'age' => 62],
-                0 => ['name' => 'Emma', 'age' => 70],
-                1 => ['name' => 'Peter', 'age' => 78],
+                ['name' => 'Slava', 'age' => 33],
+                ['name' => 'Mikhail', 'age' => 62],
+                ['name' => 'Emma', 'age' => 70],
+                ['name' => 'Peter', 'age' => 78],
             ],
             $peopleByYoungestFirst
         );
 
         $sortAscByAge = f\sort(f\ascend(f\prop('age')));
-        $this->assertEquals(
+        $this->assertSame(
             [
-                2 => ['name' => 'Mikhail', 'age' => 62],
-                0 => ['name' => 'Emma', 'age' => 70],
-                1 => ['name' => 'Peter', 'age' => 78],
-                3 => ['name' => 'Slava', 'age' => 33],
+                ['name' => 'Slava', 'age' => 33],
+                ['name' => 'Mikhail', 'age' => 62],
+                ['name' => 'Emma', 'age' => 70],
+                ['name' => 'Peter', 'age' => 78],
             ],
             $sortAscByAge($people)
         );
@@ -623,11 +638,11 @@ class ListTest extends BaseTest
             ['name' => 'Mikhail', 'age' => 62],
         ];
         $peopleByOldestFirst = f\sort($byAge, $people);
-        $this->assertEquals(
+        $this->assertSame(
             [
-                1 => ['name' => 'Peter', 'age' => 78],
-                0 => ['name' => 'Emma', 'age' => 70],
-                2 => ['name' => 'Mikhail', 'age' => 62],
+                ['name' => 'Peter', 'age' => 78],
+                ['name' => 'Emma', 'age' => 70],
+                ['name' => 'Mikhail', 'age' => 62],
             ],
             $peopleByOldestFirst
         );

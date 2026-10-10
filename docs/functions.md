@@ -798,9 +798,11 @@ intersperse('a', ['b', 'n', 'n', 's']); // ['b', 'a', 'n', 'a', 'n', 'a', 's']
 
 ### sort
 Sorts a list with a user-defined function.
+A list is returned re-indexed, keys of an associative array are preserved.
 
 ```php
-sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+sort(binary('strcmp'), ['cat', 'bear', 'aardvark']); // ['aardvark', 'bear', 'cat']
+sort(binary('strcmp'), ['c' => 'cat', 'b' => 'bear', 'a' => 'aardvark']); // ['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat']
 ```
 
 ### comparator

@@ -967,9 +967,11 @@ define('Basko\Functional\intersperse', __NAMESPACE__ . '\\intersperse');
 
 /**
  * Sorts a list with a user-defined function.
+ * A list is returned re-indexed, keys of an associative array are preserved.
  *
  * ```
- * sort(binary('strcmp'), ['cat', 'bear', 'aardvark'])); // [2 => 'aardvark', 1 => 'bear', 0 => 'cat']
+ * sort(binary('strcmp'), ['cat', 'bear', 'aardvark']); // ['aardvark', 'bear', 'cat']
+ * sort(binary('strcmp'), ['c' => 'cat', 'b' => 'bear', 'a' => 'aardvark']); // ['a' => 'aardvark', 'b' => 'bear', 'c' => 'cat']
  * ```
  *
  * @param callable $f
@@ -985,17 +987,14 @@ function sort(callable $f, $list = null)
 
     InvalidArgumentException::assertList($list, __FUNCTION__, 2);
 
-    if ($list instanceof \Traversable) {
-        $array = \iterator_to_array($list);
-    } else {
-        $array = $list;
-    }
+    $array = $list instanceof \Traversable ? \iterator_to_array($list) : $list;
+    $isList = $array === [] || \array_keys($array) === \range(0, \count($array) - 1); // array_is_list() for PHP < 8.1
 
     \uasort($array, function ($left, $right) use ($f, $list) {
         return \call_user_func_array($f, [$left, $right, $list]);
     });
 
-    return $array;
+    return $isList ? \array_values($array) : $array;
 }
 
 define('Basko\Functional\sort', __NAMESPACE__ . '\\sort');
