@@ -1543,6 +1543,14 @@ The same as `str_replace` but replace only first occurrence.
 str_replace_first('abc', '123', 'abcdef abcdef abcdef'); // "23def abcdef abcdef
 ```
 
+### str_replace_regex
+Alias of native `preg_replace`. Replaces all matches of `$pattern` with `$replacement`.
+
+```php
+str_replace_regex('/\s+/', '-', 'ssl  certificates'); // 'ssl-certificates'
+str_replace_regex('/(\d+)/', '[$1]', 'a1b22'); // 'a[1]b[22]'
+```
+
 ### str_starts_with
 Checks if `$string` starts with `$token`.
 
@@ -1580,6 +1588,16 @@ Alias of `str_pad`.
 str_pad_right('6', '0', '481'); // 481000
 ```
 
+### str_contains
+Checks if `$haystack` string contains `$needle` substring.
+Note: Empty `$needle` is contained in any string.
+
+```php
+str_contains('foo', 'foobar'); // true
+str_contains('baz', 'foobar'); // false
+str_contains('', 'foobar'); // true
+```
+
 ### str_contains_any
 Checks if any of the strings in an array `$needles` present in `$haystack` string.
 
@@ -1608,6 +1626,15 @@ Surrounds a string with a prefix and suffix.
 ```php
 str_surround('(', ')', 'abc'); // (abc)
 str_surround('<strong>', '</strong>', 'abc'); // <strong>abc</strong>
+```
+
+### str_trim
+Alias of native `trim`. Strips `$characters` from the beginning and end of a `$string`.
+Use `" \t\n\r\0\x0B"` to get the native default behaviour.
+
+```php
+str_trim(" \t\"'", ' "foo" '); // 'foo'
+str_trim('/', '/path/to/'); // 'path/to'
 ```
 
 ### is_type_of

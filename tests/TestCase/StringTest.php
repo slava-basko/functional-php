@@ -234,4 +234,102 @@ class StringTest extends BaseTest
         );
         f\str_surround('(', null);
     }
+
+    public function test_str_contains()
+    {
+        $this->assertTrue(f\str_contains('foo', 'foobar'));
+        $this->assertTrue(f\str_contains('bar', 'foobar'));
+        $this->assertFalse(f\str_contains('baz', 'foobar'));
+        $this->assertFalse(f\str_contains('Foo', 'foobar'));
+        $this->assertFalse(f\str_contains('foo', ''));
+        $this->assertTrue(f\str_contains('', 'foobar'));
+        $this->assertTrue(f\str_contains('', ''));
+        $this->assertTrue(f\str_contains('0', '10'));
+
+        $hasNoindex = f\str_contains('noindex');
+        $this->assertTrue($hasNoindex('noindex, nofollow'));
+        $this->assertFalse($hasNoindex('index, follow'));
+    }
+
+    public function test_str_contains_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_contains() expects parameter 2 to be string, NULL given'
+        );
+        f\str_contains('foo', null);
+    }
+
+    public function test_str_contains_fail_needle()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_contains() expects parameter 1 to be string, array given'
+        );
+        f\str_contains(['foo'], 'foobar');
+    }
+
+    public function test_str_replace_regex()
+    {
+        $this->assertEquals('ssl-certificates', f\str_replace_regex('/\s+/', '-', 'ssl  certificates'));
+        $this->assertEquals('a[1]b[22]', f\str_replace_regex('/(\d+)/', '[$1]', 'a1b22'));
+        $this->assertEquals('no-match', f\str_replace_regex('/\d+/', '', 'no-match'));
+
+        $dashify = f\str_replace_regex('/\s+/');
+        $dashify = $dashify('-');
+        $this->assertEquals('a-b-c', $dashify("a \t b\nc"));
+
+        $stripDigits = f\str_replace_regex('/\d/', '');
+        $this->assertEquals('abc', $stripDigits('a1b2c3'));
+    }
+
+    public function test_str_replace_regex_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_replace_regex() expects parameter 3 to be string, NULL given'
+        );
+        f\str_replace_regex('/\s+/', '-', null);
+    }
+
+    public function test_str_replace_regex_fail_replacement()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_replace_regex() expects parameter 2 to be string, NULL given'
+        );
+        f\str_replace_regex('/\s+/', null);
+    }
+
+    public function test_str_trim()
+    {
+        $this->assertEquals('foo', f\str_trim(" \t\"'", ' "foo" '));
+        $this->assertEquals('path/to', f\str_trim('/', '/path/to/'));
+        $this->assertEquals('foo', f\str_trim(" \t\n\r\0\x0B", " \n foo \t"));
+        $this->assertEquals(' foo ', f\str_trim('', ' foo '));
+
+        $trimSlashes = f\str_trim('/');
+        $this->assertEquals('a/b', $trimSlashes('//a/b//'));
+    }
+
+    public function test_str_trim_fail()
+    {
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'str_trim() expects parameter 2 to be string, NULL given'
+        );
+        f\str_trim(' ', null);
+    }
+
+    public function test_tag_normalization_pipe()
+    {
+        $normalizeTag = f\pipe(
+            f\str_trim(" \t\"'"),
+            'strtolower',
+            f\str_replace_regex('/\s+/', '-')
+        );
+
+        $this->assertEquals('ssl-certificates', $normalizeTag(' "SSL   Certificates" '));
+        $this->assertEquals('php', $normalizeTag("'PHP'\t"));
+    }
 }

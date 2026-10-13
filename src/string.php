@@ -143,6 +143,41 @@ function str_replace_first($search, $replace = null, $string = null)
 define('Basko\Functional\str_replace_first', __NAMESPACE__ . '\\str_replace_first');
 
 /**
+ * Alias of native `preg_replace`. Replaces all matches of `$pattern` with `$replacement`.
+ *
+ * ```
+ * str_replace_regex('/\s+/', '-', 'ssl  certificates'); // 'ssl-certificates'
+ * str_replace_regex('/(\d+)/', '[$1]', 'a1b22'); // 'a[1]b[22]'
+ * ```
+ *
+ * @param string $pattern
+ * @param string $replacement
+ * @param string $string
+ * @return string|callable
+ * @no-named-arguments
+ */
+function str_replace_regex($pattern, $replacement = null, $string = null)
+{
+    InvalidArgumentException::assertString($pattern, __FUNCTION__, 1);
+
+    $n = \func_num_args();
+    if ($n === 1) {
+        return partial(str_replace_regex, $pattern);
+    } elseif ($n === 2) {
+        InvalidArgumentException::assertString($replacement, __FUNCTION__, 2);
+
+        return partial(str_replace_regex, $pattern, $replacement);
+    }
+
+    InvalidArgumentException::assertString($replacement, __FUNCTION__, 2);
+    InvalidArgumentException::assertString($string, __FUNCTION__, 3);
+
+    return \preg_replace($pattern, $replacement, $string);
+}
+
+define('Basko\Functional\str_replace_regex', __NAMESPACE__ . '\\str_replace_regex');
+
+/**
  * Checks if `$string` starts with `$token`.
  *
  * ```
@@ -294,6 +329,36 @@ function str_pad_right($length, $pad_string = null, $string = null)
 define('Basko\Functional\str_pad_right', __NAMESPACE__ . '\\str_pad_right');
 
 /**
+ * Checks if `$haystack` string contains `$needle` substring.
+ * Note: Empty `$needle` is contained in any string.
+ *
+ * ```
+ * str_contains('foo', 'foobar'); // true
+ * str_contains('baz', 'foobar'); // false
+ * str_contains('', 'foobar'); // true
+ * ```
+ *
+ * @param string $needle
+ * @param string $haystack
+ * @return bool|callable
+ * @no-named-arguments
+ */
+function str_contains($needle, $haystack = null)
+{
+    InvalidArgumentException::assertString($needle, __FUNCTION__, 1);
+
+    if (\func_num_args() < 2) {
+        return partial(str_contains, $needle);
+    }
+
+    InvalidArgumentException::assertString($haystack, __FUNCTION__, 2);
+
+    return $needle === '' || \strpos($haystack, $needle) !== false;
+}
+
+define('Basko\Functional\str_contains', __NAMESPACE__ . '\\str_contains');
+
+/**
  * Checks if any of the strings in an array `$needles` present in `$haystack` string.
  *
  * ```
@@ -387,3 +452,32 @@ function str_surround($prefix, $suffix = null, $string = null)
 }
 
 define('Basko\Functional\str_surround', __NAMESPACE__ . '\\str_surround');
+
+/**
+ * Alias of native `trim`. Strips `$characters` from the beginning and end of a `$string`.
+ * Use `" \t\n\r\0\x0B"` to get the native default behaviour.
+ *
+ * ```
+ * str_trim(" \t\"'", ' "foo" '); // 'foo'
+ * str_trim('/', '/path/to/'); // 'path/to'
+ * ```
+ *
+ * @param string $characters
+ * @param string $string
+ * @return string|callable
+ * @no-named-arguments
+ */
+function str_trim($characters, $string = null)
+{
+    InvalidArgumentException::assertString($characters, __FUNCTION__, 1);
+
+    if (\func_num_args() < 2) {
+        return partial(str_trim, $characters);
+    }
+
+    InvalidArgumentException::assertString($string, __FUNCTION__, 2);
+
+    return \trim($string, $characters);
+}
+
+define('Basko\Functional\str_trim', __NAMESPACE__ . '\\str_trim');
