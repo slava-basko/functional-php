@@ -422,7 +422,7 @@ function prop($property, $object = null)
     }
 
     if ($object instanceof \ArrayAccess) {
-        return $object->offsetGet($property);
+        return $object->offsetExists($property) ? $object->offsetGet($property) : null;
     }
 
     if (\is_array($object) && \array_key_exists($property, $object)) {
